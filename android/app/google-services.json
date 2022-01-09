@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "1036391886488",
+    "project_id": "blend-it-8a622",
+    "storage_bucket": "blend-it-8a622.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036391886488:android:b78766e1b5f8d935f46aed",
+        "android_client_info": {
+          "package_name": "com.frutsexpress.blendit2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1TTteYi7DTUuGZwwGcehJYFdFKyDnT_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1036391886488-csll1n3057raal2safq2q2jshv228ten.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.frutsexpress.blentitapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036391886488:android:d64f0e62a55246fdf46aed",
+        "android_client_info": {
+          "package_name": "com.frutsexpress.blendit_2022"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1TTteYi7DTUuGZwwGcehJYFdFKyDnT_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1036391886488-csll1n3057raal2safq2q2jshv228ten.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.frutsexpress.blentitapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036391886488:android:3749dc0f598915fff46aed",
+        "android_client_info": {
+          "package_name": "com.frutsexpress.blendit_kitchen2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1TTteYi7DTUuGZwwGcehJYFdFKyDnT_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1036391886488-csll1n3057raal2safq2q2jshv228ten.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.frutsexpress.blentitapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

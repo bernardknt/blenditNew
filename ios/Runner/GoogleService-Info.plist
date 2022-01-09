@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1036391886488-9651q6vnjdvi0anf3o7pf5vutfr9151b.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1036391886488-9651q6vnjdvi0anf3o7pf5vutfr9151b</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDXbFspDFBsoIP9VORNG7McEXylKNTUP80</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1036391886488</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.frutsexpress.blendit2022</string>
+	<key>PROJECT_ID</key>
+	<string>blend-it-8a622</string>
+	<key>STORAGE_BUCKET</key>
+	<string>blend-it-8a622.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1036391886488:ios:d126c0ec317728c6f46aed</string>
+</dict>
+</plist>
