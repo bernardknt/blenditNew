@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:blendit_2022/screens/loyalty_page.dart';
 import 'package:blendit_2022/screens/mobileMoney.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/paymentButtons.dart';

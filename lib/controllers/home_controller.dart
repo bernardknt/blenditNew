@@ -1,5 +1,6 @@
 
 
+import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/home_page.dart';
 import 'package:blendit_2022/screens/news_page.dart';
@@ -29,7 +30,7 @@ class _ControlPageState extends State<ControlPage> {
   double buttonHeight = 40.0;
   int amount = 0;
   final tabs = [
-    NewBlenderPage(),
+    CustomizeController(),
     HomePage(),
     // //InputPage(),
 

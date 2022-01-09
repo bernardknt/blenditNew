@@ -260,32 +260,31 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         label: Text('Start Blending'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
-      appBar: AppBar(
-        shadowColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        title: Text(''),
-        backgroundColor: kBiegeThemeColor,
-        leading:Transform.translate(offset: Offset(20*0.7, 0),
-          child: IconButton(
-            icon: Icon(LineIcons.trophy, color: Colors.grey,),
-            onPressed: () {
-             // showNotification('notificationTitle', 'notificationBody');
-
-              Navigator.pushNamed(context, LoyaltyPage.id);
-            },
-          ),
-        ),
-        actions: [
-
-          GestureDetector(
-            onTap: (){
-              Navigator.pushNamed(context, SettingsPage.id);
-            },
-            child: Container(
-                padding:EdgeInsets.all(10),child:
-            Icon(LineIcons.user, color: Colors.grey,)),
-          )],
-      ),
+      // appBar: AppBar(
+      //   shadowColor: Colors.transparent,
+      //   automaticallyImplyLeading: false,
+      //   title: Text(''),
+      //   backgroundColor: kBiegeThemeColor,
+      //   leading:Transform.translate(offset: Offset(20*0.7, 0),
+      //     child: IconButton(
+      //       icon: Icon(LineIcons.trophy, color: Colors.grey,),
+      //       onPressed: () {
+      //        // showNotification('notificationTitle', 'notificationBody');
+      //
+      //         Navigator.pushNamed(context, LoyaltyPage.id);
+      //       },
+      //     ),
+      //   ),
+      //   actions: [
+      //     GestureDetector(
+      //       onTap: (){
+      //         Navigator.pushNamed(context, SettingsPage.id);
+      //       },
+      //       child: Container(
+      //           padding:EdgeInsets.all(10),child:
+      //       Icon(LineIcons.user, color: Colors.grey,)),
+      //     )],
+      // ),
       body:
       SingleChildScrollView(
         child: Column(

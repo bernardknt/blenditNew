@@ -1,7 +1,9 @@
+import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/screens/about.dart';
 import 'package:blendit_2022/screens/allProducts_page.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
+import 'package:blendit_2022/screens/blender_page_salad.dart';
 import 'package:blendit_2022/screens/checkout_page.dart';
 import 'package:blendit_2022/screens/delivery_page.dart';
 import 'package:blendit_2022/screens/detox_juice.dart';
@@ -113,6 +115,8 @@ class MyApp extends StatelessWidget {
           PaymentMode.id: (context)=>PaymentMode(),
           AboutPage.id: (context)=>AboutPage(),
           ReadComments.id: (context)=>ReadComments(comments: [],),
+          CustomizeController.id: (context)=>CustomizeController(),
+          SaladBlenderPage.id: (context)=>SaladBlenderPage(),
         },
       ),
     );
