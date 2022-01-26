@@ -2,6 +2,9 @@
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
+import 'package:blendit_2022/screens/customized_juice_page.dart';
+import 'package:blendit_2022/screens/detox_juice.dart';
+import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/screens/settings_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -12,6 +15,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -39,9 +43,9 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       firstName = newName;
       Provider.of<BlenditData>(context, listen: false).setCustomerName(newFullName);
       firstBlend = isFirstTimeBlending;
-      print('WALALALALALLALA ${prefs.get(kToken)}');
+
     });
-    print('PPOPOPOPOPOPOPOPOP $isFirstTime');
+
     if (isFirstTime == true){
       Navigator.pushNamed(context, BlenderOnboardingPage.id);
     }
@@ -177,13 +181,13 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   String blenderMessage() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
-      return 'Add Ingredients to your Blender';
+      return 'Add Ingredients and Blender';
       // return 'Want to blend something Nutritious?';
     }
     if (hour < 17) {
-      return 'What would you like to blend';
+      return 'Blend something';
     }
-    return 'Want to blend something Nutritious?';
+    return 'Blend something Nutritious?';
   }
   Future<dynamic> getIngredients() async {
     vegetables = [];
@@ -233,20 +237,19 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     Size size = MediaQuery.of(context).size;
 
 
-    var fruitProvider = Provider.of<BlenditData>(context).boxColourListFruit;
-    var vegProvider = Provider.of<BlenditData>(context).boxColourListVeg;
-    var extraProvider = Provider.of<BlenditData>(context).boxColourListExtra;
+    var fruitProvider = Provider.of<BlenditData>(context).boxColourJuiceListFruit;
+    var vegProvider = Provider.of<BlenditData>(context).boxColourJuiceListVeg;
+    var extraProvider = Provider.of<BlenditData>(context).boxColourJuiceListExtra;
     return Scaffold(
 
       backgroundColor: kBiegeThemeColor ,
       floatingActionButton: FloatingActionButton.extended(
 
-        backgroundColor: blendedData.blendButtonColour,
+        backgroundColor: blendedData.blendButtonColourJuice,
         onPressed: (){
 
           if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
             AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
-
           }
           else {
             showModalBottomSheet(
@@ -340,7 +343,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                   SizedBox(height: 10,),
                                   IngredientsList(ingredients: extras, boxColors: boxColours, provider: extraProvider, type: 'extra', info: extraInfo,),
                                   SizedBox(height: 20),
-                                ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.price)})')],
+                                ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.juicePrice)})')],
                               ),
                             ),
                           );
@@ -419,14 +422,14 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                       Row(
                         children: [
                           QuantityBtn(onTapFunction: (){
-                            Provider.of<BlenditData>(context, listen: false).decreaseLitres();
+                            Provider.of<BlenditData>(context, listen: false).decreaseJuiceLitres();
 
                           }, text: '-', size: 28,),
                           const SizedBox(width: 3,),
                           Text('${blendedData.litres}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                           const SizedBox(width: 3,),
                           QuantityBtn(onTapFunction: (){
-                            Provider.of<BlenditData>(context, listen: false).increaseLitres();
+                            Provider.of<BlenditData>(context, listen: false).increaseJuiceLitres();
                           }, text: '+',size: 28),
                         ],
                       ),
@@ -435,7 +438,17 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('Ugx ${formatter.format(blendedData.price)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),)
+                          Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
+                          SizedBox(height: 50,),
+                          GestureDetector
+                            (onTap: (){
+                            Navigator.pushNamed(context, CustomizedJuicePage.id);
+                          },
+                            child: Lottie.asset('images/juiceBlender.json', width: 50),
+
+                          ),
+                          Text('Surprise \n Me',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
+
                         ],
                       ),
                     ],

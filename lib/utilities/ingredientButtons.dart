@@ -34,7 +34,6 @@ class ingredientButtons extends StatelessWidget {
               backgroundColor: buttonColor),icon: Icon(lineIconFirstButton, color: buttonTextColor,size: 16,),
           label: Text(firstButtonText, style: TextStyle(fontWeight: FontWeight.bold,
               color: buttonTextColor, fontSize: buttonTextSize ), ), ),
-
       );
   }
 }

@@ -49,7 +49,7 @@ class SelectedIngredientsListView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(18)
                             ),
                             backgroundColor: Color(0x00F2efe4)),icon: Icon(LineIcons.moneyBill, color: kBlueDarkColor,),
-                        label: Text('${blendedData.litres}L at Ugx ${blendedData.price}', style: TextStyle(fontWeight: FontWeight.bold,
+                        label: Text('${blendedData.litres}L at Ugx ${blendedData.juicePrice}', style: TextStyle(fontWeight: FontWeight.bold,
                             color: kBlueDarkColor), ), ),
                     )),
                 Positioned(
@@ -57,13 +57,13 @@ class SelectedIngredientsListView extends StatelessWidget {
                     itemCount: blendedData.ingredientsNumber,
                     itemBuilder: (context, index){
                       return ListTile(
-                        leading: Text(blendedData.selectedIngredients[index], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
+                        leading: Text(blendedData.selectedJuiceIngredients[index], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),),
                         trailing: Checkbox(
                           activeColor: Colors.white,
                           checkColor: Color(0xFF0d1206),
                           shape: CircleBorder(),
                           onChanged: (bool? value) {
-                            blendedData.deleteIngredient(blendedData.selectedIngredients[index]);
+                            blendedData.deleteJuiceIngredient(blendedData.selectedJuiceIngredients[index]);
                           }, value: true,),
                       );
                     }),
@@ -81,8 +81,8 @@ class SelectedIngredientsListView extends StatelessWidget {
                         // );
                         Navigator.pushNamed(context, LoadingIngredientsPage.id);
                         Provider.of<BlenditData>(context, listen: false)
-                            .addtoBasket(BasketItem(amount: blendedData.refPrice, quantity: blendedData.litres, name: 'Custom Juice', details: blendedData.selectedIngredients.join(", "))); //
-                        Provider.of<BlenditData>(context, listen: false).clearList();
+                            .addToBasket(BasketItem(amount: blendedData.refJuicePrice, quantity: blendedData.litres, name: 'Custom Juice', details: blendedData.selectedJuiceIngredients.join(", "))); //
+                        Provider.of<BlenditData>(context, listen: false).clearListJuice();
 
                         //print(date);
                       },

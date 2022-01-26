@@ -91,13 +91,13 @@ showDialogFunc(context, img, title, desc, amount){
                           fontWeight: FontWeight.bold),textAlign: TextAlign.center),
                       SizedBox(width: 5),
                       QuantityBtn(onTapFunction: (){
-                        Provider.of<BlenditData>(context, listen:false).decreaseItemQty();
+                        Provider.of<BlenditData>(context, listen:false).decreaseJuiceItemQty();
                       }, text: '-', size: 30, color: kBiegeThemeColor,),
                       SizedBox(width: 3),
                       Text('${Provider.of<BlenditData>(context).ordinaryItemQty}'),
                       SizedBox(width: 3),
                       QuantityBtn(onTapFunction: (){
-                        Provider.of<BlenditData>(context, listen:false).increaseItemQty();
+                        Provider.of<BlenditData>(context, listen:false).increaseJuiceItemQty();
                       }, text: '+', size: 30, color: kBiegeThemeColor),
                     ],
                   ),
@@ -109,7 +109,7 @@ showDialogFunc(context, img, title, desc, amount){
                 SizedBox(height: 10,),
                 paymentButtons(
                   continueFunction: (){
-                    Provider.of<BlenditData>(context, listen: false).addtoBasket(BasketItem(amount: amount, quantity: Provider.of<BlenditData>(context, listen: false).ordinaryItemQty, name: title, details: desc));
+                    Provider.of<BlenditData>(context, listen: false).addToBasket(BasketItem(amount: amount, quantity: Provider.of<BlenditData>(context, listen: false).ordinaryItemQty, name: title, details: desc));
                     animationTimer();
                     showCupertinoModalPopup(context: context, builder: (context) => Container(
                       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -121,7 +121,7 @@ showDialogFunc(context, img, title, desc, amount){
                 }, continueBuyingText: 'Add to Basket',
                   checkOutText: 'Buy Now',
                   buyFunction: (){
-                    Provider.of<BlenditData>(context, listen: false).addtoBasket(BasketItem(amount: amount, quantity: Provider.of<BlenditData>(context, listen: false).ordinaryItemQty, name: title, details: desc));
+                    Provider.of<BlenditData>(context, listen: false).addToBasket(BasketItem(amount: amount, quantity: Provider.of<BlenditData>(context, listen: false).ordinaryItemQty, name: title, details: desc));
                     Navigator.pop(context);
                     Navigator.pushNamed(context, CheckoutPage.id);
 

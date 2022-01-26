@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'blendit_data.dart';
 
 
-class IngredientsList extends StatelessWidget {
-  IngredientsList({required this.ingredients, required this.boxColors, required this.provider, required this.type, required this.info,});
+class SaladIngredientList extends StatelessWidget {
+  SaladIngredientList({required this.ingredients, required this.boxColors, required this.provider, required this.type, required this.info,});
 
   final List<String> info;
   final List<String> ingredients;
@@ -15,7 +15,7 @@ class IngredientsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   // Color boxColor = Colors.white;
+    // Color boxColor = Colors.white;
     var blendedData = Provider.of<BlenditData>(context);
     return SizedBox(
       height: 35.0,
@@ -28,14 +28,14 @@ class IngredientsList extends StatelessWidget {
 
                 if (type == 'fruit' ){
 
-                  Provider.of<BlenditData>(context, listen: false).changeBoxColorJuiceFruits(boxColors[index], index, ingredients[index]);
+                  Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorFruits(boxColors[index], index, ingredients[index]);
                 }
                 else if (type == 'veggie' ){
 
-                  Provider.of<BlenditData>(context, listen: false).changeBoxColorJuiceVegetables(boxColors[index], index, ingredients[index]);
+                  Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorVegetables(boxColors[index], index, ingredients[index]);
                 }else{
 
-                  Provider.of<BlenditData>(context, listen: false).changeBoxColorJuiceExtras(boxColors[index], index, ingredients[index]);
+                  Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorExtras(boxColors[index], index, ingredients[index]);
                 }
               },
               onLongPress: (){
@@ -48,7 +48,7 @@ class IngredientsList extends StatelessWidget {
                       children: [
                         Image.asset('images/blender_component.png', height: 25, width: 25,),
                         // SizedBox(width: 5,),
-                        Text(ingredients[index], style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                        Text(ingredients[index], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                       ],
                     ),
                     content: Text(info[index], textAlign: TextAlign.justify,),
@@ -58,14 +58,14 @@ class IngredientsList extends StatelessWidget {
               },
               child: Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(horizontal: 20 ),
-                margin: EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 20 ),
+                margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
                     color:  provider[index]
                 ),
                 child: Text(
-                    ingredients[index], textAlign: TextAlign.justify,style: TextStyle(fontSize: 18),
+                  ingredients[index], textAlign: TextAlign.justify,style: const TextStyle(fontSize: 18),
                 ),
               ),
             );

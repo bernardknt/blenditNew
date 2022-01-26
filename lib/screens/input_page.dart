@@ -26,6 +26,7 @@ class _InputPageState extends State<InputPage> {
   final _random = new Random();
   CollectionReference items = FirebaseFirestore.instance.collection('items');
   CollectionReference ingredients = FirebaseFirestore.instance.collection('ingredients');
+  CollectionReference saladIngredients = FirebaseFirestore.instance.collection('proteins');
 
   Future<void> addItem() {
     // Call the user's CollectionReference to add a new user
@@ -54,6 +55,24 @@ class _InputPageState extends State<InputPage> {
       'quantity': 10,
       'info':'',
      // 'image': images[_random.nextInt(images.length)],
+      'id': itemId,
+    })
+        .then((value) => print("Ingredient Added"))
+        .catchError((error) => print("Failed to add Item: $error"));
+  }
+
+  Future<void> addSaladIngredient() {
+    // Call the user's CollectionReference to add a new user
+    return saladIngredients.doc(itemId)
+        .set({
+      'category': 'vegetables', // John Doe
+      // 'description': description, // Stokes and Sons
+      'name': productName,
+      // 'price': price,
+      'quantity': 10,
+      'info':'',
+      'price': 1000,
+      // 'image': images[_random.nextInt(images.length)],
       'id': itemId,
     })
         .then((value) => print("Ingredient Added"))
@@ -150,7 +169,8 @@ class _InputPageState extends State<InputPage> {
                               );
                             });
                           }else {
-                            addItem();
+                            addSaladIngredient();
+                            // addItem();
                           // addItem();
                           // addItem();
                             Navigator.pushNamed(context, ControlPage.id);
