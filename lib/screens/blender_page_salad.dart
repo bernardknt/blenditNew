@@ -4,15 +4,14 @@ import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/models/salad_ingredient_list.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
-import 'package:blendit_2022/screens/settings_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:blendit_2022/widgets/SelectedIngredientsListView.dart';
+import 'package:blendit_2022/widgets/SelectedSaladIngredientsListView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -114,9 +113,9 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
   Widget build(BuildContext context) {
     var blendedData = Provider.of<BlenditData>(context);
     Size size = MediaQuery.of(context).size;
-    var fruitProvider = Provider.of<BlenditData>(context).boxColourJuiceListFruit;
-    var vegProvider = Provider.of<BlenditData>(context).boxColourJuiceListVeg;
-    var extraProvider = Provider.of<BlenditData>(context).boxColourJuiceListExtra;
+    var fruitProvider = Provider.of<BlenditData>(context).boxColourSaladListFruit;
+    var vegProvider = Provider.of<BlenditData>(context).boxColourSaladListVeg;
+    var extraProvider = Provider.of<BlenditData>(context).boxColourSaladListExtra;
     return Scaffold(
       backgroundColor: kBiegeThemeColor ,
       floatingActionButton: FloatingActionButton.extended(
@@ -124,7 +123,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
         backgroundColor: blendedData.saladButtonColour,
         onPressed: (){
 
-          if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
+          if(Provider.of<BlenditData>(context, listen: false).saladIngredientsNumber == 0){
             AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
 
           }
@@ -132,7 +131,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return SelectedIngredientsListView();
+                  return SelectedSaladIngredientsListView();
                 });
           }
         },
@@ -195,7 +194,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                                   const SizedBox(height: 10,),
                                   SaladIngredientList(ingredients: extras, boxColors: boxColours, provider: extraProvider, type: 'extra', info: extraInfo,),
                                   const SizedBox(height: 20),
-                                ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.juicePrice)})')],
+                                ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.saladPrice)})')],
                               ),
                             ),
                           );
@@ -225,7 +224,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return SelectedIngredientsListView();
+                              return SelectedSaladIngredientsListView();
                             });
                       }
                     },
@@ -241,9 +240,9 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                           CircleAvatar(
                               radius: 13,
                               backgroundColor: Colors.orange,
-                              child: Text('${blendedData.ingredientsNumber}',style: TextStyle(color: Colors.white, fontSize: 15),)),
+                              child: Text('${blendedData.saladIngredientsNumber}',style: TextStyle(color: Colors.white, fontSize: 15),)),
                           //SizedBox(width: 5,),
-                          const Icon(LineIcons.cookieBite, color: Colors.black,size: 25,),
+                          const FaIcon(LineIcons.cookieBite, color: Colors.black,size: 25,),
 
                         ] ),
                     onTap: (){
@@ -254,7 +253,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return SelectedIngredientsListView();
+                              return SelectedSaladIngredientsListView();
                             });
                       }
                     },
@@ -274,14 +273,14 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                       Row(
                         children: [
                           QuantityBtn(onTapFunction: (){
-                            Provider.of<BlenditData>(context, listen: false).decreaseJuiceLitres();
+                            Provider.of<BlenditData>(context, listen: false).decreaseSaladQty();
 
                           }, text: '-', size: 28,),
                           const SizedBox(width: 3,),
-                          Text('${blendedData.litres}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                          Text('${blendedData.saladQty}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                           const SizedBox(width: 3,),
                           QuantityBtn(onTapFunction: (){
-                            Provider.of<BlenditData>(context, listen: false).increaseJuiceLitres();
+                            Provider.of<BlenditData>(context, listen: false).increaseSaladQty();
                           }, text: '+',size: 28),
                         ],
                       ),
@@ -290,7 +289,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                          Text('Ugx ${formatter.format(blendedData.saladPrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
                           ),
                           SizedBox(height: 50,),
 

@@ -25,6 +25,7 @@ class _InputPageState extends State<InputPage> {
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
   final _random = new Random();
   CollectionReference items = FirebaseFirestore.instance.collection('items');
+  CollectionReference categories = FirebaseFirestore.instance.collection('categories');
   CollectionReference ingredients = FirebaseFirestore.instance.collection('ingredients');
   CollectionReference saladIngredients = FirebaseFirestore.instance.collection('proteins');
 
@@ -61,6 +62,17 @@ class _InputPageState extends State<InputPage> {
         .catchError((error) => print("Failed to add Item: $error"));
   }
 
+  Future<void> addCategories() {
+    // Call the user's CollectionReference to add a new user
+    return categories.doc(itemId)
+        .set({
+      'name': productName, // John Doe
+      'id': itemId, // Stokes and Sons
+    })
+        .then((value) => print("Item Added"))
+        .catchError((error) => print("Failed to add Item: $error"));
+  }
+
   Future<void> addSaladIngredient() {
     // Call the user's CollectionReference to add a new user
     return saladIngredients.doc(itemId)
@@ -83,7 +95,7 @@ class _InputPageState extends State<InputPage> {
   var images = ['https://bit.ly/3ealgAb', 'https://bit.ly/3kllKHh',
     'https://bit.ly/3ievsbQ',
     'https://bit.ly/3ealgAb'];
-  String itemId = 'vg${uuid.v1().split("-")[0]}';
+  String itemId = 'cat${uuid.v1().split("-")[0]}';
   String description= '';
   double changeInvalidMessageOpacity = 0.0;
   String invalidMessageDisplay = 'Invalid Number';
@@ -169,7 +181,8 @@ class _InputPageState extends State<InputPage> {
                               );
                             });
                           }else {
-                            addSaladIngredient();
+                            addCategories();
+                            //addSaladIngredient();
                             // addItem();
                           // addItem();
                           // addItem();

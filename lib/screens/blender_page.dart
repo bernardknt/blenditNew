@@ -3,9 +3,6 @@ import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
-import 'package:blendit_2022/screens/detox_juice.dart';
-import 'package:blendit_2022/screens/salads_page.dart';
-import 'package:blendit_2022/screens/settings_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:blendit_2022/widgets/SelectedIngredientsListView.dart';
@@ -19,9 +16,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-
 import '../main.dart';
-import 'loyalty_page.dart';
 import 'onboarding_page.dart';
 
 class NewBlenderPage extends StatefulWidget {
@@ -34,7 +29,6 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
-    // _firebaseMessaging.getToken().then((value) => prefs.setString(kToken, value!));
     String newName = prefs.getString(kFirstNameConstant) ?? 'Hi';
     String newFullName = prefs.getString(kFullNameConstant) ?? 'Hi';
     bool isFirstTime = prefs.getBool(kIsFirstTimeUser) ?? false;
@@ -255,7 +249,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return SelectedIngredientsListView();
+                  return SelectedJuiceIngredientsListView();
                 });
           }
         },
@@ -373,7 +367,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return SelectedIngredientsListView();
+                              return SelectedJuiceIngredientsListView();
                             });
                       }
                     },
@@ -402,7 +396,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return SelectedIngredientsListView();
+                              return SelectedJuiceIngredientsListView();
                             });
                       }
                     },

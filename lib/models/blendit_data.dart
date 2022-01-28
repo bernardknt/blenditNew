@@ -20,7 +20,10 @@ class BlenditData extends ChangeNotifier{
   int basketNumber = 0;
 
   // -----------------JUICE VARIABLES-------------------------
+  String speciality = "Weight Loss";
+  String specialityId = "cat2a7d37e0";
   int litres = 1;
+  int saladQty = 1;
   int juicePrice = 12000;
   int baseJuicePrice = 12000;
   int refJuicePrice = 12000;
@@ -42,9 +45,9 @@ class BlenditData extends ChangeNotifier{
   Color saladButtonColour = Colors.grey.shade400;
   Color saladIngredientsButtonColour = Colors.green;
   int saladIngredientsNumber = 0;
-  int saladPrice = 12000;
-  int refSaladPrice = 12000;
-  int baseSaladPrice = 12000;
+  int saladPrice = 15000;
+  int refSaladPrice = 15000;
+  int baseSaladPrice = 15000;
   int ordinaryItemQty = 1;
   int deliveryFee = 0;
   double distance = 0;
@@ -149,10 +152,10 @@ class BlenditData extends ChangeNotifier{
     if (boxColourSaladListVeg[index] == selectedColor){
       boxColourSaladListVeg[index] = Colors.lightGreenAccent;
       addSaladIngredients(ingredient);
-      numberOfJuiceIngredients();
+      numberOfSaladIngredients();
     }else{
       boxColourSaladListVeg[index] = Colors.white;
-      deleteJuiceIngredient(ingredient);
+      deleteSaladIngredient(ingredient);
     }
     notifyListeners();
   }
@@ -160,22 +163,22 @@ class BlenditData extends ChangeNotifier{
     if (boxColourSaladListFruit[index] == selectedColor){
       boxColourSaladListFruit[index] = Colors.orange;
       addSaladIngredients(ingredient);
-      numberOfJuiceIngredients();
+      numberOfSaladIngredients();
     }else{
       boxColourSaladListFruit[index] = Colors.white;
-      deleteJuiceIngredient(ingredient);
+      deleteSaladIngredient(ingredient);
 
     }
     notifyListeners();
   }
   void changeSaladBoxColorExtras(Color selectedColor, int index, String ingredient){
-    if (boxColourJuiceListExtra[index] == selectedColor){
-      boxColourJuiceListExtra[index] = kGreenJavasThemeColor;
+    if (boxColourSaladListExtra[index] == selectedColor){
+      boxColourSaladListExtra[index] = kGreenJavasThemeColor;
       addSaladIngredients(ingredient);
-      numberOfJuiceIngredients();
+      numberOfSaladIngredients();
     }else{
-      boxColourJuiceListExtra[index] = Colors.white;
-      deleteJuiceIngredient(ingredient);
+      boxColourSaladListExtra[index] = Colors.white;
+      deleteSaladIngredient(ingredient);
     }
     notifyListeners();
   }
@@ -193,9 +196,62 @@ class BlenditData extends ChangeNotifier{
     }
   }
 
+  void deleteSaladIngredient (ingredient){
+    if(ingredientsNumber< 6){
+      selectedSaladIngredients.remove(ingredient);
+      numberOfSaladIngredients();
+      notifyListeners();
+    }else {
+      selectedJuiceIngredients.remove(ingredient);
+      numberOfSaladIngredients();
+      refSaladPrice = refSaladPrice - 1000;
+      saladPrice = refSaladPrice  * litres;
+      notifyListeners();
+    }
+  }
 
-  // -----------------BLENDER  FUNCTIONS------------------------
+  void numberOfSaladIngredients (){
+    saladIngredientsNumber = selectedSaladIngredients.length;
+    changeSaladButtonColors();
+    notifyListeners();
+  }
+
+  void increaseSaladQty(){
+    saladQty += 1;
+    saladPrice = refSaladPrice * saladQty;
+    notifyListeners();
+  }
+  void decreaseSaladQty(){
+    if (saladQty > 1){
+      saladQty -= 1;
+      saladPrice = refSaladPrice * saladQty;
+      notifyListeners();
+    }
+  }
+  void clearListSalad (){
+    for(var i = 0; i < boxColourSaladListVeg.length; i++){
+      boxColourSaladListVeg[i] = Colors.white;
+      boxColourSaladListFruit[i] = Colors.white;
+      boxColourSaladListExtra[i] = Colors.white;
+    }
+    refSaladPrice = baseSaladPrice;
+    saladPrice = baseSaladPrice;
+    selectedSaladIngredients.clear();
+    saladIngredientsNumber = selectedSaladIngredients.length;
+    saladButtonColour = Colors.grey.shade400;
+    saladIngredientsButtonColour = Colors.green;
+    notifyListeners();
+  }
+
+
+  // -----------------BLENDER and JUICE FUNCTIONS------------------------
   // Change color of Image Juice and Set Default Prices and Color
+  void setCustomJuiceSpeciality (id, name){
+    speciality = name;
+    specialityId = id;
+    notifyListeners();
+  }
+
   void changeImage(){
     if (selectedJuiceIngredients.length == 0){
       blenderImage = 'images/blenditclear.png';
@@ -274,6 +330,7 @@ class BlenditData extends ChangeNotifier{
       notifyListeners();
     }
   }
+
   void deleteJuiceIngredient (ingredient){
     if(ingredientsNumber< 6){
       selectedJuiceIngredients.remove(ingredient);

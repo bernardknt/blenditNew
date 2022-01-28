@@ -5,6 +5,7 @@ import 'package:blendit_2022/screens/allProducts_page.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
 import 'package:blendit_2022/screens/checkout_page.dart';
+import 'package:blendit_2022/screens/choose_juice_page.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
 import 'package:blendit_2022/screens/delivery_page.dart';
 import 'package:blendit_2022/screens/detox_juice.dart';
@@ -119,6 +120,7 @@ class MyApp extends StatelessWidget {
           CustomizeController.id: (context)=>CustomizeController(),
           SaladBlenderPage.id: (context)=>SaladBlenderPage(),
           CustomizedJuicePage.id: (context)=>CustomizedJuicePage(),
+          ChooseJuicePage.id: (context)=>ChooseJuicePage(),
 
         },
       ),

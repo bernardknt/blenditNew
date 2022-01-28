@@ -5,17 +5,18 @@ import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/widgets/itemsDialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'allProducts_page.dart';
 import 'checkout_page.dart';
+import 'choose_juice_page.dart';
 import 'detox_juice.dart';
 import 'detox_plans.dart';
 import 'loyalty_page.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'home_page';
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage> {
   var pages = [DetoxJuicePage.id, DetoxPlansPage.id, SaladsPage.id ]; // , TropicalPage.id
   String name = 'Bernard';
   var formatter = NumberFormat('#,###,000');
+  final numbers = List.generate(100, (index) => '$index');
+  final controller = ScrollController();
 
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
@@ -84,7 +87,7 @@ class _HomePageState extends State<HomePage> {
         ],
         title: Text(""),
         centerTitle: true,
-        leading:Transform.translate(offset: Offset(20*0.5, 0),
+        leading:Transform.translate(offset: const Offset(20*0.5, 0),
          child: IconButton(
            icon: Image.asset('images/blender_component.png'),
            onPressed: () {
@@ -94,19 +97,19 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: SafeArea(
           child: Column(
                crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('$name, find \nthe Best for you', textAlign:TextAlign.start , style: TextStyle(
+              Text('$name, find \nthe Best for you', textAlign:TextAlign.start , style: const TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25
               ),),
               SizedBox(height: 20,),
               searchBar(),
               Row(
                 children: [
-                  Padding(padding: EdgeInsets.only(top: 20, ),
+                  Padding(padding: const EdgeInsets.only(top: 20, ),
                   child:
                   GestureDetector(
                     onTap: (){},
@@ -133,10 +136,10 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(height: 20,),
-              Text("Today's Special", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+              const Text("Today's Special", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
               ),
-              SizedBox(height: 20,),
-            StreamBuilder<QuerySnapshot>(
+              const SizedBox(height: 20,),
+              StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance.collection('items')
                             .where('promote', isEqualTo: true)
                             .snapshots(),
@@ -160,83 +163,132 @@ class _HomePageState extends State<HomePage> {
                               }
                             }
                             return
-                              Container();
-                              // StaggeredGridView.countBuilder(
-                              //   crossAxisCount: 2,
-                              //   itemCount: items.length,
-                              //   crossAxisSpacing: 10,
-                              //   physics: NeverScrollableScrollPhysics(),
-                              //   shrinkWrap: true,
-                              //   itemBuilder: (context, index) {
-                              //     return GestureDetector(
-                              //       onTap: () {
-                              //         showDialogFunc(
-                              //             context, images[index], items[index],
-                              //             descList[index], prices[index]);
-                              //       },
-                              //       child: Container(
-                              //         margin: EdgeInsets.only(top: 10,
-                              //             right: 0,
-                              //             left: 0,
-                              //             bottom: 3),
-                              //         decoration: BoxDecoration(
-                              //           borderRadius: BorderRadius.circular(25),
-                              //           color: colours[index],
-                              //         ),
-                              //         child: Column(
-                              //           children: [
-                              //             FadeInImage.assetNetwork(
-                              //               placeholder: 'images/loading.gif',
-                              //               image: images[index],
-                              //               height: 170,
-                              //               width: double.infinity,
-                              //               fit: BoxFit.cover,
-                              //             ),
-                              //             // Image.asset(images[index],
-                              //             // width: double.infinity,
-                              //             //   fit: BoxFit.cover,
-                              //             //   height: 170,
-                              //             // ),
-                              //             Padding(
-                              //
-                              //               padding: EdgeInsets.symmetric(
-                              //                   horizontal: 12),
-                              //               child: ClipRRect(
-                              //                 clipBehavior: Clip.hardEdge,
-                              //                 child: Row(
-                              //                   mainAxisAlignment: MainAxisAlignment
-                              //                       .spaceBetween,
-                              //                   children: [
-                              //                     Column(
-                              //                       crossAxisAlignment: CrossAxisAlignment
-                              //                           .start,
-                              //                       children: [
-                              //                         Text(items[index],
-                              //                           style: TextStyle(
-                              //                               color: Colors.white,
-                              //                               fontSize: 12),),
-                              //                         Text(
-                              //                           'Ugx ${formatter.format(
-                              //                               prices[index])}',
-                              //                           style: TextStyle(
-                              //                               color: Colors.white,
-                              //                               fontSize: 12),)
-                              //                       ],
-                              //                     ),
-                              //                   ],
-                              //                 ),
-                              //               ),)
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     );
-                              //   },
-                              //   staggeredTileBuilder: (index) =>
-                              //       StaggeredTile.fit(1));
+
+                              StaggeredGridView.countBuilder(
+                                crossAxisCount: 2,
+                                itemCount: items.length,
+                                crossAxisSpacing: 10,
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      showDialogFunc(
+                                          context, images[index], items[index],
+                                          descList[index], prices[index]);
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 10,
+                                          right: 0,
+                                          left: 0,
+                                          bottom: 3),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: colours[index],
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          FadeInImage.assetNetwork(
+                                            placeholder: 'images/loading.gif',
+                                            image: images[index],
+                                            height: 170,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          // Image.asset(images[index],
+                                          // width: double.infinity,
+                                          //   fit: BoxFit.cover,
+                                          //   height: 170,
+                                          // ),
+                                          Padding(
+
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            child: ClipRRect(
+                                              clipBehavior: Clip.hardEdge,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Text(items[index],
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 12),),
+                                                      Text(
+                                                        'Ugx ${formatter.format(
+                                                            prices[index])}',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 12),)
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),)
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                staggeredTileBuilder: (index) =>
+                                    StaggeredTile.fit(1));
                           })
             ],
           ),
         )
+      ),
+    );
+
+
+  }
+  buildNumber(String number) => Container(
+    padding: EdgeInsets.all(16),
+    color: Colors.orange,
+    child: GridTile(
+      header: Text(
+        'Header $number',
+        textAlign: TextAlign.center,
+      ),
+      child: Center(
+        child: Text(
+          number,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 48),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      footer: Text(
+        'Footer $number',
+        textAlign: TextAlign.center,
+      ),
+    ),
+  );
+
+  Padding questionBlocks(String speciality, String id) {
+    var randomColors = [Colors.teal, Colors.blueAccent, Colors.black12, Colors.deepPurpleAccent, Colors.white12];
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: GestureDetector (
+        onTap: (){
+          Provider.of<BlenditData>(context, listen: false).setCustomJuiceSpeciality(id, speciality);
+          Navigator.pushNamed(context, ChooseJuicePage.id);
+        },
+        child: Container(
+          // color: Colors.white,
+          width: double.infinity,
+          height: 50,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color:  randomColors[4]
+          ),
+          child: Center(child: Text(
+            speciality,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),)),
+
+        ),
       ),
     );
   }
@@ -258,6 +310,13 @@ class _HomePageState extends State<HomePage> {
 
               ),
             );
+  }
+
+  TileNow({required int index}) {
+    return Container(
+      height: 10,
+      child: Text("$index"),
+    );
   }
 
 }

@@ -19,16 +19,16 @@ class _LoadingIngredientsPageState extends State<LoadingIngredientsPage> {
 
   @override
   late Timer _timer;
-  @override
   var animations = ['images/chopping.json', 'images/watermelon.json', 'images/kiwi.json'];
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     animationTimer();
   }
-  final _random = new Random();
+  final _random = Random();
   animationTimer() {
-    _timer = new Timer(const Duration(milliseconds: 3500), () {
+    _timer = Timer(const Duration(milliseconds: 3500), () {
       Navigator.pop(context);
       Navigator.pop(context);
       Navigator.pushNamed(context, CheckoutPage.id);
@@ -36,30 +36,22 @@ class _LoadingIngredientsPageState extends State<LoadingIngredientsPage> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Lottie.asset('images/blenderOn.json', height: 300, width: 300, fit: BoxFit.cover ),
-              SizedBox(height: 10,),
-              // RichText(text: TextSpan(text: ('Warming Blender'),
-              //     //style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
-              //     style: GoogleFonts.lato(fontSize: 16.8),
-              //     children: [
-              //       TextSpan(text: '\n..Setting up Ingredients', style: GoogleFonts.raviPrakash(), )
-              //     ]
-              // ),),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset('images/blenderOn.json', height: 300, width: 300, fit: BoxFit.cover ),
+            const SizedBox(height: 10,),
 
-              Text('Getting ready', style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 20),),
-              //SizedBox(height: 10,),
-              //Text('Setting Ingredients..', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-            ],
-          ),
-
+            Text('Getting ready', style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 20),),
+            //SizedBox(height: 10,),
+            //Text('Setting Ingredients..', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+          ],
         ),
+
       ),
     );
   }

@@ -111,7 +111,7 @@ class _ControlPageState extends State<ControlPage> {
             // BottomNavigationBarItem(
             //     icon: Icon(LineIcons.newspaper, size: 18,),label:'Notes',
             //     backgroundColor: Colors.purple),
-            // Item 3
+            // // Item 3
             BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.heart_fill),label:'Orders',
                 backgroundColor: Colors.black)],
@@ -119,9 +119,7 @@ class _ControlPageState extends State<ControlPage> {
             setState(() {
               _currentIndex = index;
             });
-
           },
-
         ),
       ),
     );

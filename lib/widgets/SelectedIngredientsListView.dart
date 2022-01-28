@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 
 
-class SelectedIngredientsListView extends StatelessWidget {
+class SelectedJuiceIngredientsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {

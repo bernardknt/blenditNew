@@ -83,7 +83,8 @@ class _DetoxJuicePageState extends State<DetoxJuicePage> {
 
           itemCount: imgList.length,
           itemBuilder: (context, index){
-            return GestureDetector(
+            return
+              GestureDetector(
               onTap: (){
                 showDialogFunc(context, imgList[index], titleList[index], descList[index], priceList[index]);
 
