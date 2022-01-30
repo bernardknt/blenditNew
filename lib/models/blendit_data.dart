@@ -28,6 +28,8 @@ class BlenditData extends ChangeNotifier{
   int baseJuicePrice = 12000;
   int refJuicePrice = 12000;
   int ingredientsNumber = 0;
+  List meats = []; // "Chicken","Fish","Mushrooms"
+  List extras = []; //"Eggs","Vinaigrette"
   Color ingredientsButtonColour = Colors.green;
   List boxColourJuiceListVeg = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
   List boxColourJuiceListFruit = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
@@ -39,15 +41,17 @@ class BlenditData extends ChangeNotifier{
 
   // -----------------SALAD  VARIABLES------------------------
   List boxColourSaladListExtra = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
-  List boxColourSaladListFruit = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
-  List boxColourSaladListVeg = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
+  List boxColourSaladListMeat = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
+  List boxColourSaladListLeaves = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
   List selectedSaladIngredients = [];
   Color saladButtonColour = Colors.grey.shade400;
   Color saladIngredientsButtonColour = Colors.green;
   int saladIngredientsNumber = 0;
-  int saladPrice = 15000;
-  int refSaladPrice = 15000;
-  int baseSaladPrice = 15000;
+  int saladPrice = 12000;
+  int refSaladPrice = 12000;
+  int baseSaladPrice = 12000;
+  int saladExtrasPrice = 1000;
+  int saladMeatPrice = 3000;
   int ordinaryItemQty = 1;
   int deliveryFee = 0;
   double distance = 0;
@@ -148,25 +152,51 @@ class BlenditData extends ChangeNotifier{
     }
     notifyListeners();
   }
-  void changeSaladBoxColorVegetables(Color selectedColor, int index, String ingredient){
-    if (boxColourSaladListVeg[index] == selectedColor){
-      boxColourSaladListVeg[index] = Colors.lightGreenAccent;
+  void increasePriceSaladExtras (){
+    refSaladPrice = refSaladPrice + saladExtrasPrice;
+    saladPrice = refSaladPrice  * saladQty;
+    notifyListeners();
+  }
+  void decreasePriceSaladExtras (){
+    refSaladPrice = refSaladPrice - saladExtrasPrice;
+    saladPrice = refSaladPrice  * saladQty;
+    notifyListeners();
+  }
+  void increasePriceSaladMeats (){
+    refSaladPrice = refSaladPrice + saladMeatPrice;
+    saladPrice = refSaladPrice  * saladQty;
+
+    notifyListeners();
+  }
+
+  void decreasePriceSaladMeats (){
+
+    refSaladPrice = saladPrice - saladMeatPrice;
+    saladPrice = refSaladPrice  * saladQty;
+    notifyListeners();
+  }
+  void changeSaladBoxColorLeaves(Color selectedColor, int index, String ingredient){
+    if (boxColourSaladListLeaves[index] == selectedColor){
+      boxColourSaladListLeaves[index] = Colors.lightGreenAccent;
       addSaladIngredients(ingredient);
       numberOfSaladIngredients();
     }else{
-      boxColourSaladListVeg[index] = Colors.white;
+      boxColourSaladListLeaves[index] = Colors.white;
       deleteSaladIngredient(ingredient);
+
     }
     notifyListeners();
   }
-  void changeSaladBoxColorFruits(Color selectedColor, int index, String ingredient){
-    if (boxColourSaladListFruit[index] == selectedColor){
-      boxColourSaladListFruit[index] = Colors.orange;
+  void changeSaladBoxColorMeat(Color selectedColor, int index, String ingredient){
+    if (boxColourSaladListMeat[index] == selectedColor){
+      boxColourSaladListMeat[index] = Colors.orange;
       addSaladIngredients(ingredient);
+      increasePriceSaladMeats();
       numberOfSaladIngredients();
     }else{
-      boxColourSaladListFruit[index] = Colors.white;
+      boxColourSaladListMeat[index] = Colors.white;
       deleteSaladIngredient(ingredient);
+      // decreasePriceSaladMeats();
 
     }
     notifyListeners();
@@ -174,11 +204,13 @@ class BlenditData extends ChangeNotifier{
   void changeSaladBoxColorExtras(Color selectedColor, int index, String ingredient){
     if (boxColourSaladListExtra[index] == selectedColor){
       boxColourSaladListExtra[index] = kGreenJavasThemeColor;
+      increasePriceSaladExtras();
       addSaladIngredients(ingredient);
       numberOfSaladIngredients();
     }else{
       boxColourSaladListExtra[index] = Colors.white;
       deleteSaladIngredient(ingredient);
+      decreasePriceSaladExtras();
     }
     notifyListeners();
   }
@@ -190,24 +222,41 @@ class BlenditData extends ChangeNotifier{
     }else {
       selectedSaladIngredients.add(addedIngredient);
       saladIngredientsNumber = selectedSaladIngredients.length;
-      refJuicePrice = refJuicePrice + 1000;
-      juicePrice = refJuicePrice  * litres;
+      // refSaladPrice = refSaladPrice + 1000;
+      // saladPrice = refSaladPrice  * saladQty;
       notifyListeners();
     }
   }
 
   void deleteSaladIngredient (ingredient){
-    if(ingredientsNumber< 6){
+    // if(saladIngredientsNumber< 6){
+    if(meats.contains(ingredient)){
+      selectedSaladIngredients.remove(ingredient);
+      numberOfSaladIngredients();
+      decreasePriceSaladMeats();
+      notifyListeners();
+      print(selectedSaladIngredients);
+    }else if(extras.contains(ingredient)){
+      selectedSaladIngredients.remove(ingredient);
+      numberOfSaladIngredients();
+      decreasePriceSaladExtras();
+      notifyListeners();
+      print(selectedSaladIngredients);
+    }
+    else{
       selectedSaladIngredients.remove(ingredient);
       numberOfSaladIngredients();
       notifyListeners();
-    }else {
-      selectedJuiceIngredients.remove(ingredient);
-      numberOfSaladIngredients();
-      refSaladPrice = refSaladPrice - 1000;
-      saladPrice = refSaladPrice  * litres;
-      notifyListeners();
+      print(selectedSaladIngredients);
     }
+
+    // }else {
+    //   selectedJuiceIngredients.remove(ingredient);
+    //   numberOfSaladIngredients();
+    //   refSaladPrice = refSaladPrice - 1000;
+    //   saladPrice = refSaladPrice  * saladQty;
+    //   notifyListeners();
+    // }
   }
 
   void numberOfSaladIngredients (){
@@ -229,9 +278,9 @@ class BlenditData extends ChangeNotifier{
     }
   }
   void clearListSalad (){
-    for(var i = 0; i < boxColourSaladListVeg.length; i++){
-      boxColourSaladListVeg[i] = Colors.white;
-      boxColourSaladListFruit[i] = Colors.white;
+    for(var i = 0; i < boxColourSaladListLeaves.length; i++){
+      boxColourSaladListLeaves[i] = Colors.white;
+      boxColourSaladListMeat[i] = Colors.white;
       boxColourSaladListExtra[i] = Colors.white;
     }
     refSaladPrice = baseSaladPrice;
@@ -273,10 +322,25 @@ class BlenditData extends ChangeNotifier{
 
     }
   }
-  void setBlenderDefaultPrice (blenderPrice){
+
+
+  void setBlenderDefaultPrice (blenderPrice, saladDownloadedPrice, meatPrice, extrasPrice, meat, extra){
+    // Setting the price for the Juices in the Blender
+    // Setting the price for the Juices in the Blender
     refJuicePrice = blenderPrice;
     juicePrice = blenderPrice;
     baseJuicePrice = blenderPrice;
+// Setting the price for the Salads in the Bowl
+    refSaladPrice = saladDownloadedPrice;
+    saladPrice = saladDownloadedPrice;
+    baseSaladPrice = saladDownloadedPrice;
+    // Setting the price for the Salad Extras and Meats in the Bowl
+    saladMeatPrice = meatPrice;
+    saladExtrasPrice = extrasPrice;
+    // Setting the price for the Salads in the Bowl
+    meats = meat;
+    extras = extra;
+
     notifyListeners();
   }
   void changeJuiceButtonColors(){

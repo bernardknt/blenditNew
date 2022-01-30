@@ -134,9 +134,15 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         var blender = doc['blender'];
         var heading  = doc['heading'];
         var body = doc['body'];
+        var saladPrice = doc['saladPrice'];
+        var saladExtrasPrice = doc['saladExtrasPrice'];
+        var saladMeatPrice = doc['saladMeatPrice'];
+        var meats = doc['meats'];
+        var extras = doc['extra'];
 
         setState(() {
-          Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender);
+
+          Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender, saladPrice, saladMeatPrice, saladExtrasPrice, meats, extras);
           prefs.setInt(kTwoKmDistance, twoKm);
           prefs.setInt(kFourKmDistance, fourKm);
           prefs.setInt(kSixKmDistance, sixKm);
@@ -147,9 +153,11 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
           prefs.setString(kAboutHeading, heading);
           prefs.setString(kAboutBody, body);
           prefs.setInt(kBlenderBaseValue, blender);
+          print("meat price: $saladMeatPrice, extras price: $saladExtrasPrice");
         });
       });
     });
+
     return start;
   }
   String greeting() {
@@ -210,13 +218,11 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       extraInfo.add(doc['info']);
     }
   });
-
   });
   return availableIngredients ;
 }
 
-@override
-  var formatter = NumberFormat('#,###,000');
+var formatter = NumberFormat('#,###,000');
   var vegetables= [''];
   var fruits = [''];
   var boxColours = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
@@ -225,11 +231,10 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   var fruitInfo = [''];
   var extraInfo = [''];
 
-
+  @override
   Widget build(BuildContext context) {
-    var blendedData = Provider.of<BlenditData>(context);
-    Size size = MediaQuery.of(context).size;
 
+    var blendedData = Provider.of<BlenditData>(context);
 
     var fruitProvider = Provider.of<BlenditData>(context).boxColourJuiceListFruit;
     var vegProvider = Provider.of<BlenditData>(context).boxColourJuiceListVeg;
@@ -257,31 +262,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         label: Text('Start Blending'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
-      // appBar: AppBar(
-      //   shadowColor: Colors.transparent,
-      //   automaticallyImplyLeading: false,
-      //   title: Text(''),
-      //   backgroundColor: kBiegeThemeColor,
-      //   leading:Transform.translate(offset: Offset(20*0.7, 0),
-      //     child: IconButton(
-      //       icon: Icon(LineIcons.trophy, color: Colors.grey,),
-      //       onPressed: () {
-      //        // showNotification('notificationTitle', 'notificationBody');
-      //
-      //         Navigator.pushNamed(context, LoyaltyPage.id);
-      //       },
-      //     ),
-      //   ),
-      //   actions: [
-      //     GestureDetector(
-      //       onTap: (){
-      //         Navigator.pushNamed(context, SettingsPage.id);
-      //       },
-      //       child: Container(
-      //           padding:EdgeInsets.all(10),child:
-      //       Icon(LineIcons.user, color: Colors.grey,)),
-      //     )],
-      // ),
+
       body:
       SingleChildScrollView(
         child: Column(
@@ -441,7 +422,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                             child: Lottie.asset('images/juiceBlender.json', width: 50),
 
                           ),
-                          Text('Surprise \n Me',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
+                          const Text('Surprise \n Me',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
 
                         ],
                       ),

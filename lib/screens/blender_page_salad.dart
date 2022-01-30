@@ -113,8 +113,8 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
   Widget build(BuildContext context) {
     var blendedData = Provider.of<BlenditData>(context);
     Size size = MediaQuery.of(context).size;
-    var fruitProvider = Provider.of<BlenditData>(context).boxColourSaladListFruit;
-    var vegProvider = Provider.of<BlenditData>(context).boxColourSaladListVeg;
+    var fruitProvider = Provider.of<BlenditData>(context).boxColourSaladListMeat;
+    var vegProvider = Provider.of<BlenditData>(context).boxColourSaladListLeaves;
     var extraProvider = Provider.of<BlenditData>(context).boxColourSaladListExtra;
     return Scaffold(
       backgroundColor: kBiegeThemeColor ,
@@ -216,7 +216,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
               Stack(children:[
                 GestureDetector(
                     onTap: (){
-                      if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
+                      if(Provider.of<BlenditData>(context, listen: false).saladIngredientsNumber == 0){
                         AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
                       }
                       else {
@@ -246,7 +246,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
 
                         ] ),
                     onTap: (){
-                      if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
+                      if(Provider.of<BlenditData>(context, listen: false).saladIngredientsNumber == 0){
                         AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
                       }
                       else {

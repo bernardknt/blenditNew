@@ -28,11 +28,11 @@ class SaladIngredientList extends StatelessWidget {
 
                 if (type == 'fruit' ){
 
-                  Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorFruits(boxColors[index], index, ingredients[index]);
+                  Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorMeat(boxColors[index], index, ingredients[index]);
                 }
                 else if (type == 'veggie' ){
 
-                  Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorVegetables(boxColors[index], index, ingredients[index]);
+                  Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorLeaves(boxColors[index], index, ingredients[index]);
                 }else{
 
                   Provider.of<BlenditData>(context, listen: false).changeSaladBoxColorExtras(boxColors[index], index, ingredients[index]);
