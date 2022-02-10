@@ -109,7 +109,8 @@ class _OrdersPageState extends State<OrdersPage> {
     AppBar(
       automaticallyImplyLeading: false,
 
-      backgroundColor: Colors.black,
+      backgroundColor: kBlueDarkColor
+      ,
       // foregroundColor: Colors.blue,
 
       brightness: Brightness.light,

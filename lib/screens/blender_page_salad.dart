@@ -85,7 +85,6 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
           vegetables.add(doc['name']);
           vegInfo.add(doc['info']);
 
-
         } else if(doc['category']== 'meat'){
           fruits.add(doc['name']);
           fruitInfo.add(doc['info']);
@@ -94,13 +93,13 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
           extraInfo.add(doc['info']);
         }
       });
+      Provider.of<BlenditData>(context, listen: false).setSaladLeaves(vegetables, fruits, extras);
     });
 
     return availableIngredients ;
   }
 
-@override
-  var formatter = NumberFormat('#,###,000');
+var formatter = NumberFormat('#,###,000');
   var vegetables= [''];
   var fruits = [''];
   var boxColours = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
@@ -110,6 +109,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
   var extraInfo = [''];
 
 
+  @override
   Widget build(BuildContext context) {
     var blendedData = Provider.of<BlenditData>(context);
     Size size = MediaQuery.of(context).size;
@@ -117,14 +117,16 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
     var vegProvider = Provider.of<BlenditData>(context).boxColourSaladListLeaves;
     var extraProvider = Provider.of<BlenditData>(context).boxColourSaladListExtra;
     return Scaffold(
-      backgroundColor: kBiegeThemeColor ,
+      backgroundColor: kBiegeThemeColor,
       floatingActionButton: FloatingActionButton.extended(
 
+        splashColor: Colors.green,
+        // foregroundColor: Colors.black,
         backgroundColor: blendedData.saladButtonColour,
         onPressed: (){
 
           if(Provider.of<BlenditData>(context, listen: false).saladIngredientsNumber == 0){
-            AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
+            AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Salad Bowl', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
 
           }
           else {
@@ -156,49 +158,9 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                   ingredientButtons(
                     buttonTextColor: Colors.white,
                     buttonColor: blendedData.saladIngredientsButtonColour,
-                      firstButtonFunction: (){
-                        showModalBottomSheet(context: context, builder: (context) {
-                          return Container(
-                            color: const Color(0xFF6e7069),
-                            child:
-                            Container(
-                              decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20),),color: kPinkBlenderColor,),
-                              padding: const EdgeInsets.all(30),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const CircleAvatar(
-                                          radius: 12,
-                                          child: Icon(Icons.arrow_back, size: 12, color: Colors.white,)),
-                                      const SizedBox(width: 10,),
-                                      Text('Selected Ingredients ${Provider.of<BlenditData>(context).saladIngredientsNumber}', style: TextStyle(fontWeight: FontWeight.bold),),
-                                      const SizedBox(width: 10,),
-                                      const CircleAvatar(
-                                          radius: 12,
-                                          child: Icon(Icons.arrow_forward, size: 12, color: Colors.white,)),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10,),
-                                  Text('Ingredients 🥬',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
-                                  const SizedBox(height: 10,),
-                                  SaladIngredientList(ingredients: vegetables, boxColors: boxColours, provider: vegProvider, type: 'veggie', info: vegInfo,),
-                                  const SizedBox(height: 10,),
-                                  Text('Meat and Toppings 🥩',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
-                                  const SizedBox(height: 10,),
-                                  SaladIngredientList(ingredients: fruits, boxColors: boxColours, provider: fruitProvider, type: 'fruit', info: fruitInfo,),
-                                  const SizedBox(height: 10,),
-                                  Text('Add-ons 🍇'
-                                    ,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
-                                  const SizedBox(height: 10,),
-                                  SaladIngredientList(ingredients: extras, boxColors: boxColours, provider: extraProvider, type: 'extra', info: extraInfo,),
-                                  const SizedBox(height: 20),
-                                ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.saladPrice)})')],
-                              ),
-                            ),
-                          );
-                        });
+                      firstButtonFunction:
+                          (){
+                        bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
                         if (firstBlend == true){
                          firstBlendDone();
                           AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
@@ -217,7 +179,8 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
                 GestureDetector(
                     onTap: (){
                       if(Provider.of<BlenditData>(context, listen: false).saladIngredientsNumber == 0){
-                        AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
+                        AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Salad Bowl', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
+
                       }
                       else {
                         //Vibration.vibrate(pattern: [200, 500, 200]);
@@ -319,17 +282,84 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
     );
   }
 
+  Future<dynamic> bottomSheetAddIngredients(BuildContext context, List<dynamic> vegProvider, List<dynamic> fruitProvider, List<dynamic> extraProvider, BlenditData blendedData) {
+    return showModalBottomSheet(context: context, builder: (context) {
+                        return Container(
+                          color: const Color(0xFF6e7069),
+                          child:
+                          Container(
+                            decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20),),color: kPinkBlenderColor,),
+                            padding: const EdgeInsets.all(30),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const CircleAvatar(
+                                        radius: 12,
+                                        child: Icon(Icons.arrow_back, size: 12, color: Colors.white,)),
+                                    const SizedBox(width: 10,),
+                                    Text('Selected Ingredients ${Provider.of<BlenditData>(context).saladIngredientsNumber}', style: TextStyle(fontWeight: FontWeight.bold),),
+                                    const SizedBox(width: 10,),
+                                    const CircleAvatar(
+                                        radius: 12,
+                                        child: Icon(Icons.arrow_forward, size: 12, color: Colors.white,)),
+                                  ],
+                                ),
+                                const SizedBox(height: 10,),
+                                Text('Ingredients 🥬',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
+                                const SizedBox(height: 10,),
+                                SaladIngredientList(ingredients: vegetables, boxColors: boxColours, provider: vegProvider, type: 'veggie', info: vegInfo,),
+                                const SizedBox(height: 10,),
+                                Text('Meat and Toppings 🥩',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
+                                const SizedBox(height: 10,),
+                                SaladIngredientList(ingredients: fruits, boxColors: boxColours, provider: fruitProvider, type: 'fruit', info: fruitInfo,),
+                                const SizedBox(height: 10,),
+                                Text('Add-ons 🍇'
+                                  ,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
+                                const SizedBox(height: 10,),
+                                SaladIngredientList(ingredients: extras, boxColors: boxColours, provider: extraProvider, type: 'extra', info: extraInfo,),
+                                const SizedBox(height: 20),
+                              ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.saladPrice)})')],
+                            ),
+                          ),
+                        );
+                      });
+  }
   Future<dynamic> AlertPopUpDialogue(BuildContext context,
       {required String imagePath, required String text, required String title}) {
+    return CoolAlert.show(
+        lottieAsset: imagePath,
+        context: context,
+        type: CoolAlertType.success,
+        text: text,
+        title: title,
+        confirmBtnText: 'Add',
+        confirmBtnColor: Colors.green,
+        backgroundColor: kBlueDarkColor,
+
+    );
+  }
+
+  Future<dynamic> AlertPopUpDialogueMain(BuildContext context,
+      {required String imagePath, required String text, required String title,
+        required vegProvider, required fruitProvider, required extraProvider, required blendedData
+      }) {
     return CoolAlert.show(
               lottieAsset: imagePath,
               context: context,
               type: CoolAlertType.success,
               text: text,
               title: title,
-              confirmBtnText: 'Ok',
+              confirmBtnText: 'Add',
+              cancelBtnText: 'Cancel',
+              showCancelBtn: true,
               confirmBtnColor: Colors.green,
               backgroundColor: kBlueDarkColor,
+      onConfirmBtnTap: (){
+                Navigator.pop(context);
+                bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
+      }
           );
   }
 }

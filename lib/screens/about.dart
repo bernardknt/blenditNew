@@ -94,7 +94,7 @@ class _AboutPageState extends State<AboutPage> {
 
                   paymentButtons(lineIconSecondButton: Icons.blender,lineIconFirstButton: Icons.cancel,continueFunction: (){Navigator.pop(context);}, continueBuyingText: 'Back', checkOutText: 'Go Home', buyFunction: (){
                     Navigator.pop(context);
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                   })
                 ],
               ),

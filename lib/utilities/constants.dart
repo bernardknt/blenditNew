@@ -41,7 +41,8 @@ String kAboutHeading= 'heading';
 String kAboutBody= 'body';
 
 
-String kGoogleMapsApiKey = 'AIzaSyAZO90xPWwT1bqCt9mTwWYh_Q7m7NngJoc';
+// String kGoogleMapsApiKey = 'AIzaSyAZO90xPWwT1bqCt9mTwWYh_Q7m7NngJoc';
+String kGoogleMapsApiKey = 'AIzaSyDaz_SD_fww-7Z-qQ3T70mAVScwHIT8Z9E';
 String kBeyonicServerName = 'beyonicPayment';
 String kEmailServerName = 'sendEmail';
 

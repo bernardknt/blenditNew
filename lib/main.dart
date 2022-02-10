@@ -33,6 +33,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 
 import 'models/blendit_data.dart';
@@ -79,18 +80,20 @@ class MyApp extends StatelessWidget {
       create: (BuildContext context) {
         return BlenditData();
       },
+
       child: MaterialApp(
         theme: ThemeData(
-
           primarySwatch: Colors.green,
         ),
-        //home: WelcomePage(),
+        home: ShowCaseWidget(
+            builder: Builder(builder: (_) => NewBlenderPage()),
+          ),
         debugShowCheckedModeBanner: false,
 
         initialRoute: SplashPage.id,
 
         routes: {
-          '/': (context) => WelcomePage(),
+          // '/': (context) => WelcomePage(),
           HomePage.id: (context) => HomePage(),
           ControlPage.id: (context) => ControlPage(),
           DetoxJuicePage.id: (context)=> DetoxJuicePage(),
@@ -104,7 +107,7 @@ class MyApp extends StatelessWidget {
           WelcomePage.id: (context)=> WelcomePage(),
           RegisterPage.id: (context)=> RegisterPage(),
           BlenderOnboardingPage.id: (context)=>BlenderOnboardingPage(),
-          NewBlenderPage.id: (context)=>NewBlenderPage(),
+          NewBlenderPage.id: (context)=>  NewBlenderPage(),
           InputPage.id: (context)=>InputPage(),
           SuccessPage.id: (context)=>SuccessPage(),
           SplashPage.id: (context)=>SplashPage(),
@@ -121,7 +124,6 @@ class MyApp extends StatelessWidget {
           SaladBlenderPage.id: (context)=>SaladBlenderPage(),
           CustomizedJuicePage.id: (context)=>CustomizedJuicePage(),
           ChooseJuicePage.id: (context)=>ChooseJuicePage(),
-
         },
       ),
     );

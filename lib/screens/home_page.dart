@@ -5,7 +5,7 @@ import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/widgets/itemsDialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,7 +60,8 @@ class _HomePageState extends State<HomePage> {
     var blendedData = Provider.of<BlenditData>(context);
     return
       Scaffold(
-      backgroundColor: Color(0xFF0c1206),
+      backgroundColor: kBlueDarkColor,
+      //Color(0xFF0c1206),
       appBar: AppBar(
 
         backgroundColor: Colors.transparent,

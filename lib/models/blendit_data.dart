@@ -20,6 +20,9 @@ class BlenditData extends ChangeNotifier{
   int basketNumber = 0;
 
   // -----------------JUICE VARIABLES-------------------------
+  List juiceLeaves = []; // "Chicken","Fish","Mushrooms"
+  List juiceExtras = []; //"Eggs","Vinaigrette"
+  List juiceFruits = [];
   String speciality = "Weight Loss";
   String specialityId = "cat2a7d37e0";
   int litres = 1;
@@ -28,8 +31,7 @@ class BlenditData extends ChangeNotifier{
   int baseJuicePrice = 12000;
   int refJuicePrice = 12000;
   int ingredientsNumber = 0;
-  List meats = []; // "Chicken","Fish","Mushrooms"
-  List extras = []; //"Eggs","Vinaigrette"
+  //
   Color ingredientsButtonColour = Colors.green;
   List boxColourJuiceListVeg = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
   List boxColourJuiceListFruit = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
@@ -56,6 +58,9 @@ class BlenditData extends ChangeNotifier{
   int deliveryFee = 0;
   double distance = 0;
   int rewardPoints = 0;
+  List meats = []; // "Chicken","Fish","Mushrooms"
+  List extras = []; //"Eggs","Vinaigrette"
+  List saladLeaves = [];
 
   // -----------------GENERAL  FUNCTIONS------------------------
 
@@ -135,6 +140,13 @@ class BlenditData extends ChangeNotifier{
   }
 
   // -----------------SALAD  FUNCTIONS------------------------
+  void setSaladLeaves(saladLeafArray, saladMeatArray, saladExtrasArray){
+    saladLeaves = saladLeafArray;
+    meats = saladMeatArray;
+    extras = saladExtrasArray;
+    notifyListeners();
+  }
+
   void setSaladDefaultPrice (blenderPrice){
     refSaladPrice = blenderPrice;
     saladPrice = blenderPrice;
@@ -160,6 +172,8 @@ class BlenditData extends ChangeNotifier{
   void decreasePriceSaladExtras (){
     refSaladPrice = refSaladPrice - saladExtrasPrice;
     saladPrice = refSaladPrice  * saladQty;
+    print(saladExtrasPrice);
+    print(refSaladPrice);
     notifyListeners();
   }
   void increasePriceSaladMeats (){
@@ -231,32 +245,32 @@ class BlenditData extends ChangeNotifier{
   void deleteSaladIngredient (ingredient){
     // if(saladIngredientsNumber< 6){
     if(meats.contains(ingredient)){
+      var position = meats.indexOf(ingredient); // Get the position of the ingredient in the meat array
       selectedSaladIngredients.remove(ingredient);
+      boxColourSaladListMeat[position] = Colors.white; // This is
+
+      // print the index value
       numberOfSaladIngredients();
       decreasePriceSaladMeats();
       notifyListeners();
-      print(selectedSaladIngredients);
     }else if(extras.contains(ingredient)){
+      var position = extras.indexOf(ingredient);
+
+      boxColourSaladListExtra[position] = Colors.white;
       selectedSaladIngredients.remove(ingredient);
       numberOfSaladIngredients();
-      decreasePriceSaladExtras();
+      //decreasePriceSaladExtras();
       notifyListeners();
-      print(selectedSaladIngredients);
     }
     else{
+      var position = saladLeaves.indexOf(ingredient);
+      boxColourSaladListLeaves[position] = Colors.white;
+
       selectedSaladIngredients.remove(ingredient);
       numberOfSaladIngredients();
       notifyListeners();
-      print(selectedSaladIngredients);
-    }
 
-    // }else {
-    //   selectedJuiceIngredients.remove(ingredient);
-    //   numberOfSaladIngredients();
-    //   refSaladPrice = refSaladPrice - 1000;
-    //   saladPrice = refSaladPrice  * saladQty;
-    //   notifyListeners();
-    // }
+    }
   }
 
   void numberOfSaladIngredients (){
@@ -294,7 +308,17 @@ class BlenditData extends ChangeNotifier{
 
 
   // -----------------BLENDER and JUICE FUNCTIONS------------------------
+
+
   // Change color of Image Juice and Set Default Prices and Color
+
+  void setJuiceLeaves(juiceLeafArray, juiceFruitArray, juiceExtrasArray){
+    juiceLeaves = juiceLeafArray;
+    juiceFruits = juiceFruitArray;
+    juiceExtras = juiceExtrasArray;
+    notifyListeners();
+  }
+
   void setCustomJuiceSpeciality (id, name){
     speciality = name;
     specialityId = id;
@@ -324,7 +348,7 @@ class BlenditData extends ChangeNotifier{
   }
 
 
-  void setBlenderDefaultPrice (blenderPrice, saladDownloadedPrice, meatPrice, extrasPrice, meat, extra){
+  void setBlenderDefaultPrice (blenderPrice, saladDownloadedPrice, meatPrice, extrasPrice){
     // Setting the price for the Juices in the Blender
     // Setting the price for the Juices in the Blender
     refJuicePrice = blenderPrice;
@@ -338,8 +362,8 @@ class BlenditData extends ChangeNotifier{
     saladMeatPrice = meatPrice;
     saladExtrasPrice = extrasPrice;
     // Setting the price for the Salads in the Bowl
-    meats = meat;
-    extras = extra;
+    // meats = meat;
+    // extras = extra;
 
     notifyListeners();
   }
@@ -397,15 +421,57 @@ class BlenditData extends ChangeNotifier{
 
   void deleteJuiceIngredient (ingredient){
     if(ingredientsNumber< 6){
-      selectedJuiceIngredients.remove(ingredient);
-      numberOfJuiceIngredients();
-      notifyListeners();
+      if(juiceLeaves.contains(ingredient)){
+        var position = juiceLeaves.indexOf(ingredient); // Get the position of the ingredient in the meat array
+        boxColourJuiceListVeg[position] = Colors.white;
+        selectedJuiceIngredients.remove(ingredient);
+        numberOfJuiceIngredients();
+        notifyListeners();
+      }else if (juiceExtras.contains(ingredient)){
+        var position = juiceExtras.indexOf(ingredient); // Get the position of the ingredient in the meat array
+        boxColourJuiceListExtra[position] = Colors.white;
+        selectedJuiceIngredients.remove(ingredient);
+        numberOfJuiceIngredients();
+        notifyListeners();
+      } else{
+        var position = juiceFruits.indexOf(ingredient); // Get the position of the ingredient in the meat array
+        boxColourJuiceListFruit[position] = Colors.white;
+        selectedJuiceIngredients.remove(ingredient);
+        numberOfJuiceIngredients();
+        notifyListeners();
+      }
+
     }else {
-      selectedJuiceIngredients.remove(ingredient);
-      numberOfJuiceIngredients();
-      refJuicePrice = refJuicePrice - 1000;
-      juicePrice = refJuicePrice  * litres;
-      notifyListeners();
+      if(juiceLeaves.contains(ingredient)){
+        var position = juiceLeaves.indexOf(ingredient); // Get the position of the ingredient in the meat array
+        boxColourJuiceListVeg[position] = Colors.white;
+        selectedJuiceIngredients.remove(ingredient);
+        numberOfJuiceIngredients();
+        refJuicePrice = refJuicePrice - 1000;
+        juicePrice = refJuicePrice  * litres;
+        notifyListeners();
+      }else if (juiceExtras.contains(ingredient)){
+        var position = juiceExtras.indexOf(ingredient); // Get the position of the ingredient in the meat array
+        boxColourJuiceListExtra[position] = Colors.white;
+        selectedJuiceIngredients.remove(ingredient);
+        numberOfJuiceIngredients();
+        refJuicePrice = refJuicePrice - 1000;
+        juicePrice = refJuicePrice  * litres;
+        notifyListeners();
+      } else{
+        var position = juiceFruits.indexOf(ingredient); // Get the position of the ingredient in the meat array
+        boxColourJuiceListFruit[position] = Colors.white;
+        selectedJuiceIngredients.remove(ingredient);
+        numberOfJuiceIngredients();
+        refJuicePrice = refJuicePrice - 1000;
+        juicePrice = refJuicePrice  * litres;
+        notifyListeners();
+      }
+      // selectedJuiceIngredients.remove(ingredient);
+      // numberOfJuiceIngredients();
+      // refJuicePrice = refJuicePrice - 1000;
+      // juicePrice = refJuicePrice  * litres;
+      // notifyListeners();
     }
   }
   void numberOfJuiceIngredients (){

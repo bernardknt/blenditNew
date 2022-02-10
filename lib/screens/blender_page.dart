@@ -16,11 +16,14 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../main.dart';
 import 'onboarding_page.dart';
 
+
 class NewBlenderPage extends StatefulWidget {
   static String id  = 'newblender';
+
 
   @override
   _NewBlenderPageState createState() => _NewBlenderPageState();
@@ -44,13 +47,20 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       Navigator.pushNamed(context, BlenderOnboardingPage.id);
     }
   }
+  // void showCaseItems (){
+  //   WidgetsBinding.instance!.addPostFrameCallback((_) =>
+  //       ShowCaseWidget.of(context)!.startShowCase([
+  //         keyOne
+  //       ])
+  //   );
+  // }
 
   void firstBlendDone()async{
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(kIsFirstBlending, false);
     firstBlend = false;
   }
-
+  final keyOne = GlobalKey();
   final prefs =  SharedPreferences.getInstance();
   bool firstBlend = true;
   String firstName = 'Blender';
@@ -58,6 +68,13 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // WidgetsBinding.instance!.addPostFrameCallback((_) =>
+    //     ShowCaseWidget.of(context)!.startShowCase([
+    //       keyOne
+    //     ])
+    // );
+    // showCaseItems();
+
     deliveryStream();
     defaultsInitiation();
     getIngredients();
@@ -142,7 +159,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
         setState(() {
 
-          Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender, saladPrice, saladMeatPrice, saladExtrasPrice, meats, extras);
+          Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender, saladPrice, saladMeatPrice, saladExtrasPrice);
           prefs.setInt(kTwoKmDistance, twoKm);
           prefs.setInt(kFourKmDistance, fourKm);
           prefs.setInt(kSixKmDistance, sixKm);
@@ -153,7 +170,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
           prefs.setString(kAboutHeading, heading);
           prefs.setString(kAboutBody, body);
           prefs.setInt(kBlenderBaseValue, blender);
-          print("meat price: $saladMeatPrice, extras price: $saladExtrasPrice");
+
         });
       });
     });
@@ -219,6 +236,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     }
   });
   });
+    Provider.of<BlenditData>(context, listen: false).setJuiceLeaves(vegetables, fruits, extras);
   return availableIngredients ;
 }
 
@@ -248,7 +266,7 @@ var formatter = NumberFormat('#,###,000');
         onPressed: (){
 
           if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
-            AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
+            AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
           }
           else {
             showModalBottomSheet(
@@ -258,10 +276,11 @@ var formatter = NumberFormat('#,###,000');
                 });
           }
         },
-        icon: Icon(LineIcons.blender),
-        label: Text('Start Blending'),
+        icon: const Icon(LineIcons.blender),
+        label: const Text('Start Blending'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
+
 
       body:
       SingleChildScrollView(
@@ -281,48 +300,7 @@ var formatter = NumberFormat('#,###,000');
                     buttonTextColor: Colors.white,
                     buttonColor: blendedData.ingredientsButtonColour,
                       firstButtonFunction: (){
-                        showModalBottomSheet(context: context, builder: (context) {
-                          return Container(
-                            color: Color(0xFF6e7069),
-                            child:
-                            Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20),),color: kPinkBlenderColor,),
-                              padding: EdgeInsets.all(30),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CircleAvatar(
-                                          radius: 12,
-                                          child: Icon(Icons.arrow_back, size: 12, color: Colors.white,)),
-                                      SizedBox(width: 10,),
-                                      Text('Selected Ingredients ${Provider.of<BlenditData>(context).ingredientsNumber}', style: TextStyle(fontWeight: FontWeight.bold),),
-                                      SizedBox(width: 10,),
-                                      CircleAvatar(
-                                          radius: 12,
-                                          child: Icon(Icons.arrow_forward, size: 12, color: Colors.white,)),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10,),
-                                  Text('Vegetables 🥬',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
-                                  SizedBox(height: 10,),
-                                  IngredientsList(ingredients: vegetables, boxColors: boxColours, provider: vegProvider, type: 'veggie', info: vegInfo,),
-                                  SizedBox(height: 10,),
-                                  Text('Fruits 🍓',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
-                                  SizedBox(height: 10,),
-                                  IngredientsList(ingredients: fruits, boxColors: boxColours, provider: fruitProvider, type: 'fruit', info: fruitInfo,),
-                                  SizedBox(height: 10,),
-                                  Text('Extras 🥑'
-                                    ,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
-                                  SizedBox(height: 10,),
-                                  IngredientsList(ingredients: extras, boxColors: boxColours, provider: extraProvider, type: 'extra', info: extraInfo,),
-                                  SizedBox(height: 20),
-                                ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.juicePrice)})')],
-                              ),
-                            ),
-                          );
-                        });
+                        bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
                         if (firstBlend == true){
                          firstBlendDone();
                           AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
@@ -341,10 +319,11 @@ var formatter = NumberFormat('#,###,000');
                 GestureDetector(
                     onTap: (){
                       if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
-                        AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
+                        AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
                       }
                       else {
                         //Vibration.vibrate(pattern: [200, 500, 200]);
+
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
@@ -439,6 +418,51 @@ var formatter = NumberFormat('#,###,000');
     );
   }
 
+  Future<dynamic> bottomSheetAddIngredients(BuildContext context, List<dynamic> vegProvider, List<dynamic> fruitProvider, List<dynamic> extraProvider, BlenditData blendedData) {
+    return showModalBottomSheet(context: context, builder: (context) {
+                          return Container(
+                            color: const Color(0xFF6e7069),
+                            child:
+                            Container(
+                              decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20),),color: kPinkBlenderColor,),
+                              padding: const EdgeInsets.all(30),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const CircleAvatar(
+                                          radius: 12,
+                                          child: Icon(Icons.arrow_back, size: 12, color: Colors.white,)),
+                                      const SizedBox(width: 10,),
+                                      Text('Selected Ingredients ${Provider.of<BlenditData>(context).ingredientsNumber}', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      const SizedBox(width: 10,),
+                                      const CircleAvatar(
+                                          radius: 12,
+                                          child: Icon(Icons.arrow_forward, size: 12, color: Colors.white,)),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10,),
+                                  Text('Vegetables 🥬',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
+                                  const SizedBox(height: 10,),
+                                  IngredientsList(ingredients: vegetables, boxColors: boxColours, provider: vegProvider, type: 'veggie', info: vegInfo,),
+                                  const SizedBox(height: 10,),
+                                  Text('Fruits 🍓',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
+                                  const SizedBox(height: 10,),
+                                  IngredientsList(ingredients: fruits, boxColors: boxColours, provider: fruitProvider, type: 'fruit', info: fruitInfo,),
+                                  const SizedBox(height: 10,),
+                                  Text('Extras 🥑'
+                                    ,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800]),),
+                                  SizedBox(height: 10,),
+                                  IngredientsList(ingredients: extras, boxColors: boxColours, provider: extraProvider, type: 'extra', info: extraInfo,),
+                                  SizedBox(height: 20),
+                                ingredientButtons(buttonTextColor: Colors.white, buttonColor: Colors.green, buttonTextSize: 12, lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: (){Navigator.pop(context); }, firstButtonText: 'Done (Ugx${formatter.format(blendedData.juicePrice)})')],
+                              ),
+                            ),
+                          );
+                        });
+  }
+
   Future<dynamic> AlertPopUpDialogue(BuildContext context,
       {required String imagePath, required String text, required String title}) {
 
@@ -452,6 +476,28 @@ var formatter = NumberFormat('#,###,000');
               confirmBtnColor: Colors.green,
               backgroundColor: kBlueDarkColor,
           );
+  }
+
+  Future<dynamic> AlertPopUpDialogueMain(BuildContext context,
+      {required String imagePath, required String text, required String title,
+        required vegProvider, required fruitProvider, required extraProvider, required blendedData
+      }) {
+    return CoolAlert.show(
+        lottieAsset: imagePath,
+        context: context,
+        type: CoolAlertType.success,
+        text: text,
+        title: title,
+        confirmBtnText: 'Add',
+        cancelBtnText: 'Cancel',
+        showCancelBtn: true,
+        confirmBtnColor: Colors.green,
+        backgroundColor: kBlueDarkColor,
+        onConfirmBtnTap: (){
+          Navigator.pop(context);
+          bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
+        }
+    );
   }
 }
 

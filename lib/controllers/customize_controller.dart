@@ -1,5 +1,7 @@
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
+import 'package:blendit_2022/screens/loyalty_page.dart';
+import 'package:blendit_2022/screens/settings_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,25 @@ class _CustomizeControllerState extends State<CustomizeController> {
             automaticallyImplyLeading: false,
             toolbarHeight: 30,
             backgroundColor: kBlueDarkColor,
+            // leading:Transform.translate(offset: Offset(20*0.6, 0),
+            //   child: IconButton(
+            //     icon: Icon(LineIcons.trophy, color: Colors.grey,),
+            //     onPressed: () {
+            //       // showNotification('notificationTitle', 'notificationBody');
+            //
+            //       Navigator.pushNamed(context, LoyaltyPage.id);
+            //     },
+            //   ),
+            // ),
+            actions: [
+              GestureDetector(
+                onTap: (){
+                  Navigator.pushNamed(context, SettingsPage.id);
+                },
+                child: Container(
+                    padding:EdgeInsets.all(7),child:
+                Icon(CupertinoIcons.settings, color: Colors.grey,size: 20,)),
+              )],
             // title: Center(child: Text("Stock Page", style: TextStyle(color: kBiegeThemeColor, fontSize: 13, fontWeight: FontWeight.bold),),),
             bottom: TabBar(
               indicator: BoxDecoration(

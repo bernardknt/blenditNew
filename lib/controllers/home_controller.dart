@@ -47,6 +47,7 @@ class _ControlPageState extends State<ControlPage> {
 
     //SplashPage()
     OrdersPage(),
+    // SettingsPage()
 
 ];
   @override
@@ -56,7 +57,7 @@ class _ControlPageState extends State<ControlPage> {
       // appBar: AppBar(
       //   shadowColor: Colors.transparent,
       //   automaticallyImplyLeading: false,
-      //   title: Text(''),
+      //   //title: Text(''),
       //   backgroundColor: kBlueDarkColor,
       //   leading:Transform.translate(offset: Offset(20*0.7, 0),
       //     child: IconButton(
@@ -75,9 +76,13 @@ class _ControlPageState extends State<ControlPage> {
       //       },
       //       child: Container(
       //           padding:EdgeInsets.all(10),child:
-      //       Icon(LineIcons.user, color: Colors.grey,)),
+      //       Icon(CupertinoIcons.settings, color: Colors.grey,)),
       //     )],
       // ),
+
+
+
+
       // floatingActionButton: FloatingActionButton(onPressed: () {
       //   Navigator.pushNamed(context, BlenditPage.id);
       // },
@@ -108,13 +113,15 @@ class _ControlPageState extends State<ControlPage> {
                 icon: Icon(LineIcons.store , size: 18,),label:'Store',
                 backgroundColor: Colors.purple),
             // Item 3
-            // BottomNavigationBarItem(
-            //     icon: Icon(LineIcons.newspaper, size: 18,),label:'Notes',
-            //     backgroundColor: Colors.purple),
-            // // Item 3
             BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.heart_fill),label:'Orders',
-                backgroundColor: Colors.black)],
+                icon: Icon(LineIcons.receipt, size: 18,),label:'Orders',
+                backgroundColor: Colors.purple),
+            // Item 4
+            // BottomNavigationBarItem(
+            //     icon: Icon(CupertinoIcons.settings, size: 18,),label:'Settings',
+            //     backgroundColor: Colors.purple),
+            //
+          ],
           onTap: (index){
             setState(() {
               _currentIndex = index;
