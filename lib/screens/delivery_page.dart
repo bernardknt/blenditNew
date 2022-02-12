@@ -1,8 +1,11 @@
 
+import 'dart:ui';
+
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
+import 'package:blendit_2022/utilities/paymentButtons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -46,12 +50,13 @@ class _DeliveryPageState extends State<DeliveryPage> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Delivery Location', style: TextStyle(color: Colors.white54, fontSize: 15),),
+        title: const Text('Delivery Location', style: TextStyle(color: Colors.white54, fontSize: 15),),
       ),
       body: Map(),
     );
@@ -414,12 +419,79 @@ class _MapState extends State<Map> {
                               Text('Total: UGX ${blendedData.totalPrice + blendedData.deliveryFee}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
                               SizedBox(width: 20,),
                               GestureDetector(
-                                  onTap: (){
+                                  onTap: () async {
+                                    var prefs = await SharedPreferences.getInstance();
+                                    int? loyaltyPoints = prefs.getInt(kLoyaltyPoints);
                                     print("Remove some points");
                                     showModalBottomSheet(
                                         context: context,
                                         builder: (context) {
-                                          return Container(color: Colors.teal,);
+                                          return Container(
+                                            color: Colors.black,
+                                            child:  Padding(padding: EdgeInsets.all(20),
+                                              child: Column(
+                                                children: [
+                                                  Text('APPLY LOYALTY POINTS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14),),
+                                                  SizedBox(height: 10,),
+                                                  Text('${loyaltyPoints!.round().toString()} Points', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  SizedBox(height: 10,),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      TextButton(
+                                                        onPressed: (){
+
+                                                        },
+                                                        child: Text('Points', style: TextStyle(color: Colors.white, fontSize: 15),),),
+                                                      // Icon(LineIcons.moneyBill, color: Colors.white,size: 15,),
+
+                                                      SizedBox(width: 10,),
+                                                      Expanded(
+                                                          child: TextField(
+                                                            onChanged: (value){
+                                                              // amount = value;
+                                                            },
+                                                            // controller: amountController,
+                                                            textAlign: TextAlign.center,
+                                                            decoration: InputDecoration(
+                                                              suffixIcon: Icon(LineIcons.moneyBill, size: 15,color: kBiegeThemeColor,),
+                                                              labelText: 'amount',
+                                                              labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+                                                              hintText: '0.00',
+                                                              hintStyle: TextStyle(color: Colors.white),
+                                                              enabledBorder: UnderlineInputBorder(
+                                                                borderSide: BorderSide(color: kBiegeThemeColor),
+                                                              ),
+                                                              focusedBorder: UnderlineInputBorder(
+                                                                borderSide: BorderSide(color:  kBiegeThemeColor),
+                                                              ),
+                                                              border: UnderlineInputBorder(
+                                                                borderSide: BorderSide(color:  kBiegeThemeColor),
+                                                              ),
+                                                            ),
+
+                                                            selectionWidthStyle: BoxWidthStyle.tight,
+                                                            keyboardType: TextInputType.number,
+                                                            style: TextStyle(color: Colors.white, fontSize: 30),
+
+
+                                                          )
+
+                                                      ),
+                                                    ],
+                                                  ),
+
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(15.0),
+                                                    child: Text('Your total bill will be ${Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee - loyaltyPoints.round()}', style: TextStyle(color: Colors.white),),
+                                                  ),
+                                                  paymentButtons(lineIconFirstButton: LineIcons.backspace, lineIconSecondButton: LineIcons.thumbsUp, continueFunction: (){}, continueBuyingText: "Cancel", checkOutText: "APPLY", buyFunction: (){})
+                                                ],
+                                              ),
+                                              
+                                            ),  
+                                          );
                                         });
                                   },
                                   child: CircleAvatar(child: Icon(LineIcons.addressCard, color: Colors.white)))

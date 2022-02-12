@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
+
 import '../main.dart';
 import 'loyalty_page.dart';
 import 'onboarding_page.dart';
@@ -183,7 +184,7 @@ var formatter = NumberFormat('#,###,000');
 
                       }
                       else {
-                        //Vibration.vibrate(pattern: [200, 500, 200]);
+                        // Vibration.vibrate(pattern: [100, 400, 200]);
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {

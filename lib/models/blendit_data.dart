@@ -27,7 +27,7 @@ class BlenditData extends ChangeNotifier{
   String specialityId = "cat2a7d37e0";
   int litres = 1;
   int saladQty = 1;
-  int juicePrice = 12000;
+  int juicePrice = 10000;
   int baseJuicePrice = 12000;
   int refJuicePrice = 12000;
   int ingredientsNumber = 0;
@@ -148,6 +148,7 @@ class BlenditData extends ChangeNotifier{
   }
 
   void setSaladDefaultPrice (blenderPrice){
+
     refSaladPrice = blenderPrice;
     saladPrice = blenderPrice;
     baseSaladPrice = blenderPrice;
@@ -351,6 +352,7 @@ class BlenditData extends ChangeNotifier{
   void setBlenderDefaultPrice (blenderPrice, saladDownloadedPrice, meatPrice, extrasPrice){
     // Setting the price for the Juices in the Blender
     // Setting the price for the Juices in the Blender
+    if (juicePrice < blenderPrice) {
     refJuicePrice = blenderPrice;
     juicePrice = blenderPrice;
     baseJuicePrice = blenderPrice;
@@ -364,6 +366,9 @@ class BlenditData extends ChangeNotifier{
     // Setting the price for the Salads in the Bowl
     // meats = meat;
     // extras = extra;
+    } else {
+    }
+
 
     notifyListeners();
   }

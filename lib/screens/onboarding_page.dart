@@ -22,6 +22,10 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
   CollectionReference userDetails = FirebaseFirestore.instance.collection('orders');
   final auth = FirebaseAuth.instance;
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  void defaultInitialization()async{
+    final prefs =  await SharedPreferences.getInstance();
+    name = prefs.getString(kFirstNameConstant)!;
+  }
   Future<void> uploadUserData() async {
 
     final prefs =  await SharedPreferences.getInstance();
@@ -36,16 +40,17 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
           'subscribed': true,
           'token': prefs.getString(kToken)
     });
-
   }
+
+  String name = '';
   double fontSize = 28;
   final pageList = [
     PageModel(
       color:
-      Colors.green,
+      Colors.black,
         //(0xff17183c),
-      heroImagePath: 'images/blending.gif',
-      title: Text('Your Pocket Blender',
+      heroImagePath: 'images/pour.gif',
+      title: const Text('100% Your Style',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: Colors.white,
@@ -53,7 +58,8 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
           )),
       body: Container(
         padding: EdgeInsets.all(20),
-        child: Text('Welcome to your Virtue Blender. It works like a real blender but without the hustle',
+        child: Text('Hi👋🏽'
+            '! You can Now Create your Healthy Smoothies, Juice and Salads just the way you like it',
             textAlign: TextAlign.center,
             style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white)),
       ),
@@ -64,19 +70,19 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
     ),
 
     PageModel(
-      color: Colors.black,
-      heroImagePath: 'images/loadingSalad.gif',
+      color: Colors.white,
+      heroImagePath: 'images/cooking.gif',
       title: Text('Select Your Ingredients',
           style: TextStyle(
             fontWeight: FontWeight.w800,
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 28.0,
           )),
       body: Container(
         padding: EdgeInsets.all(20),
-        child: Text('Add Fruits, Vegetables, Spices and everything Healthy and Nice..',
+        child: Text('Simply Add Fruits, Vegetables, Meats and everything Healthy and Nice..😋',
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white)),
+            style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.black)),
       ),
       icon: Icon(
         LineIcons.carrot,
@@ -95,7 +101,7 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
           )),
       body: Container(
         padding: EdgeInsets.all(20),
-        child: Text('The Perfect Blend.. Your Juice is on the way!',
+        child: Text('Your delivery is on its way to you. Done!',
             textAlign: TextAlign.center,
             style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white)),
       ),
@@ -105,6 +111,14 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
       ),
     ),
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    defaultInitialization();
+
+  }
 
   @override
   Widget build(BuildContext context) {

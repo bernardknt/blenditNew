@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:showcaseview/showcaseview.dart';
+// import 'package:vibration/vibration.dart';
 import '../main.dart';
 import 'onboarding_page.dart';
 
@@ -64,6 +65,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   final prefs =  SharedPreferences.getInstance();
   bool firstBlend = true;
   String firstName = 'Blender';
+  
   @override
   void initState() {
     // TODO: implement initState
@@ -322,7 +324,7 @@ var formatter = NumberFormat('#,###,000');
                         AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
                       }
                       else {
-                        //Vibration.vibrate(pattern: [200, 500, 200]);
+                        // Vibration.vibrate(pattern: [200, 500, 200]);
 
                         showModalBottomSheet(
                             context: context,
