@@ -30,16 +30,6 @@ class _CustomizeControllerState extends State<CustomizeController> {
             automaticallyImplyLeading: false,
             toolbarHeight: 30,
             backgroundColor: kBlueDarkColor,
-            // leading:Transform.translate(offset: Offset(20*0.6, 0),
-            //   child: IconButton(
-            //     icon: Icon(LineIcons.trophy, color: Colors.grey,),
-            //     onPressed: () {
-            //       // showNotification('notificationTitle', 'notificationBody');
-            //
-            //       Navigator.pushNamed(context, LoyaltyPage.id);
-            //     },
-            //   ),
-            // ),
             actions: [
               GestureDetector(
                 onTap: (){

@@ -5,6 +5,7 @@ import 'package:blendit_2022/widgets/showTransactionDetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -133,6 +134,11 @@ class _OrdersPageState extends State<OrdersPage> {
       title: Text("Your Orders", style: TextStyle(fontSize: 15),),
       centerTitle: true,
     ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {  },
+      child: Lottie.asset('images/whatsapp.json', ),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     //backgroundColor: Colors.black87,
     body:
     ListView.builder(

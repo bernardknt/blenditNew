@@ -21,15 +21,19 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
   //Create a list of PageModel to be set on the onBoarding Screens.
   CollectionReference userDetails = FirebaseFirestore.instance.collection('orders');
   final auth = FirebaseAuth.instance;
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   void defaultInitialization()async{
+
     final prefs =  await SharedPreferences.getInstance();
+
     name = prefs.getString(kFirstNameConstant)!;
+    _firebaseMessaging.getToken().then((value) => token = value!);
+    // prefs.setString(kToken, value!)
   }
   Future<void> uploadUserData() async {
 
-    final prefs =  await SharedPreferences.getInstance();
-    _firebaseMessaging.getToken().then((value) => prefs.setString(kToken, value!));
+    final prefs = await SharedPreferences.getInstance();
+
     final users = await FirebaseFirestore.instance
         .collection('users').doc(auth.currentUser!.uid)
         .update(
@@ -38,10 +42,12 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
           'lastName': prefs.getString(kFullNameConstant),
           'phoneNumber': prefs.getString(kPhoneNumberConstant),
           'subscribed': true,
-          'token': prefs.getString(kToken)
+          'token': token
     });
-  }
+    prefs.setString(kToken, token);
 
+  }
+  var token = "old token";
   String name = '';
   double fontSize = 28;
   final pageList = [
@@ -57,57 +63,57 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
             fontSize: 28.0,
           )),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Text('Hi👋🏽'
             '! You can Now Create your Healthy Smoothies, Juice and Salads just the way you like it',
             textAlign: TextAlign.center,
             style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white)),
       ),
-      icon: Icon(
+      icon: const Icon(
         LineIcons.blender,
-        color: const Color(0xFF17183c),
+        color: Color(0xFF17183c),
       ),
     ),
 
     PageModel(
       color: Colors.white,
       heroImagePath: 'images/cooking.gif',
-      title: Text('Select Your Ingredients',
+      title: const Text('Select Your Ingredients',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: Colors.black,
             fontSize: 28.0,
           )),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Text('Simply Add Fruits, Vegetables, Meats and everything Healthy and Nice..😋',
             textAlign: TextAlign.center,
             style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.black)),
       ),
-      icon: Icon(
+      icon: const Icon(
         LineIcons.carrot,
-        color: const Color(0xFFAF27A2),
+        color: Color(0xFFAF27A2),
       ),
     ),
     // SVG Pages Example
     PageModel(
       color: Colors.deepOrange,
       heroImagePath: 'images/relax.gif',
-      title: Text('Hit Blend and Relax',
+      title: const Text('Hit Blend and Relax',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: Colors.white,
             fontSize: 28.0,
           )),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Text('Your delivery is on its way to you. Done!',
             textAlign: TextAlign.center,
             style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white)),
       ),
-      icon: Icon(
+      icon: const Icon(
         LineIcons.motorcycle,
-        color: const Color(0xFFFF557C),
+        color: Color(0xFFFF557C),
       ),
     ),
   ];

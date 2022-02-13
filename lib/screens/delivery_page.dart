@@ -390,9 +390,9 @@ class _MapState extends State<Map> {
                   child: Stack(
                     children: [
 
-                    Container( padding: EdgeInsets.all(10),
+                    Container( padding: const EdgeInsets.all(10),
                       width: double.infinity,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: kBlueDarkColor ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.all(const Radius.circular(20)),color: kBlueDarkColor ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -418,87 +418,87 @@ class _MapState extends State<Map> {
                             children: [
                               Text('Total: UGX ${blendedData.totalPrice + blendedData.deliveryFee}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
                               SizedBox(width: 20,),
-                              GestureDetector(
-                                  onTap: () async {
-                                    var prefs = await SharedPreferences.getInstance();
-                                    int? loyaltyPoints = prefs.getInt(kLoyaltyPoints);
-                                    print("Remove some points");
-                                    showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Container(
-                                            color: Colors.black,
-                                            child:  Padding(padding: EdgeInsets.all(20),
-                                              child: Column(
-                                                children: [
-                                                  Text('APPLY LOYALTY POINTS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14),),
-                                                  SizedBox(height: 10,),
-                                                  Text('${loyaltyPoints!.round().toString()} Points', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                                                  ),
-                                                  SizedBox(height: 10,),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      TextButton(
-                                                        onPressed: (){
-
-                                                        },
-                                                        child: Text('Points', style: TextStyle(color: Colors.white, fontSize: 15),),),
-                                                      // Icon(LineIcons.moneyBill, color: Colors.white,size: 15,),
-
-                                                      SizedBox(width: 10,),
-                                                      Expanded(
-                                                          child: TextField(
-                                                            onChanged: (value){
-                                                              // amount = value;
-                                                            },
-                                                            // controller: amountController,
-                                                            textAlign: TextAlign.center,
-                                                            decoration: InputDecoration(
-                                                              suffixIcon: Icon(LineIcons.moneyBill, size: 15,color: kBiegeThemeColor,),
-                                                              labelText: 'amount',
-                                                              labelStyle: TextStyle(fontSize: 15, color: Colors.white),
-                                                              hintText: '0.00',
-                                                              hintStyle: TextStyle(color: Colors.white),
-                                                              enabledBorder: UnderlineInputBorder(
-                                                                borderSide: BorderSide(color: kBiegeThemeColor),
-                                                              ),
-                                                              focusedBorder: UnderlineInputBorder(
-                                                                borderSide: BorderSide(color:  kBiegeThemeColor),
-                                                              ),
-                                                              border: UnderlineInputBorder(
-                                                                borderSide: BorderSide(color:  kBiegeThemeColor),
-                                                              ),
-                                                            ),
-
-                                                            selectionWidthStyle: BoxWidthStyle.tight,
-                                                            keyboardType: TextInputType.number,
-                                                            style: TextStyle(color: Colors.white, fontSize: 30),
-
-
-                                                          )
-
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(15.0),
-                                                    child: Text('Your total bill will be ${Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee - loyaltyPoints.round()}', style: TextStyle(color: Colors.white),),
-                                                  ),
-                                                  paymentButtons(lineIconFirstButton: LineIcons.backspace, lineIconSecondButton: LineIcons.thumbsUp, continueFunction: (){}, continueBuyingText: "Cancel", checkOutText: "APPLY", buyFunction: (){})
-                                                ],
-                                              ),
-                                              
-                                            ),  
-                                          );
-                                        });
-                                  },
-                                  child: CircleAvatar(child: Icon(LineIcons.addressCard, color: Colors.white)))
+                              // GestureDetector(
+                              //     onTap: () async {
+                              //       var prefs = await SharedPreferences.getInstance();
+                              //       int? loyaltyPoints = prefs.getInt(kLoyaltyPoints);
+                              //       print("Remove some points");
+                              //       showModalBottomSheet(
+                              //           context: context,
+                              //           builder: (context) {
+                              //             return Container(
+                              //               color: Colors.black,
+                              //               child:  Padding(padding: EdgeInsets.all(20),
+                              //                 child: Column(
+                              //                   children: [
+                              //                     Text('APPLY LOYALTY POINTS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14),),
+                              //                     SizedBox(height: 10,),
+                              //                     Text('${loyaltyPoints!.round().toString()} Points', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                              //                     ),
+                              //                     SizedBox(height: 10,),
+                              //                     Row(
+                              //                       mainAxisAlignment: MainAxisAlignment.center,
+                              //                       children: [
+                              //                         TextButton(
+                              //                           onPressed: (){
+                              //
+                              //                           },
+                              //                           child: Text('Points', style: TextStyle(color: Colors.white, fontSize: 15),),),
+                              //                         // Icon(LineIcons.moneyBill, color: Colors.white,size: 15,),
+                              //
+                              //                         SizedBox(width: 10,),
+                              //                         Expanded(
+                              //                             child: TextField(
+                              //                               onChanged: (value){
+                              //                                 // amount = value;
+                              //                               },
+                              //                               // controller: amountController,
+                              //                               textAlign: TextAlign.center,
+                              //                               decoration: InputDecoration(
+                              //                                 suffixIcon: Icon(LineIcons.moneyBill, size: 15,color: kBiegeThemeColor,),
+                              //                                 labelText: 'amount',
+                              //                                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+                              //                                 hintText: '0.00',
+                              //                                 hintStyle: TextStyle(color: Colors.white),
+                              //                                 enabledBorder: UnderlineInputBorder(
+                              //                                   borderSide: BorderSide(color: kBiegeThemeColor),
+                              //                                 ),
+                              //                                 focusedBorder: UnderlineInputBorder(
+                              //                                   borderSide: BorderSide(color:  kBiegeThemeColor),
+                              //                                 ),
+                              //                                 border: UnderlineInputBorder(
+                              //                                   borderSide: BorderSide(color:  kBiegeThemeColor),
+                              //                                 ),
+                              //                               ),
+                              //
+                              //                               selectionWidthStyle: BoxWidthStyle.tight,
+                              //                               keyboardType: TextInputType.number,
+                              //                               style: TextStyle(color: Colors.white, fontSize: 30),
+                              //
+                              //
+                              //                             )
+                              //
+                              //                         ),
+                              //                       ],
+                              //                     ),
+                              //
+                              //                     Padding(
+                              //                       padding: const EdgeInsets.all(15.0),
+                              //                       child: Text('Your total bill will be ${Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee - loyaltyPoints.round()}', style: TextStyle(color: Colors.white),),
+                              //                     ),
+                              //                     paymentButtons(lineIconFirstButton: LineIcons.backspace, lineIconSecondButton: LineIcons.thumbsUp, continueFunction: (){}, continueBuyingText: "Cancel", checkOutText: "APPLY", buyFunction: (){})
+                              //                   ],
+                              //                 ),
+                              //
+                              //               ),
+                              //             );
+                              //           });
+                              //     },
+                              //     child: CircleAvatar(child: Icon(LineIcons.addressCard, color: Colors.white)))
 
                             ],
                           ),
-                          Text('_________________',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
+                          const Text('_________________',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
                           SizedBox(height: 7,),
 
                           Row(

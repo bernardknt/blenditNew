@@ -158,25 +158,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               final newUser = await _auth.createUserWithEmailAndPassword(email: email,
                                   password: password);
                               if (newUser != null){
-                                // dynamic resp = await callableSMS.call(<String, dynamic>{
-                                //   'name': firstName,
-                                //   'number': phoneNumber,
-                                // });
-
-
-                                // INITIATE SENDING OF EMAIL WELCOMING THE CUSTOMER
-                                // dynamic resp = await callable.call(<String, dynamic>{
-                                //   'name': firstName,
-                                //   'number': phoneNumber,
-                                // });
-                                // dynamic emailResp = await callableEmail.call(<String, dynamic>{
-                                //   'name': firstName,
-                                //   'emailAddress':email,
-                                //   'templateID':kEmailWelcomeID,
-                                //   'subject': 'Welcome to Oneministry',
-                                //
-                                // });
-
 
 
                                 final prefs = await SharedPreferences.getInstance();

@@ -173,8 +173,7 @@ class BlenditData extends ChangeNotifier{
   void decreasePriceSaladExtras (){
     refSaladPrice = refSaladPrice - saladExtrasPrice;
     saladPrice = refSaladPrice  * saladQty;
-    print(saladExtrasPrice);
-    print(refSaladPrice);
+
     notifyListeners();
   }
   void increasePriceSaladMeats (){
@@ -327,7 +326,7 @@ class BlenditData extends ChangeNotifier{
   }
 
   void changeImage(){
-    if (selectedJuiceIngredients.length == 0){
+    if (selectedJuiceIngredients.isEmpty){
       blenderImage = 'images/blenditclear.png';
       notifyListeners();
     }else{
@@ -352,7 +351,7 @@ class BlenditData extends ChangeNotifier{
   void setBlenderDefaultPrice (blenderPrice, saladDownloadedPrice, meatPrice, extrasPrice){
     // Setting the price for the Juices in the Blender
     // Setting the price for the Juices in the Blender
-    if (juicePrice < blenderPrice) {
+    if (selectedJuiceIngredients.isEmpty && selectedSaladIngredients.isEmpty) {
     refJuicePrice = blenderPrice;
     juicePrice = blenderPrice;
     baseJuicePrice = blenderPrice;

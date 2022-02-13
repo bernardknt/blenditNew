@@ -101,7 +101,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       }
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new OnMessage event was published');
+
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification!= null && android != null){
@@ -156,8 +156,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         var saladPrice = doc['saladPrice'];
         var saladExtrasPrice = doc['saladExtrasPrice'];
         var saladMeatPrice = doc['saladMeatPrice'];
-        var meats = doc['meats'];
-        var extras = doc['extra'];
+
 
         setState(() {
 
@@ -297,7 +296,7 @@ var formatter = NumberFormat('#,###,000');
                   Text('${greeting()} $firstName ${greetingEmoji()},\n${blenderMessage()}', textAlign:TextAlign.center , style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.grey.shade600, fontSize: 18
                   ),),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   ingredientButtons(
                     buttonTextColor: Colors.white,
                     buttonColor: blendedData.ingredientsButtonColour,
@@ -307,7 +306,6 @@ var formatter = NumberFormat('#,###,000');
                          firstBlendDone();
                           AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
                           AlertPopUpDialogue(context, imagePath: 'images/swipe.json', text: 'To view all ingredients Swipe left and Right on each Category', title: 'Tip 1: Swipe to View');
-
                         }
                       }, firstButtonText: 'Add Ingredients',
                   ),
@@ -315,7 +313,7 @@ var formatter = NumberFormat('#,###,000');
               ),
             ),
             Container(
-              padding: EdgeInsets.only(left: 20, right: 10),
+              padding: const EdgeInsets.only(left: 20, right: 10),
               child:
               Stack(children:[
                 GestureDetector(
@@ -421,6 +419,7 @@ var formatter = NumberFormat('#,###,000');
   }
 
   Future<dynamic> bottomSheetAddIngredients(BuildContext context, List<dynamic> vegProvider, List<dynamic> fruitProvider, List<dynamic> extraProvider, BlenditData blendedData) {
+
     return showModalBottomSheet(context: context, builder: (context) {
                           return Container(
                             color: const Color(0xFF6e7069),
@@ -463,6 +462,7 @@ var formatter = NumberFormat('#,###,000');
                             ),
                           );
                         });
+
   }
 
   Future<dynamic> AlertPopUpDialogue(BuildContext context,

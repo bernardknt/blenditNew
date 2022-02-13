@@ -10,7 +10,7 @@ const kOffertoryColor = Color(0xFFAF27A2);
 const kPinkBlenderColor = Color(0xFFe8d3d3);
 const kSeedColor = Color(0xFFFF89A8);
 const kProjectColor = Color(0xFFFF557C);
-const kBlueDarkColor = Color(0xFF17183c);
+const kBlueDarkColor = Color(0xff17183c);
 
 String kFruitButtonCategory = 'fruit';
 String kVegetablesButtonCategory = 'veggie';

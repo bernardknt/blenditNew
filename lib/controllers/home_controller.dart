@@ -18,8 +18,6 @@ import 'package:line_icons/line_icons.dart';
 class ControlPage extends StatefulWidget {
   ControlPage();
   static String id = 'home_control_page';
-  //int selectedPage;
-
 
 
   @override
@@ -36,16 +34,6 @@ class _ControlPageState extends State<ControlPage> {
   final tabs = [
     CustomizeController(),
     HomePage(),
-    // //InputPage(),
-
-    // Container(color: Colors.blue,),
-    // Container(color: Colors.red,),
-    // BlogPage(),
-    // InputPage(),
-    // Container(color: Colors.pink,),
-
-
-    //SplashPage()
     OrdersPage(),
     // SettingsPage()
 
