@@ -26,6 +26,7 @@ String kPhoneNumberConstant = 'phone';
 String kAmountConstant = 'amount';
 String kIsLoggedInConstant = 'loggedIn';
 String kIsFirstTimeUser = 'firstTimer';
+String kIsTutorialDone = 'tutorial';
 String kIsFirstBlending = 'firstBlend';
 String kToken = 'phoneToken';
 String kTwoKmDistance = 'twoKilometers';

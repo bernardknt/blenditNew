@@ -28,6 +28,7 @@ import 'package:blendit_2022/screens/splash_page.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/screens/tropical_page.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -85,9 +86,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.green,
         ),
-        home: ShowCaseWidget(
-            builder: Builder(builder: (_) => NewBlenderPage()),
-          ),
+        // home: FeatureDiscovery(
+        //   recordStepsInSharedPreferences: false,
+        //    child: SplashPage() ,
+        //   ),
         debugShowCheckedModeBanner: false,
 
         initialRoute: SplashPage.id,
@@ -95,7 +97,9 @@ class MyApp extends StatelessWidget {
         routes: {
           // '/': (context) => WelcomePage(),
           HomePage.id: (context) => HomePage(),
-          ControlPage.id: (context) => ControlPage(),
+          ControlPage.id: (context) => FeatureDiscovery(
+            recordStepsInSharedPreferences: false,
+            child: ControlPage()),
           DetoxJuicePage.id: (context)=> DetoxJuicePage(),
           DetoxPlansPage.id: (context)=> DetoxPlansPage(),
           SaladsPage.id: (context)=> SaladsPage(),

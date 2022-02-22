@@ -8,7 +8,9 @@ import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:blendit_2022/widgets/SelectedIngredientsListView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:line_icons/line_icons.dart';
@@ -41,9 +43,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       firstName = newName;
       Provider.of<BlenditData>(context, listen: false).setCustomerName(newFullName);
       firstBlend = isFirstTimeBlending;
-
     });
-
     if (isFirstTime == true){
       Navigator.pushNamed(context, BlenderOnboardingPage.id);
     }
@@ -64,12 +64,31 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   final keyOne = GlobalKey();
   final prefs =  SharedPreferences.getInstance();
   bool firstBlend = true;
+  bool tutorialDone = true;
   String firstName = 'Blender';
+  String initialId = 'feature';
+
+  void tutorialShow ()async{
+    final prefs = await SharedPreferences.getInstance();
+    tutorialDone = prefs.getBool(kIsTutorialDone) ?? false;
+    if (tutorialDone == false){
+      initialId = 'feature1';
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        FeatureDiscovery.discoverFeatures(context,
+            <String>['feature1','feature2', 'feature3', 'feature4']);
+      });
+    }else{
+      print("Tutorial $tutorialDone}");
+    }
+    prefs.setBool(kIsTutorialDone, true);
+  }
   
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+
     // WidgetsBinding.instance!.addPostFrameCallback((_) =>
     //     ShowCaseWidget.of(context)!.startShowCase([
     //       keyOne
@@ -79,6 +98,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
     deliveryStream();
     defaultsInitiation();
+    tutorialShow();
     getIngredients();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -264,24 +284,38 @@ var formatter = NumberFormat('#,###,000');
     return Scaffold(
 
       backgroundColor: kBiegeThemeColor ,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: DescribedFeatureOverlay(
+        openDuration: Duration(seconds: 1),
+        overflowMode: OverflowMode.extendBackground,
+        enablePulsingAnimation: true,
+        barrierDismissible: false,
+        pulseDuration: Duration(seconds: 1),
+        title: Text('Start Blending'),
+        description: Text('When your Ready. Tap the Start Blending Button to save your selection. Ready to be blended'),
+        contentLocation: ContentLocation.above,
+        backgroundColor: Colors.teal,
+        targetColor: Colors.yellow,
+        featureId: 'feature3',
+        tapTarget: const Icon(LineIcons.blender),
+        child: FloatingActionButton.extended(
 
-        backgroundColor: blendedData.blendButtonColourJuice,
-        onPressed: (){
+          backgroundColor: blendedData.blendButtonColourJuice,
+          onPressed: (){
 
-          if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
-            AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
-          }
-          else {
-            showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return SelectedJuiceIngredientsListView();
-                });
-          }
-        },
-        icon: const Icon(LineIcons.blender),
-        label: const Text('Start Blending'),
+            if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
+              AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
+            }
+            else {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return SelectedJuiceIngredientsListView();
+                  });
+            }
+          },
+          icon: const Icon(LineIcons.blender),
+          label: const Text('Start Blending'),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
 
@@ -292,7 +326,7 @@ var formatter = NumberFormat('#,###,000');
           children: [
             Container(
 
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -300,17 +334,32 @@ var formatter = NumberFormat('#,###,000');
                       fontWeight: FontWeight.bold, color: Colors.grey.shade600, fontSize: 18
                   ),),
                   const SizedBox(height: 10,),
-                  ingredientButtons(
-                    buttonTextColor: Colors.white,
-                    buttonColor: blendedData.ingredientsButtonColour,
-                      firstButtonFunction: (){
-                        bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
-                        if (firstBlend == true){
-                         firstBlendDone();
-                          AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
-                          AlertPopUpDialogue(context, imagePath: 'images/swipe.json', text: 'To view all ingredients Swipe left and Right on each Category', title: 'Tip 1: Swipe to View');
-                        }
-                      }, firstButtonText: 'Add Ingredients',
+                  DescribedFeatureOverlay(
+                    openDuration: Duration(seconds: 1),
+                    overflowMode: OverflowMode.extendBackground,
+                    enablePulsingAnimation: true,
+                    barrierDismissible: false,
+                    pulseDuration: Duration(seconds: 1),
+                    title: Text('Add ingredients'),
+                    description: Text('Tap the Add Ingredients Button and Select the ingredients you want to add to your Blender'),
+                    contentLocation: ContentLocation.above,
+                    backgroundColor: Colors.black,
+                    targetColor: Colors.green,
+                    featureId: 'feature2',
+                    tapTarget: const Icon(CupertinoIcons.add),
+                    child: ingredientButtons(
+                      lineIconFirstButton: LineIcons.plus,
+                      buttonTextColor: Colors.white,
+                      buttonColor: blendedData.ingredientsButtonColour,
+                        firstButtonFunction: (){
+                          bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
+                          if (firstBlend == true){
+                           firstBlendDone();
+                            AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
+                            AlertPopUpDialogue(context, imagePath: 'images/swipe.json', text: 'To view all ingredients Swipe left and Right on each Category', title: 'Tip 1: Swipe to View');
+                          }
+                        }, firstButtonText: 'Add Ingredients',
+                    ),
                   ),
                 ],
               ),
@@ -319,22 +368,36 @@ var formatter = NumberFormat('#,###,000');
               padding: const EdgeInsets.only(left: 20, right: 10),
               child:
               Stack(children:[
-                GestureDetector(
-                    onTap: (){
-                      if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
-                        AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
-                      }
-                      else {
-                        // Vibration.vibrate(pattern: [200, 500, 200]);
+                DescribedFeatureOverlay(
+                  openDuration: Duration(seconds: 1),
+                  overflowMode: OverflowMode.extendBackground,
+                  enablePulsingAnimation: true,
+                  barrierDismissible: false,
+                  pulseDuration: Duration(seconds: 1),
+                  title: Text('Quick Tour'),
+                  description: Text('Let us show you how Blendit Banage $firstName'),
+                  contentLocation: ContentLocation.above,
+                  backgroundColor: kBlueDarkColor,
+                  targetColor: kBiegeThemeColor,
+                  featureId: initialId,
+                  tapTarget: Icon(CupertinoIcons.hand_thumbsup),
+                  child: GestureDetector(
+                      onTap: (){
+                        if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
+                          AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
+                        }
+                        else {
+                          // Vibration.vibrate(pattern: [200, 500, 200]);
 
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return SelectedJuiceIngredientsListView();
-                            });
-                      }
-                    },
-                    child: Image.asset(blendedData.blenderImage)),
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SelectedJuiceIngredientsListView();
+                              });
+                        }
+                      },
+                      child: Image.asset(blendedData.blenderImage)),
+                ),
                 Positioned(
                   right: 30,
                   top: 15,
@@ -397,12 +460,26 @@ var formatter = NumberFormat('#,###,000');
                           Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
                           SizedBox(height: 50,),
-                          GestureDetector
-                            (onTap: (){
-                            Navigator.pushNamed(context, CustomizedJuicePage.id);
-                          },
-                            child: Lottie.asset('images/juiceBlender.json', width: 50),
+                          DescribedFeatureOverlay(
+                            openDuration: Duration(seconds: 1),
+                            overflowMode: OverflowMode.extendBackground,
+                            enablePulsingAnimation: true,
+                            barrierDismissible: false,
+                            pulseDuration: Duration(seconds: 1),
+                            title: Text('Surprise Me'),
+                            description: Text('And Finally $firstName, If you want something specialized. Check these Categories and get a Healthy Blend.\n'),
+                            contentLocation: ContentLocation.trivial,
+                            backgroundColor: kBlueDarkColor,
+                            targetColor: kBiegeThemeColor,
+                            featureId: 'feature4',
+                            tapTarget: Lottie.asset('images/juiceBlender.json', width: 50),
+                            child: GestureDetector
+                              (onTap: (){
+                              Navigator.pushNamed(context, CustomizedJuicePage.id);
+                            },
+                              child: Lottie.asset('images/juiceBlender.json', width: 50),
 
+                            ),
                           ),
                           const Text('Surprise \n Me',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
 

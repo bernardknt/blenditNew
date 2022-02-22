@@ -4,6 +4,7 @@ import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/widgets/itemsDialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 
 import 'package:line_icons/line_icons.dart';
@@ -56,6 +57,10 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     defaultsInitiation();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+       FeatureDiscovery.discoverFeatures(context,
+          <String>['feature1']);
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -120,7 +125,8 @@ class _HomePageState extends State<HomePage> {
                   child:
                   GestureDetector(
                     onTap: (){},
-                    child: Container(
+                    child:
+                    Container(
                       height: 35,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
