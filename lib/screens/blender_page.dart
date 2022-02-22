@@ -150,12 +150,14 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         var longKm = doc['longKm'];
         var rewardRatio = doc['rewardRatio'];
         var support = doc['support'];
+        var whatsNumber = doc['whatsapp'];
         var blender = doc['blender'];
         var heading  = doc['heading'];
         var body = doc['body'];
         var saladPrice = doc['saladPrice'];
         var saladExtrasPrice = doc['saladExtrasPrice'];
         var saladMeatPrice = doc['saladMeatPrice'];
+
 
 
         setState(() {
@@ -170,6 +172,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
           prefs.setString(kSupportNumber, support);
           prefs.setString(kAboutHeading, heading);
           prefs.setString(kAboutBody, body);
+          prefs.setString(kWhatsappNumber, whatsNumber);
           prefs.setInt(kBlenderBaseValue, blender);
 
         });

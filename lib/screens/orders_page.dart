@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'checkout_page.dart';
 
 
 
@@ -123,19 +126,33 @@ class _OrdersPageState extends State<OrdersPage> {
             right: 2,
             child: CircleAvatar(radius: 10,
                 child: Text(
-                  '${blendedData.basketNumber}', style: TextStyle(fontSize: 10),)),
+                  '${blendedData.basketNumber}', style: const TextStyle(fontSize: 10),)),
           ) ,
           IconButton
-            (onPressed: (){},
-            icon: Icon(LineIcons.shoppingBasket),),
+            (onPressed: (){
+            if (blendedData.basketNumber == 0) {
+
+            }else {
+              Navigator.pushNamed(context, CheckoutPage.id);
+            }
+          },
+            icon: const Icon(LineIcons.shoppingBasket),),
         ]
         )
       ],
-      title: Text("Your Orders", style: TextStyle(fontSize: 15),),
+      title: const Text("Your Orders", style: TextStyle(fontSize: 15),),
       centerTitle: true,
     ),
     floatingActionButton: FloatingActionButton(
-      onPressed: () {  },
+      onPressed: () async {
+
+        var prefs = await SharedPreferences.getInstance();
+
+
+        launch('${prefs.getString(kWhatsappNumber)}');
+
+
+      },
       child: Lottie.asset('images/whatsapp.json', ),
     ),
     floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -154,15 +171,15 @@ class _OrdersPageState extends State<OrdersPage> {
               children: [
 
                 ListTile(
-                  leading: Icon(LineIcons.shippingFast, color: kGreenThemeColor,size: 25,),
+                  leading: const Icon(LineIcons.shippingFast, color: kGreenThemeColor,size: 25,),
                   title:Text( "${productList[index][0]['description']}...", style: TextStyle(fontFamily: fontFamilyMont,fontSize: textSize)),
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 10, top: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(priceList[index], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
-                        Text('Ugx', style: TextStyle(color: kGreenThemeColor, fontSize: 12),)
+                        Text(priceList[index], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
+                        const Text('Ugx', style: TextStyle(color: kGreenThemeColor, fontSize: 12),)
                       ],
                     ),
                   ),
@@ -184,7 +201,7 @@ class _OrdersPageState extends State<OrdersPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('${ DateFormat('EE, dd, MMM').format(dateList[index])}', style: TextStyle(color: Colors.grey[500], fontSize: 12),),
-                        Text('Order Status:  ${orderStatusList[index]}', style: TextStyle(color: Colors.green, fontSize: 13),),
+                        Text('Order Status:  ${orderStatusList[index]}', style: const TextStyle(color: Colors.green, fontSize: 13),),
                         Text("Payment: ${paidStatusList[index]}", style: TextStyle( color: paidStatusListColor[index], fontSize: 12),),
                       ],
                     ),
@@ -204,10 +221,10 @@ class _OrdersPageState extends State<OrdersPage> {
                           child: Container(
                             width: 100,
                             height: 20,
-                            child: Center(child: Text('Paid', style: TextStyle(color: Colors.white, fontSize: 12),)),
-                            decoration: BoxDecoration(
+                            child: const Center(child: Text('Paid', style: const TextStyle(color: Colors.white, fontSize: 12),)),
+                            decoration: const BoxDecoration(
                                 color: Colors.green,
-                                borderRadius: BorderRadius.all(Radius.circular(20))
+                                borderRadius: const BorderRadius.all(Radius.circular(20))
                             ),
                           ),
                         ))

@@ -21,6 +21,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 class HomePage extends StatefulWidget {
   static String id = 'home_page';
 
+
+
   @override
 
   _HomePageState createState() => _HomePageState();
@@ -80,7 +82,11 @@ class _HomePageState extends State<HomePage> {
             ) ,
             IconButton
               (onPressed: (){
-              Navigator.pushNamed(context, CheckoutPage.id);
+                if (blendedData.basketNumber == 0) {
+
+                }else {
+                  Navigator.pushNamed(context, CheckoutPage.id);
+                }
             },
                 icon: Icon(LineIcons.shoppingBasket),),
           ]
