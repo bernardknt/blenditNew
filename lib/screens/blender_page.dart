@@ -15,6 +15,7 @@ import'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
+import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -40,6 +41,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     setState(() {
       firstName = newName;
       Provider.of<BlenditData>(context, listen: false).setCustomerName(newFullName);
+      updateMe =  Provider.of<BlenditData>(context, listen: false).updateApp;
       firstBlend = isFirstTimeBlending;
     });
     if (isFirstTime == true){
@@ -55,6 +57,26 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
   // }
 
+
+  advancedStatusCheck(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+
+    if (status?.localVersion != status?.storeVersion && updateMe == true) {
+      newVersion.showUpdateDialog(
+        dismissAction: (){
+          Navigator.pop(context);
+          Provider.of<BlenditData>(context, listen: false).setAppUpdateStatus();
+        },
+
+        updateButtonText: 'Update Now',
+        context: context,
+        versionStatus: status!,
+        dialogTitle: 'App Update 🎉',
+        dialogText: 'We are excited to announce that Some awesome new features have been released. Upgrade from version ${status.localVersion} to ${status.storeVersion} to get the best experience',
+
+      );
+    }
+  }
   void firstBlendDone()async{
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(kIsFirstBlending, false);
@@ -66,6 +88,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   bool tutorialDone = true;
   String firstName = 'Blender';
   String initialId = 'feature';
+  bool updateMe = true;
+  String updateInfo = "There is a new update..";
 
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
@@ -86,15 +110,6 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-
-    // WidgetsBinding.instance!.addPostFrameCallback((_) =>
-    //     ShowCaseWidget.of(context)!.startShowCase([
-    //       keyOne
-    //     ])
-    // );
-    // showCaseItems();
-
     deliveryStream();
     defaultsInitiation();
     tutorialShow();
@@ -139,6 +154,12 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         });
       }
     });
+    final newVersion = NewVersion(
+      iOSId: 'com.frutsexpress.blendit2022',
+      androidId: 'com.frutsexpress.blendit_2022',
+    );
+    advancedStatusCheck(newVersion);
+
   }
 
   void showNotification(String notificationTitle, String notificationBody){
@@ -177,10 +198,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         var saladExtrasPrice = doc['saladExtrasPrice'];
         var saladMeatPrice = doc['saladMeatPrice'];
 
-
-
         setState(() {
-
           Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender, saladPrice, saladMeatPrice, saladExtrasPrice);
           prefs.setInt(kTwoKmDistance, twoKm);
           prefs.setInt(kFourKmDistance, fourKm);
@@ -193,6 +211,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
           prefs.setString(kAboutBody, body);
           prefs.setString(kWhatsappNumber, whatsNumber);
           prefs.setInt(kBlenderBaseValue, blender);
+
 
         });
       });

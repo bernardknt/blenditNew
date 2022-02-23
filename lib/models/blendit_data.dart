@@ -18,6 +18,7 @@ class BlenditData extends ChangeNotifier{
   String customerName = '';
   int totalPrice = 0;
   int basketNumber = 0;
+  bool updateApp = true;
 
   // -----------------JUICE VARIABLES-------------------------
   List juiceLeaves = []; // "Chicken","Fish","Mushrooms"
@@ -66,6 +67,10 @@ class BlenditData extends ChangeNotifier{
 
   void setRewardPoints (newRewardPoints){
     rewardPoints = newRewardPoints;
+    notifyListeners();
+  }
+  void setAppUpdateStatus(){
+    updateApp = false;
     notifyListeners();
   }
 

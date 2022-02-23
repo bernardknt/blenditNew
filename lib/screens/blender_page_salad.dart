@@ -17,10 +17,6 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-
-
-import '../main.dart';
-import 'loyalty_page.dart';
 import 'onboarding_page.dart';
 
 class SaladBlenderPage extends StatefulWidget {
