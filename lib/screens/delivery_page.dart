@@ -5,7 +5,6 @@ import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
-import 'package:blendit_2022/utilities/paymentButtons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -219,6 +217,7 @@ class _MapState extends State<Map> {
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
+
     phoneNumber = prefs.getString(kPhoneNumberConstant) ?? '0700123123';
     initialController = TextEditingController()..text = phoneNumber;
     //

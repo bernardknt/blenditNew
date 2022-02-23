@@ -1,6 +1,7 @@
 
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +23,28 @@ class _LoginPageState extends State<LoginPage> {
   late String email ;
   late String password;
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  var token = "phoneToken";
   bool showSpinner = false;
+
+  Future<void> uploadUserData() async {
+
+
+    final users = await FirebaseFirestore.instance
+        .collection('users').doc(auth.currentUser!.uid)
+        .update(
+        {
+          'token': token
+        });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _firebaseMessaging.getToken().then((value) => token = value!);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,6 +180,8 @@ class _LoginPageState extends State<LoginPage> {
                             prefs.setString(kEmailConstant, email);
                             prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
                             prefs.setBool(kIsLoggedInConstant, true);
+                            prefs.setString(kToken, token);
+                            uploadUserData(); // This ensures that the phone currently logged in is the one that gets the phone notifications
 
                             Navigator.pushNamed(context, ControlPage.id);
                             //showSpinner = false;

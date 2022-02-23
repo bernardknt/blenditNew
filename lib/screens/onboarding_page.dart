@@ -9,6 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../controllers/home_controller.dart';
+
 
 class BlenderOnboardingPage extends StatefulWidget {
   static String id = 'onboarding_page';
@@ -139,13 +141,13 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
           final prefs = await SharedPreferences.getInstance();
           prefs.setBool(kIsFirstTimeUser, false);
           uploadUserData();
-          Navigator.pop(context);
+          Navigator.pushNamed(context, ControlPage.id);
         },
         onSkipButtonPressed: ()async {
           final prefs = await SharedPreferences.getInstance();
           prefs.setBool(kIsFirstTimeUser, false);
           uploadUserData();
-          Navigator.pop(context);
+          Navigator.pushNamed(context, ControlPage.id);
         },
       ),
     );

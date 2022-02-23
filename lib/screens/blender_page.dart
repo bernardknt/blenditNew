@@ -18,8 +18,6 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'package:showcaseview/showcaseview.dart';
-// import 'package:vibration/vibration.dart';
 import '../main.dart';
 import 'onboarding_page.dart';
 
@@ -54,6 +52,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   //         keyOne
   //       ])
   //   );
+
   // }
 
   void firstBlendDone()async{
@@ -75,7 +74,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       initialId = 'feature1';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         FeatureDiscovery.discoverFeatures(context,
-            <String>['feature1','feature2', 'feature3', 'feature4']);
+            <String>['feature1','feature2', 'feature3', 'feature4', 'feature5']);
       });
     }else{
       print("Tutorial $tutorialDone}");
@@ -290,12 +289,12 @@ var formatter = NumberFormat('#,###,000');
         enablePulsingAnimation: true,
         barrierDismissible: false,
         pulseDuration: Duration(seconds: 1),
-        title: Text('Start Blending'),
-        description: Text('When your Ready. Tap the Start Blending Button to save your selection. Ready to be blended'),
+        title: Text('Step 3: Start Blending'),
+        description: Text('When you are SATISTIFIED with your recipe. Tap the Start Blending Button to save your selection, ready to be made'),
         contentLocation: ContentLocation.above,
         backgroundColor: Colors.teal,
         targetColor: Colors.yellow,
-        featureId: 'feature3',
+        featureId: 'feature4',
         tapTarget: const Icon(LineIcons.blender),
         child: FloatingActionButton.extended(
 
@@ -340,13 +339,14 @@ var formatter = NumberFormat('#,###,000');
                     enablePulsingAnimation: true,
                     barrierDismissible: false,
                     pulseDuration: Duration(seconds: 1),
-                    title: Text('Add ingredients'),
+                    title: Text('Step 1: Add Ingredients'),
                     description: Text('Tap the Add Ingredients Button and Select the ingredients you want to add to your Blender'),
                     contentLocation: ContentLocation.above,
                     backgroundColor: Colors.black,
                     targetColor: Colors.green,
                     featureId: 'feature2',
                     tapTarget: const Icon(CupertinoIcons.add),
+
                     child: ingredientButtons(
                       lineIconFirstButton: LineIcons.plus,
                       buttonTextColor: Colors.white,
@@ -375,7 +375,7 @@ var formatter = NumberFormat('#,###,000');
                   barrierDismissible: false,
                   pulseDuration: Duration(seconds: 1),
                   title: Text('Quick Tour'),
-                  description: Text('Let us show you how Blendit Banage $firstName'),
+                  description: Text('Welcome $firstName 🥳. Your new Health Journey starts here. Let us show you how Blendit Works '),
                   contentLocation: ContentLocation.above,
                   backgroundColor: kBlueDarkColor,
                   targetColor: kBiegeThemeColor,
@@ -396,7 +396,20 @@ var formatter = NumberFormat('#,###,000');
                               });
                         }
                       },
-                      child: Image.asset(blendedData.blenderImage)),
+                      child:DescribedFeatureOverlay(
+                          openDuration: Duration(seconds: 1),
+                          overflowMode: OverflowMode.extendBackground,
+                          enablePulsingAnimation: true,
+                          barrierDismissible: false,
+                          pulseDuration: Duration(seconds: 1),
+                          title: Text('Step 2: See Health Benefits '),
+                          description: Text('Long Press on any ingredient to see its Health Benefits as you add it to your blender'),
+                          contentLocation: ContentLocation.above,
+                          backgroundColor: Colors.pink,
+                          targetColor: Colors.black,
+                          featureId: 'feature3',
+                          tapTarget: const Icon(LineIcons.fruitApple, color: Colors.white,),
+                          child: Image.asset(blendedData.blenderImage))),
                 ),
                 Positioned(
                   right: 30,
@@ -459,19 +472,19 @@ var formatter = NumberFormat('#,###,000');
                         children: [
                           Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
-                          SizedBox(height: 50,),
+                          const SizedBox(height: 50,),
                           DescribedFeatureOverlay(
-                            openDuration: Duration(seconds: 1),
+                            openDuration: const Duration(seconds: 1),
                             overflowMode: OverflowMode.extendBackground,
                             enablePulsingAnimation: true,
                             barrierDismissible: false,
-                            pulseDuration: Duration(seconds: 1),
-                            title: Text('Surprise Me'),
-                            description: Text('And Finally $firstName, If you want something specialized. Check these Categories and get a Healthy Blend.\n'),
+                            pulseDuration: const Duration(seconds: 1),
+                            title: const Text('And Finally'),
+                            description: Text('$firstName If you want something specialized. Click the SURPRISE ME button to see our Categories of unique juices for different things.\n'),
                             contentLocation: ContentLocation.trivial,
                             backgroundColor: kBlueDarkColor,
                             targetColor: kBiegeThemeColor,
-                            featureId: 'feature4',
+                            featureId: 'feature5',
                             tapTarget: Lottie.asset('images/juiceBlender.json', width: 50),
                             child: GestureDetector
                               (onTap: (){

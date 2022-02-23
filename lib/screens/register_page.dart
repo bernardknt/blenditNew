@@ -1,9 +1,8 @@
-import 'package:blendit_2022/controllers/home_controller.dart';
+
+import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/widgets/InputFieldWidget.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -170,7 +169,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 prefs.setBool(kIsTutorialDone, false);
                                 prefs.setBool(kIsFirstBlending, true);
 
-                                Navigator.pushNamed(context, ControlPage.id);
+                                //Navigator.pushNamed(context, ControlPage.id);
+                                Navigator.pushNamed(context, BlenderOnboardingPage.id);
 
 
                                 // SAVE THE VALUES TO THE USER DEFAULTS AND DATABASE
