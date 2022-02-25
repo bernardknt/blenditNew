@@ -52,7 +52,7 @@ class _OrdersPageState extends State<OrdersPage> {
     final transactions = await FirebaseFirestore.instance
         .collection('orders')
         // .where('payment_status', isEqualTo: true)
-        .where('sender_id', isEqualTo: otherEmail)
+        .where('sender_id', isEqualTo: otherEmail).orderBy('deliveryTime', descending: false)
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {

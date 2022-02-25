@@ -10,7 +10,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'about.dart';
+import 'about_us.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -153,7 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: (){
                         // showAboutDialog(context: context,
                         //     applicationVersion: '1.0.0');
-                        Navigator.pushNamed(context, AboutPage.id);
+                        Navigator.pushNamed(context, AboutUsPage.id);
                       },
                       child: ListTile(
                         leading: Icon(Icons.family_restroom_sharp, color: kGreenThemeColor,),

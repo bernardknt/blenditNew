@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -41,6 +43,12 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if(Platform.isIOS){
+      print("");
+
+
+    } else
+
     _firebaseMessaging.getToken().then((value) => token = value!);
   }
 

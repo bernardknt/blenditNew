@@ -1,6 +1,6 @@
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/home_controller.dart';
-import 'package:blendit_2022/screens/about.dart';
+import 'package:blendit_2022/screens/about_us.dart';
 import 'package:blendit_2022/screens/allProducts_page.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
@@ -34,7 +34,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
+
 
 
 import 'models/blendit_data.dart';
@@ -47,6 +47,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
     importance: Importance.high,
     playSound: true
 );
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -54,6 +55,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
 }
+
 Future <void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
@@ -122,7 +124,7 @@ class MyApp extends StatelessWidget {
           MobileMoneyPage.id: (context)=>MobileMoneyPage(),
           LoyaltyPage.id: (context)=>LoyaltyPage(),
           PaymentMode.id: (context)=>PaymentMode(),
-          AboutPage.id: (context)=>AboutPage(),
+          AboutUsPage.id: (context)=>AboutUsPage(),
           ReadComments.id: (context)=>ReadComments(comments: [],),
           CustomizeController.id: (context)=>CustomizeController(),
           SaladBlenderPage.id: (context)=>SaladBlenderPage(),

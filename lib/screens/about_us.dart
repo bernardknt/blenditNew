@@ -8,17 +8,17 @@ import 'package:line_icons/line_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AboutPage extends StatefulWidget {
+class AboutUsPage extends StatefulWidget {
   static String id = 'about_page';
 
   @override
-  _AboutPageState createState() => _AboutPageState();
+  _AboutUsPageState createState() => _AboutUsPageState();
 }
 
-class _AboutPageState extends State<AboutPage> {
+class _AboutUsPageState extends State<AboutUsPage> {
   String churchName = 'Blendit';
 
-  String churchUrl = 'images/avocado.png';
+  String imageUrl = 'images/avocado.png';
   String heading = '';
   String body = '';
   String phoneNumber = '';
@@ -64,7 +64,7 @@ class _AboutPageState extends State<AboutPage> {
                   height: 25,
                   width: double.infinity,
                   decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(25)),
-                  child: Text('Passion. Creativity. Innovation', textAlign: TextAlign.center,
+                  child: const Text('100 ingredients in Your Pocket', textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold,
                         fontSize: 10,color: Colors.white),)),
               centerTitle: true ,
@@ -75,7 +75,7 @@ class _AboutPageState extends State<AboutPage> {
           SliverChildListDelegate([
 
             Container(
-              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 15),
               child: Column(
                 children: [
                   SizedBox(height: 10,),

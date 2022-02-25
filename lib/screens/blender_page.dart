@@ -61,7 +61,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   advancedStatusCheck(NewVersion newVersion) async {
     final status = await newVersion.getVersionStatus();
 
-    if (status?.localVersion != status?.storeVersion && updateMe == true) {
+    if (status?.canUpdate == true && updateMe == true) {
+
       newVersion.showUpdateDialog(
         dismissAction: (){
           Navigator.pop(context);
@@ -174,7 +175,13 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
               playSound: true,
               icon: '@mipmap/ic_launcher',
             ),
-            iOS: IOSNotificationDetails()
+            iOS: IOSNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+              subtitle: channel.description
+
+            )
         ));
   }
 
@@ -242,7 +249,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   String blenderMessage() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
-      return 'Add Ingredients and Blender';
+      return 'Add Ingredients to your Blender';
       // return 'Want to blend something Nutritious?';
     }
     if (hour < 17) {
