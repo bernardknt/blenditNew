@@ -69,6 +69,7 @@ dependencies:
   showcaseview: ^1.1.4
   geolocator: ^7.0.3
   new_version: ^0.3.0
+  overlay_support: ^1.2.1
 
 
 dev_dependencies:

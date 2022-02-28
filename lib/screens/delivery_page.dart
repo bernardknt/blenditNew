@@ -7,6 +7,7 @@ import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,6 +22,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 var uuid = Uuid();
 double boxOpacity = 0;
@@ -76,6 +79,28 @@ class _MapState extends State<Map> {
   String location = '';
   String instructions = '';
 
+  void showNotification(String notificationTitle, String notificationBody){
+    flutterLocalNotificationsPlugin.show(0, notificationTitle, notificationBody,
+        NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              // channel.description,
+              importance: Importance.high,
+              color: Colors.green,
+              playSound: true,
+              icon: '@mipmap/ic_launcher',
+            ),
+            iOS: IOSNotificationDetails(
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
+                subtitle: channel.description
+
+            )
+        ));
+
+  }
 
   void showDialogue(imageString, body, heading, backgroundColor){
       CoolAlert.show(
@@ -101,16 +126,17 @@ class _MapState extends State<Map> {
         String body;
         String heading;
         Color backgroundColor;
-        if (status == 'submitted'){
-          imageString = 'images/success.json';
-          body ="Your Order has been Received!";
-          heading ="Order Submitted!";
-          backgroundColor = kBlueDarkColor;
-          print('ORDER SUBMITTED');
-          showDialogue(imageString, body, heading, backgroundColor);
-          
-
-        }else if (status == 'preparing'){
+        // if (status == 'submitted'){
+        //   imageString = 'images/success.json';
+        //   body ="Your Order has been Received!";
+        //   heading ="Order Submitted!";
+        //   backgroundColor = kBlueDarkColor;
+        //   print('ORDER SUBMITTED');
+        //   showDialogue(imageString, body, heading, backgroundColor);
+        //
+        //
+        // }else
+        if (status == 'preparing'){
           imageString = 'images/cook.json';
           body ="Your is being Prepared!";
           heading ="Preparing Your Order";
@@ -210,6 +236,8 @@ class _MapState extends State<Map> {
         .then((value) {
           Navigator.pushNamed(context, SuccessPage.id);
           updatePoints();
+          showNotification('Order Received', '${prefs.getString(kFirstNameConstant)} have received your order! We shall have it ready for Delivery');
+
         } )
         .catchError((error) => print("Failed to add user: $error"));
   }
@@ -307,18 +335,15 @@ class _MapState extends State<Map> {
               lottieAsset: 'images/deliver.json',
               context: context,
               type: CoolAlertType.success,
-              widget: Container(
+              widget: TextField(
+                onChanged: (description){
+                  instructions = description;
+                  setState(() {
 
-                child: TextField(
-                  onChanged: (description){
-                    instructions = description;
-                    setState(() {
-
-                    });
+                  });
 
 
-                  },
-                ),
+                },
               ),
               text: 'Give us extra instructions to make sure your package reaches you',
               title: 'Extra Instructions',
@@ -358,6 +383,7 @@ class _MapState extends State<Map> {
     defaultInitialization();
   }
 
+  @override
   Widget build(BuildContext context) {
     var blendedData = Provider.of<BlenditData>(context);
 
@@ -365,7 +391,7 @@ class _MapState extends State<Map> {
     var formatter = NumberFormat('#,###,000');
     return Stack(
       children: [
-        GoogleMap(initialCameraPosition: CameraPosition(target: _initialPosition,zoom: 10),
+        GoogleMap(initialCameraPosition: const CameraPosition(target: _initialPosition,zoom: 10),
           onMapCreated: onCreated,
           myLocationEnabled: true,
           mapType: MapType.normal,

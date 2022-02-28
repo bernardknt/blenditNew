@@ -33,6 +33,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 
@@ -84,53 +85,52 @@ class MyApp extends StatelessWidget {
         return BlenditData();
       },
 
-      child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.green,
+      child: OverlaySupport(
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.green,
+          ),
+
+          debugShowCheckedModeBanner: false,
+
+          initialRoute: SplashPage.id,
+
+          routes: {
+            // '/': (context) => WelcomePage(),
+            HomePage.id: (context) => HomePage(),
+            ControlPage.id: (context) => FeatureDiscovery(
+              recordStepsInSharedPreferences: false,
+              child: ControlPage()),
+            DetoxJuicePage.id: (context)=> DetoxJuicePage(),
+            DetoxPlansPage.id: (context)=> DetoxPlansPage(),
+            SaladsPage.id: (context)=> SaladsPage(),
+            TropicalPage.id: (context)=> TropicalPage(),
+            OrdersPage.id: (context)=> OrdersPage(),
+            CheckoutPage.id: (context)=> CheckoutPage(),
+            LoadingIngredientsPage.id: (context)=> LoadingIngredientsPage(),
+            DeliveryPage.id: (context)=> DeliveryPage(),
+            WelcomePage.id: (context)=> WelcomePage(),
+            RegisterPage.id: (context)=> RegisterPage(),
+            BlenderOnboardingPage.id: (context)=>BlenderOnboardingPage(),
+            NewBlenderPage.id: (context)=>  NewBlenderPage(),
+            InputPage.id: (context)=>InputPage(),
+            SuccessPage.id: (context)=>SuccessPage(),
+            SplashPage.id: (context)=>SplashPage(),
+            AllProductsPage.id: (context)=>AllProductsPage(),
+            BlogPage.id: (context)=>BlogPage(),
+            SettingsPage.id: (context)=>SettingsPage(),
+            LoginPage.id: (context)=>LoginPage(),
+            MobileMoneyPage.id: (context)=>MobileMoneyPage(),
+            LoyaltyPage.id: (context)=>LoyaltyPage(),
+            PaymentMode.id: (context)=>PaymentMode(),
+            AboutUsPage.id: (context)=>AboutUsPage(),
+            ReadComments.id: (context)=>ReadComments(comments: [],),
+            CustomizeController.id: (context)=>CustomizeController(),
+            SaladBlenderPage.id: (context)=>SaladBlenderPage(),
+            CustomizedJuicePage.id: (context)=>CustomizedJuicePage(),
+            ChooseJuicePage.id: (context)=>ChooseJuicePage(),
+          },
         ),
-        // home: FeatureDiscovery(
-        //   recordStepsInSharedPreferences: false,
-        //    child: SplashPage() ,
-        //   ),
-        debugShowCheckedModeBanner: false,
-
-        initialRoute: SplashPage.id,
-
-        routes: {
-          // '/': (context) => WelcomePage(),
-          HomePage.id: (context) => HomePage(),
-          ControlPage.id: (context) => FeatureDiscovery(
-            recordStepsInSharedPreferences: false,
-            child: ControlPage()),
-          DetoxJuicePage.id: (context)=> DetoxJuicePage(),
-          DetoxPlansPage.id: (context)=> DetoxPlansPage(),
-          SaladsPage.id: (context)=> SaladsPage(),
-          TropicalPage.id: (context)=> TropicalPage(),
-          OrdersPage.id: (context)=> OrdersPage(),
-          CheckoutPage.id: (context)=> CheckoutPage(),
-          LoadingIngredientsPage.id: (context)=> LoadingIngredientsPage(),
-          DeliveryPage.id: (context)=> DeliveryPage(),
-          WelcomePage.id: (context)=> WelcomePage(),
-          RegisterPage.id: (context)=> RegisterPage(),
-          BlenderOnboardingPage.id: (context)=>BlenderOnboardingPage(),
-          NewBlenderPage.id: (context)=>  NewBlenderPage(),
-          InputPage.id: (context)=>InputPage(),
-          SuccessPage.id: (context)=>SuccessPage(),
-          SplashPage.id: (context)=>SplashPage(),
-          AllProductsPage.id: (context)=>AllProductsPage(),
-          BlogPage.id: (context)=>BlogPage(),
-          SettingsPage.id: (context)=>SettingsPage(),
-          LoginPage.id: (context)=>LoginPage(),
-          MobileMoneyPage.id: (context)=>MobileMoneyPage(),
-          LoyaltyPage.id: (context)=>LoyaltyPage(),
-          PaymentMode.id: (context)=>PaymentMode(),
-          AboutUsPage.id: (context)=>AboutUsPage(),
-          ReadComments.id: (context)=>ReadComments(comments: [],),
-          CustomizeController.id: (context)=>CustomizeController(),
-          SaladBlenderPage.id: (context)=>SaladBlenderPage(),
-          CustomizedJuicePage.id: (context)=>CustomizedJuicePage(),
-          ChooseJuicePage.id: (context)=>ChooseJuicePage(),
-        },
       ),
     );
   }

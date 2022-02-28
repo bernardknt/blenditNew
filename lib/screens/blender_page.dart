@@ -31,7 +31,9 @@ class NewBlenderPage extends StatefulWidget {
   _NewBlenderPageState createState() => _NewBlenderPageState();
 }
 class _NewBlenderPageState extends State<NewBlenderPage> {
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  // FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  // DEFAULT INITIALIZATIONS
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
     String newName = prefs.getString(kFirstNameConstant) ?? 'Hi';
@@ -48,16 +50,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       Navigator.pushNamed(context, BlenderOnboardingPage.id);
     }
   }
-  // void showCaseItems (){
-  //   WidgetsBinding.instance!.addPostFrameCallback((_) =>
-  //       ShowCaseWidget.of(context)!.startShowCase([
-  //         keyOne
-  //       ])
-  //   );
 
-  // }
-
-
+// THIS IS USED TO CHECK THE CURRENT APP VERSION AND ENCOURAGE THE USER TO UPDATE
   advancedStatusCheck(NewVersion newVersion) async {
     final status = await newVersion.getVersionStatus();
 
@@ -83,15 +77,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     prefs.setBool(kIsFirstBlending, false);
     firstBlend = false;
   }
-  final keyOne = GlobalKey();
-  final prefs =  SharedPreferences.getInstance();
-  bool firstBlend = true;
-  bool tutorialDone = true;
-  String firstName = 'Blender';
-  String initialId = 'feature';
-  bool updateMe = true;
-  String updateInfo = "There is a new update..";
-
+// THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
     tutorialDone = prefs.getBool(kIsTutorialDone) ?? false;
@@ -106,62 +92,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     }
     prefs.setBool(kIsTutorialDone, true);
   }
-  
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    deliveryStream();
-    defaultsInitiation();
-    tutorialShow();
-    getIngredients();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null){
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode, notification.title, notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                // channel.description,
-                color:Colors.purple
-                ,
-                playSound: true,
-                icon: '@mipmap/ic_launcher',
-              ),
-            )
-        );
-      }
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification!= null && android != null){
-        showDialog(context: context, builder: (_){
-          return AlertDialog(
-            title: Text(notification.title!),
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start ,
-                children: [
-                  Text(notification.body!)
-                ],
-              ) ,
-            ),
-          );
-        });
-      }
-    });
-    final newVersion = NewVersion(
-      iOSId: 'com.frutsexpress.blendit2022',
-      androidId: 'com.frutsexpress.blendit_2022',
-    );
-    advancedStatusCheck(newVersion);
-
-  }
+  // SHOW FLUTTER NOTIFICATIONS
 
   void showNotification(String notificationTitle, String notificationBody){
     flutterLocalNotificationsPlugin.show(0, notificationTitle, notificationBody,
@@ -183,8 +114,9 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
             )
         ));
-  }
 
+  }
+  // GET APP DATA FROM THE SERVER
   Future deliveryStream()async{
     var prefs = await SharedPreferences.getInstance();
 
@@ -226,6 +158,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
     return start;
   }
+ // BEGINNING OF BLENDER GREETING FUNCTIONS
   String greeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
@@ -257,6 +190,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     }
     return 'Blend something Nutritious?';
   }
+  // END OF BLENDER GREETING FUNCTIONS
+  // GET BLENDER INGREDIENTS
   Future<dynamic> getIngredients() async {
     vegetables = [];
     fruits = [];
@@ -289,7 +224,14 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   return availableIngredients ;
 }
 
-var formatter = NumberFormat('#,###,000');
+// VARIABLE DECLARATIONS
+  bool firstBlend = true;
+  bool tutorialDone = true;
+  String firstName = 'Blender';
+  String initialId = 'feature';
+  bool updateMe = true;
+  String updateInfo = "There is a new update..";
+  var formatter = NumberFormat('#,###,000');
   var vegetables= [''];
   var fruits = [''];
   var boxColours = [Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white, Colors.white];
@@ -297,6 +239,81 @@ var formatter = NumberFormat('#,###,000');
   var vegInfo = [''];
   var fruitInfo = [''];
   var extraInfo = [''];
+
+   // BEGINNING OF INIT OVERRIDE
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    deliveryStream();
+    defaultsInitiation();
+    tutorialShow();
+    getIngredients();
+    FirebaseMessaging.instance.requestPermission(
+        sound: true,
+        badge: true,
+        alert: true,
+        provisional: true
+    );
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      AppleNotification? apple = message.notification?.apple;
+      if (notification != null && android != null){
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode, notification.title, notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                // channel.description,
+                color:Colors.purple
+                ,
+                playSound: true,
+                icon: '@mipmap/ic_launcher',
+              ),
+            )
+        );
+      }else if(notification != null && apple != null){
+        NotificationDetails(
+          iOS: IOSNotificationDetails(
+            presentSound: true,
+            presentBadge: true,
+            presentAlert: true,
+            subtitle: "Work of Lord",
+          )
+        );
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification!= null && android != null){
+        showDialog(context: context, builder: (_){
+          return AlertDialog(
+            title: Text(notification.title!),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start ,
+                children: [
+                  Text(notification.body!)
+                ],
+              ) ,
+            ),
+          );
+        });
+      }
+    });
+    //FirebaseMessaging.onBackgroundMessage((message) => null)
+    final newVersion = NewVersion(
+      iOSId: 'com.frutsexpress.blendit2022',
+      androidId: 'com.frutsexpress.blendit_2022',
+    );
+    advancedStatusCheck(newVersion);
+  }
+
+  // END OF INIT OVERRIDE
 
   @override
   Widget build(BuildContext context) {
@@ -310,13 +327,13 @@ var formatter = NumberFormat('#,###,000');
 
       backgroundColor: kBiegeThemeColor ,
       floatingActionButton: DescribedFeatureOverlay(
-        openDuration: Duration(seconds: 1),
+        openDuration: const Duration(seconds: 1),
         overflowMode: OverflowMode.extendBackground,
         enablePulsingAnimation: true,
         barrierDismissible: false,
-        pulseDuration: Duration(seconds: 1),
-        title: Text('Step 3: Start Blending'),
-        description: Text('When you are SATISTIFIED with your recipe. Tap the Start Blending Button to save your selection, ready to be made'),
+        pulseDuration: const Duration(seconds: 1),
+        title: const Text('Step 3: Start Blending'),
+        description: const Text('When you are SATISFIED with your recipe. Tap the Start Blending Button to save your selection, ready to be made'),
         contentLocation: ContentLocation.above,
         backgroundColor: Colors.teal,
         targetColor: Colors.yellow,
@@ -334,7 +351,9 @@ var formatter = NumberFormat('#,###,000');
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
+
                     return SelectedJuiceIngredientsListView();
+
                   });
             }
           },

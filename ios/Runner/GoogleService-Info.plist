@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>CFBundleExecutable</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
 	<key>CLIENT_ID</key>
 	<string>1036391886488-9651q6vnjdvi0anf3o7pf5vutfr9151b.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
@@ -19,15 +27,15 @@
 	<key>STORAGE_BUCKET</key>
 	<string>blend-it-8a622.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:1036391886488:ios:d126c0ec317728c6f46aed</string>
 </dict>
