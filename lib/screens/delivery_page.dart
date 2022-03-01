@@ -80,7 +80,7 @@ class _MapState extends State<Map> {
   String location = '';
   String instructions = '';
   final _dialog = RatingDialog(
-    initialRating: 1.0,
+    initialRating: 3.0,
     // your app's name?
     title: const Text(
       'Rate Your Order',
@@ -103,7 +103,7 @@ class _MapState extends State<Map> {
     onCancelled: () => print('cancelled'),
     onSubmitted: (response) async{
       var prefs = await SharedPreferences.getInstance();
-      final ratings = await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('orders').doc(prefs.getString(kOrderId))
           .update({
         'rating': response.rating,
@@ -111,18 +111,7 @@ class _MapState extends State<Map> {
         'hasRated': true
       }
       );
-      print('rating: ${response.rating}, comment: ${response.comment}');
-
-      // TODO: add your own logic
-
-      if (response.rating < 3.0) {
-        print('Thats a bad rating');
-        // send their comments to your email or anywhere you wish
-        // ask the user to contact you instead of leaving a bad review
-      } else {
-        print('AWESOME');
-        // _rateAndReviewApp();
-      }
+      return 0;
     },
   );
 
