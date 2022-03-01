@@ -26,6 +26,7 @@ class _BlogPageState extends State<BlogPage> {
   var date= [];
   var blogId = [];
   var comments = [];
+  var link = [];
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
 
@@ -38,6 +39,7 @@ class _BlogPageState extends State<BlogPage> {
     date= [];
     blogId = [];
     comments = [];
+    link = [];
     //postLikers = [];
 
     final blenditBlogs = await FirebaseFirestore.instance
@@ -55,10 +57,9 @@ class _BlogPageState extends State<BlogPage> {
         blogId.add(doc['id']);
         comments.add(doc['comments']);
         postLikers.add(doc['likers']);
+        link.add(doc['url']);
       });
-      setState(() {
-        //print(comments);
-      });
+
     });
     return blenditBlogs ;
   }
@@ -97,6 +98,7 @@ class _BlogPageState extends State<BlogPage> {
                     date= [];
                     blogId = [];
                     comments = [];
+                    link = [];
                     var blogs = snapshot.data!.docs;
                     for (var blog in blogs) {
                       sender.add(blog.get('sender'));
@@ -108,6 +110,7 @@ class _BlogPageState extends State<BlogPage> {
                       likes.add(blog.get('likes'));
                       postLikers.add(blog.get('likers'));
                       date.add(blog.get('time').toDate());
+                      link.add(blog.get('url'));
                       print('Some data');
                     }
                   }
@@ -115,8 +118,11 @@ class _BlogPageState extends State<BlogPage> {
                       shrinkWrap: true,
                       itemCount: sender.length,
                       itemBuilder: (context, index){
-                        return blogPostWidget(blogPosts: blogPosts[index],cardColor: backgroundColors[_random.nextInt(backgroundColors.length)]
-                            ,
+                        return
+                          // Text(link[index]);
+
+                          blogPostWidget(blogPosts: blogPosts[index],cardColor: backgroundColors[_random.nextInt(backgroundColors.length)]
+                            , link: link[index],
                             sender: sender[index],comments:comments[index] ,
                             blogTitle: blogTitles[index], imageUrl:images[index] , likes: likes[index].toString(),
                             blogId: blogId[index], likers: postLikers[index], tokenID: '',

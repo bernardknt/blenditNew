@@ -16,8 +16,8 @@ import 'package:blendit_2022/screens/loading_ingredients_page.dart';
 import 'package:blendit_2022/screens/login_page.dart';
 import 'package:blendit_2022/screens/loyalty_page.dart';
 import 'package:blendit_2022/screens/mobileMoney.dart';
-import 'package:blendit_2022/screens/news_comments_page.dart';
-import 'package:blendit_2022/screens/news_page.dart';
+import 'package:blendit_2022/screens/blog_comments_page.dart';
+import 'package:blendit_2022/screens/blog_page.dart';
 import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paymentMode_page.dart';
@@ -38,16 +38,11 @@ import 'package:provider/provider.dart';
 
 
 
+import 'controllers/push_notification_service.dart';
 import 'models/blendit_data.dart';
 
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    // 'This channel is used for important Notifications',
-    importance: Importance.high,
-    playSound: true
-);
+
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -58,6 +53,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future <void> main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
   await Firebase.initializeApp(
@@ -72,7 +68,13 @@ Future <void> main() async{
     //   projectId: "blend-it-8a622",
     // ),
   );
+  await PushNotificationService().setupInteractedMessage();
   runApp(MyApp());
+  RemoteMessage? initialMessage =
+  await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    // App received a notification when it was killed
+  }
 }
 
 class MyApp extends StatelessWidget {

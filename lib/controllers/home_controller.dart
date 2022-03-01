@@ -5,7 +5,7 @@ import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/home_page.dart';
 import 'package:blendit_2022/screens/input_page.dart';
 import 'package:blendit_2022/screens/loyalty_page.dart';
-import 'package:blendit_2022/screens/news_page.dart';
+import 'package:blendit_2022/screens/blog_page.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/settings_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
@@ -35,6 +35,7 @@ class _ControlPageState extends State<ControlPage> {
     CustomizeController(),
     HomePage(),
     OrdersPage(),
+    BlogPage()
     // SettingsPage()
 
 ];
@@ -105,10 +106,10 @@ class _ControlPageState extends State<ControlPage> {
                 icon: Icon(LineIcons.receipt, size: 18,),label:'Orders',
                 backgroundColor: Colors.purple),
             // Item 4
-            // BottomNavigationBarItem(
-            //     icon: Icon(CupertinoIcons.settings, size: 18,),label:'Settings',
-            //     backgroundColor: Colors.purple),
-            //
+            BottomNavigationBarItem(
+                icon: Icon(LineIcons.newspaper, size: 18,),label:'Blog',
+                backgroundColor: Colors.purple),
+
           ],
           onTap: (index){
             setState(() {

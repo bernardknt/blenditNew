@@ -1,20 +1,21 @@
 import 'dart:async';
-import 'package:blendit_2022/screens/news_comments_page.dart';
+import 'package:blendit_2022/screens/blog_comments_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class blogPostWidget extends StatelessWidget {
 
   blogPostWidget ({required this.cardColor, required this.imageUrl,
     required this.blogPosts, required this.sender, required this.likes,
-    required this.blogTitle, required this.blogId, required this.comments, required this.likers, required this.tokenID });
+    required this.blogTitle, required this.blogId, required this.comments, required this.likers, required this.tokenID, required this.link });
 
   final String sender; final String blogTitle; final String blogPosts; final String imageUrl;
   final Color cardColor; final String likes; final String blogId; final List comments;
-  final List likers; final String tokenID;
+  final List likers; final String tokenID; final String link;
 
 
   @override
@@ -41,14 +42,17 @@ class blogPostWidget extends StatelessWidget {
     animationTimer() {
       _timer = new Timer(const Duration(milliseconds: 3000), () {
         Navigator.pop(context);
+
       });
     }
     return GestureDetector(
       onTap: (){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
-            ReadComments(prayerId: blogId, cardColor: cardColor, imageUrl: imageUrl, prayerTitle: blogTitle,comments: comments, likes: likes, prayerSender: sender, prayerRequests: blogPosts,),
-        ),
-        );
+        // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+        //     ReadComments(prayerId: blogId, cardColor: cardColor, imageUrl: imageUrl, prayerTitle: blogTitle,comments: comments, likes: likes, prayerSender: sender, prayerRequests: blogPosts,),
+        // ),
+
+        // );
+        launch(link);
 
 
       },

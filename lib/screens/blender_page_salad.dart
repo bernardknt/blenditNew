@@ -1,12 +1,10 @@
 
 import 'package:blendit_2022/models/blendit_data.dart';
-import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/models/salad_ingredient_list.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
-import 'package:blendit_2022/widgets/SelectedIngredientsListView.dart';
 import 'package:blendit_2022/widgets/SelectedSaladIngredientsListView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';

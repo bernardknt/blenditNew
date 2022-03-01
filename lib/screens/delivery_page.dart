@@ -20,6 +20,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -78,6 +79,61 @@ class _MapState extends State<Map> {
   final Set<Marker> _markers = {};
   String location = '';
   String instructions = '';
+  final _dialog = RatingDialog(
+    initialRating: 1.0,
+    // your app's name?
+    title: const Text(
+      'Rate Your Order',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 25,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    // encourage your user to leave a high rating?
+    message: const Text(
+      'Tap a star to set your rating.',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 15),
+    ),
+    // your app's logo?
+    image: Image.asset('images/black_logo.png',width: 150, height: 150, ),
+    submitButtonText: 'Submit',
+    commentHint: 'You can Add an extra Comment',
+    onCancelled: () => print('cancelled'),
+    onSubmitted: (response) async{
+      var prefs = await SharedPreferences.getInstance();
+      final ratings = await FirebaseFirestore.instance
+          .collection('orders').doc(prefs.getString(kOrderId))
+          .update({
+        'rating': response.rating,
+        'rating_comment': response.comment,
+        'hasRated': true
+      }
+      );
+      print('rating: ${response.rating}, comment: ${response.comment}');
+
+      // TODO: add your own logic
+
+      if (response.rating < 3.0) {
+        print('Thats a bad rating');
+        // send their comments to your email or anywhere you wish
+        // ask the user to contact you instead of leaving a bad review
+      } else {
+        print('AWESOME');
+        // _rateAndReviewApp();
+      }
+    },
+  );
+
+  AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel',
+      'High Importance Notifications',
+      // 'This channel is used for important Notifications',
+      importance: Importance.high,
+      playSound: true
+  );
+
 
   void showNotification(String notificationTitle, String notificationBody){
     flutterLocalNotificationsPlugin.show(0, notificationTitle, notificationBody,
@@ -101,7 +157,13 @@ class _MapState extends State<Map> {
         ));
 
   }
-
+  void showRatingsDialogue(){
+    showDialog(
+      context: context,
+      barrierDismissible: true, // set to false if you want to force a rating
+      builder: (context) => _dialog,
+    );
+  }
   void showDialogue(imageString, body, heading, backgroundColor){
       CoolAlert.show(
           lottieAsset: imageString,
@@ -126,17 +188,16 @@ class _MapState extends State<Map> {
         String body;
         String heading;
         Color backgroundColor;
-        // if (status == 'submitted'){
-        //   imageString = 'images/success.json';
-        //   body ="Your Order has been Received!";
-        //   heading ="Order Submitted!";
-        //   backgroundColor = kBlueDarkColor;
-        //   print('ORDER SUBMITTED');
-        //   showDialogue(imageString, body, heading, backgroundColor);
-        //
-        //
-        // }else
-        if (status == 'preparing'){
+        if (status == 'submitted'){
+          imageString = 'images/success.json';
+          body ="Your Order has been Received!";
+          heading ="Order Submitted!";
+          backgroundColor = kBlueDarkColor;
+          print('ORDER SUBMITTED');
+          showDialogue(imageString, body, heading, backgroundColor);
+
+
+        }else if (status == 'preparing'){
           imageString = 'images/cook.json';
           body ="Your is being Prepared!";
           heading ="Preparing Your Order";
@@ -160,12 +221,7 @@ class _MapState extends State<Map> {
           showDialogue(imageString, body, heading, backgroundColor);
           print('ORDER ON WAY');
         } else if(status == 'delivered'){
-          imageString = 'images/success.json';
-          body ="Your Order has been delivered";
-          heading ="Delivered";
-          backgroundColor = kBlueDarkColor;
-          showDialogue(imageString, body, heading, backgroundColor);
-          print('ORDER DELIVERED');
+          showRatingsDialogue();
         }else {
 
         }
@@ -177,6 +233,7 @@ class _MapState extends State<Map> {
 
   String orderId = 'bi${uuid.v1().split("-")[0]}';
   final auth = FirebaseAuth.instance;
+
   Future<dynamic> updatePoints() async {
     var prefs = await SharedPreferences.getInstance();
     var multiplier = prefs.getDouble(kRewardsRatio)!;
@@ -216,6 +273,9 @@ class _MapState extends State<Map> {
       'orderNumber': orderId,
       'paymentMethod': 'cash',
       'paymentStatus': 'pending',
+      'rating':0,
+      'rating_comment': '',
+      'hasRated': false,
       'distance': Provider.of<BlenditData>(context, listen: false).distance,
       'status': 'submitted',
       'total_price': Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee,
@@ -236,23 +296,17 @@ class _MapState extends State<Map> {
         .then((value) {
           Navigator.pushNamed(context, SuccessPage.id);
           updatePoints();
-          showNotification('Order Received', '${prefs.getString(kFirstNameConstant)} have received your order! We shall have it ready for Delivery');
-
+          showNotification('Order Received', '${prefs.getString(kFirstNameConstant)} we have received your order! We shall have it ready for Delivery');
         } )
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
-
     phoneNumber = prefs.getString(kPhoneNumberConstant) ?? '0700123123';
     initialController = TextEditingController()..text = phoneNumber;
-    //
-    // deliveryFee = 0;
 
   }
-
   int deliveryFee = 0;
   late String phoneNumber;
   late String name;
@@ -265,13 +319,13 @@ class _MapState extends State<Map> {
     }
     return TextField(
       decoration: InputDecoration(
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(50)),
           ),
           fillColor: kBlueDarkColor,
           filled: true,
-          contentPadding:EdgeInsets.symmetric(horizontal: 20),
-          prefixIcon: Icon(LineIcons.search, color: Colors.white,),
+          contentPadding:const EdgeInsets.symmetric(horizontal: 20),
+          prefixIcon: const Icon(LineIcons.search, color: Colors.white,),
           hintText: textToUse,
           hintStyle: TextStyle(color: Colors.grey),
           suffixIcon: Icon(LineIcons.flag)

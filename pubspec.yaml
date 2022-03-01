@@ -70,6 +70,7 @@ dependencies:
   geolocator: ^7.0.3
   new_version: ^0.3.0
   overlay_support: ^1.2.1
+  rating_dialog: ^2.0.3
 
 
 dev_dependencies:

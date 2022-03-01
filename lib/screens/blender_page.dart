@@ -17,6 +17,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
@@ -94,28 +95,28 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   }
   // SHOW FLUTTER NOTIFICATIONS
 
-  void showNotification(String notificationTitle, String notificationBody){
-    flutterLocalNotificationsPlugin.show(0, notificationTitle, notificationBody,
-        NotificationDetails(
-            android: AndroidNotificationDetails(
-               channel.id,
-              channel.name,
-              // channel.description,
-              importance: Importance.high,
-              color: Colors.green,
-              playSound: true,
-              icon: '@mipmap/ic_launcher',
-            ),
-            iOS: IOSNotificationDetails(
-              presentAlert: true,
-              presentBadge: true,
-              presentSound: true,
-              subtitle: channel.description
-
-            )
-        ));
-
-  }
+  // void showNotification(String notificationTitle, String notificationBody){
+  //   flutterLocalNotificationsPlugin.show(0, notificationTitle, notificationBody,
+  //       NotificationDetails(
+  //           android: AndroidNotificationDetails(
+  //              channel.id,
+  //             channel.name,
+  //             // channel.description,
+  //             importance: Importance.high,
+  //             color: Colors.green,
+  //             playSound: true,
+  //             icon: '@mipmap/ic_launcher',
+  //           ),
+  //           iOS: IOSNotificationDetails(
+  //             presentAlert: true,
+  //             presentBadge: true,
+  //             presentSound: true,
+  //             subtitle: channel.description
+  //
+  //           )
+  //       ));
+  //
+  // }
   // GET APP DATA FROM THE SERVER
   Future deliveryStream()async{
     var prefs = await SharedPreferences.getInstance();
@@ -240,6 +241,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   var fruitInfo = [''];
   var extraInfo = [''];
 
+
    // BEGINNING OF INIT OVERRIDE
   @override
   void initState() {
@@ -255,56 +257,56 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         alert: true,
         provisional: true
     );
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      AppleNotification? apple = message.notification?.apple;
-      if (notification != null && android != null){
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode, notification.title, notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                // channel.description,
-                color:Colors.purple
-                ,
-                playSound: true,
-                icon: '@mipmap/ic_launcher',
-              ),
-            )
-        );
-      }else if(notification != null && apple != null){
-        NotificationDetails(
-          iOS: IOSNotificationDetails(
-            presentSound: true,
-            presentBadge: true,
-            presentAlert: true,
-            subtitle: "Work of Lord",
-          )
-        );
-      }
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification!= null && android != null){
-        showDialog(context: context, builder: (_){
-          return AlertDialog(
-            title: Text(notification.title!),
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start ,
-                children: [
-                  Text(notification.body!)
-                ],
-              ) ,
-            ),
-          );
-        });
-      }
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   RemoteNotification? notification = message.notification;
+    //   AndroidNotification? android = message.notification?.android;
+    //   AppleNotification? apple = message.notification?.apple;
+    //   if (notification != null && android != null){
+    //     flutterLocalNotificationsPlugin.show(
+    //         notification.hashCode, notification.title, notification.body,
+    //         NotificationDetails(
+    //           android: AndroidNotificationDetails(
+    //             channel.id,
+    //             channel.name,
+    //             // channel.description,
+    //             color:Colors.purple
+    //             ,
+    //             playSound: true,
+    //             icon: '@mipmap/ic_launcher',
+    //           ),
+    //         )
+    //     );
+    //   }else if(notification != null && apple != null){
+    //     NotificationDetails(
+    //       iOS: IOSNotificationDetails(
+    //         presentSound: true,
+    //         presentBadge: true,
+    //         presentAlert: true,
+    //         subtitle: "Work of Lord",
+    //       )
+    //     );
+    //   }
+    // });
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //
+    //   RemoteNotification? notification = message.notification;
+    //   AndroidNotification? android = message.notification?.android;
+    //   if (notification!= null && android != null){
+    //     showDialog(context: context, builder: (_){
+    //       return AlertDialog(
+    //         title: Text(notification.title!),
+    //         content: SingleChildScrollView(
+    //           child: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start ,
+    //             children: [
+    //               Text(notification.body!)
+    //             ],
+    //           ) ,
+    //         ),
+    //       );
+    //     });
+    //   }
+    // });
     //FirebaseMessaging.onBackgroundMessage((message) => null)
     final newVersion = NewVersion(
       iOSId: 'com.frutsexpress.blendit2022',
@@ -429,7 +431,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                   child: GestureDetector(
                       onTap: (){
                         if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
-                          AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
+                         AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
+
                         }
                         else {
                           // Vibration.vibrate(pattern: [200, 500, 200]);
