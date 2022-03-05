@@ -13,6 +13,8 @@ import 'package:line_icons/line_icons.dart';
 
 class CustomizeController extends StatefulWidget {
   static String id = 'stock_controller';
+
+
   @override
   _CustomizeControllerState createState() => _CustomizeControllerState();
 }

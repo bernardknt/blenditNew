@@ -76,14 +76,18 @@ class _OrdersPageState extends State<OrdersPage> {
          }
       });
       setState(() {
-        print(productList);
-        print(productList.length);
+        productList = productList.reversed.toList();
+        priceList = priceList.reversed.toList();
+        descList = descList.reversed.toList();
+        transIdList = transIdList.reversed.toList();
+        dateList = dateList.reversed.toList();
+        orderStatusList = orderStatusList.reversed.toList();
+        paidStatusList = paidStatusList.reversed.toList();
+        paidStatusListColor = paidStatusListColor.reversed.toList();
       });
     });
-
     return transactions;
   }
-
 
   @override
   void initState() {

@@ -19,6 +19,7 @@ class BlenditData extends ChangeNotifier{
   int totalPrice = 0;
   int basketNumber = 0;
   bool updateApp = true;
+  int tabIndex = 0;
 
   // -----------------JUICE VARIABLES-------------------------
   List juiceLeaves = []; // "Chicken","Fish","Mushrooms"
@@ -65,6 +66,10 @@ class BlenditData extends ChangeNotifier{
 
   // -----------------GENERAL  FUNCTIONS------------------------
 
+  void setTabIndex (newTabIndex){
+    tabIndex = newTabIndex;
+    notifyListeners();
+  }
   void setRewardPoints (newRewardPoints){
     rewardPoints = newRewardPoints;
     notifyListeners();

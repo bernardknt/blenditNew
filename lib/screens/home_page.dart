@@ -57,10 +57,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     defaultsInitiation();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-       FeatureDiscovery.discoverFeatures(context,
-          <String>['feature1']);
-    });
+
   }
   @override
   Widget build(BuildContext context) {

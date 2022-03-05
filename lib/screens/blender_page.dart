@@ -1,8 +1,10 @@
 
+import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
+import 'package:blendit_2022/screens/home_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:blendit_2022/widgets/SelectedIngredientsListView.dart';
@@ -203,23 +205,35 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
   final availableIngredients = await FirebaseFirestore.instance
       .collection('ingredients').orderBy('name',descending: false)
-      // .where('quantity', isGreaterThan: 0)
       .get()
       .then((QuerySnapshot querySnapshot) {
   querySnapshot.docs.forEach((doc) {
     if (doc['category']== 'vegetables'){
-      vegetables.add(doc['name']);
-      vegInfo.add(doc['info']);
-
-
+      if (doc['quantity'] >= 1){
+        vegetables.add(doc['name']);
+        vegInfo.add(doc['info']);
+      }
     } else if(doc['category']== 'fruits'){
-      fruits.add(doc['name']);
-      fruitInfo.add(doc['info']);
+      if (doc['quantity'] >= 1){
+        fruits.add(doc['name']);
+        fruitInfo.add(doc['info']);
+      }
+
     } else{
-      extras.add(doc['name']);
-      extraInfo.add(doc['info']);
+      if (doc['quantity'] >= 1){
+        extras.add(doc['name']);
+        extraInfo.add(doc['info']);
+      }
     }
   });
+  extras = extras.reversed.toList();
+  extraInfo = extraInfo.reversed.toList();
+  vegetables = vegetables.reversed.toList();
+  vegInfo = vegetables.reversed.toList();
+  fruits = fruits.reversed.toList();
+  fruitInfo = fruitInfo.reversed.toList();
+
+
   });
     Provider.of<BlenditData>(context, listen: false).setJuiceLeaves(vegetables, fruits, extras);
   return availableIngredients ;
@@ -257,6 +271,19 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         alert: true,
         provisional: true
     );
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Get.toNamed(NOTIFICATIOINS_ROUTE);
+      if (message.data['type'] == 'promotion') {
+        Provider.of<BlenditData>(context, listen: false).setTabIndex(1);
+        Navigator.pushNamed(context, ControlPage.id);
+
+      } else if (message.data['type'] == 'blog') {
+        Provider.of<BlenditData>(context, listen: false).setTabIndex(3);
+        Navigator.pushNamed(context, ControlPage.id);
+      }else {
+
+      }
+    });
     // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     //   RemoteNotification? notification = message.notification;
     //   AndroidNotification? android = message.notification?.android;
@@ -476,8 +503,9 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
                         ] ),
                     onTap: (){
-                      if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
-                        AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
+                      if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0) {
+                         AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
+
                       }
                       else {
                         showModalBottomSheet(

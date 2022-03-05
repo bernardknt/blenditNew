@@ -1,5 +1,7 @@
 
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/screens/browse_store.dart';
+import 'package:blendit_2022/screens/home_page.dart';
 import 'package:blendit_2022/screens/register_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/roundedButtons.dart';
@@ -24,7 +26,10 @@ class _WelcomePageState extends State<WelcomePage> {
     setState(() {
       userLoggedIn = isLoggedIn ;
       if(userLoggedIn == true){
+
         Navigator.pushNamed(context, ControlPage.id);
+      }else {
+        prefs.setBool(kIsLoggedInConstant, false);
       }
 
     });
@@ -69,7 +74,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
                       Container(
                         padding: EdgeInsets.all(30),
-                          child: Text('Simply Blend on the Go', style: GoogleFonts.sourceSansPro(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white),
+                          child: Text('100 Ingredients in Your Pocket', style: GoogleFonts.sourceSansPro(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white),
                           ),),
 
                       roundedButtons(buttonColor: Color(0xFFf19c93),
@@ -87,6 +92,12 @@ class _WelcomePageState extends State<WelcomePage> {
                           Navigator.pushNamed(context,LoginPage.id);
                         },
                       ),
+                      SizedBox(height: 30,), 
+                      GestureDetector(
+                          onTap: (){
+                            Navigator.pushNamed(context, BrowseStorePage.id);
+                          },
+                          child: Text('Browse Store', style: TextStyle(color: Colors.white),))
                     ],
                   )
               ),

@@ -77,15 +77,20 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         if (doc['category']== 'vegetables'){
-          vegetables.add(doc['name']);
-          vegInfo.add(doc['info']);
-
+          if (doc['quantity'] >= 1){
+            vegetables.add(doc['name']);
+            vegInfo.add(doc['info']);
+          }
         } else if(doc['category']== 'meat'){
-          fruits.add(doc['name']);
-          fruitInfo.add(doc['info']);
+          if (doc['quantity'] >= 1){
+            fruits.add(doc['name']);
+            fruitInfo.add(doc['info']);
+          }
         } else{
-          extras.add(doc['name']);
-          extraInfo.add(doc['info']);
+          if (doc['quantity'] >= 1){
+            extras.add(doc['name']);
+            extraInfo.add(doc['info']);
+          }
         }
       });
       Provider.of<BlenditData>(context, listen: false).setSaladLeaves(vegetables, fruits, extras);

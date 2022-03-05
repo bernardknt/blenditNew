@@ -4,6 +4,7 @@ import 'package:blendit_2022/screens/about_us.dart';
 import 'package:blendit_2022/screens/allProducts_page.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
+import 'package:blendit_2022/screens/browse_store.dart';
 import 'package:blendit_2022/screens/checkout_page.dart';
 import 'package:blendit_2022/screens/choose_juice_page.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
@@ -131,6 +132,7 @@ class MyApp extends StatelessWidget {
             SaladBlenderPage.id: (context)=>SaladBlenderPage(),
             CustomizedJuicePage.id: (context)=>CustomizedJuicePage(),
             ChooseJuicePage.id: (context)=>ChooseJuicePage(),
+            BrowseStorePage.id: (context)=>BrowseStorePage(),
           },
         ),
       ),

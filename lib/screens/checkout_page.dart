@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -24,7 +25,27 @@ class _CheckoutPageState extends State<CheckoutPage> {
   final dateNow = new DateTime.now();
 
 
+  Future<dynamic> AlertPopUpDialogue(BuildContext context,
+      {required String imagePath, required String text, required String title}) {
 
+    return CoolAlert.show(
+      onConfirmBtnTap: (){
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+        },
+
+      showCancelBtn: true,
+      lottieAsset: imagePath,
+      context: context,
+      type: CoolAlertType.success,
+      text: text,
+      title: title,
+      confirmBtnText: 'Ok',
+      confirmBtnColor: Colors.green,
+      backgroundColor: kBlueDarkColor,
+    );
+  }
   var formatter = NumberFormat('#,###,000');
   String phoneNumber = '';
   double textSize = 15.0;
@@ -189,7 +210,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Expanded(
                       flex: 4,
                       child: TextButton.icon(onPressed: (){
-                        Navigator.pop(context);
+                        AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: "To Continue Buying, Sign In or, Sign Up required", title: "Sign Up Required");
                       },
                         style: TextButton.styleFrom(
                           //elevation: ,
@@ -204,13 +225,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     SizedBox(width: 5,),
                     Expanded(
                       flex: 3,
-                      child: TextButton.icon(onPressed: (){
-                        //Navigator.pushNamed(context, DeliveryPage.id);
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return DeliveryOptionsDialog();
-                            });
+                      child: TextButton.icon(onPressed: ()async{
+                        var prefs = await SharedPreferences.getInstance();
+                        if (prefs.getBool(kIsLoggedInConstant) == false){
+
+                          AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To Continue with Purchase, Sign In or Sign Up is required', title: "Sign In Required");
+                        }else{
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return DeliveryOptionsDialog();
+                              });
+                        }
+                        print(prefs.getBool(kIsLoggedInConstant));
+
                       },
                         style: TextButton.styleFrom(
                           //elevation: ,

@@ -1,22 +1,18 @@
 
 
 import 'package:blendit_2022/controllers/customize_controller.dart';
-import 'package:blendit_2022/screens/blender_page.dart';
+import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/screens/home_page.dart';
-import 'package:blendit_2022/screens/input_page.dart';
-import 'package:blendit_2022/screens/loyalty_page.dart';
 import 'package:blendit_2022/screens/blog_page.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
-import 'package:blendit_2022/screens/settings_page.dart';
-import 'package:blendit_2022/utilities/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 
 
 class ControlPage extends StatefulWidget {
-  ControlPage();
+
   static String id = 'home_control_page';
 
 
@@ -28,7 +24,10 @@ class ControlPage extends StatefulWidget {
 class _ControlPageState extends State<ControlPage> {
 
 
-  int _currentIndex = 0;
+
+
+  // int selectPage;
+  int selectedPage = 0;
   double buttonHeight = 40.0;
   int amount = 0;
   final tabs = [
@@ -37,56 +36,32 @@ class _ControlPageState extends State<ControlPage> {
     OrdersPage(),
     BlogPage()
     // SettingsPage()
+  ];
+  void defaultInitialization(){
+    // This initialization gets the default value of the tab you set when a notification comes in and changes it
+    selectedPage = Provider.of<BlenditData>(context, listen: false).tabIndex;
 
-];
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    defaultInitialization();
+
+  }
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      // appBar: AppBar(
-      //   shadowColor: Colors.transparent,
-      //   automaticallyImplyLeading: false,
-      //   //title: Text(''),
-      //   backgroundColor: kBlueDarkColor,
-      //   leading:Transform.translate(offset: Offset(20*0.7, 0),
-      //     child: IconButton(
-      //       icon: Icon(LineIcons.trophy, color: Colors.grey,),
-      //       onPressed: () {
-      //        // showNotification('notificationTitle', 'notificationBody');
-      //
-      //         Navigator.pushNamed(context, LoyaltyPage.id);
-      //       },
-      //     ),
-      //   ),
-      //   actions: [
-      //     GestureDetector(
-      //       onTap: (){
-      //         Navigator.pushNamed(context, SettingsPage.id);
-      //       },
-      //       child: Container(
-      //           padding:EdgeInsets.all(10),child:
-      //       Icon(CupertinoIcons.settings, color: Colors.grey,)),
-      //     )],
-      // ),
-
-
-
-
-      // floatingActionButton: FloatingActionButton(onPressed: () {
-      //   Navigator.pushNamed(context, BlenditPage.id);
-      // },
-      //   backgroundColor: Colors.orange,
-      //   child: Icon(LineIcons.blender, size: 30,color: Colors.black,),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: tabs[_currentIndex],
+      body: tabs[selectedPage],
       bottomNavigationBar:
       BottomAppBar(
         shape: const CircularNotchedRectangle(),
         clipBehavior: Clip.antiAliasWithSaveLayer ,
         notchMargin: 7,
         child: BottomNavigationBar(
-          currentIndex: _currentIndex,
+          currentIndex: selectedPage,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           selectedItemColor: Colors.green,
@@ -113,7 +88,7 @@ class _ControlPageState extends State<ControlPage> {
           ],
           onTap: (index){
             setState(() {
-              _currentIndex = index;
+                selectedPage = index;
             });
           },
         ),
