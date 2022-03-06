@@ -20,6 +20,7 @@ class BlenditData extends ChangeNotifier{
   int basketNumber = 0;
   bool updateApp = true;
   int tabIndex = 0;
+ String shareUrl = 'www.frutsexpress.com';
 
   // -----------------JUICE VARIABLES-------------------------
   List juiceLeaves = []; // "Chicken","Fish","Mushrooms"
@@ -68,6 +69,10 @@ class BlenditData extends ChangeNotifier{
 
   void setTabIndex (newTabIndex){
     tabIndex = newTabIndex;
+    notifyListeners();
+  }
+  void setNewShareUrl (newShareUrl){
+    shareUrl = newShareUrl;
     notifyListeners();
   }
   void setRewardPoints (newRewardPoints){

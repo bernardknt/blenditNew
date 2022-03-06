@@ -158,7 +158,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 children: [
                                   GestureDetector(
                                     onTap: (){
-                                      Share.share('Hi, I am getting a ${blendedData.basketItems[index].name}: ${blendedData.basketItems[index].details}. with Blendit, think you would like it. Follow to see more https://www.blenditapp.com', subject: 'See what am having😋!');
+                                      Share.share('Hi, I am getting a ${blendedData.basketItems[index].name}: ${blendedData.basketItems[index].details}. with Blendit, think you would like it. Follow to see more ${blendedData.shareUrl}', subject: 'See what am having😋!');
 
                                     },
                                     child: CircleAvatar(

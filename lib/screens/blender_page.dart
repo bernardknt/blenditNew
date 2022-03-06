@@ -4,7 +4,7 @@ import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
-import 'package:blendit_2022/screens/home_page.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:blendit_2022/widgets/SelectedIngredientsListView.dart';
@@ -97,28 +97,6 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   }
   // SHOW FLUTTER NOTIFICATIONS
 
-  // void showNotification(String notificationTitle, String notificationBody){
-  //   flutterLocalNotificationsPlugin.show(0, notificationTitle, notificationBody,
-  //       NotificationDetails(
-  //           android: AndroidNotificationDetails(
-  //              channel.id,
-  //             channel.name,
-  //             // channel.description,
-  //             importance: Importance.high,
-  //             color: Colors.green,
-  //             playSound: true,
-  //             icon: '@mipmap/ic_launcher',
-  //           ),
-  //           iOS: IOSNotificationDetails(
-  //             presentAlert: true,
-  //             presentBadge: true,
-  //             presentSound: true,
-  //             subtitle: channel.description
-  //
-  //           )
-  //       ));
-  //
-  // }
   // GET APP DATA FROM THE SERVER
   Future deliveryStream()async{
     var prefs = await SharedPreferences.getInstance();
@@ -139,9 +117,11 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         var saladPrice = doc['saladPrice'];
         var saladExtrasPrice = doc['saladExtrasPrice'];
         var saladMeatPrice = doc['saladMeatPrice'];
+        var shareUrl = doc['shareUrl'];
 
         setState(() {
           Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender, saladPrice, saladMeatPrice, saladExtrasPrice);
+          Provider.of<BlenditData>(context, listen: false).setNewShareUrl(shareUrl);
           prefs.setInt(kTwoKmDistance, twoKm);
           prefs.setInt(kFourKmDistance, fourKm);
           prefs.setInt(kSixKmDistance, sixKm);
@@ -229,7 +209,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   extras = extras.reversed.toList();
   extraInfo = extraInfo.reversed.toList();
   vegetables = vegetables.reversed.toList();
-  vegInfo = vegetables.reversed.toList();
+  vegInfo = vegInfo.reversed.toList();
   fruits = fruits.reversed.toList();
   fruitInfo = fruitInfo.reversed.toList();
 
@@ -254,6 +234,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   var vegInfo = [''];
   var fruitInfo = [''];
   var extraInfo = [''];
+
 
 
    // BEGINNING OF INIT OVERRIDE
@@ -284,57 +265,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
       }
     });
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   RemoteNotification? notification = message.notification;
-    //   AndroidNotification? android = message.notification?.android;
-    //   AppleNotification? apple = message.notification?.apple;
-    //   if (notification != null && android != null){
-    //     flutterLocalNotificationsPlugin.show(
-    //         notification.hashCode, notification.title, notification.body,
-    //         NotificationDetails(
-    //           android: AndroidNotificationDetails(
-    //             channel.id,
-    //             channel.name,
-    //             // channel.description,
-    //             color:Colors.purple
-    //             ,
-    //             playSound: true,
-    //             icon: '@mipmap/ic_launcher',
-    //           ),
-    //         )
-    //     );
-    //   }else if(notification != null && apple != null){
-    //     NotificationDetails(
-    //       iOS: IOSNotificationDetails(
-    //         presentSound: true,
-    //         presentBadge: true,
-    //         presentAlert: true,
-    //         subtitle: "Work of Lord",
-    //       )
-    //     );
-    //   }
-    // });
-    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    //
-    //   RemoteNotification? notification = message.notification;
-    //   AndroidNotification? android = message.notification?.android;
-    //   if (notification!= null && android != null){
-    //     showDialog(context: context, builder: (_){
-    //       return AlertDialog(
-    //         title: Text(notification.title!),
-    //         content: SingleChildScrollView(
-    //           child: Column(
-    //             crossAxisAlignment: CrossAxisAlignment.start ,
-    //             children: [
-    //               Text(notification.body!)
-    //             ],
-    //           ) ,
-    //         ),
-    //       );
-    //     });
-    //   }
-    // });
-    //FirebaseMessaging.onBackgroundMessage((message) => null)
+
     final newVersion = NewVersion(
       iOSId: 'com.frutsexpress.blendit2022',
       androidId: 'com.frutsexpress.blendit_2022',
@@ -457,12 +388,15 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                   tapTarget: Icon(CupertinoIcons.hand_thumbsup),
                   child: GestureDetector(
                       onTap: (){
+
                         if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
                          AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
+
 
                         }
                         else {
                           // Vibration.vibrate(pattern: [200, 500, 200]);
+
 
                           showModalBottomSheet(
                               context: context,

@@ -5,6 +5,7 @@ import 'package:blendit_2022/screens/loading_ingredients_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,10 @@ import 'package:provider/provider.dart';
 
 
 class SelectedJuiceIngredientsListView extends StatelessWidget {
-
+  final Iterable<Duration> pauses = [
+    const Duration(milliseconds: 300),
+    const Duration(milliseconds: 500),
+  ];
   @override
   Widget build(BuildContext context) {
     var blendedData = Provider.of<BlenditData>(context);
@@ -79,6 +83,7 @@ class SelectedJuiceIngredientsListView extends StatelessWidget {
                         // Vibration.vibrate(
                         //   pattern: [500, 1000, 500, 1000],
                         // );
+                        Vibrate.vibrateWithPauses(pauses);
                         Navigator.pushNamed(context, LoadingIngredientsPage.id);
                         Provider.of<BlenditData>(context, listen: false)
                             .addToBasket(BasketItem(amount: blendedData.refJuicePrice, quantity: blendedData.litres, name: 'Custom Juice', details: blendedData.selectedJuiceIngredients.join(", "))); //
