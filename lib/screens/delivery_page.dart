@@ -25,6 +25,7 @@ import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
+import '../models/keyboard_overlay.dart';
 
 var uuid = Uuid();
 double boxOpacity = 0;
@@ -419,11 +420,29 @@ class _MapState extends State<Map> {
       );
     }
   }
+  // This code places a done button on the iOS number bad after entering the phone number on delivery page
+  FocusNode numberFocusNode = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     defaultInitialization();
+    // This code places a done button on the iOS number bad after entering the phone number on delivery page
+    numberFocusNode.addListener(() {
+      bool hasFocus = numberFocusNode.hasFocus;
+      if (hasFocus) {
+        KeyboardOverlay.showOverlay(context);
+      } else {
+        KeyboardOverlay.removeOverlay();
+      }
+    });
+    // This code places a done button on the iOS number bad after entering the phone number on delivery page
+  }
+  @override
+  void dispose() {
+    // Clean up the focus node
+    numberFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -611,8 +630,9 @@ class _MapState extends State<Map> {
                                       }
                                     });
                                   }
-                                  ,keyboardType: TextInputType.number ,decoration:
-                                InputDecoration(filled: true,
+                                  ,keyboardType: TextInputType.number ,
+                                  focusNode: numberFocusNode,
+                                  decoration: InputDecoration(filled: true,
                                   fillColor: Colors.grey,
 
                                   //labelText: 'Mobile Number',
