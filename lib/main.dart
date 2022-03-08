@@ -22,6 +22,7 @@ import 'package:blendit_2022/screens/blog_page.dart';
 import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paymentMode_page.dart';
+import 'package:blendit_2022/screens/phone_details_page.dart';
 import 'package:blendit_2022/screens/register_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/screens/settings_page.dart';
@@ -133,6 +134,7 @@ class MyApp extends StatelessWidget {
             CustomizedJuicePage.id: (context)=>CustomizedJuicePage(),
             ChooseJuicePage.id: (context)=>ChooseJuicePage(),
             BrowseStorePage.id: (context)=>BrowseStorePage(),
+            PhoneDetailsPage.id: (context)=>PhoneDetailsPage(),
           },
         ),
       ),

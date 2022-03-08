@@ -11,23 +11,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class ReadComments extends StatefulWidget {
-  ReadComments({this.prayerId = '1000',  this.cardColor = Colors.black,  this.imageUrl = 'https://bit.ly/36vfVyS', this.prayerTitle = 'believe',  this.likes = '0',  this.prayerSender = 'Blendit',  this.prayerRequests = 'Truth',  required this.comments});
+  ReadComments({this.blogId = '1000',  this.cardColor = Colors.black,  this.imageUrl = 'https://bit.ly/36vfVyS', this.blogTitle = 'believe',  this.likes = '0',  this.blogSender = 'Blendit',  this.prayerRequests = 'Truth',  required this.comments, this.linkUrl = ''});
   static String id = 'read_comments';
-  final String prayerId;
+  final String blogId;
   final Color cardColor;
   final String imageUrl;
-  final String prayerTitle;
+  final String blogTitle;
   final String likes;
-  final String prayerSender;
+  final String blogSender;
   final String prayerRequests;
   final List comments;
+  final String linkUrl;
 
   @override
-  _ReadCommentsState createState() => _ReadCommentsState(blogId: prayerId, cardColor: cardColor, imageUrl:imageUrl,
-      blogTitle:prayerTitle, likes:likes, blogSender:prayerSender, blogPost:prayerRequests, comments: comments);
+  _ReadCommentsState createState() => _ReadCommentsState(blogId: blogId, cardColor: cardColor, imageUrl:imageUrl,
+      blogTitle:blogTitle, likes:likes, blogSender:blogSender, blogPost:prayerRequests, comments: comments, linkUrl:linkUrl);
 }
 
 
@@ -40,6 +42,7 @@ class _ReadCommentsState extends State<ReadComments> {
   String likes;
   String blogSender;
   String blogPost;
+  String linkUrl;
 
   List comments;
   var blogComment = [];
@@ -50,11 +53,12 @@ class _ReadCommentsState extends State<ReadComments> {
 
 
   DateTime now = DateTime.now();
-  _ReadCommentsState({required this.blogId, required this.cardColor,required this.imageUrl,required this.blogTitle,required this.likes,required this.blogSender,required this.blogPost,required this.comments});
+  _ReadCommentsState({required this.blogId, required this.cardColor,required this.imageUrl,required this.blogTitle,required this.likes,required this.blogSender,required this.blogPost,required this.comments, required this.linkUrl});
   final _random = new Random();
 
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
+
     // String churchImage = 'prefs.getString(kChurchImageConstant)' ;
 
     for(var i = 0; i < comments.length; i++ ){
@@ -109,9 +113,9 @@ class _ReadCommentsState extends State<ReadComments> {
     'https://bit.ly/361qOs5',
     'https://bit.ly/3qA3PxO',
     'https://bit.ly/3qCsba1',
-    'https://bit.ly/3qBs52x',
-    'https://bit.ly/3h2so3c',
-    'https://bit.ly/3dnJ8zR'];
+    'https://gallery.mailchimp.com/f78a91485e657cda2c219f659/images/c31b90d6-56fe-4ad7-8c07-964a6b506f82.jpg',
+    'https://gallery.mailchimp.com/f78a91485e657cda2c219f659/images/66ce49dd-ce35-4880-9984-8a569e59884e.jpg',
+    'https://gallery.mailchimp.com/f78a91485e657cda2c219f659/images/ead4b508-876e-4d37-9a05-b95cec1811d9.jpg'];
 
   String prayerRequest = '';
   String name= 'Daphine';
@@ -248,8 +252,15 @@ class _ReadCommentsState extends State<ReadComments> {
                             ],
                           ),
 
-                          RichText(text: TextSpan(text: blogPost,
-                              style: GoogleFonts.lato(fontSize: 16)),),
+                          GestureDetector(
+                            onTap: (){
+
+                              launch(linkUrl);
+
+                            },
+                            child: RichText(text: TextSpan(text: blogPost,
+                                style: GoogleFonts.lato(fontSize: 16)),),
+                          ),
                           SizedBox(height: 8,) ,
                           Row(
                             children: [
@@ -303,17 +314,9 @@ class _ReadCommentsState extends State<ReadComments> {
                     shrinkWrap: true,
                     itemCount: comments.length,
                     itemBuilder: (context, index){
-                      if (itemNumber!=0){
+
                         return CommentListWidget(blogComment: blogComment[index], senderName: sender[index], imageUrl: imageList[index], cardColor: Colors.black,);
-                      } else {
-                        return Container(
-                          padding: EdgeInsets.only(left: 20, top: 20),
-                          child: Row(
-                            children: [
-                              Text('Tusimbude'),
-                            ],
-                          ),);
-                      }
+
 
                     }),
               ),

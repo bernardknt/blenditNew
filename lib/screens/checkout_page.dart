@@ -210,7 +210,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Expanded(
                       flex: 4,
                       child: TextButton.icon(onPressed: (){
-                        AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: "To Continue Buying, Sign In or, Sign Up required", title: "Sign Up Required");
+                        // AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: "To Continue Buying, Sign In or, Sign Up required", title: "Sign Up Required");
+                      Navigator.pop(context);
                       },
                         style: TextButton.styleFrom(
                           //elevation: ,

@@ -52,6 +52,10 @@ class blogPostWidget extends StatelessWidget {
         // ),
 
         // );
+        // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+        //     ReadComments(prayerId: blogId, cardColor: cardColor, imageUrl: imageUrl, prayerTitle: blogTitle,comments: comments, likes: likes, prayerSender: sender, prayerRequests: blogPosts,),
+        // ),
+        // );
         launch(link);
 
 
@@ -150,14 +154,17 @@ class blogPostWidget extends StatelessWidget {
                             onTap: (){
                               animationTimer();
                               handleBlogLikes(blogId);
-
-
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+                                  ReadComments(blogId: blogId, cardColor: cardColor, imageUrl: imageUrl, blogTitle: blogTitle,comments: comments, likes: likes, blogSender: sender, prayerRequests: blogPosts, linkUrl: link,),
+                              ),
+                              );
                               showCupertinoModalPopup(context: context, builder: (context) => Container(
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                                 //color: Color(0xFF757575),
                                 child: Lottie.asset('images/success.json',
                                     height: 200),
                               ));
+
                             },
                             child: Icon(CupertinoIcons.heart, color: Colors.white,size: 23,)),
                         SizedBox(width: 10,),
@@ -166,7 +173,14 @@ class blogPostWidget extends StatelessWidget {
                             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12,
                             )),
                         SizedBox(width: 3,),
-                        Icon(CupertinoIcons.text_bubble, color: Colors.white,size: 23,),
+                        GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+                                  ReadComments(blogId: blogId, cardColor: cardColor, imageUrl: imageUrl, blogTitle: blogTitle,comments: comments, likes: likes, blogSender: sender, prayerRequests: blogPosts,linkUrl:link),
+                              ),
+                              );
+                            },
+                            child: Icon(CupertinoIcons.text_bubble, color: Colors.white,size: 23,)),
 
                       ],
                     ),

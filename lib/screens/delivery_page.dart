@@ -2,6 +2,8 @@
 import 'dart:ui';
 
 import 'package:blendit_2022/models/blendit_data.dart';
+import 'package:blendit_2022/screens/mobileMoney.dart';
+import 'package:blendit_2022/screens/phone_details_page.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -603,35 +605,44 @@ class _MapState extends State<Map> {
                               Expanded(
                                 child:
                                 TextField(
+                                  onTap: (){
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return PhoneDetailsPage();
+                                        });
+
+                                  },
                                   cursorHeight: 10,
                                   maxLength: 9,
                                   controller: myController,
                                   mouseCursor: MouseCursor.defer,
-                                  onChanged: (value){
-
-                                    setState(() {
-                                      if (value.split('')[0] == '7'){
-                                        //invalidMessageDisplay = 'Incomplete Number';
-                                        if (value.length == 9 && value.split('')[0] == '7'){
-                                          //changeNumberOpacity = 1.0;
-                                          phoneNumber = value;
-                                          phoneNumber.split('0');
-                                          print(value.split('')[0]);
-                                          print(phoneNumber.split(''));
-                                          //changeInvalidMessageOpacity = 0.0;
-                                        } else if(value.length !=9 || value.split('')[0] != '7'){
-                                          //changeInvalidMessageOpacity = 1.0;
-                                          //changeNumberOpacity = 0.0;
-                                        }
-
-                                      }else {
-                                        //invalidMessageDisplay = 'Number should start with 7';
-                                        //changeInvalidMessageOpacity = 1.0;
-                                      }
-                                    });
-                                  }
-                                  ,keyboardType: TextInputType.number ,
-                                  focusNode: numberFocusNode,
+                                  // onChanged:
+                                  //     (value){
+                                  //
+                                  //   setState(() {
+                                  //     if (value.split('')[0] == '7'){
+                                  //       //invalidMessageDisplay = 'Incomplete Number';
+                                  //       if (value.length == 9 && value.split('')[0] == '7'){
+                                  //         //changeNumberOpacity = 1.0;
+                                  //         phoneNumber = value;
+                                  //         phoneNumber.split('0');
+                                  //         print(value.split('')[0]);
+                                  //         print(phoneNumber.split(''));
+                                  //         //changeInvalidMessageOpacity = 0.0;
+                                  //       } else if(value.length !=9 || value.split('')[0] != '7'){
+                                  //         //changeInvalidMessageOpacity = 1.0;
+                                  //         //changeNumberOpacity = 0.0;
+                                  //       }
+                                  //
+                                  //     }else {
+                                  //       //invalidMessageDisplay = 'Number should start with 7';
+                                  //       //changeInvalidMessageOpacity = 1.0;
+                                  //     }
+                                  //   });
+                                  // }
+                                  keyboardType: TextInputType.none,
+                                  // focusNode: numberFocusNode,
                                   decoration: InputDecoration(filled: true,
                                   fillColor: Colors.grey,
 

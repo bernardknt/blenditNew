@@ -254,12 +254,18 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     );
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       // Get.toNamed(NOTIFICATIOINS_ROUTE);
+      print('ZAKARABUS ${message.data['type']}');
+
       if (message.data['type'] == 'promotion') {
         Provider.of<BlenditData>(context, listen: false).setTabIndex(1);
         Navigator.pushNamed(context, ControlPage.id);
 
+
       } else if (message.data['type'] == 'blog') {
         Provider.of<BlenditData>(context, listen: false).setTabIndex(3);
+        Navigator.pushNamed(context, ControlPage.id);
+      }else if(message.data['type'] == 'accounts'){
+        Provider.of<BlenditData>(context, listen: false).setTabIndex(2);
         Navigator.pushNamed(context, ControlPage.id);
       }else {
 

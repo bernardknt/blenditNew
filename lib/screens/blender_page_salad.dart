@@ -2,6 +2,7 @@
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/models/salad_ingredient_list.dart';
+import 'package:blendit_2022/screens/phone_details_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -211,7 +212,7 @@ var formatter = NumberFormat('#,###,000');
                     onTap: (){
                       if(Provider.of<BlenditData>(context, listen: false).saladIngredientsNumber == 0){
                         AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
-                      }
+                        }
                       else {
                         showModalBottomSheet(
                             context: context,
