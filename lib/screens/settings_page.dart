@@ -1,4 +1,5 @@
 
+import 'package:blendit_2022/screens/input_page.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/roundedButtons.dart';
@@ -123,10 +124,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       trailing: Icon(Icons.keyboard_arrow_right),
                     ),
                     _buildDivider(),
-                    ListTile(
-                      leading: Icon(LineIcons.flag, color: kGreenThemeColor,),
-                      title:Text(subscribedChurch, style: TextStyle(fontFamily: 'Montserrat-Medium',fontSize: textSize)),
-                      trailing: Icon(Icons.keyboard_arrow_right),
+                    GestureDetector(
+                      onLongPress: (){
+                        Navigator.pushNamed(context, InputPage.id);
+                      },
+                      child: ListTile(
+                        leading: Icon(LineIcons.flag, color: kGreenThemeColor,),
+                        title:Text(subscribedChurch, style: TextStyle(fontFamily: 'Montserrat-Medium',fontSize: textSize)),
+                        trailing: Icon(Icons.keyboard_arrow_right),
+                      ),
                     ),
                   ],
                 ),

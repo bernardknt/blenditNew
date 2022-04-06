@@ -1,4 +1,6 @@
 
+import 'package:blendit_2022/models/blendit_data.dart';
+import 'package:blendit_2022/screens/delivery_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:blendit_2022/utilities/paymentProcessing.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:intl/intl.dart';
@@ -114,7 +117,8 @@ class _PhoneDetailsPageState extends State<PhoneDetailsPage> {
                         maxLength: 9,
                         controller: myController,
                         mouseCursor: MouseCursor.defer,
-                        onChanged: (value){
+                        onChanged: (value) async {
+                          var prefs = await SharedPreferences.getInstance();
 
                           setState(() {
                             if (value.split('')[0] == '7'){
@@ -125,6 +129,7 @@ class _PhoneDetailsPageState extends State<PhoneDetailsPage> {
                                 phoneNumber.split('0');
                                 print(value.split('')[0]);
                                 print(phoneNumber.split(''));
+
                                 changeInvalidMessageOpacity = 0.0;
                               } else if(value.length !=9 || value.split('')[0] != '7'){
                                 changeInvalidMessageOpacity = 1.0;
@@ -155,9 +160,11 @@ class _PhoneDetailsPageState extends State<PhoneDetailsPage> {
                           Checkbox(value: checkboxValue, onChanged: (value) async{
                             final prefs = await SharedPreferences.getInstance();
                             print(value);
+                            prefs.setBool(kIsPhoneNumberSaved, true);
                             setState(() {
                               checkboxValue = value!;
-                              prefs.setString(kPhoneNumberConstant, phoneNumber);
+
+
                             });
                           }),
                           Text(setPhoneMessage, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: kGreenThemeColor, fontWeight: FontWeight.bold), ),
@@ -167,8 +174,21 @@ class _PhoneDetailsPageState extends State<PhoneDetailsPage> {
                 //SizedBox(height: 5,),
 
                 ingredientButtons(buttonTextColor:Colors.white,buttonColor: kBlueDarkColor,lineIconFirstButton: LineIcons.thumbsUp, firstButtonFunction: ()async{
+                  final prefs = await SharedPreferences.getInstance();
+                  if (checkboxValue == false) {
+                    // Set the value of the saved phone number to false
+                    prefs.setBool(kIsPhoneNumberSaved, false);
+                    prefs.setString(kPhoneNumberAlternative, phoneNumber);
 
+
+                  } else {
+                    prefs.setBool(kIsPhoneNumberSaved, true);
+                    prefs.setString(kPhoneNumberConstant, phoneNumber);
+                  }
                  Navigator.pop(context);
+                 Navigator.pop(context);
+                 Navigator.pushNamed(context, DeliveryPage.id);
+
                 }, firstButtonText: ' Done'),
 
               ],

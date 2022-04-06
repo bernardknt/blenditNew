@@ -2,7 +2,6 @@
 import 'dart:ui';
 
 import 'package:blendit_2022/models/blendit_data.dart';
-import 'package:blendit_2022/screens/mobileMoney.dart';
 import 'package:blendit_2022/screens/phone_details_page.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
@@ -11,7 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -295,8 +293,20 @@ class _MapState extends State<Map> {
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
-    phoneNumber = prefs.getString(kPhoneNumberConstant) ?? '0700123123';
+
+    if (prefs.getBool(kIsPhoneNumberSaved)  == false){
+      phoneNumber = prefs.getString(kPhoneNumberAlternative) ?? '0700123123';
+      print("the HUHUHUHUHUHUHUHUHUHUHU the status is ${prefs.getBool(kIsPhoneNumberSaved)} kPhoneConstant: ${prefs.getString(kPhoneNumberConstant)} kPhoneAlternatice: ${prefs.getString(kPhoneNumberAlternative)}");
+       } else {
+      print("THIS DEFINITELY WORKED");
+      phoneNumber = prefs.getString(kPhoneNumberConstant)!;
+      print("POPOPOPOPOPOPOPO the status is ${prefs.getBool(kIsPhoneNumberSaved)} kPhoneConstant: ${prefs.getString(kPhoneNumberConstant)} kPhoneAlternatice: ${prefs.getString(kPhoneNumberAlternative)}");
+
+    }
+    // phoneNumber = prefs.getString(kPhoneNumberConstant) ?? '0700123123';
+
     initialController = TextEditingController()..text = phoneNumber;
+
 
   }
   int deliveryFee = 0;
@@ -605,6 +615,7 @@ class _MapState extends State<Map> {
                               Expanded(
                                 child:
                                 TextField(
+
                                   onTap: (){
                                     showModalBottomSheet(
                                         context: context,
@@ -664,6 +675,8 @@ class _MapState extends State<Map> {
                                 //   'number': phoneNumber,
                                 // });
                                // Navigator.pushNamed(context, PaymentMode.id);
+
+                                prefs.setBool(kIsPhoneNumberSaved, true);
                                 prefs.setString(kBillValue, amountToPay.toString());
                                 prefs.setString(kOrderId, orderId);
                                 transactionStream();
@@ -690,8 +703,6 @@ class _MapState extends State<Map> {
                                     instructions = customerName;
                                     setState(() {
                                     });
-
-
                                   },
                                 ),
                               ),

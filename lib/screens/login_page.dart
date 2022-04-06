@@ -56,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign In'),backgroundColor: kGreenJavasThemeColor,),
+      appBar: AppBar(title: Text('Sign In'),
+        backgroundColor: const Color(0xFF000000),),
       //backgroundColor: Colors.orange,
       body: SingleChildScrollView(
           child: Column(
@@ -71,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.only(bottomLeft: Radius.circular(90), bottomRight: Radius.circular(90)),
                       image: DecorationImage
                         (
-                          image:AssetImage('images/avocado.png'),
+                          image:AssetImage('images/funky.png'),
                           fit: BoxFit.fill),
                     ),
                   ))
@@ -170,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
 
                       }, child: Text('Forgot Password')),
                       RoundedLoadingButton(
-                        color: kGreenThemeColor,
+                        color: Colors.black,
                         child: Text('Login', style: TextStyle(color: Colors.white)),
                         controller: _btnController,
                         onPressed: () async {

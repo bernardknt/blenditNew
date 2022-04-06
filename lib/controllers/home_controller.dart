@@ -56,42 +56,37 @@ class _ControlPageState extends State<ControlPage> {
     return Scaffold(
       body: tabs[selectedPage],
       bottomNavigationBar:
-      BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        clipBehavior: Clip.antiAliasWithSaveLayer ,
-        notchMargin: 7,
-        child: BottomNavigationBar(
-          currentIndex: selectedPage,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: Colors.green,
-          iconSize: 18,
-          items:
-          // Item 1
-          const [
-            BottomNavigationBarItem(
-                icon: Icon(LineIcons.blender),label:'Your Blender',
-                backgroundColor: Colors.green),
-            // Item 2
-            BottomNavigationBarItem(
-                icon: Icon(LineIcons.store , size: 18,),label:'Store',
-                backgroundColor: Colors.purple),
-            // Item 3
-            BottomNavigationBarItem(
-                icon: Icon(LineIcons.receipt, size: 18,),label:'Orders',
-                backgroundColor: Colors.purple),
-            // Item 4
-            BottomNavigationBarItem(
-                icon: Icon(LineIcons.newspaper, size: 18,),label:'Blog',
-                backgroundColor: Colors.purple),
+      BottomNavigationBar(
+        currentIndex: selectedPage,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.green,
+        iconSize: 18,
+        items:
+        // Item 1
+        const [
+          BottomNavigationBarItem(
+              icon: Icon(LineIcons.blender),label:'Your Blender',
+              backgroundColor: Colors.green),
+          // Item 2
+          BottomNavigationBarItem(
+              icon: Icon(LineIcons.store , size: 18,),label:'Store',
+              backgroundColor: Colors.purple),
+          // Item 3
+          BottomNavigationBarItem(
+              icon: Icon(LineIcons.receipt, size: 18,),label:'Orders',
+              backgroundColor: Colors.purple),
+          // Item 4
+          BottomNavigationBarItem(
+              icon: Icon(LineIcons.newspaper, size: 18,),label:'Blog',
+              backgroundColor: Colors.purple),
 
-          ],
-          onTap: (index){
-            setState(() {
-                selectedPage = index;
-            });
-          },
-        ),
+        ],
+        onTap: (index){
+          setState(() {
+              selectedPage = index;
+          });
+        },
       ),
     );
   }

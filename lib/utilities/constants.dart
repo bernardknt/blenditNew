@@ -41,6 +41,8 @@ String kLoyaltyPoints= 'loyaltyPoints';
 String kAboutHeading= 'heading';
 String kAboutBody= 'body';
 String kWhatsappNumber= 'whatsapp';
+String kIsPhoneNumberSaved = "phoneNumberSave";
+String kPhoneNumberAlternative = 'alternativePhoneNumber';
 
 
 // String kGoogleMapsApiKey = 'AIzaSyAZO90xPWwT1bqCt9mTwWYh_Q7m7NngJoc';

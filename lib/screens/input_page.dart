@@ -25,6 +25,7 @@ class _InputPageState extends State<InputPage> {
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
   final _random = new Random();
   CollectionReference items = FirebaseFirestore.instance.collection('items');
+  CollectionReference communication = FirebaseFirestore.instance.collection('communication');
   CollectionReference categories = FirebaseFirestore.instance.collection('categories');
   CollectionReference ingredients = FirebaseFirestore.instance.collection('ingredients');
   CollectionReference saladIngredients = FirebaseFirestore.instance.collection('proteins');
@@ -34,8 +35,8 @@ class _InputPageState extends State<InputPage> {
     return items.doc(itemId)
         .set({
       'category': 'plans', // John Doe
-      'description': description, // Stokes and Sons
-      'name': productName,
+      'description': body, // Stokes and Sons
+      'name': title,
       'price': price,
       'quantity': 10,
       'image': images[_random.nextInt(images.length)],
@@ -45,13 +46,26 @@ class _InputPageState extends State<InputPage> {
         .then((value) => print("Item Added"))
         .catchError((error) => print("Failed to add Item: $error"));
   }
+  Future<void> addCommunication() {
+    // Call the user's CollectionReference to add a new user
+    return communication.doc(communicationId)
+        .set({
+      'title': title, // John Doe
+      'body': body,
+
+      // Stokes and Sons
+
+    })
+        .then((value) => print("Communication Sent"))
+        .catchError((error) => print("Failed to send Communication: $error"));
+  }
   Future<void> addIngredient() {
     // Call the user's CollectionReference to add a new user
     return ingredients.doc(itemId)
         .set({
       'category': 'vegetables', // John Doe
      // 'description': description, // Stokes and Sons
-      'name': productName,
+      'name': title,
      // 'price': price,
       'quantity': 10,
       'info':'',
@@ -66,7 +80,7 @@ class _InputPageState extends State<InputPage> {
     // Call the user's CollectionReference to add a new user
     return categories.doc(itemId)
         .set({
-      'name': productName, // John Doe
+      'name': title, // John Doe
       'id': itemId, // Stokes and Sons
     })
         .then((value) => print("Item Added"))
@@ -79,7 +93,7 @@ class _InputPageState extends State<InputPage> {
         .set({
       'category': 'vegetables', // John Doe
       // 'description': description, // Stokes and Sons
-      'name': productName,
+      'name': title,
       // 'price': price,
       'quantity': 10,
       'info':'',
@@ -96,11 +110,12 @@ class _InputPageState extends State<InputPage> {
     'https://bit.ly/3ievsbQ',
     'https://bit.ly/3ealgAb'];
   String itemId = 'cat${uuid.v1().split("-")[0]}';
-  String description= '';
+  String communicationId = 'com${uuid.v1().split("-")[0]}';
+  String body= '';
   double changeInvalidMessageOpacity = 0.0;
   String invalidMessageDisplay = 'Invalid Number';
   String password = '';
-  String productName = '';
+  String title = '';
   int price = 0;
 
 
@@ -139,17 +154,17 @@ class _InputPageState extends State<InputPage> {
                 Opacity(
                     opacity: changeInvalidMessageOpacity,
                     child: Text(invalidMessageDisplay, style: TextStyle(color:Colors.red , fontSize: 12),)),
-                InputFieldWidget(labelText:' Item Name' ,hintText: 'Chicken Salad', keyboardType: TextInputType.text, onTypingFunction: (value){
-                  productName = value;
+                InputFieldWidget(labelText:' Title' ,hintText: 'This is the title', keyboardType: TextInputType.text, onTypingFunction: (value){
+                  title = value;
 
                 },),
-                InputFieldWidget(labelText: 'Price', hintText: '20000', keyboardType: TextInputType.number,  onTypingFunction: (value){
-
-                  price = int.parse(value);
-                }),
+                // InputFieldWidget(labelText: 'Price', hintText: '20000', keyboardType: TextInputType.number,  onTypingFunction: (value){
+                //
+                //   price = int.parse(value);
+                // }),
                 SizedBox(height: 10.0,),
-                InputFieldWidget(labelText: 'Description', hintText: 'Amazing Salad', keyboardType: TextInputType.text, onTypingFunction: (value){
-                  description = value;
+                InputFieldWidget(labelText: 'Body', hintText: 'Additional Information', keyboardType: TextInputType.text, onTypingFunction: (value){
+                  body = value;
                 }),
                 // SizedBox(height: 8.0,),
                 // InputFieldWidget(labelText: ' Password',hintText:'Password', keyboardType: TextInputType.visiblePassword,passwordType: true, onTypingFunction: (value){
@@ -162,10 +177,10 @@ class _InputPageState extends State<InputPage> {
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: RoundedLoadingButton(
                         color: Colors.green,
-                        child: Text('Add New Ingredient', style: TextStyle(color: Colors.white)),
+                        child: Text('Send Communication', style: TextStyle(color: Colors.white)),
                         controller: _btnController,
                         onPressed: () async {
-                          if ( productName == ''){
+                          if ( title == ''){
                             _btnController.error();
                             showDialog(context: context, builder: (BuildContext context){
 
@@ -181,7 +196,8 @@ class _InputPageState extends State<InputPage> {
                               );
                             });
                           }else {
-                            addCategories();
+                            addCommunication();
+                            // addCategories();
                             //addSaladIngredient();
                             // addItem();
                           // addItem();
