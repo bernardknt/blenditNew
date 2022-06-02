@@ -24,7 +24,7 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPageState extends State<OrdersPage> {
-  final dateNow = new DateTime.now();
+  // final dateNow = new DateTime.now();
   late int price = 0;
   late int quantity = 1;
 
@@ -65,7 +65,7 @@ class _OrdersPageState extends State<OrdersPage> {
         orderStatusList.add(doc['status']);
         dateList.add(doc['order_time'].toDate());
 
-         if (doc['paymentStatus'] == 'pending'){
+         if (doc['paymentStatus'] != 'Complete'){
            paidStatusList.add('Unpaid');
            paidStatusListColor.add(Colors.red);
            opacityList.add(0.0);

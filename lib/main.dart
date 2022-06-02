@@ -45,13 +45,9 @@ import 'models/blendit_data.dart';
 
 
 
-
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
   await Firebase.initializeApp();
-
 }
 
 Future <void> main() async{
@@ -63,12 +59,12 @@ Future <void> main() async{
     // Replace with actual values
     // name: 'Secondary App',
 
-    options: const FirebaseOptions(
-      apiKey: "AIzaSyCwEb8qLqVUVgx6ZVHq49eu2BIRdGms2h4",
-      appId: "1:1036391886488:web:ebbbb16f292e260af46aed",
-      messagingSenderId: "1036391886488",
-      projectId: "blend-it-8a622",
-    ),
+    // options: const FirebaseOptions(
+    //   apiKey: "AIzaSyCwEb8qLqVUVgx6ZVHq49eu2BIRdGms2h4",
+    //   appId: "1:1036391886488:web:ebbbb16f292e260af46aed",
+    //   messagingSenderId: "1036391886488",
+    //   projectId: "blend-it-8a622",
+    // ),
   );
   await PushNotificationService().setupInteractedMessage();
   runApp(MyApp());
@@ -135,6 +131,7 @@ class MyApp extends StatelessWidget {
             ChooseJuicePage.id: (context)=>ChooseJuicePage(),
             BrowseStorePage.id: (context)=>BrowseStorePage(),
             PhoneDetailsPage.id: (context)=>PhoneDetailsPage(),
+
           },
         ),
       ),

@@ -3,7 +3,7 @@
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/screens/home_page.dart';
-import 'package:blendit_2022/screens/blog_page.dart';
+
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:flutter/material.dart';
 
@@ -33,8 +33,10 @@ class _ControlPageState extends State<ControlPage> {
   final tabs = [
     CustomizeController(),
     HomePage(),
+    Container(color: Colors.amber,),
+    // AiCameraPage(),
     OrdersPage(),
-    BlogPage()
+    // BlogPage()
     // SettingsPage()
   ];
   void defaultInitialization(){
@@ -66,7 +68,7 @@ class _ControlPageState extends State<ControlPage> {
         // Item 1
         const [
           BottomNavigationBarItem(
-              icon: Icon(LineIcons.blender),label:'Your Blender',
+              icon: Icon(LineIcons.blender),label:'Blender',
               backgroundColor: Colors.green),
           // Item 2
           BottomNavigationBarItem(
@@ -74,12 +76,16 @@ class _ControlPageState extends State<ControlPage> {
               backgroundColor: Colors.purple),
           // Item 3
           BottomNavigationBarItem(
+              icon: Icon(LineIcons.retroCamera, size: 18,),label:'Meal Scan ',
+              backgroundColor: Colors.purple),
+         //  Item 4
+          BottomNavigationBarItem(
               icon: Icon(LineIcons.receipt, size: 18,),label:'Orders',
               backgroundColor: Colors.purple),
           // Item 4
-          BottomNavigationBarItem(
-              icon: Icon(LineIcons.newspaper, size: 18,),label:'Blog',
-              backgroundColor: Colors.purple),
+          // BottomNavigationBarItem(
+          //     icon: Icon(LineIcons.newspaper, size: 18,),label:'Blog',
+          //     backgroundColor: Colors.purple),
 
         ],
         onTap: (index){

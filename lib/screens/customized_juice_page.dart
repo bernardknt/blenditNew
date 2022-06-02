@@ -88,7 +88,6 @@ class _CustomizedJuicePageState extends State<CustomizedJuicePage> {
           child: Center(child: Text(
             speciality,
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),)),
-
         ),
       ),
     );

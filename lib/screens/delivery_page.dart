@@ -337,7 +337,7 @@ class _MapState extends State<Map> {
 
         var blendedDataModify = Provider.of<BlenditData>(context, listen: false);
         Prediction? p = await PlacesAutocomplete.show(context: context,
-            apiKey: kGoogleMapsApiKey, types: []
+            apiKey: kGoogleMapsApiKey, types: [],
         strictbounds: true,
         mode: Mode.overlay,
         location: Location(lat: 0.3173, lng: 32.5927), // 0.3172959363980288, 32.59267831534121
@@ -486,7 +486,8 @@ class _MapState extends State<Map> {
                 SizedBox(height: 20,),
                 Opacity(
                   opacity: blendedData.locationOpacity,
-                  child: Stack(
+                  child:
+                  Stack(
                     children: [
 
                     Container( padding: const EdgeInsets.all(10),

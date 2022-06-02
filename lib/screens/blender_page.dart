@@ -305,7 +305,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         targetColor: Colors.yellow,
         featureId: 'feature4',
         tapTarget: const Icon(LineIcons.blender),
-        child: FloatingActionButton.extended(
+        child:
+        FloatingActionButton.extended(
 
           backgroundColor: blendedData.blendButtonColourJuice,
           onPressed: (){
