@@ -70,7 +70,7 @@ class _BlogPageState extends State<BlogPage> {
     // TODO: implement initState
     super.initState();
     //getPrayers();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) { _refreshIndicatorKey.currentState!.show();});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { _refreshIndicatorKey.currentState!.show();});
   }
   @override
   Widget build(BuildContext context) {

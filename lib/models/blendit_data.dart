@@ -21,7 +21,15 @@ class BlenditData extends ChangeNotifier{
   bool updateApp = true;
   int tabIndex = 0;
   String phoneNumber = '';
- String shareUrl = 'www.frutsexpress.com';
+  String shareUrl = 'www.frutsexpress.com';
+  Color loyaltyColor = kGreenThemeColor;
+  String loyaltyValueInitial = "0";
+  double loyaltyWarningOpacity = 0;
+  Color loyaltyApplyButton = kGreenThemeColor;
+  double loyaltyAccessButton = 1.0;
+  bool storeOpen = true;
+  bool loyaltyApplied = false;
+
 
   // -----------------JUICE VARIABLES-------------------------
   List juiceLeaves = []; // "Chicken","Fish","Mushrooms"
@@ -67,7 +75,31 @@ class BlenditData extends ChangeNotifier{
   List saladLeaves = [];
 
   // -----------------GENERAL  FUNCTIONS------------------------
+  void setStoreOpen(status){
+    storeOpen = status;
+    notifyListeners();
+  }
 
+  void setLoyaltyApplied(bool fact, double accessToLoyaty){
+    loyaltyApplied = fact;
+    loyaltyAccessButton = accessToLoyaty;
+    notifyListeners();
+
+  }
+  void setLoyaltyInitialValue(String value, color, double opacity, Color buttonColor, double loyaltyAccessOpacityButton){
+    loyaltyValueInitial = value;
+    loyaltyColor = color;
+    loyaltyWarningOpacity = opacity;
+    loyaltyApplyButton = buttonColor;
+    loyaltyAccessButton = loyaltyAccessOpacityButton;
+
+    notifyListeners();
+  }
+  void setRemoveLoyaltyPoints(int points){
+    totalPrice = totalPrice + points;
+    notifyListeners();
+
+  }
   void setPhoneNumber (newPhoneNumber){
     phoneNumber = newPhoneNumber;
     notifyListeners();
@@ -157,8 +189,8 @@ class BlenditData extends ChangeNotifier{
     totalPrice = 0;
     basketNumber = 0;
     notifyListeners();
-
   }
+
 
   // -----------------SALAD  FUNCTIONS------------------------
   void setSaladLeaves(saladLeafArray, saladMeatArray, saladExtrasArray){

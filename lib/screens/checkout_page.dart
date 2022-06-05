@@ -31,8 +31,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return CoolAlert.show(
       onConfirmBtnTap: (){
         Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
         },
 
       showCancelBtn: true,
@@ -130,7 +128,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               );
 
                             },
-                            child: Icon(Icons.cancel, color: Colors.red,size: 20,)),
+                            child: const Icon(Icons.cancel, color: Colors.red,size: 20,)),
                         title:Text('${blendedData.basketItems[index].name} x ${blendedData.basketItems[index].quantity} ', style: TextStyle(fontFamily: fontFamilyMont,fontSize: textSize)),
                         trailing: Padding(
                           padding: const EdgeInsets.only(right: 10, top: 20),
@@ -228,9 +226,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       flex: 3,
                       child: TextButton.icon(onPressed: ()async{
                         var prefs = await SharedPreferences.getInstance();
-                        if (prefs.getBool(kIsLoggedInConstant) == false){
+                        if (blendedData.storeOpen == false){
 
-                          AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To Continue with Purchase, Sign In or Sign Up is required', title: "Sign In Required");
+                          AlertPopUpDialogue(context, imagePath: 'images/closed.json', text: 'We cannot make deliveries right now because our Stores are closed', title: "Store Closed 😔"
+                              "");
                         }else{
                           showModalBottomSheet(
                               context: context,
@@ -238,7 +237,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 return DeliveryOptionsDialog();
                               });
                         }
-                        print(prefs.getBool(kIsLoggedInConstant));
 
                       },
                         style: TextButton.styleFrom(

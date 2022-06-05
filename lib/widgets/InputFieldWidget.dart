@@ -15,7 +15,8 @@ class InputFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: TextField(
+      child:
+      TextField(
         obscureText: passwordType,
         keyboardType: keyboardType,
         onChanged: onTypingFunction,

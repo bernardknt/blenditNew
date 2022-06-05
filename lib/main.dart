@@ -23,6 +23,7 @@ import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paymentMode_page.dart';
 import 'package:blendit_2022/screens/phone_details_page.dart';
+import 'package:blendit_2022/screens/rating_page.dart';
 import 'package:blendit_2022/screens/register_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/screens/settings_page.dart';
@@ -35,6 +36,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -86,7 +88,7 @@ class MyApp extends StatelessWidget {
       },
 
       child: OverlaySupport(
-        child: MaterialApp(
+        child: GetMaterialApp(
           theme: ThemeData(
             primarySwatch: Colors.green,
           ),
@@ -131,6 +133,7 @@ class MyApp extends StatelessWidget {
             ChooseJuicePage.id: (context)=>ChooseJuicePage(),
             BrowseStorePage.id: (context)=>BrowseStorePage(),
             PhoneDetailsPage.id: (context)=>PhoneDetailsPage(),
+            RatingPage.id: (context)=>RatingPage(),
 
           },
         ),

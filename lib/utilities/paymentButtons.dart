@@ -5,7 +5,7 @@ import 'constants.dart';
 
 
 class paymentButtons extends StatelessWidget {
-  paymentButtons({ required this.continueFunction, required this.continueBuyingText, required this.checkOutText, required this.buyFunction, this.lineIconFirstButton = LineIcons.shoppingBasket, this.lineIconSecondButton = LineIcons.motorcycle});
+  paymentButtons({ required this.continueFunction, required this.continueBuyingText, required this.checkOutText, required this.buyFunction, this.lineIconFirstButton = LineIcons.shoppingBasket, this.lineIconSecondButton = LineIcons.motorcycle, this.firstButtonColor = kBiegeThemeColor, this.secondButtonColor = kGreenThemeColor});
 
   final VoidCallback continueFunction;
   final VoidCallback buyFunction;
@@ -13,6 +13,8 @@ class paymentButtons extends StatelessWidget {
   final String checkOutText;
   final IconData lineIconFirstButton;
   final IconData lineIconSecondButton;
+  final Color firstButtonColor;
+  final Color secondButtonColor;
 
 
   @override
@@ -32,7 +34,7 @@ class paymentButtons extends StatelessWidget {
                      shape: RoundedRectangleBorder(
                          borderRadius: BorderRadius.circular(18)
                      ),
-                     backgroundColor: kBiegeThemeColor),icon: Icon(lineIconFirstButton, color: kBlueDarkColor,),
+                     backgroundColor: firstButtonColor),icon: Icon(lineIconFirstButton, color: kBlueDarkColor,),
                  label: Text(continueBuyingText, style: TextStyle(fontWeight: FontWeight.bold,
                      color: kBlueDarkColor), ), ),
              ),
@@ -46,7 +48,7 @@ class paymentButtons extends StatelessWidget {
                      shape: RoundedRectangleBorder(
                          borderRadius: BorderRadius.circular(18)
                      ),
-                     backgroundColor: Colors.green),icon: Icon(lineIconSecondButton, color: Color(0xFFF2efe4),),
+                     backgroundColor: secondButtonColor),icon: Icon(lineIconSecondButton, color: Color(0xFFF2efe4),),
                  label: Text(checkOutText, style: TextStyle(fontWeight: FontWeight.bold,
                      color: kBiegeThemeColor), ), ),
              ),

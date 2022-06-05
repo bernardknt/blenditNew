@@ -33,7 +33,7 @@ class _ControlPageState extends State<ControlPage> {
   final tabs = [
     CustomizeController(),
     HomePage(),
-    Container(color: Colors.amber,),
+    // Container(color: Colors.amber,),
     // AiCameraPage(),
     OrdersPage(),
     // BlogPage()
@@ -75,9 +75,9 @@ class _ControlPageState extends State<ControlPage> {
               icon: Icon(LineIcons.store , size: 18,),label:'Store',
               backgroundColor: Colors.purple),
           // Item 3
-          BottomNavigationBarItem(
-              icon: Icon(LineIcons.retroCamera, size: 18,),label:'Meal Scan ',
-              backgroundColor: Colors.purple),
+          // BottomNavigationBarItem(
+          //     icon: Icon(LineIcons.retroCamera, size: 18,),label:'Meal Scan ',
+          //     backgroundColor: Colors.purple),
          //  Item 4
           BottomNavigationBarItem(
               icon: Icon(LineIcons.receipt, size: 18,),label:'Orders',

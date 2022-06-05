@@ -1,12 +1,16 @@
 
+import 'package:blendit_2022/screens/home_page.dart';
 import 'package:blendit_2022/screens/input_page.dart';
+import 'package:blendit_2022/screens/rating_page.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/roundedButtons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,6 +36,8 @@ class _SettingsPageState extends State<SettingsPage> {
     String newSubscribedChurch = 'Kampala';
 
 
+
+
     setState(() {
 
       name = newName;
@@ -43,6 +49,49 @@ class _SettingsPageState extends State<SettingsPage> {
 
 
     });
+  }
+
+  final _dialog = RatingDialog(
+    initialRating: 3.0,
+    // your app's name?
+    title: const Text(
+      'Rate Your Order',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 25,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    // encourage your user to leave a high rating?
+    message: const Text(
+      'Tap a star to set your rating.',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 15),
+    ),
+    // your app's logo?
+    image: Image.asset('images/black_logo.png',width: 150, height: 150, ),
+    submitButtonText: 'Submit',
+    commentHint: 'You can Add an extra Comment',
+    onCancelled: () => print('cancelled'),
+    onSubmitted: (response) async{
+      var prefs = await SharedPreferences.getInstance();
+      await FirebaseFirestore.instance
+          .collection('orders').doc(prefs.getString(kOrderId))
+          .update({
+        'rating': response.rating,
+        'rating_comment': response.comment,
+        'hasRated': true
+      }
+      );
+      return 0;
+    },
+  );
+  void showRatingsDialogue(){
+    showDialog(
+      context: context,
+      barrierDismissible: false, // set to false if you want to force a rating
+      builder: (context) => RatingPage(),
+    );
   }
   double textSize = 15;
   String subscribedChurch = '';
@@ -72,6 +121,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBlueDarkColor,
@@ -91,14 +141,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: kGreenThemeColor,
                 elevation: 5.0,
                 child: ListTile(
-                  title: Text(name, style: TextStyle(fontFamily: 'Montserrat-Medium', color: Colors.white)),
-                  leading: CircleAvatar(
+                  title: Text(name, style: const TextStyle(fontFamily: 'Montserrat-Medium', color: Colors.white)),
+                  leading: const CircleAvatar(
                     backgroundImage: AssetImage('images/fruits.png'),
                   ),
-                  trailing: Icon(Icons.edit, color: Colors.white,),
+                  trailing: const Icon(Icons.edit, color: Colors.white,),
                 ),
               ),
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               Card(
                 margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
                 shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
@@ -118,10 +168,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       trailing: Icon(Icons.keyboard_arrow_right),
                     ),
                     _buildDivider(),
-                    ListTile(
-                      leading: Icon(LineIcons.flag, color: kGreenThemeColor,),
-                      title:Text('Uganda', style: TextStyle(fontFamily: 'Montserrat-Medium',fontSize: textSize)),
-                      trailing: Icon(Icons.keyboard_arrow_right),
+                    GestureDetector(
+                      onTap: (){
+                        showRatingsDialogue();
+                      },
+                      child: ListTile(
+                        leading: Icon(LineIcons.flag, color: kGreenThemeColor,),
+                        title:Text('Uganda', style: TextStyle(fontFamily: 'Montserrat-Medium',fontSize: textSize)),
+                        trailing: Icon(Icons.keyboard_arrow_right),
+                      ),
                     ),
                     _buildDivider(),
                     GestureDetector(
@@ -204,6 +259,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
   Container _buildDivider(){
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0, ),

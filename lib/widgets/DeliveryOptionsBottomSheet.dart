@@ -27,7 +27,7 @@ class DeliveryOptionsDialog extends StatelessWidget {
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [kBiegeThemeColor, kBiegeThemeColor] ),
+                colors: [kBiegeThemeColor, kPinkBlenderColor] ),
             borderRadius: BorderRadius.only(topRight: Radius.circular(20),  topLeft: Radius.circular(20)),
             color: Colors.green
         ),

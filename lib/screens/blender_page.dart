@@ -86,7 +86,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     tutorialDone = prefs.getBool(kIsTutorialDone) ?? false;
     if (tutorialDone == false){
       initialId = 'feature1';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         FeatureDiscovery.discoverFeatures(context,
             <String>['feature1','feature2', 'feature3', 'feature4', 'feature5']);
       });
@@ -103,6 +103,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
     var start = FirebaseFirestore.instance.collection('prices').snapshots().listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
+        var open = doc['open'];
         var twoKm = doc['twoKm'];
         var fourKm = doc['fourKm'];
         var sixKm = doc['sixKm'];
@@ -122,6 +123,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         setState(() {
           Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender, saladPrice, saladMeatPrice, saladExtrasPrice);
           Provider.of<BlenditData>(context, listen: false).setNewShareUrl(shareUrl);
+          Provider.of<BlenditData>(context, listen: false).setStoreOpen(open);
           prefs.setInt(kTwoKmDistance, twoKm);
           prefs.setInt(kFourKmDistance, fourKm);
           prefs.setInt(kSixKmDistance, sixKm);

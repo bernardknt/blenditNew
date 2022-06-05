@@ -2,9 +2,7 @@ import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/paymentButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
 
-import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutUsPage extends StatefulWidget {
@@ -17,7 +15,7 @@ class AboutUsPage extends StatefulWidget {
 class _AboutUsPageState extends State<AboutUsPage> {
   String churchName = 'Blendit';
 
-  String imageUrl = 'images/avocado.png';
+  String imageUrl = 'images/funky.png';
   String heading = '';
   String body = '';
   String phoneNumber = '';
@@ -48,7 +46,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             expandedHeight: 170,
             floating: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset('images/avocado.png', fit: BoxFit.cover),
+              background: Image.asset('images/funky.png', fit: BoxFit.cover),
               //.network(churchUrl, fit: BoxFit.cover,),
               title: Container(
                   margin: EdgeInsets.only(left: 30, right: 30),
