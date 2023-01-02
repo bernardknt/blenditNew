@@ -2,13 +2,18 @@
 
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
+import 'package:blendit_2022/screens/chat_designed_page.dart';
+import 'package:blendit_2022/screens/chat_third_design.dart';
 import 'package:blendit_2022/screens/home_page.dart';
 
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+
+import '../screens/chat_page.dart';
 
 
 class ControlPage extends StatefulWidget {
@@ -31,8 +36,11 @@ class _ControlPageState extends State<ControlPage> {
   double buttonHeight = 40.0;
   int amount = 0;
   final tabs = [
-    CustomizeController(),
+    // ChatDesignedPage(),
+    ChatThirdDesignedPage(),
     HomePage(),
+    // CustomizeController(),
+
     // Container(color: Colors.amber,),
     // AiCameraPage(),
     OrdersPage(),
@@ -67,17 +75,18 @@ class _ControlPageState extends State<ControlPage> {
         items:
         // Item 1
         const [
-          BottomNavigationBarItem(
-              icon: Icon(LineIcons.blender),label:'Blender',
-              backgroundColor: Colors.green),
+
           // Item 2
           BottomNavigationBarItem(
-              icon: Icon(LineIcons.store , size: 18,),label:'Store',
+              icon: Icon(LineIcons.magic , size: 18,),label:'Nutri',
               backgroundColor: Colors.purple),
           // Item 3
           // BottomNavigationBarItem(
           //     icon: Icon(LineIcons.retroCamera, size: 18,),label:'Meal Scan ',
           //     backgroundColor: Colors.purple),
+          BottomNavigationBarItem(
+              icon: Icon(Iconsax.airpod4),label:'Challenges',
+              backgroundColor: Colors.green),
          //  Item 4
           BottomNavigationBarItem(
               icon: Icon(LineIcons.receipt, size: 18,),label:'Orders',

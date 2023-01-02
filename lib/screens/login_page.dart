@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   var token = "phoneToken";
   bool showSpinner = false;
 
-  Future<void> uploadUserData() async {
+  Future<void> uploadUserToken() async {
 
 
     final users = await FirebaseFirestore.instance
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
       print("");
 
 
-    } else
+    }
 
     _firebaseMessaging.getToken().then((value) => token = value!);
   }
@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Stack(
                 children: [
                   Positioned(child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(bottomLeft: Radius.circular(90), bottomRight: Radius.circular(90)),
                       image: DecorationImage
                         (
@@ -80,9 +80,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
               //åSizedBox(height: 10,),
-              Padding(padding: EdgeInsets.only(left: 50, right: 50, top: 10),
+              Padding(padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
                   child: Column(
-                    children: [Text("Welcome, Let's Sign you in",textAlign: TextAlign.center, style: TextStyle(
+                    children: [Text("Welcome, Let's Sign you in",textAlign: TextAlign.center, style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         color: Colors.black54
@@ -190,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                             prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
                             prefs.setBool(kIsLoggedInConstant, true);
                             prefs.setString(kToken, token);
-                            uploadUserData(); // This ensures that the phone currently logged in is the one that gets the phone notifications
+                            uploadUserToken(); // This ensures that the phone currently logged in is the one that gets the phone notifications
 
                             Navigator.pushNamed(context, ControlPage.id);
                             //showSpinner = false;

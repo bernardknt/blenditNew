@@ -11,7 +11,7 @@ import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -380,7 +380,9 @@ class _MapState extends State<Map> {
           final lng = detail.result.geometry!.location.lng;
           final prefs = await SharedPreferences.getInstance();
 
-          double distanceInMeters = Geolocator.distanceBetween(0.3173, 32.5927, lat, lng);
+          double distanceInMeters = 6.5;
+
+          // Geolocator.distanceBetween(0.3173, 32.5927, lat, lng);
           blendedDataModify.setDeliveryDistance(distanceInMeters);
           if (distanceInMeters < 2000.0){
 
@@ -447,9 +449,9 @@ class _MapState extends State<Map> {
       final lat = detail.result.geometry!.location.lat;
       final lng = detail.result.geometry!.location.lng;
 
-      scaffold.showSnackBar(
-        SnackBar(content: Text("${p.description} - $lat/$lng")),
-      );
+      // scaffold.showSnackBar(
+      //   SnackBar(content: Text("${p.description} - $lat/$lng")),
+      // );
     }
   }
   // This code places a done button on the iOS number bad after entering the phone number on delivery page

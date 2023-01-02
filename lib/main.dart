@@ -5,6 +5,9 @@ import 'package:blendit_2022/screens/allProducts_page.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
 import 'package:blendit_2022/screens/browse_store.dart';
+import 'package:blendit_2022/screens/chat_designed_page.dart';
+import 'package:blendit_2022/screens/chat_page.dart';
+import 'package:blendit_2022/screens/chat_third_design.dart';
 import 'package:blendit_2022/screens/checkout_page.dart';
 import 'package:blendit_2022/screens/choose_juice_page.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
@@ -12,6 +15,7 @@ import 'package:blendit_2022/screens/delivery_page.dart';
 import 'package:blendit_2022/screens/detox_juice.dart';
 import 'package:blendit_2022/screens/detox_plans.dart';
 import 'package:blendit_2022/screens/home_page.dart';
+import 'package:blendit_2022/screens/home_page_origina.dart';
 import 'package:blendit_2022/screens/input_page.dart';
 import 'package:blendit_2022/screens/loading_ingredients_page.dart';
 import 'package:blendit_2022/screens/login_page.dart';
@@ -19,6 +23,8 @@ import 'package:blendit_2022/screens/loyalty_page.dart';
 import 'package:blendit_2022/screens/mobileMoney.dart';
 import 'package:blendit_2022/screens/blog_comments_page.dart';
 import 'package:blendit_2022/screens/blog_page.dart';
+import 'package:blendit_2022/screens/new_logins/verify_phone.dart';
+import 'package:blendit_2022/screens/new_settings.dart';
 import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paymentMode_page.dart';
@@ -129,11 +135,17 @@ class MyApp extends StatelessWidget {
             ReadComments.id: (context)=>ReadComments(comments: [],),
             CustomizeController.id: (context)=>CustomizeController(),
             SaladBlenderPage.id: (context)=>SaladBlenderPage(),
-            CustomizedJuicePage.id: (context)=>CustomizedJuicePage(),
+            QuizQuestions.id: (context)=>QuizQuestions(),
             ChooseJuicePage.id: (context)=>ChooseJuicePage(),
             BrowseStorePage.id: (context)=>BrowseStorePage(),
             PhoneDetailsPage.id: (context)=>PhoneDetailsPage(),
             RatingPage.id: (context)=>RatingPage(),
+            ChatPage.id: (context)=>ChatPage(),
+            ChatDesignedPage.id: (context)=>ChatDesignedPage(),
+            NewSettingsPage.id: (context)=>NewSettingsPage(),
+            ChatThirdDesignedPage.id: (context)=>ChatThirdDesignedPage(),
+            VerifyPinPage.id: (context)=>VerifyPinPage(),
+            HomePageOriginal.id: (context)=>HomePageOriginal(),
 
           },
         ),

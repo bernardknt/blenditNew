@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 
-class CustomizedJuicePage extends StatefulWidget {
+class QuizQuestions extends StatefulWidget {
 
   static String id = "CustomizedPage";
 
 
   @override
-  _CustomizedJuicePageState createState() => _CustomizedJuicePageState();
+  _QuizQuestionsState createState() => _QuizQuestionsState();
 }
 
-class _CustomizedJuicePageState extends State<CustomizedJuicePage> {
+class _QuizQuestionsState extends State<QuizQuestions> {
   var categoryName = [];
   var categoryId = [];
   @override

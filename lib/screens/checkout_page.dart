@@ -166,7 +166,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [QuantityBtn(onTapFunction: (){
+                                    children: [
+                                      QuantityBtn(onTapFunction: (){
                                       Provider.of<BlenditData>(context, listen: false).updateBasketItem(blendedData.basketItems[index], blendedData.basketItems[index].quantity, '-');
                                     }, text: '-', size: 30,),
                                       SizedBox(width: 2,),

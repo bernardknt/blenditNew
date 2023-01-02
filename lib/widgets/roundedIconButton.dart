@@ -41,10 +41,7 @@ class RoundedIconButtons extends StatelessWidget {
                 image: DecorationImage(image:
                 NetworkImage(networkImageToUse),fit: BoxFit.cover
                 ),
-
               ),
-
-
             ),
           ),
         ),

@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
+import '../screens/new_settings.dart';
+
 
 
 
@@ -35,7 +37,7 @@ class _CustomizeControllerState extends State<CustomizeController> {
             actions: [
               GestureDetector(
                 onTap: (){
-                  Navigator.pushNamed(context, SettingsPage.id);
+                  Navigator.pushNamed(context, NewSettingsPage.id);
                 },
                 child: Container(
                     padding:EdgeInsets.all(7),child:

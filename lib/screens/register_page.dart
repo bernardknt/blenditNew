@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 
@@ -26,7 +25,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
 
-  @override
   String email= '';
   double changeInvalidMessageOpacity = 0.0;
   String invalidMessageDisplay = 'Invalid Number';

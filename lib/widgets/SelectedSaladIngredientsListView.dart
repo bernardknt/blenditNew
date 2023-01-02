@@ -53,7 +53,8 @@ class SelectedSaladIngredientsListView extends StatelessWidget {
                           color: kBlueDarkColor), ), ),
                   )),
               Positioned(
-                child: ListView.builder(
+                child:
+                ListView.builder(
                     itemCount: blendedData.saladIngredientsNumber,
                     itemBuilder: (context, index){
                       return ListTile(
@@ -75,7 +76,8 @@ class SelectedSaladIngredientsListView extends StatelessWidget {
 
                   child:
                   Center(
-                    child: TextButton.icon(onPressed: ()async{
+                    child:
+                    TextButton.icon(onPressed: ()async{
                       // Vibration.vibrate(
                       //   pattern: [500, 1000, 500, 1000],
                       // );

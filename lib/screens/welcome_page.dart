@@ -73,19 +73,19 @@ class _WelcomePageState extends State<WelcomePage> {
                             color: Colors.white),
                       ),
                     ),
-                    roundedButtons(
-                      buttonColor: const Color(0xFFB65500),
-                      buttonHeight: 35,
-                      title: 'Register',
-                      onPressedFunction: () {
-                        //getLocation();
-                        Navigator.pushNamed(context, RegisterPage.id);
-                      },
-                    ),
+                    // roundedButtons(
+                    //   buttonColor: const Color(0xFFB65500),
+                    //   buttonHeight: 35,
+                    //   title: 'Register',
+                    //   onPressedFunction: () {
+                    //     //getLocation();
+                    //     Navigator.pushNamed(context, RegisterPage.id);
+                    //   },
+                    // ),
                     roundedButtons(
                       buttonColor: const Color(0xFF019C29),
-                      buttonHeight: 35,
-                      title: 'Login',
+                      buttonHeight: 45,
+                      title: 'Start Here',
                       onPressedFunction: () {
                         Navigator.pushNamed(context, LoginPage.id);
                       },

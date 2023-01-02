@@ -18,7 +18,8 @@ class CommentListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var numberOfFollowers = blogComment.length;
-    return Container(
+    return
+      Container(
       //width: double.infinity,
 
       padding: EdgeInsets.all(0),

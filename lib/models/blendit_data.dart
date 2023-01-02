@@ -9,6 +9,17 @@ class BlenditData extends ChangeNotifier{
 
 
   // -----------------GENERAL VARIABLES-------------------------
+  String lastQuestion = '';
+  String phoneVerificationId = '';
+
+
+
+
+
+
+
+
+
   List<BasketItem> basketItems = [];
   String location = '';
   String deliveryInstructions = '';
@@ -75,6 +86,18 @@ class BlenditData extends ChangeNotifier{
   List saladLeaves = [];
 
   // -----------------GENERAL  FUNCTIONS------------------------
+  // Create a function to change the last question
+  void setVerificationId(verify){
+
+    phoneVerificationId = verify;
+    notifyListeners();
+  }
+
+  void changeLastQuestion(String newQuestion){
+    lastQuestion = newQuestion;
+    notifyListeners();
+  }
+
   void setStoreOpen(status){
     storeOpen = status;
     notifyListeners();
@@ -184,6 +207,7 @@ class BlenditData extends ChangeNotifier{
     totalPrice -= item.amount * item.quantity ;
     notifyListeners();
   }
+
   void clearBasket(){
     basketItems.clear();
     totalPrice = 0;

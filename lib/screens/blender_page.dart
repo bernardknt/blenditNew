@@ -507,7 +507,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                             tapTarget: Lottie.asset('images/juiceBlender.json', width: 50),
                             child: GestureDetector
                               (onTap: (){
-                              Navigator.pushNamed(context, CustomizedJuicePage.id);
+                              Navigator.pushNamed(context, QuizQuestions.id);
                             },
                               child: Lottie.asset('images/juiceBlender.json', width: 50),
 
