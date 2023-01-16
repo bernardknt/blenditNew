@@ -1,5 +1,6 @@
 
 import 'package:blendit_2022/screens/welcome_page.dart';
+import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,24 +31,26 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
     final prefs = await SharedPreferences.getInstance();
     String newName = prefs.getString(kFullNameConstant) ?? 'User';
-    // String newSex = prefs.getString(kUserSex) ?? 'Name';
-    // String newBirthday = prefs.getString(kUserBirthday) ?? '16-May-1989';
+    String newSex = prefs.getString(kUserSex) ?? 'Name';
+    String newBirthday = prefs.getString(kUserBirthday) ?? '16-May-1989';
+    String newCountry = prefs.getString(kUserCountryName) ?? '16-May-1989';
     String? newPhone = prefs.getString(kPhoneNumberConstant);
-    String? newEmail = prefs.getString(kEmailConstant);
+    String? newEmail = prefs.getString(kEmailConstant) ??"No email";
     String newSubscribedChurch = 'Haircuts, Massage, Makeup';
-    // double newWeight = prefs.getDouble(kUserWeight) ?? 80;
-    // int newHeight = prefs.getInt(kUserHeight)?? 180;
+    double newWeight = prefs.getDouble(kUserWeight) ?? 80;
+    int newHeight = prefs.getInt(kUserHeight)?? 180;
 
 
     setState(() {
-      // birthday = newBirthday;
-      // weight = newWeight;
+      country = newCountry;
+      birthday = newBirthday;
+      weight = newWeight;
       name = newName;
-      // sex = newSex;
+      sex = newSex;
       phone = newPhone!;
       email= newEmail!;
       preferences = newSubscribedChurch;
-      // height = newHeight;
+      height = newHeight;
       bmi = ((weight)/ ((height/100)*(height/100))).roundToDouble();
       // phoneNumber = prefs.getString(kCustomerCare)!;
 
@@ -56,6 +59,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
   }
   double textSize = 15;
   String preferences = '';
+  String country = '';
   String phone = '';
   String name = '';
   String sex = 'Female';
@@ -207,9 +211,9 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                         //
 
                       },
-                      child: const ListTile(
+                      child:  ListTile(
                         leading: Icon(LineIcons.flag, color: kGreenThemeColor,),
-                        title:Text('Uganda', style:kNormalTextStyle),
+                        title:Text(country, style:kNormalTextStyle),
                         // trailing: Icon(Icons.keyboard_arrow_right),
                       ),
                     ),
@@ -244,14 +248,14 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                               confirmBtnColor: kFontGreyColor,
                               confirmBtnText: 'Yes',
                               confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
-                              lottieAsset: 'images/sad.json', showCancelBtn: true, backgroundColor: kBlack,
+                              lottieAsset: 'images/chopping.json', showCancelBtn: true, backgroundColor: kBlack,
 
 
                               onConfirmBtnTap: () async{
                                 final prefs = await SharedPreferences.getInstance();
                                 prefs.setBool(kIsLoggedInConstant, false);
                                 prefs.setBool(kIsFirstTimeUser, true);
-                                await auth.signOut().then((value) => Navigator.pushNamed(context, WelcomePage.id));
+                                await auth.signOut().then((value) => Navigator.pushNamed(context, WelcomePageNew.id));
 
 
 
@@ -277,7 +281,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                           confirmBtnColor: kFontGreyColor,
                           confirmBtnText: 'Yes',
                           confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
-                          lottieAsset: 'images/delete.json', showCancelBtn: true, backgroundColor: kFaintGrey,
+                          lottieAsset: 'images/kiwi.json', showCancelBtn: true, backgroundColor: kFaintGrey,
 
 
                           onConfirmBtnTap: () async{
@@ -305,7 +309,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
 
 
-                    }, child: Text("Delete Account")),
+                    }, child: Text("Delete Account", style:kNormalTextStyleBoldPink.copyWith(color: Colors.red, fontSize: 13) ,)),
 
                     const SizedBox(height: 10,),
                     Center(

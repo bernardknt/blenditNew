@@ -83,7 +83,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 // THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
-    tutorialDone = prefs.getBool(kIsTutorialDone) ?? false;
+    tutorialDone = prefs.getBool(kIsTutorial2Done) ?? false;
     if (tutorialDone == false){
       initialId = 'feature1';
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -93,7 +93,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     }else{
       print("Tutorial $tutorialDone}");
     }
-    prefs.setBool(kIsTutorialDone, true);
+    prefs.setBool(kIsTutorial2Done, true);
   }
   // SHOW FLUTTER NOTIFICATIONS
 

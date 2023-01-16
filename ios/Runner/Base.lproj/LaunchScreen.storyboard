@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,8 +22,12 @@
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
                                 <rect key="frame" x="207" y="448" width="0.5" height="0.5"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="salads" translatesAutoresizingMaskIntoConstraints="NO" id="w7K-9T-hxv">
-                                <rect key="frame" x="36.5" y="235" width="341" height="426"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nutri copy" translatesAutoresizingMaskIntoConstraints="NO" id="w7K-9T-hxv">
+                                <rect key="frame" x="0.0" y="384" width="414" height="512"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="512" id="Xnu-L8-dvZ"/>
+                                    <constraint firstAttribute="width" constant="414" id="nf5-hK-P1v"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.83529411764705885" green="0.8666666666666667" blue="0.78823529411764703" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -31,8 +35,12 @@
                         <constraints>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
-                            <constraint firstItem="w7K-9T-hxv" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="czd-Mi-s82"/>
-                            <constraint firstItem="w7K-9T-hxv" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="ek0-bX-Aza"/>
+                            <constraint firstItem="w7K-9T-hxv" firstAttribute="centerX" secondItem="YRO-k0-Ey4" secondAttribute="centerX" id="7mQ-JV-xVV"/>
+                            <constraint firstItem="w7K-9T-hxv" firstAttribute="top" secondItem="Ydg-fD-yQy" secondAttribute="bottom" constant="336" id="edY-Zc-xhX"/>
+                            <constraint firstItem="w7K-9T-hxv" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="ew2-XB-Xjf"/>
+                            <constraint firstAttribute="bottom" secondItem="w7K-9T-hxv" secondAttribute="bottom" id="f2b-UF-ATD"/>
+                            <constraint firstAttribute="trailing" secondItem="w7K-9T-hxv" secondAttribute="trailing" id="qti-8x-44r"/>
+                            <constraint firstItem="w7K-9T-hxv" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="xtD-mK-9ON"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -43,6 +51,6 @@
     </scenes>
     <resources>
         <image name="LaunchImage" width="0.5" height="0.5"/>
-        <image name="salads" width="341" height="426.5"/>
+        <image name="nutri copy" width="400" height="512"/>
     </resources>
 </document>

@@ -12,6 +12,7 @@ import '../../utilities/constants.dart';
 import '../../utilities/font_constants.dart';
 import '../../utilities/icons_constants.dart';
 import '../login_page.dart';
+import '../onboarding_questions/quiz_page_name.dart';
 
 
 class SignInPhone extends StatefulWidget {
@@ -44,7 +45,7 @@ class _SignInPhoneState extends State<SignInPhone> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: kAppPinkColor,
+        backgroundColor: kGreenThemeColor,
         foregroundColor: kPureWhiteColor,
         title: Text("Sign In",style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
       ),
@@ -110,7 +111,7 @@ class _SignInPhoneState extends State<SignInPhone> {
 
                         },
                         // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                        initialSelection: 'UG',
+                        initialSelection: 'US',
                         favorite: const ['+256','UG'],
                         // optional. Shows only country name and flag
                         showCountryOnly: false,
@@ -175,7 +176,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                   height: 43,
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: kAppPinkColor,
+                          backgroundColor: kGreenThemeColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       onPressed: () async{
@@ -183,6 +184,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                         final isValidForm = formKey.currentState!.validate();
 
                           if(isValidForm){
+                            print('WALALALALLA $countryName');
                             var phoneNumberFull = '$countryCode$phoneNumber';
                             final prefs = await SharedPreferences.getInstance();
                             await FirebaseAuth.instance.verifyPhoneNumber(
@@ -207,11 +209,16 @@ class _SignInPhoneState extends State<SignInPhone> {
                                 codeSent: (String verificationId, int? forceResendingToken) {
                                   Provider.of<BlenditData>(context, listen:false).setVerificationId(verificationId);
                                 });
+                            prefs.setInt(kNutriCount, 0);
+                            prefs.setBool(kIsTutorial1Done, false);
+                            prefs.setBool(kIsTutorial2Done, false);
                             prefs.setString(kUserCountryName, countryName);
                             prefs.setString(kUserCountryFlag, countryFlag);
                             prefs.setString(kUniqueUserPhoneId, phoneNumberFull);
-                            prefs.setString(kPhoneNumberConstant, phoneNumber);
+                            prefs.setString(kPhoneNumberConstant, countryCode + phoneNumber);
                             Navigator.pushNamed(context, VerifyPinPage.id);
+                            // Navigator.pushNamed(context, QuizPageName.id);
+                            // //MaterialPageRoute(builder: (context)=> QuizPageName());
                           }
                         },
 

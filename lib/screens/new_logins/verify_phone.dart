@@ -8,12 +8,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
-
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../controllers/home_controller.dart';
+import '../../models/CommonFunctions.dart';
 import '../../utilities/font_constants.dart';
+import '../onboarding_questions/quiz_page_name.dart';
 
 
 
@@ -30,6 +33,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
   var code = '';
   var resendPin = false;
   var token = "phoneToken";
+  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
 
 
@@ -125,14 +129,18 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
               SizedBox(
                 width: double.infinity,
                 height: 45,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: kGreenThemeColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
+                child:
+                // ElevatedButton(
+                //     style: ElevatedButton.styleFrom(
+                //         backgroundColor: kGreenThemeColor,
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(10))),
+                RoundedLoadingButton(
+                    color: Colors.green,
+                    // child:
                     onPressed: () async{
+                      _btnController.start();
                       final prefs = await SharedPreferences.getInstance();
-
                       try {
                         PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: Provider.of<BlenditData>(context, listen: false).phoneVerificationId, smsCode: code);
                         final user = await auth.signInWithCredential(credential);
@@ -140,37 +148,36 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                             .collection('users').doc(auth.currentUser!.uid)
                             .get();
                         if (users.exists){
-                          var preferences = users['preferences'];
-                          var preferencesIds = users['preferencesId'];
+                          print("NULULULULULU ${users.data()}");
+
                           final prefs = await SharedPreferences.getInstance();
-                          // prefs.setDouble(kLocationLatitude, 0.312298);
-                          // prefs.setDouble(kLocationLongitude, 32.5778102);
-                          // prefs.setString(kLocationName, 'Kampala City Centre');
+
                           prefs.setString(kFullNameConstant, users['lastName']);
                           prefs.setString(kFirstNameConstant, users['firstName']);
                           prefs.setString(kUniqueUserPhoneId, users['email']);
                           prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
                           prefs.setString(kUserCountryName, users['country']);
                           prefs.setBool(kIsLoggedInConstant, true);
+                          prefs.setString(kUserSex, users['sex']);
+                          prefs.setDouble(kUserWeight, users['weight']/1.0);
+                          prefs.setInt(kUserHeight, users['height']);
+                          prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
                           // prefs.setString(kPreferencesConstant, preferences.join(', '));
                           // prefs.setString(kPreferencesIdConstant, preferencesIds.join(', '));
                           prefs.setString(kToken, token);
 
                           // This Function uploads the user token to the server.
-                          //CommonFunctions().uploadUserToken(token);
-
+                          CommonFunctions().uploadUserToken(token);
+                         //  MaterialPageRoute(builder: (context)=> QuizPageName());
                           Navigator.pushNamed(context, ControlPage.id);
                         } else {
                           if (prefs.getString(kFullNameConstant) == ''){
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context)=> QuizPageName())
-                            // );
-
-
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context)=> QuizPageName())
+                            );
                           } else {
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context)=> QuizPage0())
-                            // );
+                            _btnController.reset();
+
                           }
 
 
@@ -181,12 +188,15 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                         prefs.setBool(kIsFirstTimeUser, true);
                       } catch(e){
                         print(code);
+                        _btnController.reset();
                         print(Provider.of<BlenditData>(context, listen: false).phoneVerificationId);
                         showDialog(context: context, builder: (BuildContext context){
 
                           return CupertinoAlertDialog(
-                            title: const Text('Oops Wrong Pin'),
-                            content: Text('Error message: Please ensure you entered the right pin or have a stable internet connection.$e'),
+                            title: const Text('Oops Something went Wrong'),
+                            content:
+                            Text('Error message: Please make sure you have entered the correct code'),
+                            // Text('Error message: $e'),
                             actions: [CupertinoDialogAction(isDestructiveAction: true,
                                 onPressed: (){
                                   // _btnController.reset();
@@ -199,6 +209,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
 
 
                       },
+                    controller: _btnController,
                     child: Text("Verify Phone Number",style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)
                 ),
               ),
@@ -206,7 +217,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        Navigator.pop(context); 
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "Edit Phone Number ?",

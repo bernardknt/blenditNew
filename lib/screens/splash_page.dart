@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
+import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 
 class SplashPage extends StatefulWidget {
@@ -17,6 +21,7 @@ class _SplashPageState extends State<SplashPage> {
 
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
+
     bool isLoggedIn = prefs.getBool(kIsLoggedInConstant) ?? false;
 
     setState(() {
@@ -32,7 +37,7 @@ class _SplashPageState extends State<SplashPage> {
 
       else{
         _timer = new Timer(const Duration(milliseconds: 1000), () {
-          Navigator.pushNamed(context, WelcomePage.id);
+          Navigator.pushNamed(context, WelcomePageNew.id);
 
         });
 
@@ -49,10 +54,24 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(40),
-        color: Colors.black,
-        child: Center(child: Image.asset('images/blendgif.gif', height: 200,)),
+      body: Stack(
+        children: [
+          Container(
+            // padding: EdgeInsets.all(40),
+            color: kGreenThemeColor,
+            child: Column(
+              children: [
+                Spacer(),
+                Image.asset('images/nutri.png', fit: BoxFit.fitWidth,),
+              ],
+            ),
+          ),
+          // Positioned(
+          //   top:150,
+          //   left: 50,
+          //   right: 50,
+          //     child: Center(child: Text('Transformation\nTogether',textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 25),))),
+        ],
       ),
     );
   }

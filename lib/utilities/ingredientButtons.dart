@@ -1,3 +1,4 @@
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'constants.dart';
@@ -32,7 +33,7 @@ class ingredientButtons extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18)
               ),
               backgroundColor: buttonColor),icon: Icon(lineIconFirstButton, color: buttonTextColor,size: 16,),
-          label: Text(firstButtonText, style: TextStyle(fontWeight: FontWeight.bold,
+          label: Text(firstButtonText, style: kNormalTextStyle.copyWith(
               color: buttonTextColor, fontSize: buttonTextSize ), ), ),
       );
   }

@@ -36,7 +36,7 @@ class _OrdersPageState extends State<OrdersPage> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
 
-    final email = user!.email;
+    String? email = user?.email ?? 'no email';
     String? otherEmail = prefs.getString(kEmailConstant);
     productList = [];
     priceList = [];

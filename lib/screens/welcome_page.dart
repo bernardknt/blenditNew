@@ -1,6 +1,6 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/screens/browse_store.dart';
-import 'package:blendit_2022/screens/register_page.dart';
+import 'package:blendit_2022/screens/new_logins/signin_phone.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/roundedButtons.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +87,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       buttonHeight: 45,
                       title: 'Start Here',
                       onPressedFunction: () {
-                        Navigator.pushNamed(context, LoginPage.id);
+                        Navigator.pushNamed(context, SignInPhone.id);
                       },
                     ),
                     const SizedBox(

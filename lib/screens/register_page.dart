@@ -164,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 prefs.setString(kPhoneNumberConstant, phoneNumber);
                                 prefs.setBool(kIsLoggedInConstant, true);
                                 prefs.setBool(kIsFirstTimeUser, true);
-                                prefs.setBool(kIsTutorialDone, false);
+                                prefs.setBool(kIsTutorial2Done, false);
                                 prefs.setBool(kIsFirstBlending, true);
 
                                 //Navigator.pushNamed(context, ControlPage.id);

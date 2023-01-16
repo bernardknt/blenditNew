@@ -1,6 +1,7 @@
 
 
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 import 'package:blendit_2022/utilities/paymentProcessing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,8 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
+
+import 'make_payment_page.dart';
 var uuid = Uuid();
 
 class MobileMoneyPage extends StatefulWidget {
@@ -29,11 +32,13 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
     final prefs = await SharedPreferences.getInstance();
     String newName = prefs.getString(kFullNameConstant) ?? 'Minister';
     String newAmount = prefs.getString(kBillValue) ?? '0';
-    String newPhoneNumber = prefs.getString(kPhoneNumberConstant) ?? '0';
+    String newPhoneNumber = removeCountryCode(prefs.getString(kPhoneNumberConstant) ?? '0') ;
     String? newOrderId = prefs.getString(kOrderId);
-    myController = TextEditingController()..text = prefs.getString(kPhoneNumberConstant) ?? '0';
+    String? newOrderReason = prefs.getString(kOrderReason);
+    myController = TextEditingController()..text = removeCountryCode(prefs.getString(kPhoneNumberConstant) ?? '0');
 
     setState(() {
+      reason = newOrderReason ?? 'Payment';
       name = newName;
       amount = newAmount;
       phoneNumber = newPhoneNumber;
@@ -42,6 +47,10 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
       orderId = newOrderId!;
 
     });
+  }
+
+  String removeCountryCode(String phoneNumber) {
+    return phoneNumber.replaceAll('+256', '');
   }
 // CALLABLE FUNCTIONS FOR THE NODEJS SERVER (FIREBASE)
   final HttpsCallable callableBeyonicPayment = FirebaseFunctions.instance.httpsCallable(kBeyonicServerName);
@@ -60,18 +69,19 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
 
     var start = FirebaseFirestore.instance.collection('transactions').where('uniqueID', isEqualTo: orderId).where('payment_status', isEqualTo: true).snapshots().listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
+        print("ZUNGULULULULULULU OMWANA AYIMIRIDE");
         // TRIGGER SERVER TRANSACTIONS EMAIL AND BEYONIC
-        dynamic emailResp = await callableTransactionEmail.call(<String, dynamic>{
-          'name': name,
-          'emailAddress':kEmailConstant,
-          'templateID':'bernard.ntege@tracnode.com',
-          'currency': 'UGX',
-          'purpose': orderId,
-          'amount': amount,
-          'transactionID': orderId,
-          'subject': 'Blendit Transaction',
-
-        });
+        // dynamic emailResp = await callableTransactionEmail.call(<String, dynamic>{
+        //   'name': name,
+        //   'emailAddress':kEmailConstant,
+        //   'templateID':'bernard.ntege@tracnode.com',
+        //   'currency': 'UGX',
+        //   'purpose': orderId,
+        //   'amount': amount,
+        //   'transactionID': orderId,
+        //   'subject': 'Blendit Transaction',
+        //
+        // });
         setState(() {
           CoolAlert.show(
               lottieAsset: 'images/thankyou.json',
@@ -139,6 +149,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
   var formatter = NumberFormat('#,###,000');
   String transactionId = 'mm${uuid.v1().split("-")[0]}';
   String amount = '';
+  String reason = '';
   String amountToCharge = '';
   String orderId = '';
   late String churchId ;
@@ -161,7 +172,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Mobile Money')
+        title: Text('Mobile Money', style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor),),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -215,7 +226,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
                 //SizedBox(height: 10,),
                 Opacity(opacity:changeInvalidMessageOpacity, child: Text(invalidMessageDisplay, style: TextStyle(color: Colors.red),)),
                 Opacity(
-                    opacity: changeNumberOpacity,
+                    opacity: 0,
                     child: Center(
                       child: Row(
                         children: [
@@ -224,7 +235,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
                             print(value);
                             setState(() {
                               checkboxValue = value!;
-                              prefs.setString(kPhoneNumberConstant, phoneNumber);
+                              prefs.setString(kPhoneNumberConstant, '256'+phoneNumber);
                             });
                           }),
                           Text(setPhoneMessage, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: kGreenThemeColor), ),
@@ -233,10 +244,14 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
                     )),
                 //SizedBox(height: 5,),
 
-                Text("$name you are making a payment for order $orderId of UGX $formattedAmount", textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15,color: kBlueDarkColor, fontWeight: FontWeight.normal)),
+                Text("$name you are making a payment for order $orderId of UGX $formattedAmount.\n Reason: ", textAlign: TextAlign.center,
+                  style: kNormalTextStyle.copyWith(fontSize: 14, color: kBlack),),
+                Text("$reason", textAlign: TextAlign.center,
+                  style: kNormalTextStyle.copyWith(fontSize: 14, color: kGreenThemeColor),),
                 SizedBox(height: 30,),
-                ingredientButtons(buttonTextColor:Colors.white,buttonColor: Colors.green,lineIconFirstButton: LineIcons.cashRegister, firstButtonFunction: ()async{
+                ingredientButtons(buttonTextColor:Colors.white,buttonColor: Colors.green,lineIconFirstButton: LineIcons.alternateWavyMoneyBill,
+                    firstButtonFunction: ()async{
+                      Navigator.pushNamed(context, MakePaymentPage.id);
                   showModalBottomSheet(context: context, builder: (context) => Container(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: PaymentProcessing(),
@@ -252,12 +267,14 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
                   });
                   transactionStream();
                   addMobileMoneyTransaction();
-                  final prefs = await SharedPreferences.getInstance();
-                  //prefs.setString(kChurchTransactionIdConstant, transactionId);
-                  print('+256$phoneNumber message sent');
+
                   // Create a document in the Transactions Db
                 }, firstButtonText: 'Make Payment'),
-                SizedBox(height: 10,),
+                kLargeHeightSpacing,
+                TextButton(onPressed: (){
+                  Navigator.pop(context);
+                }, child: Text('Cancel', style: kNormalTextStyle.copyWith(color: kGreenThemeColor),)),
+
                 Opacity(
                     opacity: 0.5,
                     child: Image.asset('images/mobilemoney.png', height: 100, width: 100, ))

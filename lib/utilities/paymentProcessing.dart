@@ -1,4 +1,5 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:uuid/uuid.dart';
@@ -26,7 +27,7 @@ class _PaymentProcessingState extends State<PaymentProcessing> {
       child: Container(
         child: Column(children: [
           Text('Payment in Progress', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-          SizedBox(height: 15,),
+          kLargeHeightSpacing,
           CircularCountDownTimer(isReverse: true, width: 100, height: 100, duration: 30,
             fillColor: kGreenThemeColor, ringColor: Colors.grey,onStart:(){
 
@@ -35,7 +36,7 @@ class _PaymentProcessingState extends State<PaymentProcessing> {
               Navigator.pushNamed(context, ControlPage.id);
             },
           ),
-          SizedBox(height: 20,),
+          kLargeHeightSpacing,
           Text(countdownText, maxLines: 5,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black54, fontSize: 16),),
 
         ],),

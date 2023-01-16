@@ -48,14 +48,19 @@ String kExtrasButtonCategory = 'extras';
 // USER CONSTANTS
 String kFullNameConstant = 'name';
 String kFirstNameConstant = 'firstName';
+String kUserWeight = 'myWeight';
+String kUserHeight = 'myHeight';
 String kEmailConstant = 'email';
 String kBillValue = 'billValue';
 String kOrderId = 'transactionId';
+String kOrderReason = 'orderReason';
 String kPhoneNumberConstant = 'phone';
+
 String kAmountConstant = 'amount';
 String kIsLoggedInConstant = 'loggedIn';
 String kIsFirstTimeUser = 'firstTimer';
-String kIsTutorialDone = 'tutorial';
+String kIsTutorial2Done = 'tutorial2';
+String kIsTutorial1Done = 'tutorial1';
 String kIsFirstBlending = 'firstBlend';
 String kToken = 'phoneToken';
 String kTwoKmDistance = 'twoKilometers';
@@ -72,6 +77,9 @@ String kAboutBody= 'body';
 String kWhatsappNumber= 'whatsapp';
 String kIsPhoneNumberSaved = "phoneNumberSave";
 String kPhoneNumberAlternative = 'alternativePhoneNumber';
+String kUserSex = 'userSex';
+String kUserBirthday = 'userBirthday';
+String kNutriCount = 'nutriCount';
 
 // THIS IS THE KEY FOR THE USER'S PHONE NUMBER
 String kSearchRadius = 'distance_radius';

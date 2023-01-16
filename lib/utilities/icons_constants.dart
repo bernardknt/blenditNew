@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:line_icons/line_icons.dart';
 
 import 'constants.dart';
 import 'font_constants.dart';
 
 const kIconBuilding = Icon(FontAwesomeIcons.building,color: kFontGreyColor,size: kIconSize,);
 const kIconCalendar = Icon(CupertinoIcons.calendar, color: kFontGreyColor,size: kIconSize);
+const kIconCheckMark =Icon(LineIcons.checkCircle, color: kCustomColor, size: kIconSize,);
 
 const kIconRoad = Icon (FontAwesomeIcons.road, color: kFontGreyColor,size: kIconSize,);
 const kIconClock =  Icon(FontAwesomeIcons.clock,color: kFontGreyColor,size: kIconSize);

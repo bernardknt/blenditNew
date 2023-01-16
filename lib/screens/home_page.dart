@@ -1,9 +1,7 @@
 
-import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
-import 'package:blendit_2022/widgets/itemsDialog.dart';
 import 'package:blendit_2022/widgets/show_summary_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,21 +9,20 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 
-import 'package:line_icons/line_icons.dart';
+import 'package:get/route_manager.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'allProducts_page.dart';
-import 'checkout_page.dart';
-import 'choose_juice_page.dart';
 import 'detox_juice.dart';
 import 'detox_plans.dart';
-import 'loyalty_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'home_page';
+
+  const HomePage({Key? key}) : super(key: key);
 
 
 
@@ -38,15 +35,26 @@ class _HomePageState extends State<HomePage> {
 
   var images = ['https://bit.ly/37a6mWG', 'https://bit.ly/3hAKtpr', 'https://bit.ly/3wL1NMN', 'https://bit.ly/36vfVyS'];
   var colours = [Colors.teal, Colors.purple, Colors.pink, Colors.deepPurpleAccent, Colors.teal, Colors.purple, Colors.pink, Colors.deepPurpleAccent, Colors.pink, Colors.deepPurpleAccent, Colors.teal, Colors.purple, Colors.pink, Colors.deepPurpleAccent];
-  var items = ['Spinach Wrap', 'Chicken Egg Salad','Chai seeds', 'Fish Salad'];
-  var descList = ['A perfect detox cleanse with Spinach, Collard green, Bitter gourd and Cactus', 'A chicken salad marinated with vinaigrette dressing, lettuce, eggs and rich french beans', 'Despite their small size, chia seeds are full of important nutrients. They are an excellent source of omega-3 fatty acids', 'Detox is perfect'];
-  var prices = [12000, 18000, 24000, 15000];
+  var challengeName = [];
+  var promoList = [];
+  var daysList = [];
+  var headingList = [];
+  var numberList = [];
+  var scheduleList = [];
+  var shoppingList = [];
+  var rulesList = [];
+  var challengeIdList = [];
+  List<DateTime> challengeEndTimeList = [];
+  var prices = [];
+  var welcomeList = [];
   var categories = ['🍵 Juices & Smoothies','🍏Detox Plans', '🥗 Salads']; //, 🍹Tropical Juices'
   var pages = [DetoxJuicePage.id, DetoxPlansPage.id, SaladsPage.id ]; // , TropicalPage.id
   String name = 'Bernard';
   var formatter = NumberFormat('#,###,000');
   final numbers = List.generate(100, (index) => '$index');
   final controller = ScrollController();
+  var tutorialDone = false;
+  var initialId = "";
 
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
@@ -57,60 +65,37 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void tutorialShow ()async{
+    final prefs = await SharedPreferences.getInstance();
+    tutorialDone = prefs.getBool(kIsTutorial2Done) ?? false;
+    if (tutorialDone == false){
+      initialId = 'feature1';
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        FeatureDiscovery.discoverFeatures(context,
+            <String>['feature3']);
+        // <String>['feature1','feature2', 'feature3', 'feature4', 'feature5']);
+      });
+    }else{
+
+    }
+    prefs.setBool(kIsTutorial2Done, true);
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    tutorialShow();
     defaultsInitiation();
+
   }
   @override
   Widget build(BuildContext context) {
-    var blendedData = Provider.of<BlenditData>(context);
+
     return
       Scaffold(
       backgroundColor: kBackgroundGreyColor,
-      // kBlueDarkColor,
-      //Color(0xFF0c1206),
-      // appBar: AppBar(
-      //
-      //   backgroundColor: Colors.transparent,
-      //  // foregroundColor: Colors.blue,
-      //
-      //   brightness: Brightness.light,
-      //   elevation:8 ,
-      //   actions: [
-      //     Stack(children: [
-      //       Positioned(
-      //         top: 4,
-      //         right: 2,
-      //         child: CircleAvatar(radius: 10,
-      //             child: Text(
-      //               '${blendedData.basketNumber}', style: TextStyle(fontSize: 10),)),
-      //       ) ,
-      //       IconButton
-      //         (onPressed: (){
-      //           if (blendedData.basketNumber == 0) {
-      //
-      //           }else {
-      //             Navigator.pushNamed(context, CheckoutPage.id);
-      //           }
-      //       },
-      //           icon: Icon(LineIcons.shoppingBasket),),
-      //     ]
-      //     )
-      //   ],
-      //   title: Text(""),
-      //   centerTitle: true,
-      //   leading:Transform.translate(offset: const Offset(20*0.5, 0),
-      //    child: IconButton(
-      //      icon: Image.asset('images/blender_component.png'),
-      //      onPressed: () {
-      //        Navigator.pushNamed(context, LoyaltyPage.id);
-      //      },
-      //    ),
-      //   ),
-      // ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: SafeArea(
@@ -125,36 +110,7 @@ class _HomePageState extends State<HomePage> {
               ),
               kLargeHeightSpacing,
               kLargeHeightSpacing,
-              // searchBar(),
-              // Row(
-              //   children: [
-              //     Padding(padding: const EdgeInsets.only(top: 20, ),
-              //     child:
-              //     GestureDetector(
-              //       onTap: (){},
-              //       child:
-              //       Container(
-              //         height: 35,
-              //         alignment: Alignment.center,
-              //         decoration: BoxDecoration(
-              //           borderRadius: BorderRadius.circular(10),
-              //           color: Colors.white
-              //         ),
-              //         padding: EdgeInsets.symmetric(horizontal: 8),
-              //         margin: EdgeInsets.only(right: 10),
-              //         child: Row(
-              //           children: [
-              //             Image.asset('images/blend.jpeg')
-              //           ],
-              //         ),
-              //
-              //       ),
-              //     ),
-              //     ),
-              //     Expanded(
-              //         child: Categories(categoriesNumber: categories.length, categories: categories, pageName: pages,))
-              //   ],
-              // ),
+
               Stack(
                 children: [
 
@@ -170,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                     top: -40,
                     child: Container(
 
-                      padding: EdgeInsets.all( 30),
+                      padding: const EdgeInsets.all( 30),
                       decoration: BoxDecoration(
                         // color: kAppPinkColor,
                           shape: BoxShape.circle,
@@ -179,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -190,17 +146,14 @@ class _HomePageState extends State<HomePage> {
                               onTap:(){
 
                                 CoolAlert.show(
-                                    lottieAsset: 'images/appointment.json',
+                                    lottieAsset: 'images/workout2.json',
                                     context: context,
                                     type: CoolAlertType.custom,
                                     // title: "Enter option",
                                     widget: Column(
-                                      children: [
-                                        Text('You have appointments today', style: kNormalTextStyle,),
-                                        //Text('Your appointment with ${Provider.of<BeauticianData>(context, listen: false).appointmentsToday.join(",")} is today', style: kNormalTextStyle,),
+                                      children: const [
+                                        Text('You 1 have active workout', style: kNormalTextStyle,), //Text('Your appointment with ${Provider.of<BeauticianData>(context, listen: false).appointmentsToday.join(",")} is today', style: kNormalTextStyle,),
                                         kLargeHeightSpacing,
-
-
                                       ],
                                     ),
                                     confirmBtnText: 'Yes',
@@ -221,10 +174,28 @@ class _HomePageState extends State<HomePage> {
 
 
                               },
-                              child: CircleAvatar(
-                                maxRadius: 25,
-                                backgroundColor: kBabyPinkThemeColor,
-                                child: Lottie.asset('images/workout2.json', height: 30, fit: BoxFit.cover,),
+                              child: DescribedFeatureOverlay(
+
+                                openDuration: const Duration(seconds: 1),
+                                overflowMode: OverflowMode.extendBackground,
+                                enablePulsingAnimation: true,
+                                barrierDismissible: false,
+                                pulseDuration: const Duration(seconds: 1),
+                                title: const Text('Challenge your self!'),
+                                description: Text('Achieve your health goals with our well designed Challenge programs. Stay motivated and on track with expert guidance and a supportive community.', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                contentLocation: ContentLocation.below,
+                                backgroundColor: kBlueDarkColorOld,
+                                targetColor: kBackgroundGreyColor,
+                                featureId: 'feature3',
+                                tapTarget: Lottie.asset('images/workout2.json', height: 60, fit: BoxFit.cover,),
+
+
+
+                                child: CircleAvatar(
+                                  maxRadius: 25,
+                                  backgroundColor: kBabyPinkThemeColor,
+                                  child: Lottie.asset('images/workout2.json', height: 30, fit: BoxFit.cover,),
+                                ),
                               ),
                             ),
                             kSmallHeightSpacing,
@@ -240,8 +211,17 @@ class _HomePageState extends State<HomePage> {
                             GestureDetector(
                               onTap: (){
                                 // Navigator.pushNamed(context, TrendsPage.id);
+                                Get.snackbar('Coming Soon', 'This feature is coming soon',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: kAppPinkColor,
+                                    colorText: kPureWhiteColor,
+                                    margin: const EdgeInsets.all(10),
+                                    borderRadius: 10,
+                                    icon: const Icon(Icons.info_outline, color: kPureWhiteColor,),
+                                    duration: const Duration(seconds: 3)
+                                );
                               },
-                              child: CircleAvatar(
+                              child: const CircleAvatar(
                                 maxRadius: 25,
                                 backgroundColor: kBabyPinkThemeColor,
                                 child: Icon(Icons.family_restroom_outlined, color: kBlack, size: 20,),
@@ -263,11 +243,11 @@ class _HomePageState extends State<HomePage> {
               ),
 
               kLargeHeightSpacing,
-              Text("Up Coming Challenges", style: kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 18)),
+              Text("Pick a Challenge", style: kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 18)),
               kLargeHeightSpacing,
               StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('items')
-                            .where('promote', isEqualTo: true)
+                  stream: FirebaseFirestore.instance.collection('plans')
+                            .where('active', isEqualTo: true)
                             .snapshots(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
@@ -275,37 +255,68 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.black,
                               );
                             } else {
-                              items=[];
-                              descList = [];
+                              challengeName=[];
+                              promoList = [];
                               images = [];
                               prices = [];
+                              daysList = [];
+                              headingList = [];
+                              welcomeList = [];
+                              rulesList = [];
+                              challengeEndTimeList = [];
+                              numberList = [];
+                              challengeIdList = [];
+                              scheduleList = [];
+                              shoppingList = [];
 
-                              var events = snapshot.data!.docs;
-                              for (var event in events) {
-                                descList.add(event.get('description'));
-                                items.add(event.get('name'));
-                                images.add(event.get('image'));
-                                prices.add(event.get('price'));
+
+                              var challenges = snapshot.data!.docs;
+                              for (var challenge in challenges) {
+                                promoList.add(challenge.get('promo'));
+                                challengeName.add(challenge.get('challenge'));
+                                images.add(challenge.get('image'));
+                                prices.add(challenge.get('total_price'));
+                                daysList.add(challenge.get('days'));
+                                headingList.add(challenge.get('heading'));
+                                rulesList.add(challenge.get('rules'));
+                                welcomeList.add(challenge.get('welcome'));
+                                challengeEndTimeList.add(challenge.get('challengeEndTime').toDate());
+                                numberList.add(challenge.get('number'));
+                                challengeIdList.add(challenge.get('challengeId'));
+                                scheduleList.add(challenge.get('schedule'));
+                                shoppingList.add(challenge.get('shopping'));
+
+
                               }
                             }
                             return
 
                               StaggeredGridView.countBuilder(
                                 crossAxisCount: 2,
-                                itemCount: items.length,
+                                itemCount: challengeName.length,
                                 crossAxisSpacing: 10,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
                                     onTap: () {
 
                                       showSummaryDialog(
-                                          context, images[index], items[index],
-                                          descList[index], prices[index]);
+                                          context, images[index],
+                                          challengeName[index],
+                                          promoList[index],
+                                          prices[index],
+                                          daysList[index],
+                                          scheduleList[index],
+                                          challengeIdList[index],
+                                          welcomeList[index],
+                                          rulesList[index],
+                                          promoList[index],
+                                          headingList[index],
+                                          shoppingList[index],);
                                     },
                                     child: Container(
-                                      margin: EdgeInsets.only(top: 10,
+                                      margin: const EdgeInsets.only(top: 3,
                                           right: 0,
                                           left: 0,
                                           bottom: 3),
@@ -316,30 +327,68 @@ class _HomePageState extends State<HomePage> {
                                       child:
                                       Column(
                                         children: [
-                                          Container(
-                                            height: 150,
-                                            width: 170,
-                                            margin: const EdgeInsets.only(
-                                                top: 10,
-                                                right: 0,
-                                                left: 0,
-                                                bottom: 3),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(20),
-                                                // color: backgroundColor,
-                                                image: DecorationImage(
-                                                  image:  CachedNetworkImageProvider(images[index]),
-                                                  //NetworkImage(images[index]),
-                                                  fit: BoxFit.cover,
-                                                )
-                                              //colours[index],
-                                            ),
+                                          Column(
 
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  children: [
+                                                   numberList[index] < 100? Row(
+                                                      children: [
+                                                        const Icon(Iconsax.people, color: kGreenThemeColor, size: 13,),
+                                                        Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
+                                                      ],
+                                                    ): Row(
+                                                     children: [
+                                                       Lottie.asset('images/flame.json', height: 20, fit: BoxFit.cover,),
+                                                       Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
+                                                     ],
+                                                   ),
+
+                                                    kMediumWidthSpacing,
+                                                    challengeEndTimeList[index].day - DateTime.now().day <= 10 ? Row(
+                                                      children: [
+                                                        const Icon(Iconsax.ticket_expired, color: kAppPinkColor, size: 13,),
+                                                        Text(' ${challengeEndTimeList[index].day - DateTime.now().day} Days left', style: kNormalTextStyle.copyWith( fontSize: 13),),
+                                                      ],
+                                                    ):
+                                                        Row(
+                                                          children: [
+                                                            const Icon(Iconsax.drop3, color: kGreenThemeColor, size: 13,),
+                                                            Text("Live Now", style: kNormalTextStyle.copyWith( fontSize: 13, color: kGreenThemeColor),),
+                                                          ],
+                                                        ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 150,
+                                                width: 170,
+                                                margin: const EdgeInsets.only(
+                                                    top: 10,
+                                                    right: 0,
+                                                    left: 0,
+                                                    bottom: 3),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius.circular(20),
+                                                    // color: backgroundColor,
+                                                    image: DecorationImage(
+                                                      image:  CachedNetworkImageProvider(images[index]),
+                                                      //NetworkImage(images[index]),
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  //colours[index],
+                                                ),
+
+                                              ),
+
+                                            ],
                                           ),
                                           Center(
                                             child: Text(
-                                              items[index],
+                                              challengeName[index],
                                               style: kNormalTextStyleWhite,
                                             ),
                                           ),
@@ -349,7 +398,7 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 },
                                 staggeredTileBuilder: (index) =>
-                                    StaggeredTile.fit(1));
+                                    const StaggeredTile.fit(1));
                           })
             ],
           ),
@@ -358,53 +407,6 @@ class _HomePageState extends State<HomePage> {
     );
 
 
-  }
-  buildNumber(String number) => Container(
-    padding: EdgeInsets.all(16),
-    color: Colors.orange,
-    child: GridTile(
-      header: Text(
-        'Header $number',
-        textAlign: TextAlign.center,
-      ),
-      child: Center(
-        child: Text(
-          number,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 48),
-          textAlign: TextAlign.center,
-        ),
-      ),
-      footer: Text(
-        'Footer $number',
-        textAlign: TextAlign.center,
-      ),
-    ),
-  );
-
-  Padding questionBlocks(String speciality, String id) {
-    var randomColors = [Colors.teal, Colors.blueAccent, Colors.black12, Colors.deepPurpleAccent, Colors.white12];
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: GestureDetector (
-        onTap: (){
-          Provider.of<BlenditData>(context, listen: false).setCustomJuiceSpeciality(id, speciality);
-          Navigator.pushNamed(context, ChooseJuicePage.id);
-        },
-        child: Container(
-          // color: Colors.white,
-          width: double.infinity,
-          height: 50,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color:  randomColors[4]
-          ),
-          child: Center(child: Text(
-            speciality,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),)),
-
-        ),
-      ),
-    );
   }
 
   // TextField searchBar() {
@@ -426,66 +428,8 @@ class _HomePageState extends State<HomePage> {
   //           );
   // }
 
-  TileNow({required int index}) {
-    return Container(
-      height: 10,
-      child: Text("$index"),
-    );
-  }
+
 
 }
 
-class Categories extends StatelessWidget {
-  Categories({required this.categoriesNumber, required this.categories, required this.pageName});
-  final int categoriesNumber;
-  final List categories;
-  final List pageName;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(padding: EdgeInsets.only(top: 20), child: SizedBox(
-    height: 35,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-        itemCount: categoriesNumber,
-        itemBuilder: (BuildContext context, int index){
-        return GestureDetector(
-          onTap: (){
-            Navigator.pushNamed(context, pageName[index]);
-
-          },
-          child: Container(
-
-            padding: EdgeInsets.symmetric(horizontal: 4),
-            margin: EdgeInsets.only(right: 10),
-            alignment: Alignment.center,
-            decoration:
-
-            BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 0.5,
-                  blurRadius: 1,
-                  // offset: Offset(0, 1), // changes position of shadow
-                ),
-              ],
-
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white
-            ),
-            child: Row(
-               children: [
-                Text(categories[index])
-              ],
-
-            ),
-          ),
-
-        );
-        }),
-                    ),
-
-                  );
-  }
-}
