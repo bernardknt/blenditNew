@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:blendit_2022/controllers/home_controller.dart';
-import 'package:blendit_2022/screens/welcome_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
@@ -18,6 +19,7 @@ class SplashPage extends StatefulWidget {
 }
 class _SplashPageState extends State<SplashPage> {
   late Timer _timer;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
@@ -28,15 +30,16 @@ class _SplashPageState extends State<SplashPage> {
       userLoggedIn = isLoggedIn ;
       print('The login status is $isLoggedIn');
       if(userLoggedIn == true){
-        _timer = new Timer(const Duration(milliseconds: 1500), () {
+        _timer = Timer(const Duration(milliseconds: 1500), () {
           Navigator.pushNamed(context, ControlPage.id);
+          deliveryStream();
 
         });
 
       }
 
       else{
-        _timer = new Timer(const Duration(milliseconds: 1000), () {
+        _timer = Timer(const Duration(milliseconds: 1000), () {
           Navigator.pushNamed(context, WelcomePageNew.id);
 
         });
@@ -44,12 +47,26 @@ class _SplashPageState extends State<SplashPage> {
       }
     });
   }
+
+
+  Future deliveryStream() async {
+    final prefs = await SharedPreferences.getInstance();
+    final users = await FirebaseFirestore.instance
+        .collection('users').doc(auth.currentUser!.uid)
+        .get();
+    prefs.setBool(kNutriAi, users['aiActive']);
+    print("MUTUNDWE: ${users['aiActive']}");
+  }
+
   bool userLoggedIn = false;
   @override
+
   void initState() {
     // TODO: implement initState
     super.initState();
     defaultsInitiation();
+
+
   }
   @override
   Widget build(BuildContext context) {

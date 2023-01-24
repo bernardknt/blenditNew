@@ -1,24 +1,20 @@
 
+import 'dart:async';
 import 'dart:io';
-import 'dart:math';
-
 import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:another_stepper/widgets/another_stepper.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/success_challenge_done.dart';
+import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
-import 'package:blendit_2022/utilities/icons_constants.dart';
 import 'package:blendit_2022/widgets/challenge_show_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
@@ -30,7 +26,7 @@ import '../widgets/categories_widget.dart';
 import 'calendar_page.dart';
 
 
-List <Step> stepsData = [];
+
 class ChallengePage extends StatefulWidget {
   static String id = 'challenge_page';
 
@@ -39,6 +35,7 @@ class ChallengePage extends StatefulWidget {
 }
 
 class _ChallengePageState extends State<ChallengePage> {
+  List <Step> stepsData = [];
   int currentStep = 0;
   Color textColor = kCustomColor;
   Color backGroundColor = kBlueDarkColorOld;
@@ -77,6 +74,16 @@ class _ChallengePageState extends State<ChallengePage> {
       print('Failed to pick image $e');
 
     }
+  }
+  late Timer _timer;
+  animationTimer() {
+    _timer = new Timer(const Duration(milliseconds: 2000), () {
+     setState(() {
+
+     });
+
+
+    });
   }
 
   // End
@@ -213,6 +220,7 @@ class _ChallengePageState extends State<ChallengePage> {
 
   }
   void defaultInitialization() async {
+
     var aiData = Provider.of<AiProvider>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     currentStep = aiData.challengePosition;
@@ -221,8 +229,7 @@ class _ChallengePageState extends State<ChallengePage> {
 
     var planDays = aiData.challengeDaysKeys;
     var planInfo = aiData.challengeDaysValues;
-    stepsData =
-    [
+    stepsData = [
       Step(
 
         title: Text("Start Here", style: kNormalTextStyle.copyWith(color: textColor),),
@@ -249,17 +256,26 @@ class _ChallengePageState extends State<ChallengePage> {
 
     for (int i = 0; i < planDays.length; i++) {
       Map data = planInfo[i];
+      // This function below sorts the data received from planInfo[i] and orders it according to date.. Gotten from chatgpt
+      List sortedList = data.entries.toList()..sort((entry1, entry2) => entry1.value.compareTo(entry2.value));
+      print("WAKANDA FOREVER: $sortedList");
+
       List<StepperData> stepperDataAnother = [];
       var iconList = [Icon(LineIcons.cloudWithSun, color: kBlack), Icon(LineIcons.cloud, color: kBlack), Icon(LineIcons.cloudWithMoon, color: kBlack), Icon(LineIcons.moon, color: kBlack)];
-      var listOfKeys = data.keys.toList();
-      var listOfValues = data.values.toList();
+      // var listOfKeys = data.keys.toList();
+      // This Then extracts the keys of each entry and assigns it to the list of Keys
+      var listOfKeys = sortedList.map((e) => e.key).toList();
+
+      //var listOfValues = data.values.toList();
+      // This Then extracts the values of each entry and assigns it to the list of Values
+      var listOfValues = sortedList.map((e) => e.value).toList();
       for (int j = 0; j < listOfKeys.length; j++)
       {
         Timestamp timestamp = listOfValues[j];
         DateTime dateTime = timestamp.toDate();
         // This function checks whether the current page we are on is whats being looked at then sends
         if (i + 1 == currentStep){
-          CommonFunctions().scheduledNotification(heading: "Day ${i+1}: Time for ${listOfKeys[j]}", body: "Tick ${listOfKeys[j]} off your list", year: DateTime.now().year, month: DateTime.now().month, day: DateTime.now().day, hour: dateTime.hour, minutes: dateTime.minute, id: j);
+          CommonFunctions().scheduledNotification(heading: "Day ${i+1}: Time for ${listOfKeys[j]}", body: "Tick ${listOfKeys[j]} off your list", year: DateTime.now().year, month: DateTime.now().month, day: DateTime.now().day, hour: dateTime.hour, minutes: dateTime.minute, id: j+1);
          //  print("LULULULLULU $currentStep : ${listOfKeys[j]}");
         }
 
@@ -427,6 +443,10 @@ class _ChallengePageState extends State<ChallengePage> {
     setState(() {
       name = prefs.getString(kFirstNameConstant) ?? '';
     });
+    // Navigator.pushNamed(context, ChallengePage.id);
+    // Navigator.push(context,
+    //     MaterialPageRoute(builder: (context)=> LoadingChallengePage())
+    // );
   }
 
 
@@ -434,13 +454,18 @@ class _ChallengePageState extends State<ChallengePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-     defaultInitialization();
+    defaultInitialization();
+
+    //Navigator.pushNamed(context, ChallengePage.id);
+     animationTimer();
   }
 
 
   @override
   Widget build(BuildContext context) {
     var aiData = Provider.of<AiProvider>(context);
+
+    List <Step> bernard = [Step(title: Text("Now"), content: Text("Nice"))];
 
 
 
@@ -487,6 +512,7 @@ class _ChallengePageState extends State<ChallengePage> {
           Stepper (
 
             steps: stepsData,
+            // stepsData,
             type: StepperType.vertical,
             currentStep: currentStep,
             onStepTapped: (step) {
@@ -517,13 +543,7 @@ class _ChallengePageState extends State<ChallengePage> {
                       colorText: kBlack,
                       icon: Icon(Icons.calendar_month_sharp, color: kAppPinkColor,));
                 }
-
-
-
-
               }
-
-
             },
             onStepCancel: () {
               Navigator.pop(context);

@@ -147,7 +147,8 @@ class _OrdersPageState extends State<OrdersPage> {
       title: const Text("Your Orders", style: TextStyle(fontSize: 15),),
       centerTitle: true,
     ),
-    floatingActionButton: FloatingActionButton(
+    floatingActionButton:
+    FloatingActionButton(
       onPressed: () async {
 
         var prefs = await SharedPreferences.getInstance();

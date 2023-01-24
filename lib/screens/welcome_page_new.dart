@@ -46,7 +46,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
   var urlImages = ["images/page1.png", "images/page2.png","images/page3.png"];// MHM17 trends];
   var heights = double.maxFinite;
   int newDots = 0;
-  var heading = ['Your Personal Nutritionist 24/7', 'Challenge yourself to achieve your Goals', 'Beat Frustration, become Consistent'];
+  var heading = ['Your Personal Nutritionist 24/7', 'Smash Your Goals, Challenge Yourself', 'Goodbye Frustration, Hello Consistency'];
 
   @override
   void initState() {
@@ -79,7 +79,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                 itemCount: urlImages.length,
                 options: CarouselOptions(
                   autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 5),
+                  autoPlayInterval: Duration(seconds: 8),
                   onPageChanged: (index, reason){
                     setState(()=>
                     newDots = index

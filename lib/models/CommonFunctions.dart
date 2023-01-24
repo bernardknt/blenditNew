@@ -111,16 +111,17 @@ class CommonFunctions {
       heading,
       body,
       _convertTime(year, month, day, hour, minutes),
-      const NotificationDetails(
+       NotificationDetails(
         android: AndroidNotificationDetails(
-          '0',
-          'name',
+          "$id",
+          '$heading',
+          sound: RawResourceAndroidNotificationSound('tiktok'),
           channelDescription: 'your channel description',
           importance: Importance.max,
           priority: Priority.high,
          //  sound: RawResourceAndroidNotificationSound(sound),
         ),
-        iOS: IOSNotificationDetails(),
+        iOS: IOSNotificationDetails(sound:'notification.mp3'),
       ),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
@@ -128,6 +129,12 @@ class CommonFunctions {
       // payload: 'It could be anything you pass',
     );
     print("Scheduled message $heading for $year-$month-$day $hour:$minutes with id: $id");
+  }
+
+  // This function is for cancelling the notification
+
+  cancelNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 
 
@@ -140,6 +147,7 @@ class CommonFunctions {
               channel.name,
               // channel.description,
               importance: Importance.high,
+              // sound: RawResourceAndroidNotificationSound('notification'),
               color: Colors.green,
               playSound: true,
               icon: '@mipmap/ic_launcher',

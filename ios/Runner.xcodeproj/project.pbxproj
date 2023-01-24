@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		066C68215D32CC94AC8281E0 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E811CF57B349EC343884BD2 /* Pods_Runner.framework */; };
+		112831C32975E3EE00502221 /* notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 112831C22975E3EE00502221 /* notification.mp3 */; };
 		11C0DEC127876BFD00116F98 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11C0DEC027876BFD00116F98 /* GoogleService-Info.plist */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -31,6 +32,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		112831C22975E3EE00502221 /* notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = notification.mp3; path = ../../../../notification.mp3; sourceTree = "<group>"; };
 		115CC0C527C8E34D008E58B4 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		11C0DEC027876BFD00116F98 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -74,6 +76,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		112831C12975E27F00502221 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				112831C22975E3EE00502221 /* notification.mp3 */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		8E6A78F270B3073088D4F6C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -96,6 +106,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				112831C12975E27F00502221 /* Resources */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -198,6 +209,7 @@
 				11C0DEC127876BFD00116F98 /* GoogleService-Info.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				112831C32975E3EE00502221 /* notification.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +398,7 @@
 				ENABLE_BITCODE = NO;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				INFOPLIST_FILE = Runner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Nutri challenge";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -521,6 +534,7 @@
 				ENABLE_BITCODE = NO;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				INFOPLIST_FILE = Runner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Nutri challenge";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -550,6 +564,7 @@
 				ENABLE_BITCODE = NO;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				INFOPLIST_FILE = Runner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Nutri challenge";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

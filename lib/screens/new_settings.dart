@@ -1,4 +1,5 @@
 
+import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,9 +9,11 @@ import 'package:flutter/cupertino.dart';
 import'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:lottie/lottie.dart';
 
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
@@ -88,6 +91,26 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
         title: Text('Settings Page', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
         centerTitle: true,
       ),
+      floatingActionButton:
+      FloatingActionButton(
+        onPressed: () async {
+
+          var prefs = await SharedPreferences.getInstance();
+
+           launchUrl(Uri.parse('${prefs.getString(kWhatsappNumber)}'));
+           launchUrl(Uri.parse('www.google.com'));
+
+         // print('${prefs.getString(kWhatsappNumber)}');
+
+
+          // launch('${prefs.getString(kWhatsappNumber)}');
+
+
+        },
+        child: Lottie.asset('images/whatsapp.json', ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
 
       backgroundColor: kBackgroundGreyColor,
       body: SingleChildScrollView(
@@ -265,6 +288,9 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                           );
                         },
                         child: Text("Log Out", style:kNormalTextStyleBoldPink.copyWith(color: Colors.blue) ,)),
+                    kLargeHeightSpacing,
+
+                    kLargeHeightSpacing,
 
                     TextButton(onPressed: (){
 
@@ -299,7 +325,13 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                             prefs.setBool(kIsFirstTimeUser, true);
 
                             await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).delete().then((value) async =>
-                            await auth.signOut().then((value) => Navigator.pushNamed(context, LoginPage.id)));
+                            await auth.signOut().then((value){
+                              Navigator.pushNamed(context, LoginPage.id);
+                              CommonFunctions().cancelNotification(); //cancel all notifications
+
+                            }
+                            )
+                            );
 
                             // await auth.signOut().then((value) => Navigator.pushNamed(context, WelcomePage.id));
 

@@ -41,7 +41,8 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
   animationTimer() {
     _timer = new Timer(const Duration(milliseconds: 5000), () {
       Navigator.pop(context);
-      // Navigator.pushNamed(context, MobileMoneyPage.id);
+
+
     });
   }
 
@@ -57,9 +58,9 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
           mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
-            Lottie.asset('images/celebrate.json', height: 200, width: 200, fit: BoxFit.contain ),
+            Lottie.asset('images/challengeLoad.json', height: 200, width: 200, fit: BoxFit.contain ),
             kSmallHeightSpacing,
-            Center(child: Text('${message[random.nextInt(message.length)]}' ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 24),)),
+            Center(child: Text('Loading Challenge' ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 24, color: kPureWhiteColor),)),
             // kSmallHeightSpacing,
             // Lottie.asset('images/challenge.json', height: 50, width: 150,),
 

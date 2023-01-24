@@ -426,6 +426,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  flutter_inappwebview:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.7.2+3"
   flutter_launcher_icons:
     dependency: "direct main"
     description:
@@ -475,6 +482,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_native_timezone:
     dependency: "direct main"
     description:
@@ -681,6 +693,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.2"
+  in_app_purchases_interface:
+    dependency: transitive
+    description:
+      name: in_app_purchases_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.8"
+  in_app_purchases_intl:
+    dependency: transitive
+    description:
+      name: in_app_purchases_intl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.6"
+  in_app_purchases_paywall_ui:
+    dependency: "direct main"
+    description:
+      name: in_app_purchases_paywall_ui
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0"
   internet_connection_checker:
     dependency: "direct main"
     description:

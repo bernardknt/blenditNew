@@ -2,20 +2,25 @@
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:feature_discovery/feature_discovery.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:in_app_purchases_paywall_ui/in_app_purchases_paywall_ui.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
+import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/blendit_data.dart';
+import '../widgets/TicketDots.dart';
+import '../widgets/nutri_payment.dart';
 import 'delivery_page.dart';
 import 'new_settings.dart';
 
@@ -68,16 +73,40 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     }else{
       print("Tutorial $tutorialDone}");
     }
-    prefs.setBool(kIsTutorial2Done, true);
+    prefs.setBool(kIsTutorial1Done, true);
   }
 
+
+  bool updateMe = true;
+
+  // THIS IS USED TO CHECK THE CURRENT APP VERSION AND ENCOURAGE THE USER TO UPDATE
+  advancedStatusCheck(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+
+    if (status?.canUpdate == true && updateMe == true) {
+
+      newVersion.showUpdateDialog(
+        dismissAction: (){
+          Navigator.pop(context);
+          Provider.of<BlenditData>(context, listen: false).setAppUpdateStatus();
+        },
+
+        updateButtonText: 'Update Now',
+        context: context,
+        versionStatus: status!,
+        dialogTitle: 'App Update 🎉',
+        dialogText: 'We are excited to announce that Some awesome new features have been released. Upgrade from version ${status.localVersion} to ${status.storeVersion} to get the best experience',
+
+      );
+    }
+  }
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
     phone =  prefs.getString(kPhoneNumberConstant)!;
     name = prefs.getString(kFirstNameConstant)!;
     setState(() {
-
+      updateMe =  Provider.of<BlenditData>(context, listen: false).updateApp;
     });
   }
 
@@ -88,6 +117,11 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     super.initState();
     defaultInitialization();
     tutorialShow();
+    final newVersion = NewVersion(
+      iOSId: 'com.frutsexpress.blendit2022',
+      androidId: 'com.frutsexpress.blendit_2022',
+    );
+    advancedStatusCheck(newVersion);
 
   }
 
@@ -96,7 +130,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var chatBubbleVisibility = true;
   var nutriVisibility = true;
   var aiResponseLength = 200;
-
   var responseList = [];
   var manualList = [];
   var idList = [];
@@ -108,11 +141,13 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   List<double> opacityList = [];
   double textSize = 12.0;
   String fontFamilyMont = 'Montserrat-Medium';
+
+
+
   @override
   Widget build(BuildContext context) {double width = MediaQuery.of(context).size.width * 0.6;
   String serviceId = '';
   CollectionReference chat = FirebaseFirestore.instance.collection('chat');
-
 
   Future<void> uploadData() async {
     var finalQuestion = lastQuestion;
@@ -137,6 +172,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       'length': aiResponseLength,
       'lastQuestion': Provider.of<BlenditData>(context, listen: false).lastQuestion,
       'manual': false,
+      'country': prefs.getString(kUserCountryName),
     })
         .then((value){
           Provider.of<BlenditData>(context, listen: false).changeLastQuestion(finalQuestion);
@@ -162,7 +198,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               // expands: true,
 
               decoration: InputDecoration(
-                hintText: 'Talk to Nutri',
+                hintText: "...lets talk",
                 fillColor: kPureWhiteColor,
                 filled: true,
 
@@ -179,22 +215,36 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               ),
 
               // Clear the text field when the user submits the text
-              onSubmitted: (value) {
+              onSubmitted: (value) async {
+
                 message = value;
-                if (message != '') {
-                  lastQuestion = message;
-                  serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-                  if (message.length > 20) {
-                    print("$message : ${message.length}");
-                    aiResponseLength = 200;
-                  } else {
-                    print("$message : ${message.length}");
-                    aiResponseLength = 30;
+                final prefs = await SharedPreferences.getInstance();
+                if (prefs.getBool(kNutriAi) == true){
+                  if (message != '') {
+                    lastQuestion = message;
+                    serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
+                    if (message.length > 20) {
+                      print("$message : ${message.length}");
+                      aiResponseLength = 200;
+                    } else {
+                      print("$message : ${message.length}");
+                      aiResponseLength = 30;
+                    }
+                    // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
+                    uploadData();
+                    _textFieldController.clear();
                   }
-                  // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
-                  uploadData();
-                  _textFieldController.clear();
+                }else{
+
+                  showModalBottomSheet(
+                      context: context,
+                      // isScrollControlled: true,
+                      builder: (context) {
+                        return NutriPayment();
+                      });
+
                 }
+
               },
               onChanged: (value) {
 
@@ -209,17 +259,32 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               top: 5,
               child: IconButton(
 
-                onPressed: () {
-                  if(message != ''){
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
 
-                    lastQuestion = message;
+                  print("MUUUUULOOOOOKOOOONYIIIIIII ${prefs.getBool(kNutriAi)}");
 
-                    // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
-                    serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-                    uploadData();
-                    _textFieldController.clear();
+                  if (prefs.getBool(kNutriAi) == true){
+                    if(message != ''){
+
+                      lastQuestion = message;
+
+                      // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
+                      serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
+                      uploadData();
+                      _textFieldController.clear();
+                      //}
+
+
+
+                    }
+                  } else {
+
+
 
                   }
+
+
 
                 }, icon:  DescribedFeatureOverlay(
                   openDuration: Duration(seconds: 1),
@@ -246,11 +311,14 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     );
   }
 
+
+
   return Scaffold(
       backgroundColor: kGreyLightThemeColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: kGreyLightThemeColor,
+
         title: Row(
           children: [
             Container(
@@ -291,6 +359,12 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
           kSmallWidthSpacing,
         ],
       ),
+      // floatingActionButton: FloatingActionButton(onPressed: () {
+      //
+      //   CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
+      // },
+      //
+      // ),
 
 
       body:
@@ -347,6 +421,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                           paidStatusListColor.add(Colors.grey);
                           opacityList.add(1.0);
                         }
+                        // print(responseList.last);
 
 
                       }
@@ -473,7 +548,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                           Stack(
                                             children: [
                                               Card(
-                                                  color: kCustomColor,
+                                                  color: manualList[index] == false ? kCustomColor: kBlueDarkColor,
                                                   shadowColor: kPureWhiteColor,
 
                                                   elevation: 4,
@@ -485,7 +560,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                                     child: Container(
                                                         width: 260,
                                                         child: Text('${responseList[index]}',textAlign: TextAlign.left,
-                                                         style: kNormalTextStyle2.copyWith(color: kBlack, fontSize: 15, fontWeight: FontWeight.w400),
+                                                         style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kPureWhiteColor,
+                                                             fontSize: 15, fontWeight: FontWeight.w400),
                                                           )
                                                     ),
                                                   )),

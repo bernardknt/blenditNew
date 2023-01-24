@@ -2,6 +2,7 @@ import 'package:blendit_2022/controllers/gym_tabs_controller.dart';
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/about_challenge_page.dart';
 import 'package:blendit_2022/screens/about_us.dart';
 import 'package:blendit_2022/screens/allProducts_page.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
@@ -31,6 +32,7 @@ import 'package:blendit_2022/screens/blog_page.dart';
 import 'package:blendit_2022/screens/new_logins/signin_phone.dart';
 import 'package:blendit_2022/screens/new_logins/verify_phone.dart';
 import 'package:blendit_2022/screens/new_settings.dart';
+import 'package:blendit_2022/screens/nutri_mobile_money.dart';
 import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page1.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page_name.dart';
@@ -175,6 +177,8 @@ class MyApp extends StatelessWidget {
             SuccessPageNew.id: (context)=> SuccessPageNew(),
             SuccessPageChallenge.id: (context)=> SuccessPageChallenge(),
             AppointmentsTabController.id: (context)=> AppointmentsTabController(),
+            AboutChallengePage.id: (context)=> AboutChallengePage(),
+            NutriMobileMoneyPage.id: (context)=> NutriMobileMoneyPage(),
 
 
           },

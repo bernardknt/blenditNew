@@ -97,6 +97,7 @@ String kGreetingsThree = 'kGreetings';
 String kUserCountryName =  'country_name';
 String kUserCountryFlag =  'country_flag';
 String kUniqueUserPhoneId = 'phoneUniqueId';
+String kNutriAi = 'nutriAi';
 
 
 String kGoogleMapsApiKey = 'AIzaSyAZO90xPWwT1bqCt9mTwWYh_Q7m7NngJoc';

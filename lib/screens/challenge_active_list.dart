@@ -138,7 +138,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                           pendingList.add(0.0);
                         }
 
-                    //  }
+                    print(daysList);
 
                   }
 

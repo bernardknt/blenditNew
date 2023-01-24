@@ -148,9 +148,11 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                             .collection('users').doc(auth.currentUser!.uid)
                             .get();
                         if (users.exists){
+
                           print("NULULULULULU ${users.data()}");
 
                           final prefs = await SharedPreferences.getInstance();
+                          prefs.setBool(kNutriAi, true);
 
                           prefs.setString(kFullNameConstant, users['lastName']);
                           prefs.setString(kFirstNameConstant, users['firstName']);
@@ -171,6 +173,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                          //  MaterialPageRoute(builder: (context)=> QuizPageName());
                           Navigator.pushNamed(context, ControlPage.id);
                         } else {
+                          prefs.setBool(kNutriAi, true);
                           if (prefs.getString(kFullNameConstant) == ''){
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context)=> QuizPageName())

@@ -1,4 +1,6 @@
 
+import 'package:blendit_2022/models/CommonFunctions.dart';
+import 'package:blendit_2022/screens/about_challenge_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
@@ -44,6 +46,8 @@ class _HomePageState extends State<HomePage> {
   var shoppingList = [];
   var rulesList = [];
   var challengeIdList = [];
+  var difficultyList = [];
+  var getList = [];
   List<DateTime> challengeEndTimeList = [];
   var prices = [];
   var welcomeList = [];
@@ -68,11 +72,12 @@ class _HomePageState extends State<HomePage> {
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
     tutorialDone = prefs.getBool(kIsTutorial2Done) ?? false;
-    if (tutorialDone == false){
+    print("YEEEEEESSSUUUU $tutorialDone");
+    if (tutorialDone != false){
       initialId = 'feature1';
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         FeatureDiscovery.discoverFeatures(context,
-            <String>['feature3']);
+            <String>['feature3', 'feature4',  'feature5']);
         // <String>['feature1','feature2', 'feature3', 'feature4', 'feature5']);
       });
     }else{
@@ -85,8 +90,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    tutorialShow();
+
     defaultsInitiation();
+    tutorialShow();
 
   }
   @override
@@ -152,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                                     // title: "Enter option",
                                     widget: Column(
                                       children: const [
-                                        Text('You 1 have active workout', style: kNormalTextStyle,), //Text('Your appointment with ${Provider.of<BeauticianData>(context, listen: false).appointmentsToday.join(",")} is today', style: kNormalTextStyle,),
+                                        Text('You  have 0 active workouts', style: kNormalTextStyle,), //Text('Your appointment with ${Provider.of<BeauticianData>(context, listen: false).appointmentsToday.join(",")} is today', style: kNormalTextStyle,),
                                         kLargeHeightSpacing,
                                       ],
                                     ),
@@ -181,8 +187,8 @@ class _HomePageState extends State<HomePage> {
                                 enablePulsingAnimation: true,
                                 barrierDismissible: false,
                                 pulseDuration: const Duration(seconds: 1),
-                                title: const Text('Challenge your self!'),
-                                description: Text('Achieve your health goals with our well designed Challenge programs. Stay motivated and on track with expert guidance and a supportive community.', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                title: const Text('Welcome to Challenges!'),
+                                description: Text("These are No nonsense Challenges designed to help you become consistent and achieve your goals. Whether you want to lose weight, Prepare for a marathon, or put on a few Kilos, their is a challenge for you", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
                                 contentLocation: ContentLocation.below,
                                 backgroundColor: kBlueDarkColorOld,
                                 targetColor: kBackgroundGreyColor,
@@ -199,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             kSmallHeightSpacing,
-                            Text('1', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),),
+                            Text('0', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),),
                             kSmallHeightSpacing,
                             Text('Active Challenges', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),)
 
@@ -211,6 +217,8 @@ class _HomePageState extends State<HomePage> {
                             GestureDetector(
                               onTap: (){
                                 // Navigator.pushNamed(context, TrendsPage.id);
+                                //CommonFunctions().showNotification("notificationTitle", "notificationBody");
+                                // CommonFunctions().scheduledNotification(heading: "heading", body: "body", year: 2023, month: 1, day: 16, hour: 22, minutes: 26, id: 3);
                                 Get.snackbar('Coming Soon', 'This feature is coming soon',
                                     snackPosition: SnackPosition.BOTTOM,
                                     backgroundColor: kAppPinkColor,
@@ -243,11 +251,28 @@ class _HomePageState extends State<HomePage> {
               ),
 
               kLargeHeightSpacing,
-              Text("Pick a Challenge", style: kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 18)),
+              DescribedFeatureOverlay(
+                  openDuration: const Duration(seconds: 1),
+                  overflowMode: OverflowMode.extendBackground,
+                  enablePulsingAnimation: true,
+                  barrierDismissible: false,
+                  pulseDuration: const Duration(seconds: 1),
+                  title: Text('$name its time to Start Believing!'),
+                  description: Text("We are cheering you all the way! Start a challenge", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                  contentLocation: ContentLocation.below,
+                  backgroundColor: kBlueDarkColorOld,
+                  targetColor: kBackgroundGreyColor,
+                  featureId: 'feature5',
+                  tapTarget: Lottie.asset('images/workout4.json', height: 60, fit: BoxFit.cover,),
+
+
+
+                  child: Text("Pick a Challenge", style: kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 18))),
               kLargeHeightSpacing,
               StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance.collection('plans')
-                            .where('active', isEqualTo: true)
+                            .where('active', isEqualTo: true).orderBy('challengeEndTime', descending: true)
+
                             .snapshots(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
@@ -268,6 +293,7 @@ class _HomePageState extends State<HomePage> {
                               challengeIdList = [];
                               scheduleList = [];
                               shoppingList = [];
+                              difficultyList = [];
 
 
                               var challenges = snapshot.data!.docs;
@@ -285,6 +311,8 @@ class _HomePageState extends State<HomePage> {
                                 challengeIdList.add(challenge.get('challengeId'));
                                 scheduleList.add(challenge.get('schedule'));
                                 shoppingList.add(challenge.get('shopping'));
+                                difficultyList.add(challenge.get('difficulty'));
+                                getList.add(challenge.get('get'));
 
 
                               }
@@ -300,6 +328,7 @@ class _HomePageState extends State<HomePage> {
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
                                     onTap: () {
+                                      // Navigator.pushNamed(context, AboutChallengePage.id);
 
                                       showSummaryDialog(
                                           context, images[index],
@@ -313,86 +342,105 @@ class _HomePageState extends State<HomePage> {
                                           rulesList[index],
                                           promoList[index],
                                           headingList[index],
-                                          shoppingList[index],);
+                                          shoppingList[index],
+                                          difficultyList[index],
+                                          getList[index]
+                                      );
                                     },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(top: 3,
-                                          right: 0,
-                                          left: 0,
-                                          bottom: 3),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        // color: colours[index],
-                                      ),
-                                      child:
-                                      Column(
-                                        children: [
-                                          Column(
+                                    child: DescribedFeatureOverlay(
+                                      openDuration: const Duration(seconds: 1),
+                                      overflowMode: OverflowMode.extendBackground,
+                                      enablePulsingAnimation: true,
+                                      barrierDismissible: false,
+                                      pulseDuration: const Duration(seconds: 1),
+                                      title: const Text('Step by Step Guidance'),
+                                      description: Text("With each challenge we will provide you with the rules, information and personal guidance you need to succeed", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                      contentLocation: ContentLocation.below,
+                                      backgroundColor: kGreenThemeColor,
+                                      targetColor: kBackgroundGreyColor,
+                                      featureId: 'feature4',
+                                      tapTarget: Lottie.asset('images/workout3.json', height: 60, fit: BoxFit.cover,),
 
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  children: [
-                                                   numberList[index] < 100? Row(
-                                                      children: [
-                                                        const Icon(Iconsax.people, color: kGreenThemeColor, size: 13,),
-                                                        Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
-                                                      ],
-                                                    ): Row(
-                                                     children: [
-                                                       Lottie.asset('images/flame.json', height: 20, fit: BoxFit.cover,),
-                                                       Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
-                                                     ],
-                                                   ),
 
-                                                    kMediumWidthSpacing,
-                                                    challengeEndTimeList[index].day - DateTime.now().day <= 10 ? Row(
-                                                      children: [
-                                                        const Icon(Iconsax.ticket_expired, color: kAppPinkColor, size: 13,),
-                                                        Text(' ${challengeEndTimeList[index].day - DateTime.now().day} Days left', style: kNormalTextStyle.copyWith( fontSize: 13),),
-                                                      ],
-                                                    ):
-                                                        Row(
-                                                          children: [
-                                                            const Icon(Iconsax.drop3, color: kGreenThemeColor, size: 13,),
-                                                            Text("Live Now", style: kNormalTextStyle.copyWith( fontSize: 13, color: kGreenThemeColor),),
-                                                          ],
-                                                        ),
-                                                  ],
+                                      child: Container(
+                                        margin: const EdgeInsets.only(top: 3,
+                                            right: 0,
+                                            left: 0,
+                                            bottom: 3),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          // color: colours[index],
+                                        ),
+                                        child:
+                                        Column(
+                                          children: [
+                                            Column(
+
+                                              children: [
+                                                // Padding(
+                                                //   padding: const EdgeInsets.all(8.0),
+                                                //   child: Row(
+                                                //     children: [
+                                                //      numberList[index] < 100? Row(
+                                                //         children: [
+                                                //           const Icon(Iconsax.people, color: kGreenThemeColor, size: 13,),
+                                                //           Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
+                                                //         ],
+                                                //       ): Row(
+                                                //        children: [
+                                                //          Lottie.asset('images/flame.json', height: 20, fit: BoxFit.cover,),
+                                                //          Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
+                                                //        ],
+                                                //      ),
+                                                //
+                                                //       kMediumWidthSpacing,
+                                                //       challengeEndTimeList[index].day - DateTime.now().day <= 10 ? Row(
+                                                //         children: [
+                                                //           const Icon(Iconsax.ticket_expired, color: kAppPinkColor, size: 13,),
+                                                //           Text(' ${challengeEndTimeList[index].day - DateTime.now().day} Days left', style: kNormalTextStyle.copyWith( fontSize: 13),),
+                                                //         ],
+                                                //       ):
+                                                //           Row(
+                                                //             children: [
+                                                //               const Icon(Iconsax.drop3, color: kGreenThemeColor, size: 13,),
+                                                //               Text("Live Now", style: kNormalTextStyle.copyWith( fontSize: 13, color: kGreenThemeColor),),
+                                                //             ],
+                                                //           ),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                                Container(
+                                                  height: 150,
+                                                  width: 170,
+                                                  margin: const EdgeInsets.only(
+                                                      top: 10,
+                                                      right: 0,
+                                                      left: 0,
+                                                      bottom: 3),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius.circular(20),
+                                                      // color: backgroundColor,
+                                                      image: DecorationImage(
+                                                        image:  CachedNetworkImageProvider(images[index]),
+                                                        //NetworkImage(images[index]),
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    //colours[index],
+                                                  ),
+
                                                 ),
-                                              ),
-                                              Container(
-                                                height: 150,
-                                                width: 170,
-                                                margin: const EdgeInsets.only(
-                                                    top: 10,
-                                                    right: 0,
-                                                    left: 0,
-                                                    bottom: 3),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(20),
-                                                    // color: backgroundColor,
-                                                    image: DecorationImage(
-                                                      image:  CachedNetworkImageProvider(images[index]),
-                                                      //NetworkImage(images[index]),
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                  //colours[index],
-                                                ),
 
-                                              ),
-
-                                            ],
-                                          ),
-                                          Center(
-                                            child: Text(
-                                              challengeName[index],
-                                              style: kNormalTextStyleWhite,
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                            Center(
+                                              child: Text(
+                                                challengeName[index],
+                                                style: kNormalTextStyleWhite,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   );

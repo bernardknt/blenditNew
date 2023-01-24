@@ -41,6 +41,7 @@ class AiProvider extends ChangeNotifier{
   List challengeDaysValues = [];
   String challengeShoppingList = '';
   int activeChallengeIndex = 0;
+  List <Step> challengeSteps = [Step(title: Text("TEST"), content: Text('Infor'))];
 
 
  // setChangeLottieImage(int index, IconData image){
