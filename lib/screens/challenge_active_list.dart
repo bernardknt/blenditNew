@@ -1,4 +1,5 @@
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/models/challengeDays.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../utilities/icons_constants.dart';
 import '../widgets/roundedIcon.dart';
+
 
 
 class ChallengeActivePage extends StatefulWidget {
@@ -24,6 +26,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
 
   void defaultsInitiation() async{
     final prefs = await SharedPreferences.getInstance();
+
     userId = prefs.getString(kPhoneNumberConstant)!;
     setState((){
     });
@@ -56,7 +59,8 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
   var opacityList = [];
   var tokenList = [];
   var shoppingList = [];
-  List<Map> daysList = [];
+  var activePositionList = [];
+  List<Map<String, dynamic>> daysList = [];
   var costList = [];
   var pendingList = [];
   var positionList = [];
@@ -104,6 +108,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                   promoList = [];
                   communityList = [];
                   shoppingList = [];
+                  activePositionList = [];
 
                   var challengeData = snapshot.data!.docs;
                   for (var challenge in challengeData) {
@@ -121,6 +126,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                         positionList.add(challenge.get('position'));
                         communityList.add(challenge.get('community'));
                         shoppingList.add(challenge.get('shopping'));
+                        activePositionList.add(challenge.get('activePosition'));
                         date.add(challenge.get('challengeStartTime').toDate());
 
                         if (challenge.get('challengeStatus') == false){
@@ -160,6 +166,40 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                       itemBuilder: (context, index){
                         return GestureDetector(
                           onTap: ()async{
+                           //  print("BEGIN: ${daysList[index]}: END");
+                           // // List < Map<String, dynamic>> data = daysList[index].entries.toList();
+                           //  var myMap = daysList[index];
+                           //  List<Map<String, dynamic>> myList = myMap.entries.map((entry) => {'key': entry.key, 'value': entry.value}).toList();
+                           //  myList.sort((a, b) => a.keys.last.compareTo(b.keys.first));
+                           //
+                           //
+                           //  // Map<String, dynamic> myMapBack = Map<String, dynamic>();
+                           //  Map<String, dynamic> myMapBack = Map.fromEntries(myList.map((item) => MapEntry(item['key'], item['value'])));
+                           //
+                           //  // print(myList);
+                           //  print("ANALYZE OLD: ${myList}");
+                           //  print("ANALYZE NEW: ${myMapBack}");
+                           //  Provider.of <AiProvider> (context, listen: false).setChallengeDays(ChallengeDays(
+                           //      day: day,
+                           //      timestamp:
+                           //      timestamp,
+                           //      activity:
+                           //      activity));
+
+
+
+                           //  final sorted = new SplayTreeMap<String,dynamic>.from(map, (a, b) => a.compareTo(b));
+                           //  List sortedList = data.entries.toList()..sort((entry1, entry2) => entry1.value.compareTo(entry2.value));
+                           //  print("WAHAMBANATI: $sortedList");
+                            // Provider.of<AiProvider>(context, listen: false).resetChallengeDayColors();
+                            // var map = SortedMap(Ordering.byValue());
+                            // map.addAll(daysList[index]);
+                            // // print(map);
+
+
+                            // map.sort((a, b) => a.weight.compareTo(b.weight));
+                            Provider.of<AiProvider>(context, listen: false).setActiveChallengeIndexFromServer(activePositionList[index]);
+
                             Provider.of<AiProvider>(context, listen:false).setChallengeParameters(
                                 challengeId[index],
                                 challengeName[index],
@@ -170,7 +210,9 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                                 positionList[index],
                                 daysList[index].keys.toList(),
                                 daysList[index].values.toList(),
-                              shoppingList[index]
+                                shoppingList[index],
+                              activePositionList[index],
+                              daysList[index]
                             );
 
                             print('WALALALLA ${daysList[index]}');

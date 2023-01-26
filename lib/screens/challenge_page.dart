@@ -228,6 +228,8 @@ class _ChallengePageState extends State<ChallengePage> {
 
 
     var planDays = aiData.challengeDaysKeys;
+
+
     var planInfo = aiData.challengeDaysValues;
     stepsData = [
       Step(
@@ -252,13 +254,25 @@ class _ChallengePageState extends State<ChallengePage> {
       ),
     ];
 
+// THIS FUNCTION REARRANGES THE MAP DATA THAT COMES FROM CLOUD FIRESTORE. FOR SOME STRANGE REASON IT IS NOT ORDERED
+    var myList = planDays;
+    myList.sort((a, b) => a.compareTo(b));
 
+    List myValues = [];
+
+    for (String key in myList) {
+      var value = aiData.challengeDays[key];
+      myValues.add(value);
+    }
+
+     print("WAKANDA FOREVER: $myList");
+     print("WAKANDA NOW: $myValues");
 
     for (int i = 0; i < planDays.length; i++) {
-      Map data = planInfo[i];
+      Map data = myValues[i];
       // This function below sorts the data received from planInfo[i] and orders it according to date.. Gotten from chatgpt
       List sortedList = data.entries.toList()..sort((entry1, entry2) => entry1.value.compareTo(entry2.value));
-      print("WAKANDA FOREVER: $sortedList");
+      // print("WAKANDA FOREVER: $sortedList");
 
       List<StepperData> stepperDataAnother = [];
       var iconList = [Icon(LineIcons.cloudWithSun, color: kBlack), Icon(LineIcons.cloud, color: kBlack), Icon(LineIcons.cloudWithMoon, color: kBlack), Icon(LineIcons.moon, color: kBlack)];
@@ -417,8 +431,7 @@ class _ChallengePageState extends State<ChallengePage> {
             activeIndex: Provider.of<AiProvider>(context, listen: false).activeChallengeIndex,
             barThickness: 4,
           ),
-        ):
-        Container(child: Column(
+        ): Container(child: Column(
           children: [
             Text("Looks like ${aiData.challengeName} doesn't start until ${DateFormat('EEEE dd-MMM yyyy').format(Provider.of<AiProvider>(context, listen: false).appointmentDate)}",textAlign:TextAlign.center, style: kNormalTextStyle.copyWith(color: kAppPinkColor),),
             TextButton(onPressed:

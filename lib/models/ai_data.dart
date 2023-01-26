@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../utilities/constants.dart';
+import 'challengeDays.dart';
 
 class AiProvider extends ChangeNotifier{
 
@@ -41,7 +42,10 @@ class AiProvider extends ChangeNotifier{
   List challengeDaysValues = [];
   String challengeShoppingList = '';
   int activeChallengeIndex = 0;
+  Map<String, dynamic> challengeDays = {};
   List <Step> challengeSteps = [Step(title: Text("TEST"), content: Text('Infor'))];
+
+  List challengeDayData = [];
 
 
  // setChangeLottieImage(int index, IconData image){
@@ -64,6 +68,23 @@ class AiProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  setActiveChallengeIndexFromServer(position){
+    print(position);
+    if (position != 0 ){
+      for(var i = 0; i< position; i++){
+        dayGoalColors[i] = kGreenThemeColor;
+      }
+    }else{
+      dayGoalColors[0] = Colors.orange;
+    }
+  }
+
+  resetChallengeDayColors(){
+dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange , ];
+
+    notifyListeners();
+  }
+
   setActiveChallengeIndex(index){
     activeChallengeIndex += 1;
     dayGoalColors[index] = kGreenThemeColor;
@@ -76,7 +97,7 @@ class AiProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  setChallengeParameters (id, name, description, welcomeMessage, rules, schedule, position, days, daysValues, shopping){
+  setChallengeParameters (id, name, description, welcomeMessage, rules, schedule, position, days, daysValues, shopping, activePosition, challengeDaysIndex){
     challengeId = id;
     challengeName = name;
     challengeDescription = description;
@@ -87,6 +108,10 @@ class AiProvider extends ChangeNotifier{
     challengeDaysKeys = days;
     challengeDaysValues = daysValues;
     challengeShoppingList = shopping;
+    activeChallengeIndex = activePosition;
+    challengeDays = challengeDaysIndex;
+
+
     if (position > 0 ){
       welcomeButtons = [kCustomColor, kCustomColor, kCustomColor];
       welcomeFontColors = [kBlack, kBlack, kBlack];
@@ -153,6 +178,12 @@ class AiProvider extends ChangeNotifier{
   void setButtonBoxColors(buttonIndex, sex){
     buttonColourQuestions[buttonIndex] = kGreenThemeColor;
     userSex = sex;
+    notifyListeners();
+  }
+
+  void setChallengeDays (ChallengeDays listData){
+    challengeDayData.add(listData);
+    // print('YUYUYUYUYUYUYUYU ${listData.answers}');
     notifyListeners();
   }
 }

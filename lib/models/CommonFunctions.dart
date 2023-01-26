@@ -39,7 +39,7 @@ class CommonFunctions {
   final auth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   var formatter = NumberFormat('#,###,000');
-  CollectionReference challengeImage = FirebaseFirestore.instance.collection('challenges');
+  CollectionReference challengeCollection = FirebaseFirestore.instance.collection('challenges');
   File? image;
   UploadTask? uploadTask;
   final storage = FirebaseStorage.instance;
@@ -121,7 +121,7 @@ class CommonFunctions {
           priority: Priority.high,
          //  sound: RawResourceAndroidNotificationSound(sound),
         ),
-        iOS: IOSNotificationDetails(sound:'notification.mp3'),
+        iOS: IOSNotificationDetails(sound:'tiktok.mp3'),
       ),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
@@ -136,8 +136,6 @@ class CommonFunctions {
   cancelNotification() async {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
-
-
 
   void showNotification(String notificationTitle, String notificationBody){
     flutterLocalNotificationsPlugin.show(0, notificationTitle, notificationBody,
@@ -163,7 +161,6 @@ class CommonFunctions {
 
   }
 
-
   Future<void> signOut() async {
     await auth.signOut();
     final prefs = await SharedPreferences.getInstance();
@@ -184,12 +181,18 @@ class CommonFunctions {
 
   Future<void> uploadImageToServer(challengeId, image) {
 
-    return challengeImage.doc(challengeId)
+    return challengeCollection.doc(challengeId)
         .update({
       'personalImages': FieldValue.arrayUnion([image]),
     })
         .then((value) => print("Image Added"))
         .catchError((error) => print("Failed to send Communication: $error"));
+  }
+
+  Future<void> uploadActiveChallengePosition(challengeId, position){
+    return challengeCollection.doc(challengeId).update({
+      'activePosition': position
+    });
   }
 
   Future<void> uploadPhoto(String filePath, String fileName , String challengeId, int activeChallengeIndex,  int listOfKeysLength, int challengePosition,int challengeDayKeysLength, String challengeName, String customerName, int currentStep, String planDay, context)
@@ -204,6 +207,10 @@ class CommonFunctions {
             backgroundColor: kCustomColor,
             colorText: kBlack,
             icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
+        uploadActiveChallengePosition(challengeId, activeChallengeIndex + 1);
+
+
+
 
       });
       final urlDownload = await snapshot.ref.getDownloadURL();
@@ -240,6 +247,8 @@ class CommonFunctions {
         Navigator.pushNamed(context, ChallengePage.id);
         Navigator.pushNamed(context, SuccessPageChallenge.id);
          uploadImageToServer(challengeId, urlDownloaded);
+         uploadActiveChallengePosition(challengeId, 0);
+
 
       }
     } else {
@@ -248,15 +257,7 @@ class CommonFunctions {
       Navigator.pushNamed(context, SuccessPageChallenge.id);
       uploadImageToServer(challengeId, urlDownloaded);
     }
-    // setState(() {
-    //
-    // });
 
-
-    // Navigator.pop(context);
-    // Navigator.pushNamed(context, ChallengePage.id);
-    // Navigator.pushNamed(context, SuccessPageChallenge.id);
-   //  uploadImageToServer(challengeId, urlDownloaded);
   }
 
 
@@ -325,7 +326,8 @@ class CommonFunctions {
           'rulesRead' : true,
           'scheduleRead' : true,
           'challengeStartTime' : date,
-          'position' : position
+          'position' : position,
+          'activePosition': 0
 
         }).then((value) => print('UPLOADED') );
     //     Get.snackbar('Success', 'Welcome to Nutri',

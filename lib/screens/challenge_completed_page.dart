@@ -42,6 +42,7 @@ class _ChallengeCompletedPageState extends State<ChallengeCompletedPage> {
 
   // Variables
   String title = 'Your';
+  String statusStatement = '';
   String userId = '';
   var date = [];
   var welcomeMessageList = [];
@@ -123,17 +124,23 @@ class _ChallengeCompletedPageState extends State<ChallengeCompletedPage> {
                     shoppingList.add(challenge.get('shopping'));
                     date.add(challenge.get('challengeEndTime').toDate());
 
-                    if (challenge.get('challengeStatus') == false){
+                    if (challenge.get('rating_comment') == ""){
                       opacityList.add(0.0);
                       pendingList.add(1.0);
+                      statusStatement = "Under Review";
                       if(challenge.get('status') == 'Product'){
                         positionList.add(true);
-
                       }else {
                         positionList.add(false);
                       }
 
-                    }else{
+                    } else if (challenge.get('rating_comment') == "Fail"){
+                      opacityList.add(0.0);
+                      pendingList.add(1.0);
+                      statusStatement = "Challenge Poorly Completed";
+                    }
+                    else{
+                      statusStatement = "Challenge Completed";
                       opacityList.add(1.0);
                       pendingList.add(0.0);
                     }
@@ -259,11 +266,11 @@ class _ChallengeCompletedPageState extends State<ChallengeCompletedPage> {
                                           color: kBlueDarkColorOld,
                                           borderRadius: BorderRadius.all(Radius.circular(6))
                                       ),
-                                      child: const Padding(
+                                      child:Padding(
                                         padding: EdgeInsets.all(3.0),
                                         child:
 
-                                        Text('Under Review', style: kNormalTextStyleWhitePendingLabel,),
+                                        Text(statusStatement, style: kNormalTextStyleWhitePendingLabel,),
                                       ),
                                     ),
                                   ),

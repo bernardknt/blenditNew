@@ -80,26 +80,26 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   bool updateMe = true;
 
   // THIS IS USED TO CHECK THE CURRENT APP VERSION AND ENCOURAGE THE USER TO UPDATE
-  advancedStatusCheck(NewVersion newVersion) async {
-    final status = await newVersion.getVersionStatus();
-
-    if (status?.canUpdate == true && updateMe == true) {
-
-      newVersion.showUpdateDialog(
-        dismissAction: (){
-          Navigator.pop(context);
-          Provider.of<BlenditData>(context, listen: false).setAppUpdateStatus();
-        },
-
-        updateButtonText: 'Update Now',
-        context: context,
-        versionStatus: status!,
-        dialogTitle: 'App Update 🎉',
-        dialogText: 'We are excited to announce that Some awesome new features have been released. Upgrade from version ${status.localVersion} to ${status.storeVersion} to get the best experience',
-
-      );
-    }
-  }
+  // advancedStatusCheck(NewVersion newVersion) async {
+  //   final status = await newVersion.getVersionStatus();
+  //
+  //   if (status?.canUpdate == true && updateMe == true) {
+  //
+  //     newVersion.showUpdateDialog(
+  //       dismissAction: (){
+  //         Navigator.pop(context);
+  //         Provider.of<BlenditData>(context, listen: false).setAppUpdateStatus();
+  //       },
+  //
+  //       updateButtonText: 'Update Now',
+  //       context: context,
+  //       versionStatus: status!,
+  //       dialogTitle: 'App Update 🎉',
+  //       dialogText: 'We are excited to announce that Some awesome new features have been released. Upgrade from version ${status.localVersion} to ${status.storeVersion} to get the best experience',
+  //
+  //     );
+  //   }
+  // }
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
@@ -121,7 +121,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       iOSId: 'com.frutsexpress.blendit2022',
       androidId: 'com.frutsexpress.blendit_2022',
     );
-    advancedStatusCheck(newVersion);
+    // advancedStatusCheck(newVersion);
 
   }
 

@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
     tutorialDone = prefs.getBool(kIsTutorial2Done) ?? false;
     print("YEEEEEESSSUUUU $tutorialDone");
-    if (tutorialDone != false){
+    if (tutorialDone == false){
       initialId = 'feature1';
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         FeatureDiscovery.discoverFeatures(context,

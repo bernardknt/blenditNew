@@ -97,8 +97,9 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
           var prefs = await SharedPreferences.getInstance();
 
-           launchUrl(Uri.parse('${prefs.getString(kWhatsappNumber)}'));
-           launchUrl(Uri.parse('www.google.com'));
+           launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
+          //  launchUrl(Uri.parse('${prefs.getString(kWhatsappNumber)}'));
+           // launchUrl(Uri.parse('www.google.com'));
 
          // print('${prefs.getString(kWhatsappNumber)}');
 
