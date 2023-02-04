@@ -47,7 +47,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
   var urlImages = ["images/page1.png", "images/page2.png","images/page3.png"];// MHM17 trends];
   var heights = double.maxFinite;
   int newDots = 0;
-  var heading = ['Your Personal Nutritionist 24/7', 'Smash Your Goals, Challenge Yourself', 'Goodbye Frustration, Hello Consistency'];
+  var heading = ['Your Personal Guide & Nutritionist', 'Smash Your Goals, No Excuses', 'Goodbye Frustration, Hello Consistency'];
 
   @override
   void initState() {
@@ -161,8 +161,8 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                               buttonHeight: 45,
                               title: 'Start Here',
                               onPressedFunction: () {
-                               //  Navigator.pushNamed(context, SignInPhone.id);
-                                Navigator.pushNamed(context, QuizPage0.id);
+                                Navigator.pushNamed(context, SignInPhone.id);
+                               //  Navigator.pushNamed(context, QuizPage0.id);
                               },
                             ),
                             // Row(

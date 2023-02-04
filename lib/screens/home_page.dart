@@ -1,5 +1,4 @@
 
-
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
@@ -47,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   var rulesList = [];
   var challengeIdList = [];
   var difficultyList = [];
+  var promoteList = [];
   var getList = [];
   List<DateTime> challengeEndTimeList = [];
   var prices = [];
@@ -238,6 +238,9 @@ class _HomePageState extends State<HomePage> {
                                     // Navigator.pushNamed(context, TrendsPage.id);
                                     //CommonFunctions().showNotification("notificationTitle", "notificationBody");
                                     // CommonFunctions().scheduledNotification(heading: "heading", body: "body", year: 2023, month: 1, day: 16, hour: 22, minutes: 26, id: 3);
+
+
+
                                     Get.snackbar('Coming Soon', 'This feature is coming soon',
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: kAppPinkColor,
@@ -313,6 +316,7 @@ class _HomePageState extends State<HomePage> {
                                   scheduleList = [];
                                   shoppingList = [];
                                   difficultyList = [];
+                                  promoteList = [];
 
 
                                   var challenges = snapshot.data!.docs;
@@ -332,6 +336,7 @@ class _HomePageState extends State<HomePage> {
                                     shoppingList.add(challenge.get('shopping'));
                                     difficultyList.add(challenge.get('difficulty'));
                                     getList.add(challenge.get('get'));
+                                    promoteList.add(challenge.get('promote'));
 
 
                                   }
@@ -451,10 +456,9 @@ class _HomePageState extends State<HomePage> {
                                                           ),
 
                                                         ),
-                                                       prices[index] == 0?
-                                                       Positioned(
+                                                       prices[index] == 0? Positioned(
                                                           top: 20,
-                                                            right: 10,
+                                                            right: 20,
 
                                                             child: Container(
                                                               height: 20,
@@ -473,7 +477,32 @@ class _HomePageState extends State<HomePage> {
                                                               ),
 
                                                             )
-                                                        ) : Container(),
+                                                        ) :
+                                                       Container(),
+                                                        promoteList[index] == true?
+                                                        Positioned(
+                                                            top: 20,
+                                                            right: 20,
+
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: 70,
+                                                              decoration: BoxDecoration(
+                                                                color: kBlack,
+                                                                borderRadius: BorderRadius.circular(8),
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                       children: [
+
+                                                                         Text("Trending", style: kNormalTextStyle.copyWith( fontSize: 13, color: kPureWhiteColor),),
+                                                                         Lottie.asset('images/flame.json', height: 15, fit: BoxFit.cover,),
+                                                                       ],
+                                                                     ),
+
+                                                            )
+                                                        ) :
+                                                        Container(),
                                                       ],
                                                     ),
 

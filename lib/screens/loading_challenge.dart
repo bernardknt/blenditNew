@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +41,11 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
   final _random = new Random();
   animationTimer() async{
     final prefs = await SharedPreferences.getInstance();
-
+    // final player = AudioCache();
+    // player.play("transition.wav");
     _timer = Timer(const Duration(milliseconds: 5000), () {
       prefs.setBool(kChallengeActivated, true);
+
 
       Navigator.pop(context);
       setState(() {

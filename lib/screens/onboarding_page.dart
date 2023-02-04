@@ -1,3 +1,4 @@
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,30 +28,32 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
   final auth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   void defaultInitialization()async{
+    // final player = AudioCache();
+    // player.play("transition.wav");
 
     final prefs =  await SharedPreferences.getInstance();
 
     name = prefs.getString(kFirstNameConstant)!;
-    _firebaseMessaging.getToken().then((value) => token = value!);
+    // _firebaseMessaging.getToken().then((value) => token = value!);
     // prefs.setString(kToken, value!)
   }
-  Future<void> uploadUserData() async {
-
-    final prefs = await SharedPreferences.getInstance();
-
-    final users = await FirebaseFirestore.instance
-        .collection('users').doc(auth.currentUser!.uid)
-        .update(
-        {
-      'firstName': prefs.getString(kFirstNameConstant),
-          'lastName': prefs.getString(kFullNameConstant),
-          'phoneNumber': prefs.getString(kPhoneNumberConstant),
-          'subscribed': true,
-          'token': token
-    });
-    prefs.setString(kToken, token);
-
-  }
+  // Future<void> uploadUserData() async {
+  //
+  //   final prefs = await SharedPreferences.getInstance();
+  //
+  //   final users = await FirebaseFirestore.instance
+  //       .collection('users').doc(auth.currentUser!.uid)
+  //       .update(
+  //       {
+  //     'firstName': prefs.getString(kFirstNameConstant),
+  //         'lastName': prefs.getString(kFullNameConstant),
+  //         'phoneNumber': prefs.getString(kPhoneNumberConstant),
+  //         'subscribed': true,
+  //         'token': token
+  //   });
+  //   prefs.setString(kToken, token);
+  //
+  // }
   var token = "old token";
   String name = '';
   double fontSize = 28;
@@ -70,7 +73,7 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
             style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white)),
       ),
       icon: const Icon(
-        LineIcons.blender,
+        LineIcons.dumbbell,
         color: Color(0xFF17183c),
       ),
     ),

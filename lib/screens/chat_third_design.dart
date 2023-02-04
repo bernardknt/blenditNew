@@ -190,7 +190,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
           children: [
             TextField(
               controller: _textFieldController,  // _textFieldController is a TextEditingController object
-              maxLines: 1,
+              maxLines: null,
               maxLength: 100,
               clipBehavior: Clip.antiAlias,
               // minLines: 2,

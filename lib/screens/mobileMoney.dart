@@ -1,5 +1,5 @@
 
-
+import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -91,7 +91,15 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
               title: "Payment Made",
               confirmBtnText: 'Ok 👍',
               confirmBtnColor: kGreenThemeColor,
-              backgroundColor: kBlueDarkColor
+              backgroundColor: kBlueDarkColor, 
+              onConfirmBtnTap: (){
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> LoadingChallengePage())
+                );
+
+
+              }
           );
 
         });
@@ -124,7 +132,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
       'email': emailUID,
     })
         .then((value){
-      print('Nice');
+
     })
         .catchError((error){
       CoolAlert.show(

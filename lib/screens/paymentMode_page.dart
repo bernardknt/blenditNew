@@ -7,8 +7,7 @@ import 'package:blendit_2022/utilities/paymentButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:lottie/lottie.dart';
-import 'blender_page.dart';
+
 
 
 class PaymentMode extends StatefulWidget {
