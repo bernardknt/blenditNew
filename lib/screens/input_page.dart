@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:math';
-var uuid = Uuid();
+var newuuid = Uuid();
 
 
 
@@ -23,9 +23,10 @@ class InputPage extends StatefulWidget {
 class _InputPageState extends State<InputPage> {
   final _auth = FirebaseAuth.instance;
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
-  final _random = new Random();
+  final _random = Random();
   CollectionReference items = FirebaseFirestore.instance.collection('items');
-  CollectionReference communication = FirebaseFirestore.instance.collection('communication');
+  // CollectionReference communication = FirebaseFirestore.instance.collection('communication');
+  CollectionReference aiMessage = FirebaseFirestore.instance.collection('lunch');
   CollectionReference categories = FirebaseFirestore.instance.collection('categories');
   CollectionReference ingredients = FirebaseFirestore.instance.collection('ingredients');
   CollectionReference saladIngredients = FirebaseFirestore.instance.collection('proteins');
@@ -46,12 +47,28 @@ class _InputPageState extends State<InputPage> {
         .then((value) => print("Item Added"))
         .catchError((error) => print("Failed to add Item: $error"));
   }
-  Future<void> addCommunication() {
+  // Future<void> addCommunication() {
+  //   // Call the user's CollectionReference to add a new user
+  //   return communication.doc(communicationId)
+  //       .set({
+  //     'title': title, // John Doe
+  //     'body': body,
+  //
+  //     // Stokes and Sons
+  //
+  //   })
+  //       .then((value) => print("Communication Sent"))
+  //       .catchError((error) => print("Failed to send Communication: $error"));
+  // }
+
+  Future<void> addAiMessage() {
     // Call the user's CollectionReference to add a new user
-    return communication.doc(communicationId)
+    return aiMessage.doc(communicationId)
         .set({
       'title': title, // John Doe
       'body': body,
+      'message': message,
+      'sent': false
 
       // Stokes and Sons
 
@@ -109,12 +126,12 @@ class _InputPageState extends State<InputPage> {
   var images = ['https://bit.ly/3ealgAb', 'https://bit.ly/3kllKHh',
     'https://bit.ly/3ievsbQ',
     'https://bit.ly/3ealgAb'];
-  String itemId = 'cat${uuid.v1().split("-")[0]}';
-  String communicationId = 'com${uuid.v1().split("-")[0]}';
+  String itemId = 'cat${newuuid.v1().split("-")[0]}';
+  String communicationId = 'aiMessage${newuuid.v1().split("-")[0]}';
   String body= '';
   double changeInvalidMessageOpacity = 0.0;
   String invalidMessageDisplay = 'Invalid Number';
-  String password = '';
+  String message = '';
   String title = '';
   int price = 0;
 
@@ -128,7 +145,7 @@ class _InputPageState extends State<InputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('Sign Up'),
+      appBar: AppBar(title: Text('Dummy Data'),
         backgroundColor: Colors.black,),
       body: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, top: 0),
@@ -166,9 +183,9 @@ class _InputPageState extends State<InputPage> {
                 InputFieldWidget(labelText: 'Body', hintText: 'Additional Information', keyboardType: TextInputType.text, onTypingFunction: (value){
                   body = value;
                 }),
-                // SizedBox(height: 8.0,),
-                // InputFieldWidget(labelText: ' Password',hintText:'Password', keyboardType: TextInputType.visiblePassword,passwordType: true, onTypingFunction: (value){
-                //   password = value;
+                SizedBox(height: 8.0,),
+                InputFieldWidget(labelText: ' Password',hintText:'Ai Message', keyboardType: TextInputType.text,passwordType: false, onTypingFunction: (value){
+                  message = value;}),
 
                 //SizedBox(height: 8.0,),
                 Column(
@@ -196,7 +213,7 @@ class _InputPageState extends State<InputPage> {
                               );
                             });
                           }else {
-                            addCommunication();
+                            addAiMessage();
                             // addCategories();
                             //addSaladIngredient();
                             // addItem();

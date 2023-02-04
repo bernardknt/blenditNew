@@ -1,4 +1,5 @@
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fancy_on_boarding/fancy_on_boarding.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/home_controller.dart';
+import 'challenge_page.dart';
 
 
 class BlenderOnboardingPage extends StatefulWidget {
@@ -57,19 +59,15 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
       color:
       Colors.black,
         //(0xff17183c),
-      heroImagePath: 'images/pour.gif',
-      title: const Text('100% Your Style',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            fontSize: 28.0,
-          )),
+      heroImagePath: 'images/olympics.gif',
+      title:  Text('Welcome to Your Challenge',
+          style: kHeading2TextStyleBold.copyWith(color: Colors.white, fontSize: 24),
+      ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: Text('Hi👋🏽'
-            '! You can Now Create your Healthy Smoothies, Juice and Salads just the way you like it',
+        child: Text('Each Challenge is designed to help you build your consistency and SMASH your goals.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white)),
+            style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white)),
       ),
       icon: const Icon(
         LineIcons.blender,
@@ -80,17 +78,14 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
     PageModel(
       color: Colors.white,
       heroImagePath: 'images/cooking.gif',
-      title: const Text('Select Your Ingredients',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Colors.black,
-            fontSize: 28.0,
-          )),
+      title:  Text('Preparation is Key',
+        style: kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 24),
+      ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: Text('Simply Add Fruits, Vegetables, Meats and everything Healthy and Nice..😋',
+        child: Text('Before starting you will receive the Rules, A Shopping list, and the schedule to prepare.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.black)),
+            style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.black)),
       ),
       icon: const Icon(
         LineIcons.carrot,
@@ -99,23 +94,20 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
     ),
     // SVG Pages Example
     PageModel(
-      color: Colors.deepOrange,
-      heroImagePath: 'images/relax.gif',
-      title: const Text('Hit Blend and Relax',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            fontSize: 28.0,
-          )),
+      color: kGreenThemeColor,
+      heroImagePath: 'images/photo.gif',
+      title:  Text('Take a Photo',
+        style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 24),
+      ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: Text('Your delivery is on its way to you. Done!',
+        child: Text('Take a photo of your completed activity for accountability. We shall review',
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white)),
+            style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white)),
       ),
       icon: const Icon(
-        LineIcons.motorcycle,
-        color: Color(0xFFFF557C),
+        LineIcons.camera,
+        color: kGreenThemeColor,
       ),
     ),
   ];
@@ -134,20 +126,20 @@ class _BlenderOnboardingPageState extends State<BlenderOnboardingPage> {
     return Scaffold(
       //Pass pageList and the mainPage route.
       body: FancyOnBoarding(
-        doneButtonText: "Enter",
+        doneButtonText: "Start",
         skipButtonText: "Skip",
         pageList: pageList,
         onDoneButtonPressed: ()async {
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setBool(kIsFirstTimeUser, false);
-          uploadUserData();
-          Navigator.pushNamed(context, ControlPage.id);
+          // final prefs = await SharedPreferences.getInstance();
+          Navigator.pop(context);
+          Navigator.pushNamed(context, ChallengePage.id);
         },
         onSkipButtonPressed: ()async {
           final prefs = await SharedPreferences.getInstance();
-          prefs.setBool(kIsFirstTimeUser, false);
-          uploadUserData();
-          Navigator.pushNamed(context, ControlPage.id);
+          // prefs.setBool(kIsFirstTimeUser, false);
+          // uploadUserData();
+          Navigator.pop(context);
+          Navigator.pushNamed(context, ChallengePage.id);
         },
       ),
     );

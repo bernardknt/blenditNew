@@ -1,16 +1,14 @@
 
-import 'package:blendit_2022/models/CommonFunctions.dart';
+import 'package:blendit_2022/screens/input_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
-import 'package:cool_alert/cool_alert.dart';
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:in_app_purchases_paywall_ui/in_app_purchases_paywall_ui.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +17,6 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/blendit_data.dart';
-import '../widgets/TicketDots.dart';
 import '../widgets/nutri_payment.dart';
 import 'delivery_page.dart';
 import 'new_settings.dart';
@@ -46,7 +43,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var phone = '';
   var name = '';
   String initialId = 'feature';
-  Random random = new Random();
+  Random random = Random();
+
 
   var about = ['Nutri is an Artificial Intelligence powered assistant that learns your personal nutritional attributes as you interact with it.',
       ' For best results please enter your information as accurately as possible.',
@@ -79,27 +77,24 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
   bool updateMe = true;
 
-  // THIS IS USED TO CHECK THE CURRENT APP VERSION AND ENCOURAGE THE USER TO UPDATE
-  // advancedStatusCheck(NewVersion newVersion) async {
-  //   final status = await newVersion.getVersionStatus();
-  //
-  //   if (status?.canUpdate == true && updateMe == true) {
-  //
-  //     newVersion.showUpdateDialog(
-  //       dismissAction: (){
-  //         Navigator.pop(context);
-  //         Provider.of<BlenditData>(context, listen: false).setAppUpdateStatus();
-  //       },
-  //
-  //       updateButtonText: 'Update Now',
-  //       context: context,
-  //       versionStatus: status!,
-  //       dialogTitle: 'App Update 🎉',
-  //       dialogText: 'We are excited to announce that Some awesome new features have been released. Upgrade from version ${status.localVersion} to ${status.storeVersion} to get the best experience',
-  //
-  //     );
-  //   }
-  // }
+
+  void increaseValueAndUploadToFirestore() async {
+    final prefs = await SharedPreferences.getInstance();
+    var messageCount = prefs.getInt(kMessageCount) ?? 0;
+    print("KOKOKOKOK $messageCount");
+
+    if (messageCount < 10) {
+      prefs.setInt(kMessageCount,messageCount+1);
+
+    } else if (prefs.getInt(kMessageCount)! == 10){
+      users.doc(auth.currentUser!.uid).update({
+        "aiActive": false,
+        "articleCount": messageCount,
+      });
+    }else{
+      prefs.setInt(kMessageCount,messageCount+1);
+    }
+  }
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
@@ -132,6 +127,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var aiResponseLength = 200;
   var responseList = [];
   var manualList = [];
+  var manualListText = [];
   var idList = [];
   var dateList = [];
   var statusList = [];
@@ -141,13 +137,16 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   List<double> opacityList = [];
   double textSize = 12.0;
   String fontFamilyMont = 'Montserrat-Medium';
+  CollectionReference chat = FirebaseFirestore.instance.collection('chat');
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  final auth = FirebaseAuth.instance;
 
 
 
   @override
   Widget build(BuildContext context) {double width = MediaQuery.of(context).size.width * 0.6;
   String serviceId = '';
-  CollectionReference chat = FirebaseFirestore.instance.collection('chat');
+
 
   Future<void> uploadData() async {
     var finalQuestion = lastQuestion;
@@ -221,6 +220,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                 final prefs = await SharedPreferences.getInstance();
                 if (prefs.getBool(kNutriAi) == true){
                   if (message != '') {
+                    increaseValueAndUploadToFirestore();
                     lastQuestion = message;
                     serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
                     if (message.length > 20) {
@@ -262,24 +262,28 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
 
-                  print("MUUUUULOOOOOKOOOONYIIIIIII ${prefs.getBool(kNutriAi)}");
 
                   if (prefs.getBool(kNutriAi) == true){
                     if(message != ''){
-
+                      increaseValueAndUploadToFirestore();
                       lastQuestion = message;
-
                       // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
                       serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
                       uploadData();
                       _textFieldController.clear();
+
                       //}
 
 
 
                     }
                   } else {
-
+                    showModalBottomSheet(
+                        context: context,
+                        // isScrollControlled: true,
+                        builder: (context) {
+                          return NutriPayment();
+                        });
 
 
                   }
@@ -360,8 +364,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
         ],
       ),
       // floatingActionButton: FloatingActionButton(onPressed: () {
+      //   Navigator.pushNamed(context, InputPage.id);
       //
-      //   CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
+      //   // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
       // },
       //
       // ),
@@ -559,10 +564,20 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                                     padding: const EdgeInsets.all(18.0),
                                                     child: Container(
                                                         width: 260,
-                                                        child: Text('${responseList[index]}',textAlign: TextAlign.left,
-                                                         style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kPureWhiteColor,
-                                                             fontSize: 15, fontWeight: FontWeight.w400),
-                                                          )
+                                                        child: Column(
+                                                          crossAxisAlignment:CrossAxisAlignment.start ,
+
+                                                          children: [
+
+                                                            Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
+                                                                style: kNormalTextStyle.copyWith(fontSize: 10, color: manualList[index] == false ? kBlueDarkColorOld: kPureWhiteColor,)
+                                                            ),
+                                                            Text('${responseList[index]}',textAlign: TextAlign.left,
+                                                             style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kPureWhiteColor,
+                                                                 fontSize: 15, fontWeight: FontWeight.w400),
+                                                              ),
+                                                          ],
+                                                        )
                                                     ),
                                                   )),
                                               Positioned(

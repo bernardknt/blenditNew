@@ -1,32 +1,9 @@
-import 'dart:async';
 
-
-import 'package:blendit_2022/models/CommonFunctions.dart';
-import 'package:blendit_2022/models/basketItem.dart';
-import 'package:blendit_2022/models/blendit_data.dart';
-import 'package:blendit_2022/models/quatityButton.dart';
-import 'package:blendit_2022/screens/checkout_page.dart';
-import 'package:blendit_2022/screens/mobileMoney.dart';
-import 'package:blendit_2022/screens/success_appointment_create.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
-import 'package:blendit_2022/utilities/paymentButtons.dart';
-import 'package:blendit_2022/utilities/roundedButtons.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:slider_button/slider_button.dart';
 
 
 showShoppingListDialog(context, heading, data, split, joiningString){

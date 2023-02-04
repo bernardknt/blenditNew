@@ -117,7 +117,7 @@ class _QuizPageNameState extends State<QuizPageName> {
                   ]
               ),
               Positioned(
-                  top: 100,
+                  top: 60,
                   left: 0,
 
                   child: Opacity(
@@ -133,18 +133,20 @@ class _QuizPageNameState extends State<QuizPageName> {
                         width: 260,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text( "Welcome to Nutri, Il be your Host. Let me set you up. Could you tell me your names?",textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 16, color: kBlack)),
+                          child: Text( "Welcome to Nutri, Il be your Host. Let me set you up. "
+                              "Could you tell me your names?",textAlign: TextAlign.left,
+                              style: kNormalTextStyle.copyWith(fontSize: 17, color: kBlack)),
                         ),
                       ),
                     ),
                   )
               ),
               Positioned(
-                  top: 160,
+                  top: 110,
                   right:40,
                   child: Opacity(
                       opacity: botOpacity.toDouble(),
-                      child: Lottie.asset('images/lisa.json', height: 100, width: 100,)),
+                      child: Lottie.asset('images/lisa.json', height: 170, width: 170,)),
               ),
 
             ],

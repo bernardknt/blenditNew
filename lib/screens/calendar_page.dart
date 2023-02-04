@@ -1,15 +1,14 @@
 
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/route_manager.dart';
-import 'package:intl/intl.dart';
 import 'package:cool_alert/cool_alert.dart';
+
+import 'package:get/route_manager.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
+import 'package:intl/intl.dart';
 import '../models/ai_data.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
@@ -49,14 +48,13 @@ class _CalendarPageState extends State<CalendarPage> {
 
           onTap: (value){
             //styleData.setBookingPrice(styleDataDisplay.totalPrice, false);
-            DatePicker.showTimePicker(context,
+                DatePicker.showTimePicker(context,
                 currentTime: DateTime(2022,12,9,10,00),
                 showSecondsColumn: false,
                 theme: const DatePickerTheme(itemHeight: 50, itemStyle: kHeadingTextStyle),
 
                 //showTitleActions: t,
-
-                onConfirm: (time){
+                    onConfirm: (time){
               // DateTime opening = DateTime(2022,1,1,Provider.of<StyleProvider>(context, listen: false).openingTime,0);
               // DateTime closing = DateTime(2022,1,1,Provider.of<StyleProvider>(context, listen: false).closingTime,0);
               DateTime selectedDateTime = DateTime(value.date!.year,value.date!.month,value.date!.day,time.hour, time.minute);
@@ -66,16 +64,43 @@ class _CalendarPageState extends State<CalendarPage> {
                 Get.snackbar('Time Passed', 'Choose a time that has not passed');
 
 
-              }  else {
-                Provider.of<AiProvider>(context, listen: false).setAppointmentTimeDate(value.date, time);
-                Provider.of<AiProvider>(context, listen:false).setWelcomeButtons(2);
-                Provider.of<AiProvider>(context, listen: false).setAppointmentTimeDate(selectedDateTime, time);
+              } else {
+                CoolAlert.show(
+                    lottieAsset: 'images/calendar.json',
+                    context: context,
+                    type: CoolAlertType.custom,
+                    // title: "Enter option",
+                    widget: Column(
+                      children:  [
+                        Text('Are you sure you want your Challenge to start on ${DateFormat('EEEE dd-MMM yyyy').format(selectedDateTime)}?', style: kNormalTextStyle,), //Text('Your appointment with ${Provider.of<BeauticianData>(context, listen: false).appointmentsToday.join(",")} is today', style: kNormalTextStyle,),
+                        kLargeHeightSpacing,
+                      ],
+                    ),
+                    confirmBtnText: 'Yes',
+                    confirmBtnColor: kBlueDarkColorOld,
+                    cancelBtnText: 'Cancel',
+                    showCancelBtn: true,
+                    backgroundColor: kPureWhiteColor,
 
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pushNamed(context, ChallengePage.id);
+                    onConfirmBtnTap: (){
+                      // print(Provider.of<BeauticianData>(context, listen: false).appointmentsToday);
+
+                      Navigator.pop(context);
+                      Provider.of<AiProvider>(context, listen: false).setAppointmentTimeDate(value.date, time);
+                      Provider.of<AiProvider>(context, listen:false).setWelcomeButtons(2);
+                      Provider.of<AiProvider>(context, listen: false).setAppointmentTimeDate(selectedDateTime, time);
+
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, ChallengePage.id);
+                      CommonFunctions().scheduledNotification(heading: 'YOUR CHALLENGE STARTS TODAY', body: "Get your self ready you challenge is today", year: selectedDateTime.year, month: selectedDateTime.month, day: selectedDateTime.day, hour: time.hour, minutes: time.minute, id: 100);
+                      CommonFunctions().showNotification("All Set!", "Your challenge is set for ${DateFormat('EEEE dd-MMM yyyy').format(selectedDateTime)} at ${DateFormat('hh:mm a').format(selectedDateTime)}",);
+
+                    }
+                );
+
               }
-              CommonFunctions().scheduledNotification(heading: 'Time to Get it done', body: "Get your self ready you challenge is today", year: selectedDateTime.year, month: selectedDateTime.month, day: selectedDateTime.day, hour: time.hour, minutes: time.minute, id: 1);
+
             });
 
 

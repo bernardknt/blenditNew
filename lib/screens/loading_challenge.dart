@@ -38,9 +38,16 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
   }
 
   final _random = new Random();
-  animationTimer() {
-    _timer = new Timer(const Duration(milliseconds: 5000), () {
+  animationTimer() async{
+    final prefs = await SharedPreferences.getInstance();
+
+    _timer = Timer(const Duration(milliseconds: 5000), () {
+      prefs.setBool(kChallengeActivated, true);
+
       Navigator.pop(context);
+      setState(() {
+
+      });
 
 
     });

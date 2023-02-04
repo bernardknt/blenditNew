@@ -42,7 +42,7 @@ class _QuizPage3State extends State<QuizPage3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBlueDarkColorOld,
+      backgroundColor: kBackgroundGreyColor,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: kGreenThemeColor,
         onPressed: () async {
@@ -86,8 +86,10 @@ class _QuizPage3State extends State<QuizPage3> {
                     width: 130.0,
                     height: 10,
                     largeColor: kGreenThemeColor,
-                    mediumColor: Color(0xFFC5C5C5),
-                    smallColor: Color(0xFFF0F0F0),
+                    mediumColor: kAppPinkColor,
+                    //Color(0xFFC5C5C5),
+                    smallColor: kBlueDarkColor,
+                    //Color(0xFFF0F0F0),
                     gap:30.0,
                   ),
                   onChanged: (double value) {
@@ -110,7 +112,7 @@ class _QuizPage3State extends State<QuizPage3> {
                 right: 20,
                 top: 20,
                 child: Text('What is your Weight?',
-                    textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
+                    textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 20)),
               ),
             ]
         ),

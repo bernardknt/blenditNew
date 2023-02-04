@@ -1,6 +1,7 @@
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/models/challengeDays.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
+import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -54,6 +55,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
   var nameList = [];
   var imgList = [];
   var scheduleList = [];
+  var challengeStatus = [];
   var rulesList = [];
   var challengeId = [];
   var opacityList = [];
@@ -100,6 +102,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                   tokenList = [];
                   costList = [];
                   challengeName = [];
+                  challengeStatus = [];
                   daysList = [];
                   opacityList = [];
                   rulesList = [];
@@ -124,6 +127,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                         challengeName.add(challenge.get('challenge'));
                         daysList.add(challenge.get('days'));
                         positionList.add(challenge.get('position'));
+                        challengeStatus.add(challenge.get('challengeStatus'));
                         communityList.add(challenge.get('community'));
                         shoppingList.add(challenge.get('shopping'));
                         activePositionList.add(challenge.get('activePosition'));
@@ -216,7 +220,13 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                             );
 
                             print('WALALALLA ${daysList[index]}');
-                            Navigator.pushNamed(context, ChallengePage.id);
+                            if (challengeStatus[index] == false){
+                              Navigator.pushNamed(context, BlenderOnboardingPage.id);
+
+                            }else{
+                              Navigator.pushNamed(context, ChallengePage.id);
+                            }
+
 
                           },
                           child:

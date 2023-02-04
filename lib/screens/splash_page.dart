@@ -25,6 +25,7 @@ class _SplashPageState extends State<SplashPage> {
     final prefs = await SharedPreferences.getInstance();
 
     bool isLoggedIn = prefs.getBool(kIsLoggedInConstant) ?? false;
+    prefs.setBool(kChallengeRequirements, false);
 
     setState(() {
       userLoggedIn = isLoggedIn ;

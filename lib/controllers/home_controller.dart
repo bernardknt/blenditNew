@@ -17,9 +17,12 @@ import 'package:iconsax/iconsax.dart';
 
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../screens/chat_page.dart';
 import '../utilities/constants.dart';
+import '../utilities/font_constants.dart';
 
 
 class ControlPage extends StatefulWidget {
@@ -60,12 +63,28 @@ class _ControlPageState extends State<ControlPage> {
     selectedPage = Provider.of<BlenditData>(context, listen: false).tabIndex;
 
   }
+  final challengeIndicator = GlobalKey();
+  void tutorialShow ()async {
+    final prefs = await SharedPreferences.getInstance();
+    var isRequirementsKnown = prefs.getBool(kChallengeRequirements) ?? false;
+
+    if (isRequirementsKnown == false && 1 == 2) {
+      //   initialId = 'feature1';
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        ShowCaseWidget.of(context,).startShowCase(
+            [challengeIndicator]);
+      });
+      prefs.setBool(kChallengeRequirements, true);
+    }
+    print("KAMUNGULUZE");
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     defaultInitialization();
+    tutorialShow();
 
   }
   @override
@@ -78,84 +97,89 @@ class _ControlPageState extends State<ControlPage> {
           color: kPureWhiteColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
-            child: GNav(
-              backgroundColor: kPureWhiteColor,
-              rippleColor: kCustomColor,
-              gap: 6,
+            child: Showcase(
+              key: challengeIndicator,
+              titleTextStyle: kNormalTextStyle,
+              description: 'Looks like you have an active challenge to do',
+              child: GNav(
+                backgroundColor: kPureWhiteColor,
+                rippleColor: kCustomColor,
+                gap: 6,
 
-              tabs: [
-              GButton(
-                icon: CupertinoIcons.chat_bubble_text,
-                text: 'Nutri',
-                iconColor: kGreenThemeColor,
-                iconActiveColor: kBlack,
-                textColor: kBlack,
-                backgroundColor: kCustomColor,
-                iconSize: 24,
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                gap: 4,
-              ),
-              GButton(
-                icon: Iconsax.airpod,
-                text: 'Challenges',
-                iconColor: kGreenThemeColor,
-                iconActiveColor: Colors.white,
-                textColor: Colors.white,
+                tabs: const [
+                GButton(
+                  icon: CupertinoIcons.chat_bubble_text,
+                  text: 'Nutri',
+                  iconColor: kGreenThemeColor,
+                  iconActiveColor: kBlack,
+                  textColor: kBlack,
+                  backgroundColor: kCustomColor,
+                  iconSize: 24,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  gap: 4,
+                ),
+                GButton(
+                  icon: Iconsax.airpod,
+                  text: 'Challenges',
+                  iconColor: kGreenThemeColor,
+                  iconActiveColor: Colors.white,
+                  textColor: Colors.white,
 
+                  // backgroundColor: kGreenThemeColor,
+                  iconSize: 24,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  gap: 4,
+                ),
+                GButton(
+                  icon: LineIcons.dumbbell,
+                  text: 'Active Workouts',
+                  iconColor: kGreenThemeColor,
+                  iconActiveColor: Colors.white,
+                  textColor: Colors.white,
+                  backgroundColor: kBlueDarkColorOld,
+                  iconSize: 24,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  gap: 4,
+                ),
+              ],
+                selectedIndex: selectedPage,
+                onTabChange: (index) {
+                  setState(() {
+                    selectedPage = index;
+                  });
+                },
+                curve: Curves.easeIn,
+                duration: Duration(milliseconds: 500),
+                tabBackgroundColor: kGreenThemeColor,
+                color: Colors.white,
+                activeColor: Colors.white,
                 // backgroundColor: kGreenThemeColor,
-                iconSize: 24,
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                gap: 4,
+                // tabBackgroundColor: Colors.grey[800],
+                // color: Colors.grey[800],
+                // activeColor: Colors.white,
+                // backgroundColor: Colors.grey[800],
+                // tabBackgroundColor: Colors.grey[800],
+                // color: Colors.grey[800],
+                // activeColor: Colors.white,
+                // backgroundColor: Colors.grey[800],
+                // tabBackgroundColor: Colors.grey[800],
+                // color: Colors.grey[800],
+                // activeColor: Colors.white,
+                // backgroundColor: Colors.grey[800],
+                // tabBackgroundColor: Colors.grey[800],
+                // color: Colors.grey[800],
+                // activeColor: Colors.white,
+                // backgroundColor: Colors.grey[800],
+                // tabBackgroundColor: Colors.grey[800],
+                // color: Colors.grey[800],
+                // activeColor: Colors.white,
+                // backgroundColor: Colors.grey[800],
+                // tabBackgroundColor: Colors.grey[800],
+                //
+
+
+
               ),
-              GButton(
-                icon: LineIcons.dumbbell,
-                text: 'Active Workouts',
-                iconColor: kGreenThemeColor,
-                iconActiveColor: Colors.white,
-                textColor: Colors.white,
-                backgroundColor: kBlueDarkColorOld,
-                iconSize: 24,
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                gap: 4,
-              ),
-            ],
-              selectedIndex: selectedPage,
-              onTabChange: (index) {
-                setState(() {
-                  selectedPage = index;
-                });
-              },
-              curve: Curves.easeIn,
-              duration: Duration(milliseconds: 500),
-              tabBackgroundColor: kGreenThemeColor,
-              color: Colors.white,
-              activeColor: Colors.white,
-              // backgroundColor: kGreenThemeColor,
-              // tabBackgroundColor: Colors.grey[800],
-              // color: Colors.grey[800],
-              // activeColor: Colors.white,
-              // backgroundColor: Colors.grey[800],
-              // tabBackgroundColor: Colors.grey[800],
-              // color: Colors.grey[800],
-              // activeColor: Colors.white,
-              // backgroundColor: Colors.grey[800],
-              // tabBackgroundColor: Colors.grey[800],
-              // color: Colors.grey[800],
-              // activeColor: Colors.white,
-              // backgroundColor: Colors.grey[800],
-              // tabBackgroundColor: Colors.grey[800],
-              // color: Colors.grey[800],
-              // activeColor: Colors.white,
-              // backgroundColor: Colors.grey[800],
-              // tabBackgroundColor: Colors.grey[800],
-              // color: Colors.grey[800],
-              // activeColor: Colors.white,
-              // backgroundColor: Colors.grey[800],
-              // tabBackgroundColor: Colors.grey[800],
-              //
-
-
-
             ),
           ),
         )

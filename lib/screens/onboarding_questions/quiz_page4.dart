@@ -94,8 +94,8 @@ class _QuizPage4State extends State<QuizPage4> {
                 left: 20,
                 right: 20,
                 top: 20,
-                child: Text('How tall are you🫣?',
-                    textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
+                child: Text('How tall are you?',
+                    textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 18)),
             ),
             Positioned(
                 left: 20,

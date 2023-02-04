@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:blendit_2022/screens/calendar_page.dart';
+import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -9,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utilities/font_constants.dart';
+import 'loading_challenge.dart';
 import 'mobileMoney.dart';
 
 
@@ -35,10 +38,20 @@ class _SuccessPageNewState extends State<SuccessPageNew> {
   }
 
   final _random = new Random();
-  animationTimer() {
-    _timer = new Timer(const Duration(milliseconds: 5000), () {
-      Navigator.pop(context);
-      Navigator.pushNamed(context, MobileMoneyPage.id);
+  animationTimer() async {
+    final prefs = await SharedPreferences.getInstance();
+    _timer = Timer(const Duration(milliseconds: 5000), () {
+      if (int.parse(prefs.getString(kBillValue)!) == 0) {
+
+        Navigator.pop(context);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context)=> LoadingChallengePage())
+        );
+      } else {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, MobileMoneyPage.id);
+      }
+
     });
   }
 

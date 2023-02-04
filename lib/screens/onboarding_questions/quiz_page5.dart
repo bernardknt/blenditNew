@@ -109,8 +109,8 @@ class _QuizPage5State extends State<QuizPage5> {
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.only(top:50.0, right: 10, left: 10),
-                      child: Text('Finally are your main Goals?',
-                          textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
+                      child: Text('Finally! What are your main Goals?',
+                          textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 18)),
                     ),),
                   height: 150,
                   decoration: const BoxDecoration(

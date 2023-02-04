@@ -58,6 +58,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 
@@ -126,10 +127,10 @@ class MyApp extends StatelessWidget {
 
           routes: {
             // '/': (context) => WelcomePage(),
-            HomePage.id: (context) => HomePage(),
-            ControlPage.id: (context) => FeatureDiscovery(
-              recordStepsInSharedPreferences: false,
-              child: ControlPage()),
+            // HomePage.id: (context) => HomePage(),
+            HomePage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> HomePage()),),
+            ControlPage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),)),
+            // ControlPage.id: (context) => FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),
             DetoxJuicePage.id: (context)=> DetoxJuicePage(),
             DetoxPlansPage.id: (context)=> DetoxPlansPage(),
             SaladsPage.id: (context)=> SaladsPage(),
@@ -172,13 +173,14 @@ class MyApp extends StatelessWidget {
             SignInPhone.id: (context)=>SignInPhone(),
             QuizPageName.id: (context)=>QuizPageName(),
             QuizPage1.id: (context)=>QuizPage1(),
-            ChallengePage.id: (context)=>ChallengePage(),
+            ChallengePage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> ChallengePage()),),
             CalendarPage.id: (context)=>CalendarPage(),
             SuccessPageNew.id: (context)=> SuccessPageNew(),
             SuccessPageChallenge.id: (context)=> SuccessPageChallenge(),
             AppointmentsTabController.id: (context)=> AppointmentsTabController(),
             AboutChallengePage.id: (context)=> AboutChallengePage(),
             NutriMobileMoneyPage.id: (context)=> NutriMobileMoneyPage(),
+
 
 
           },

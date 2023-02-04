@@ -27,6 +27,7 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
   List<String> getParts = get.split(",");
   String resultExpectations = parts.join("\n-");
   String resultGet = getParts.join("\n-");
+  bool planActive = false;
 
   CollectionReference userOrder = FirebaseFirestore.instance.collection('challenges');
   CollectionReference planUpload = FirebaseFirestore.instance.collection('plans');
@@ -96,7 +97,8 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
     final dateNow = DateTime.now();
     return userOrder.doc(orderId)
         .set({
-      'active': false,
+      'active': planActive,
+      'activePosition': 0,
       'challenge': challengeName,
       'challengeCreateId': challengeId,
       'challengeEndTime': dateNow.add(Duration(days: 5)),
@@ -199,7 +201,7 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
                           //color: Colors.red,
                           child: Column(
                             children: [
-                              Text('${formatter.format(challengeAmount)} Ugx', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white),
+                             challengeAmount == 0 ? Text("Free", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),): Text('${formatter.format(challengeAmount)} Ugx', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white),
                               ),
                               Text('Duration: ${daysList.length  } days', style: kNormalTextStyle.copyWith(color:kPureWhiteColor, fontSize: 12),)
                             ],
@@ -294,26 +296,13 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
                             children: [
                               Icon(Iconsax.bill, color: kPureWhiteColor,),
                               kSmallWidthSpacing,
-                              Text('${formatter.format(challengeAmount)} Ugx', textAlign: TextAlign.center,style: kNormalTextStyle.copyWith(color: kCustomColor, fontSize: 12),
+                              challengeAmount != 0 ?Text('${formatter.format(challengeAmount)} Ugx', textAlign: TextAlign.center,style: kNormalTextStyle.copyWith(color: kCustomColor, fontSize: 12)):
+                                  Text('Free', textAlign: TextAlign.center,style: kNormalTextStyle.copyWith(color: kCustomColor, fontSize: 12)
 
                               ),
                             ],
                           ),
                         ),
-                        // Expanded(
-                        //   flex:3,
-                        //   child:
-                        //   Row(
-                        //     children: [
-                        //       Icon(Iconsax.award, color: kPureWhiteColor,),
-                        //       kSmallWidthSpacing,
-                        //       Text('100', textAlign: TextAlign.center,style: kNormalTextStyle.copyWith(color: kCustomColor, fontSize: 12),
-                        //
-                        //       ),
-                        //     ],
-                        //   ),
-                        // )
-
 
                       ],
                     ),
@@ -346,7 +335,13 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
                     SliderButton(
 
 
+
                       action: () async{
+                        if (challengeAmount == 0) {
+                          planActive = true;
+                        } else {
+
+                        }
                         final prefs = await SharedPreferences.getInstance();
                         // changeOrderStatus();
                         prefs.setString(kBillValue, challengeAmount.toString() );

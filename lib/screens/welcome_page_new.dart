@@ -1,5 +1,6 @@
 
 
+import 'package:blendit_2022/screens/onboarding_questions/quiz_page0.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +161,8 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                               buttonHeight: 45,
                               title: 'Start Here',
                               onPressedFunction: () {
-                                Navigator.pushNamed(context, SignInPhone.id);
+                               //  Navigator.pushNamed(context, SignInPhone.id);
+                                Navigator.pushNamed(context, QuizPage0.id);
                               },
                             ),
                             // Row(
@@ -214,22 +216,22 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                             //       ),
                             //
                             //     ]),
-                            TextButton.icon(
-                                onPressed: (){
-                                  // showModalBottomSheet(
-                                  //     isScrollControlled: true,
-                                  //
-                                  //     context: context,
-                                  //     builder: (context) {
-                                  //       return Container(color: kBackgroundGreyColor, height: 600,
-                                  //         child: HomePage(),
-                                  //       );
-                                  //     });
-                                  Navigator.pushNamed(context, BrowseStorePage.id);
-
-                                },
-                                label:const Text("Browse Store", style: kNormalTextStyleWhiteButtons,
-                                ), icon: Icon(LineIcons.dumbbell, color: Colors.white,)),
+                            // TextButton.icon(
+                            //     onPressed: (){
+                            //       // showModalBottomSheet(
+                            //       //     isScrollControlled: true,
+                            //       //
+                            //       //     context: context,
+                            //       //     builder: (context) {
+                            //       //       return Container(color: kBackgroundGreyColor, height: 600,
+                            //       //         child: HomePage(),
+                            //       //       );
+                            //       //     });
+                            //       Navigator.pushNamed(context, BrowseStorePage.id);
+                            //
+                            //     },
+                            //     label:const Text("Browse Store", style: kNormalTextStyleWhiteButtons,
+                            //     ), icon: Icon(LineIcons.dumbbell, color: Colors.white,)),
 
 
 

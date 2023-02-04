@@ -5,7 +5,6 @@ import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:another_stepper/widgets/another_stepper.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/widgets/challenge_show_widget.dart';
@@ -21,6 +20,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../widgets/categories_widget.dart';
 import 'calendar_page.dart';
@@ -30,12 +30,15 @@ import 'calendar_page.dart';
 class ChallengePage extends StatefulWidget {
   static String id = 'challenge_page';
 
+
   @override
   State<ChallengePage> createState() => _ChallengePageState();
 }
 
 class _ChallengePageState extends State<ChallengePage> {
-  List <Step> stepsData = [];
+  final requirementsIndicator = GlobalKey();
+  final shoppingIndicator = GlobalKey();
+  late List <Step> stepsData;
   int currentStep = 0;
   Color textColor = kCustomColor;
   Color backGroundColor = kBlueDarkColorOld;
@@ -88,6 +91,21 @@ class _ChallengePageState extends State<ChallengePage> {
 
   // End
 
+
+  void tutorialShow ()async {
+    final prefs = await SharedPreferences.getInstance();
+    var isRequirementsKnown = prefs.getBool(kChallengeRequirements) ?? false;
+
+    if (isRequirementsKnown == false) {
+      //   initialId = 'feature1';
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        ShowCaseWidget.of(context,).startShowCase(
+            [requirementsIndicator, shoppingIndicator]);
+      });
+      prefs.setBool(kChallengeRequirements, true);
+    }
+    print("KAMUNGULUZE");
+  }
 
   void rulesFunction() {
     var newRules = Provider.of<AiProvider>(context, listen: false).challengeRules.split('.');
@@ -225,6 +243,7 @@ class _ChallengePageState extends State<ChallengePage> {
     final prefs = await SharedPreferences.getInstance();
     currentStep = aiData.challengePosition;
     id = aiData.challengeId;
+    name = prefs.getString(kFirstNameConstant)! ?? '';
 
 
     var planDays = aiData.challengeDaysKeys;
@@ -241,7 +260,7 @@ class _ChallengePageState extends State<ChallengePage> {
               Row(
                 children: [
                   Text('Welcome $name..',style: kHeading2TextStyle.copyWith(color: textColor, overflow: TextOverflow.ellipsis),),
-                  Lottie.asset('images/robot.json', height: 70,),
+                  Lottie.asset('images/lisa.json', height: 70,),
                 ],
               ),
               Text(aiData.challengeWelcomeMessage,style: kNormalTextStyle.copyWith(color: textColor),),
@@ -300,7 +319,7 @@ class _ChallengePageState extends State<ChallengePage> {
             title: StepperText("${listOfKeys[j]}", textStyle: const TextStyle(
               color: kPureWhiteColor,
             ),),
-            subtitle: StepperText("${DateFormat('HH:mm').format(dateTime)}"),
+            subtitle: StepperText(DateFormat('HH:mm').format(dateTime)),
             iconWidget: GestureDetector(
               onTap: () {
                 if(Provider.of<AiProvider>(context, listen: false).activeChallengeIndex == j) {
@@ -433,7 +452,7 @@ class _ChallengePageState extends State<ChallengePage> {
           ),
         ): Container(child: Column(
           children: [
-            Text("Looks like ${aiData.challengeName} doesn't start until ${DateFormat('EEEE dd-MMM yyyy').format(Provider.of<AiProvider>(context, listen: false).appointmentDate)}",textAlign:TextAlign.center, style: kNormalTextStyle.copyWith(color: kAppPinkColor),),
+            Text("Looks like the ${aiData.challengeName} starts on ${DateFormat('EEEE dd-MMM yyyy').format(Provider.of<AiProvider>(context, listen: false).appointmentDate)}. Get your shopping ready minwhile",textAlign:TextAlign.center, style: kNormalTextStyle.copyWith(color: kAppPinkColor),),
             TextButton(onPressed:
                 (){
                 Navigator.pushNamed(context, CalendarPage.id);
@@ -467,10 +486,12 @@ class _ChallengePageState extends State<ChallengePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     defaultInitialization();
 
     //Navigator.pushNamed(context, ChallengePage.id);
-     animationTimer();
+     // animationTimer();
+    tutorialShow();
   }
 
 
@@ -478,7 +499,7 @@ class _ChallengePageState extends State<ChallengePage> {
   Widget build(BuildContext context) {
     var aiData = Provider.of<AiProvider>(context);
 
-    List <Step> bernard = [Step(title: Text("Now"), content: Text("Nice"))];
+
 
 
 
@@ -488,28 +509,38 @@ class _ChallengePageState extends State<ChallengePage> {
       backgroundColor: backGroundColor,
       title: Text(aiData.challengeName,textAlign:TextAlign.center, style: kHeading2TextStyle.copyWith(fontSize: 14, color: kPureWhiteColor),),
       actions: [
-        IconButton(
-          icon: Icon(Icons.shopping_cart, color:kGreenThemeColor,),
-          onPressed: () {
-           // var shoppingList = Provider.of<AiProvider>(context, listen: false).challengeRules.split('.');
-            var shoppingList = Provider.of<AiProvider>(context, listen: false).challengeShoppingList;
+        Showcase(
+          key: shoppingIndicator,
+          titleTextStyle: kNormalTextStyle,
+          description: 'Click here to see your Shopping list',
+          child: IconButton(
+            icon: Icon(Icons.shopping_cart, color:kGreenThemeColor,),
+            onPressed: () {
+             // var shoppingList = Provider.of<AiProvider>(context, listen: false).challengeRules.split('.');
+              var shoppingList = Provider.of<AiProvider>(context, listen: false).challengeShoppingList;
 
 
-            showShoppingListDialog(context, 'Your shopping List',shoppingList, ",", "\n - ");
+              showShoppingListDialog(context, 'Your shopping List',shoppingList, ",", "\n - ");
 
 
-          },
+            },
+          ),
         ),
         kSmallWidthSpacing,
-        IconButton(
-          icon: Icon(Icons.document_scanner, color: kGreenThemeColor,),
-          onPressed: () {
-            var scheduleList = Provider.of<AiProvider>(context, listen: false).challengeSchedule;
+        Showcase(
+        key: requirementsIndicator,
+        titleTextStyle: kNormalTextStyle,
+        description: 'Click here to check out the Shedule for your challenge',
+          child: IconButton(
+            icon: Icon(Icons.document_scanner, color: kGreenThemeColor,),
+            onPressed: () {
+              var scheduleList = Provider.of<AiProvider>(context, listen: false).challengeSchedule;
 
-            showShoppingListDialog(context, 'The Schedule',scheduleList, '.', " \n");
+              showShoppingListDialog(context, 'The Schedule',scheduleList, '.', " \n");
 
 
-          },
+            },
+          ),
         ),
         kSmallWidthSpacing,
       ],
