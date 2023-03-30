@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../controllers/home_controller.dart';
+import '../models/CommonFunctions.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../utilities/icons_constants.dart';
@@ -143,17 +144,6 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(height: 20,),
-                            // Text('Your Style Booked in Minutes',textAlign: TextAlign.center, style: GoogleFonts.sourceSansPro(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white,
-                            //     shadows: [
-                            //       Shadow(
-                            //         color: kBlack,
-                            //         offset: Offset.fromDirection(1.0),
-                            //         blurRadius: 2
-                            //
-                            //
-                            //     )
-                            //     ]
-                            // ),),
 
                             kLargeHeightSpacing,
                             roundedButtons(
@@ -162,79 +152,10 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                               title: 'Start Here',
                               onPressedFunction: () {
                                 Navigator.pushNamed(context, SignInPhone.id);
+                                CommonFunctions().cancelNotification();
                                //  Navigator.pushNamed(context, QuizPage0.id);
                               },
                             ),
-                            // Row(
-                            //     children: [
-                            //       Expanded(
-                            //         // flex: 3,
-                            //         child: TextButton.icon(onPressed: ()async{
-                            //
-                            //
-                            //          // Navigator.pushNamed(context, SignUpPhone.id);
-                            //           // Navigator.pushNamed(context, RegisterPage.id);
-                            //
-                            //
-                            //         },
-                            //           style: TextButton.styleFrom(
-                            //             //elevation: ,
-                            //               shadowColor: kBlueDarkColorOld,
-                            //               onSurface: kBlueDarkColorOld,
-                            //               surfaceTintColor: kBlueDarkColorOld,
-                            //               fixedSize: Size(double.maxFinite, 45),
-                            //               shape: RoundedRectangleBorder(
-                            //                   borderRadius: BorderRadius.circular(10)
-                            //               ),
-                            //               backgroundColor: kAppPinkColor
-                            //           ),icon: kIconStarWhite,
-                            //           label: Text('Register', style: const TextStyle(fontWeight: FontWeight.bold,
-                            //               color:Colors.white), ), ),
-                            //       ),
-                            //
-                            //       SizedBox(width: 5,),
-                            //       Expanded(
-                            //         // flex: 3,
-                            //         child: TextButton.icon(onPressed: ()async{
-                            //          // Navigator.pushNamed(context,SignInPhone.id);
-                            //
-                            //
-                            //         },
-                            //           style: TextButton.styleFrom(
-                            //             //elevation: ,
-                            //               shadowColor: kBlueDarkColorOld,
-                            //               onSurface: kBlueDarkColorOld,
-                            //               surfaceTintColor: kBlueDarkColorOld,
-                            //               fixedSize: Size(double.maxFinite, 45),
-                            //               shape: RoundedRectangleBorder(
-                            //                   borderRadius: BorderRadius.circular(10)
-                            //               ),
-                            //               backgroundColor: kBlueDarkColorOld
-                            //           ),icon: kIconScissorWhite,
-                            //           label: Text('Sign In', style: const TextStyle(fontWeight: FontWeight.bold,
-                            //               color: Colors.white), ), ),
-                            //       ),
-                            //
-                            //     ]),
-                            // TextButton.icon(
-                            //     onPressed: (){
-                            //       // showModalBottomSheet(
-                            //       //     isScrollControlled: true,
-                            //       //
-                            //       //     context: context,
-                            //       //     builder: (context) {
-                            //       //       return Container(color: kBackgroundGreyColor, height: 600,
-                            //       //         child: HomePage(),
-                            //       //       );
-                            //       //     });
-                            //       Navigator.pushNamed(context, BrowseStorePage.id);
-                            //
-                            //     },
-                            //     label:const Text("Browse Store", style: kNormalTextStyleWhiteButtons,
-                            //     ), icon: Icon(LineIcons.dumbbell, color: Colors.white,)),
-
-
-
                           ],
                         )
                     ),

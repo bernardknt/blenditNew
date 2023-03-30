@@ -49,7 +49,7 @@ class _CalendarPageState extends State<CalendarPage> {
           onTap: (value){
             //styleData.setBookingPrice(styleDataDisplay.totalPrice, false);
                 DatePicker.showTimePicker(context,
-                currentTime: DateTime(2022,12,9,10,00),
+                currentTime: DateTime(2022,12,9,6,30),
                 showSecondsColumn: false,
                 theme: const DatePickerTheme(itemHeight: 50, itemStyle: kHeadingTextStyle),
 
@@ -111,7 +111,7 @@ class _CalendarPageState extends State<CalendarPage> {
           backgroundColor: kBackgroundGreyColor,
           selectionDecoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Colors.pink.withOpacity(0.5),
+            color: Colors.green.withOpacity(0.5),
             border:
             Border.all(color: kGreyLightThemeColor,
             //const Color.fromARGB(255, 68, 140, 255),

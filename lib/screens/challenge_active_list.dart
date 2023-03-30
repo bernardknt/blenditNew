@@ -3,11 +3,13 @@ import 'package:blendit_2022/models/challengeDays.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
 import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import '../models/firebase_functions.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../utilities/icons_constants.dart';
@@ -61,6 +63,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
   var opacityList = [];
   var tokenList = [];
   var shoppingList = [];
+  var recipeList = [];
   var activePositionList = [];
   List<Map<String, dynamic>> daysList = [];
   var costList = [];
@@ -111,6 +114,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                   promoList = [];
                   communityList = [];
                   shoppingList = [];
+                  recipeList = [];
                   activePositionList = [];
 
                   var challengeData = snapshot.data!.docs;
@@ -130,6 +134,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                         challengeStatus.add(challenge.get('challengeStatus'));
                         communityList.add(challenge.get('community'));
                         shoppingList.add(challenge.get('shopping'));
+                        recipeList.add(challenge.get('recipe'));
                         activePositionList.add(challenge.get('activePosition'));
                         date.add(challenge.get('challengeStartTime').toDate());
 
@@ -170,38 +175,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                       itemBuilder: (context, index){
                         return GestureDetector(
                           onTap: ()async{
-                           //  print("BEGIN: ${daysList[index]}: END");
-                           // // List < Map<String, dynamic>> data = daysList[index].entries.toList();
-                           //  var myMap = daysList[index];
-                           //  List<Map<String, dynamic>> myList = myMap.entries.map((entry) => {'key': entry.key, 'value': entry.value}).toList();
-                           //  myList.sort((a, b) => a.keys.last.compareTo(b.keys.first));
-                           //
-                           //
-                           //  // Map<String, dynamic> myMapBack = Map<String, dynamic>();
-                           //  Map<String, dynamic> myMapBack = Map.fromEntries(myList.map((item) => MapEntry(item['key'], item['value'])));
-                           //
-                           //  // print(myList);
-                           //  print("ANALYZE OLD: ${myList}");
-                           //  print("ANALYZE NEW: ${myMapBack}");
-                           //  Provider.of <AiProvider> (context, listen: false).setChallengeDays(ChallengeDays(
-                           //      day: day,
-                           //      timestamp:
-                           //      timestamp,
-                           //      activity:
-                           //      activity));
 
-
-
-                           //  final sorted = new SplayTreeMap<String,dynamic>.from(map, (a, b) => a.compareTo(b));
-                           //  List sortedList = data.entries.toList()..sort((entry1, entry2) => entry1.value.compareTo(entry2.value));
-                           //  print("WAHAMBANATI: $sortedList");
-                            // Provider.of<AiProvider>(context, listen: false).resetChallengeDayColors();
-                            // var map = SortedMap(Ordering.byValue());
-                            // map.addAll(daysList[index]);
-                            // // print(map);
-
-
-                            // map.sort((a, b) => a.weight.compareTo(b.weight));
                             Provider.of<AiProvider>(context, listen: false).setActiveChallengeIndexFromServer(activePositionList[index]);
 
                             Provider.of<AiProvider>(context, listen:false).setChallengeParameters(
@@ -216,7 +190,8 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                                 daysList[index].values.toList(),
                                 shoppingList[index],
                               activePositionList[index],
-                              daysList[index]
+                              daysList[index],
+                                recipeList[index]
                             );
 
                             print('WALALALLA ${daysList[index]}');
@@ -295,6 +270,37 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                                     ],
                                   ),
                                 ),
+                                Positioned(
+
+                                    right: 10,
+                                    top: 10,
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        // if (opacityList[index] == 0 ){
+                                          CoolAlert.show(
+                                              lottieAsset: 'images/flame.json',
+                                              context: context,
+                                              type: CoolAlertType.success,
+                                              text: "Are you sure you want to delete this Challenge",
+                                              title: "Delete Challenge",
+                                              confirmBtnText: 'Yes',
+                                              confirmBtnColor: Colors.red,
+                                              cancelBtnText: 'Cancel',
+                                              showCancelBtn: true,
+                                              backgroundColor: kBlueDarkColor,
+                                              onConfirmBtnTap: (){
+                                               FirebaseServerFunctions().removeAppointment(challengeId[index]);
+                                                Navigator.pop(context);
+                                              }
+                                          );
+                                       // }
+                                      },
+
+                                      child: Opacity(
+                                          opacity: 1,
+                                          //pendingList[index],
+                                          child: kIconCancel),
+                                    )),
 
                                 Positioned(
                                   right: 10,

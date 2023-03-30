@@ -48,6 +48,7 @@ import 'package:blendit_2022/screens/success_appointment_create.dart';
 import 'package:blendit_2022/screens/success_challenge_done.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/screens/tropical_page.dart';
+import 'package:blendit_2022/screens/upload_photo.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:feature_discovery/feature_discovery.dart';
@@ -128,7 +129,7 @@ class MyApp extends StatelessWidget {
           routes: {
             // '/': (context) => WelcomePage(),
             // HomePage.id: (context) => HomePage(),
-            HomePage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> HomePage()),),
+            HomePage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false,child: HomePage())),),
             ControlPage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),)),
             // ControlPage.id: (context) => FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),
             DetoxJuicePage.id: (context)=> DetoxJuicePage(),
@@ -175,6 +176,7 @@ class MyApp extends StatelessWidget {
             QuizPage1.id: (context)=>QuizPage1(),
             ChallengePage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> ChallengePage()),),
             CalendarPage.id: (context)=>CalendarPage(),
+            UploadAiPhoto.id: (context)=>UploadAiPhoto(),
             SuccessPageNew.id: (context)=> SuccessPageNew(),
             SuccessPageChallenge.id: (context)=> SuccessPageChallenge(),
             AppointmentsTabController.id: (context)=> AppointmentsTabController(),

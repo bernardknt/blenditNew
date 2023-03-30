@@ -22,7 +22,7 @@
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
                                 <rect key="frame" x="207" y="448" width="0.5" height="0.5"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nutri-Ai logo" translatesAutoresizingMaskIntoConstraints="NO" id="6cR-FJ-1mm">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="appstore" translatesAutoresizingMaskIntoConstraints="NO" id="6cR-FJ-1mm">
                                 <rect key="frame" x="107" y="348" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="gW3-Ag-5dP"/>
@@ -47,6 +47,6 @@
     </scenes>
     <resources>
         <image name="LaunchImage" width="0.5" height="0.5"/>
-        <image name="nutri-Ai logo" width="1024" height="1024"/>
+        <image name="appstore" width="512" height="512"/>
     </resources>
 </document>

@@ -8,6 +8,7 @@ import 'package:blendit_2022/screens/challenge_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,12 +17,14 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 import '../screens/success_challenge_done.dart';
 import '../utilities/constants.dart';
+import '../widgets/InputFieldWidget.dart';
 import 'ai_data.dart';
 
 
@@ -39,7 +42,15 @@ class CommonFunctions {
   final auth = FirebaseAuth.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   var formatter = NumberFormat('#,###,000');
+  var description = "";
   CollectionReference challengeCollection = FirebaseFirestore.instance.collection('challenges');
+  CollectionReference trends = FirebaseFirestore.instance.collection('photoUpLoads');
+  CollectionReference chat = FirebaseFirestore.instance.collection('chat');
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+
+
+  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
   File? image;
   UploadTask? uploadTask;
   final storage = FirebaseStorage.instance;
@@ -88,9 +99,9 @@ class CommonFunctions {
       hour,
       minutes,
     );
-    if (scheduleDate.isBefore(now)) {
-      scheduleDate = scheduleDate.add(const Duration(days: 1));
-    }
+    // if (scheduleDate.isBefore(now)) {
+    //   scheduleDate = scheduleDate.add(const Duration(days: 1));
+    // }
     return scheduleDate;
   }
 
@@ -105,11 +116,7 @@ class CommonFunctions {
   scheduledNotification({required String heading,required String body,required int year,required int month,required int day, required int hour, required int minutes, required int id}) async {
 
     initializeNotification();
-    await
-    flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      heading,
-      body,
+    await flutterLocalNotificationsPlugin.zonedSchedule(id, heading, body,
       _convertTime(year, month, day, hour, minutes),
        NotificationDetails(
         android: AndroidNotificationDetails(
@@ -436,6 +443,202 @@ class CommonFunctions {
           'currentLocation': location,
 
         }).then((value) => print("Location Updated"));
+  }
+
+  // HERE ARE FUNCTIONS FOR PHOTO UPLOAD
+  Future<void> uploadFile(String filePath, String fileName, String description, context)async {
+    File file = File(filePath);
+    try {
+      uploadTask  = storage.ref('chatImages/$fileName').putFile(file);
+      final snapshot = await uploadTask!.whenComplete((){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Image Uploaded')));
+
+      });
+      final urlDownload = await snapshot.ref.getDownloadURL();
+      final imageName = await snapshot.ref.name;
+      print("KIWEEEEEEDDDEEEEEEEEEEEEEE: $urlDownload");
+      addPhotoToDB(fileName, urlDownload, imageName, description, context);
+
+      // Navigator.pushNamed(context, ControlPage.id);
+    }  catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error Uploading: $e')));
+    }
+  }
+
+
+  Future<void> addPhotoToDB(trendsId, image, name, description, context) async {
+    // Call the user's CollectionReference to add a new user
+    final prefs = await SharedPreferences.getInstance();
+    return chat.doc(trendsId)
+        .set({
+      'replied': false,
+      'status' : true,
+      'time':  DateTime.now(),
+      'message': "Image of '$description' uploaded",
+      'response': '',
+      'userId': prefs.getString(kPhoneNumberConstant),
+      'weight': prefs.getDouble(kUserWeight),
+      'height': prefs.getInt(kUserHeight),
+      'name': prefs.getString(kFullNameConstant),
+      'token': prefs.getString(kToken),
+      'id':trendsId,
+      'history': [],
+      'length': 200,
+      'lastQuestion': "None",
+      'manual': false,
+      'photo': true,
+      'country': prefs.getString(kUserCountryName),
+      'birthday': prefs.getString(kUserBirthday),
+      'preferences': prefs.getString(kUserPersonalPreferences),
+      'image': "image"
+    })
+    //     .set({
+    //   'active': true, // John Doe
+    //   'approved': false,
+    //   'images': image,
+    //   'name': name,
+    //   'question': description,
+    //   'id' : trendsId,
+    //   // Stokes and Sons
+    //
+    // })
+        .then((value) {
+      Navigator.pop(context); getImageUrl(name);
+
+    })
+
+        .catchError((error) => print("Failed to send Communication: $error"));
+  }
+  Future<String> getImageUrl(String imageName) async {
+    try {
+      // Get a reference to the Firebase Storage instance
+      final storageRef =   storage.refFromURL("gs://blend-it-8a622.appspot.com/chatImages/challenges/$imageName");
+      // FirebaseStorage.instance.ref();
+
+      // Get a reference to the image file
+      // final imageRef = storageRef.child(imageName);
+
+      // Get the download URL for the image
+      //final imageUrl = await imageRef.getDownloadURL();
+      final imageUrl = await storageRef.getDownloadURL();
+
+      print("WOLOLOLOLOLOLOL $imageUrl");
+
+      return imageUrl;
+    } catch (e) {
+      print('Error getting image URL: $e');
+      return "";
+    }
+  }
+
+  void showBottomSheet(BuildContext context, String serviceId, File? imageReceived) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SingleChildScrollView(
+            child: Container(
+              color: kBlack,
+              // height: 200,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(child:
+
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+
+                      child:
+
+                      imageReceived != null ? Image.file(imageReceived!, height: 150,) : Container(
+                        width: double.infinity,
+                        height: 180,
+                        child: Text("data"),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), color: kPureWhiteColor),
+
+                      ),
+                    ),
+
+
+
+                    Container(
+                      height: 70,
+                      child:
+
+
+                       InputFieldWidget(hintText: "Is this good for me?", onTypingFunction: (value){description = value;}, keyboardType: TextInputType.text, labelText: " What's your Question", inputTextColor: kPureWhiteColor,),
+
+                    ),
+                    RoundedLoadingButton(
+                      width: 120,
+                      color: kCustomColor,
+                      child: Text('Send to Nutri', style: TextStyle(color: kBlack)),
+                      controller: _btnController,
+                      onPressed: () async {
+                        image = imageReceived;
+                        if ( description == ''){
+                          _btnController.error();
+                          showDialog(context: context, builder: (BuildContext context){
+                            return
+                              CupertinoAlertDialog(
+                                title: Text("Oops you haven't added asked your Question"),
+                                content: Text('Make sure you have filled in this field'),
+                                actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                    onPressed: (){
+                                      _btnController.reset();
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Cancel'))],
+                              );
+                          });
+                        }else {
+
+                          uploadFile(image!.path, serviceId, description, context );
+
+
+                          //Implement registration functionality.
+                        }
+                      },
+                    ),
+                    Opacity(
+                        opacity: 0,
+                        child: Text("There was an error", style: TextStyle(color: Colors.red),)),
+                  ],
+                )),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void startTrialSubscription() {
+    final now = DateTime.now();
+    final futureDate = now.add(Duration(days: 3));
+    final formattedDate = Timestamp.fromDate(futureDate);
+
+    users.doc(auth.currentUser!.uid).update({
+      // "aiActive": false,
+      "subscriptionEndDate": futureDate,
+      "subscriptionStartDate": now,
+      "subscribed": false,
+      "trial": true,
+
+    });
+
+
+
+
+
+
+    FirebaseFirestore.instance.collection('users').doc('5678902902').set({
+      'futureDate': formattedDate,
+    });
   }
 
 }

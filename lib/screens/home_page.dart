@@ -1,5 +1,6 @@
 
 import 'package:blendit_2022/screens/salads_page.dart';
+import 'package:blendit_2022/screens/your_vision.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/widgets/show_summary_dialog.dart';
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
   var challengeIdList = [];
   var difficultyList = [];
   var promoteList = [];
+  var recipeList = [];
   var getList = [];
   List<DateTime> challengeEndTimeList = [];
   var prices = [];
@@ -118,6 +120,25 @@ class _HomePageState extends State<HomePage> {
     return
       Scaffold(
       backgroundColor: kBackgroundGreyColor,
+      appBar: AppBar(
+        backgroundColor: kBackgroundGreyColor,
+        foregroundColor: kBlueDarkColor,
+        elevation: 0,
+        // title: Text('Welcome $name', style: kNo,),
+        // centerTitle: true,
+      //   actions: [
+      //     IconButton(
+      //       onPressed: (){
+      //         CoolAlert.show(
+      //           context: context,
+      //           type: CoolAlertType.info,
+      //           title: 'Welcome $name',
+      //           text: 'This is the home page where you can fi',
+      // );
+      //       },
+      //       icon: Icon(Iconsax.info_circle, color: kBlueDarkColor,),
+      // )],
+      ),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -169,31 +190,34 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 InkWell(
                                   onTap:(){
-
-                                    CoolAlert.show(
-                                        lottieAsset: 'images/workout2.json',
-                                        context: context,
-                                        type: CoolAlertType.custom,
-                                        // title: "Enter option",
-                                        widget: Column(
-                                          children: const [
-                                            Text('You  have 0 active workouts', style: kNormalTextStyle,), //Text('Your appointment with ${Provider.of<BeauticianData>(context, listen: false).appointmentsToday.join(",")} is today', style: kNormalTextStyle,),
-                                            kLargeHeightSpacing,
-                                          ],
-                                        ),
-                                        confirmBtnText: 'Yes',
-                                        confirmBtnColor: kBlueDarkColorOld,
-                                        cancelBtnText: 'Cancel',
-                                        showCancelBtn: true,
-                                        backgroundColor: kPureWhiteColor,
-
-                                        onConfirmBtnTap: (){
-                                          // print(Provider.of<BeauticianData>(context, listen: false).appointmentsToday);
-
-                                          Navigator.pop(context);
-
-                                        }
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context)=> YourVision())
                                     );
+
+                                    // CoolAlert.show(
+                                    //     lottieAsset: 'images/workout2.json',
+                                    //     context: context,
+                                    //     type: CoolAlertType.custom,
+                                    //     // title: "Enter option",
+                                    //     widget: Column(
+                                    //       children: const [
+                                    //         Text('You  have 0 active workouts', style: kNormalTextStyle,), //Text('Your appointment with ${Provider.of<BeauticianData>(context, listen: false).appointmentsToday.join(",")} is today', style: kNormalTextStyle,),
+                                    //         kLargeHeightSpacing,
+                                    //       ],
+                                    //     ),
+                                    //     confirmBtnText: 'Yes',
+                                    //     confirmBtnColor: kBlueDarkColorOld,
+                                    //     cancelBtnText: 'Cancel',
+                                    //     showCancelBtn: true,
+                                    //     backgroundColor: kPureWhiteColor,
+                                    //
+                                    //     onConfirmBtnTap: (){
+                                    //       // print(Provider.of<BeauticianData>(context, listen: false).appointmentsToday);
+                                    //
+                                    //       Navigator.pop(context);
+                                    //
+                                    //     }
+                                    // );
 
 
 
@@ -224,9 +248,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 kSmallHeightSpacing,
-                                Text('0', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),),
+                                Text('', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),),
                                 kSmallHeightSpacing,
-                                Text('Active Challenges', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),)
+                                Text('Vision', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),)
 
                               ],
                             ),
@@ -317,6 +341,7 @@ class _HomePageState extends State<HomePage> {
                                   shoppingList = [];
                                   difficultyList = [];
                                   promoteList = [];
+                                  recipeList = [];
 
 
                                   var challenges = snapshot.data!.docs;
@@ -337,6 +362,7 @@ class _HomePageState extends State<HomePage> {
                                     difficultyList.add(challenge.get('difficulty'));
                                     getList.add(challenge.get('get'));
                                     promoteList.add(challenge.get('promote'));
+                                    recipeList.add(challenge.get('recipe'));
 
 
                                   }
@@ -368,7 +394,8 @@ class _HomePageState extends State<HomePage> {
                                               headingList[index],
                                               shoppingList[index],
                                               difficultyList[index],
-                                              getList[index]
+                                              getList[index],
+                                            recipeList[index]
                                           );
                                         },
                                         child: DescribedFeatureOverlay(

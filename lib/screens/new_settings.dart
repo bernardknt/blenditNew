@@ -41,6 +41,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
     String? newEmail = prefs.getString(kEmailConstant) ??"No email";
     String newSubscribedChurch = 'Haircuts, Massage, Makeup';
     double newWeight = prefs.getDouble(kUserWeight) ?? 80;
+    String? newPreferences = prefs.getString(kUserPersonalPreferences);
     int newHeight = prefs.getInt(kUserHeight)?? 180;
 
 
@@ -52,7 +53,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
       sex = newSex;
       phone = newPhone!;
       email= newEmail!;
-      preferences = newSubscribedChurch;
+      preferences = newPreferences!;
       height = newHeight;
       bmi = ((weight)/ ((height/100)*(height/100))).roundToDouble();
       // phoneNumber = prefs.getString(kCustomerCare)!;
@@ -187,6 +188,12 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                     ListTile(
                       leading: Icon(Iconsax.health, color: kGreenDarkColorOld,),
                       title:Text('BMI: $bmi', style:kNormalTextStyle),
+                      // trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
+                    _buildDivider(),
+                    ListTile(
+                      leading: Icon(Iconsax.tag, color: kGreenDarkColorOld,),
+                      title:Text('Focus: $preferences', style:kNormalTextStyle),
                       // trailing: Icon(Icons.keyboard_arrow_right),
                     ),
                     _buildDivider(),

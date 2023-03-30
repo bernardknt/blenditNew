@@ -174,7 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                       child: ListTile(
                         leading: Icon(LineIcons.flag, color: kGreenThemeColor,),
-                        title:Text('Uganda', style: TextStyle(fontFamily: 'Montserrat-Medium',fontSize: textSize)),
+                        title:Text('Kenya', style: TextStyle(fontFamily: 'Montserrat-Medium',fontSize: textSize)),
                         trailing: Icon(Icons.keyboard_arrow_right),
                       ),
                     ),

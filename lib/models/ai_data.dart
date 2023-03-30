@@ -41,11 +41,14 @@ class AiProvider extends ChangeNotifier{
   List challengeDaysKeys = [];
   List challengeDaysValues = [];
   String challengeShoppingList = '';
+  String challengeRecipeList = '';
   int activeChallengeIndex = 0;
   Map<String, dynamic> challengeDays = {};
   List <Step> challengeSteps = [Step(title: Text("TEST"), content: Text('Infor'))];
 
   List challengeDayData = [];
+  List messageContext = [];
+
 
 
  // setChangeLottieImage(int index, IconData image){
@@ -97,7 +100,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     notifyListeners();
   }
 
-  setChallengeParameters (id, name, description, welcomeMessage, rules, schedule, position, days, daysValues, shopping, activePosition, challengeDaysIndex){
+  setChallengeParameters (id, name, description, welcomeMessage, rules, schedule, position, days, daysValues, shopping, activePosition, challengeDaysIndex, recipeIndex){
     challengeId = id;
     challengeName = name;
     challengeDescription = description;
@@ -108,6 +111,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     challengeDaysKeys = days;
     challengeDaysValues = daysValues;
     challengeShoppingList = shopping;
+    challengeRecipeList = recipeIndex;
     activeChallengeIndex = activePosition;
     challengeDays = challengeDaysIndex;
 

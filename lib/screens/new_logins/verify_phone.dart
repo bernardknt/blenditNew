@@ -153,12 +153,13 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
 
                           final prefs = await SharedPreferences.getInstance();
                           prefs.setBool(kNutriAi, true);
-
+                          prefs.setString(kUserPersonalPreferences, users['preferences'].join(", "));
                           prefs.setString(kFullNameConstant, users['lastName']);
                           prefs.setString(kFirstNameConstant, users['firstName']);
                           prefs.setString(kUniqueUserPhoneId, users['email']);
                           prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
                           prefs.setString(kUserCountryName, users['country']);
+                          prefs.setString(kUserPersonalPreferences, users['preferences'].toString());
                           prefs.setBool(kIsLoggedInConstant, true);
                           prefs.setString(kUserSex, users['sex']);
                           prefs.setDouble(kUserWeight, users['weight']/1.0);

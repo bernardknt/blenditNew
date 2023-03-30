@@ -1,31 +1,45 @@
+import 'dart:io';
 
-import 'package:blendit_2022/screens/input_page.dart';
+import 'package:blendit_2022/models/CommonFunctions.dart';
+import 'package:blendit_2022/screens/home_page.dart';
+import 'package:blendit_2022/screens/loading_goals_page.dart';
+import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
+import 'package:blendit_2022/screens/paywall_first_uganda.dart';
+import 'package:blendit_2022/screens/paywall_international.dart';
+import 'package:blendit_2022/screens/paywall_uganda.dart';
+import 'package:blendit_2022/screens/success_appointment_create.dart';
+import 'package:blendit_2022/screens/success_page.dart';
+import 'package:blendit_2022/screens/upload_photo.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
+
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/blendit_data.dart';
+import '../utilities/paymentButtons.dart';
+import '../widgets/InputFieldWidget.dart';
 import '../widgets/nutri_payment.dart';
 import 'delivery_page.dart';
+import 'loading_challenge.dart';
 import 'new_settings.dart';
-
-
-
-
-
-
 
 class ChatThirdDesignedPage extends StatefulWidget {
   static String id = 'three_orders_page';
@@ -41,9 +55,12 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   late int quantity = 1;
   var formatter = NumberFormat('#,###,000');
   var phone = '';
+  var description = '';
   var name = '';
+  var question = '';
   String initialId = 'feature';
   Random random = Random();
+  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
 
   var about = ['Nutri is an Artificial Intelligence powered assistant that learns your personal nutritional attributes as you interact with it.',
@@ -54,7 +71,27 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     'You are only limited by your imagination.',
       ' Ask any question like: Can I have matooke for super?', 'Here is a great question to ask: I want to lose weight, what should I do?','Give me a recipe for a healthy breakfast',
       ' Some answers may not be as accurate but usually helpful to keep you on track to achieve your goals', "Hi there"];
-  TextEditingController _textFieldController = TextEditingController();
+  // var messageValues = [];
+  final TextEditingController _textFieldController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+
+  Future<void> deleteUnrepliedChats() async {
+    final QuerySnapshot unrepliedChats = await FirebaseFirestore.instance
+        .collection('chat')
+        .where('replied', isEqualTo: false)
+        .get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    unrepliedChats.docs.forEach((doc) => batch.delete(doc.reference));
+    await batch.commit();
+  }
+
+  Future<void> _deleteUnrepliedChats() async {
+    await deleteUnrepliedChats();
+    print('Unreplied chats deleted successfully');
+  }
+
 
   // THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
@@ -69,10 +106,122 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
            // <String>['feature1','feature2', 'feature3', 'feature4', 'feature5']);
       });
     }else{
-      print("Tutorial $tutorialDone}");
+      // print("Tutorial $tutorialDone}");
     }
     prefs.setBool(kIsTutorial1Done, true);
   }
+// CALLABLE FUNCTIONS FOR THE NODEJS SERVER (FIREBASE)
+  final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('updateUserVision');
+  CollectionReference trends = FirebaseFirestore.instance.collection('photoUpLoads');
+
+  Future<void> removeBlankSpaces() async {
+    // Get a reference to the "conditions" collection
+    final CollectionReference conditionsCollection = FirebaseFirestore.instance.collection('chat');
+
+    // Get all the documents in the collection
+    final QuerySnapshot querySnapshot = await conditionsCollection.get();
+    // Loop through each document and update the fields
+    for (final QueryDocumentSnapshot document in querySnapshot.docs) {
+      // Update the "photoTwo" field to false
+      // if (document[''])
+      await document.reference.update({
+        'breathingRate': false,
+      });
+
+      // Update the "photoTwoStatement" field to an empty string
+      // await document.reference.update({
+      //   'photoTwoStatement': '',
+      // });
+    }
+  }
+
+  void searchForPhrase(String text, String docId) async{
+    final chatRef = FirebaseFirestore.instance.collection('chat').doc(docId);
+    if (text.toLowerCase().contains("ai language model")) {
+      print("Error detected: $text");
+      await chatRef.update({'response': 'I am well'});
+    }
+
+
+  }
+  File? image;
+  var imageUploaded = false;
+  UploadTask? uploadTask;
+
+
+
+
+  Future pickImage(ImageSource source)async{
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      // await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (image == null){
+        return ;
+      }else {
+        var file = File(image.path);
+
+        // final sizeImageBeforeCompression = file.lengthSync() / 1024;
+        // print("BEFORE COMPRESSION: ${sizeImageBeforeCompression}kb");
+
+
+
+        setState(() {
+          imageUploaded = true;
+          this.image = file;
+
+        });
+        serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
+        CommonFunctions().showBottomSheet(context, serviceId, this.image);
+
+       // CommonFunctions().uploadPhoto(image.path, image.name, challengeId, activeChallengeIndex, listOfKeysLength, challengePosition, challengeDayKeysLength, challengeName, customerName, currentChallengeStep, planDay, context);
+      }
+    } on PlatformException catch (e) {
+      print('Failed to pick image $e');
+
+    }
+  }
+
+  Future<void> uploadData() async {
+    var finalQuestion = lastQuestion;
+    final prefs = await SharedPreferences.getInstance();
+    int? previousNutriCount = prefs.getInt(kNutriCount);
+    var messageCount = prefs.getInt(kMessageCount);
+
+    return chat.doc(serviceId)
+        .set({
+      'replied': false,
+      'status' : true,
+      'time':  DateTime.now(),
+      'message': message,
+      'response': '',
+      'userId': prefs.getString(kPhoneNumberConstant),
+      'weight': prefs.getDouble(kUserWeight),
+      'height': prefs.getInt(kUserHeight),
+      'name': prefs.getString(kFullNameConstant),
+      'token': prefs.getString(kToken),
+      'id':serviceId,
+      'history': lastInformationList,
+      'length': aiResponseLength,
+      'lastQuestion': Provider.of<BlenditData>(context, listen: false).lastQuestion,
+      'manual': false,
+      'photo': false,
+      'country': prefs.getString(kUserCountryName),
+      'birthday': prefs.getString(kUserBirthday), 
+      'preferences': prefs.getString(kUserPersonalPreferences)
+    })
+        .then((value){
+      Provider.of<BlenditData>(context, listen: false).changeLastQuestion(finalQuestion);
+      prefs.setInt(kNutriCount, (previousNutriCount! + 1));
+      users.doc(auth.currentUser!.uid).update({
+        // "aiActive": false,
+        "articleCount": messageCount,
+      });
+
+    } )
+        .catchError((error) => print(error));
+  }
+
 
 
   bool updateMe = true;
@@ -81,16 +230,16 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   void increaseValueAndUploadToFirestore() async {
     final prefs = await SharedPreferences.getInstance();
     var messageCount = prefs.getInt(kMessageCount) ?? 0;
-    print("KOKOKOKOK $messageCount");
+    print("KOKOKOKOKO $messageCount");
 
     if (messageCount < 10) {
       prefs.setInt(kMessageCount,messageCount+1);
 
     } else if (prefs.getInt(kMessageCount)! == 10){
-      users.doc(auth.currentUser!.uid).update({
-        "aiActive": false,
-        "articleCount": messageCount,
-      });
+      // users.doc(auth.currentUser!.uid).update({
+      //   "aiActive": false,
+      //   "articleCount": messageCount,
+      // });
     }else{
       prefs.setInt(kMessageCount,messageCount+1);
     }
@@ -105,6 +254,47 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     });
   }
 
+  void getLastInformation() async{
+    final prefs = await SharedPreferences.getInstance();
+    if (messageList.length < 4){
+
+      // List lastMessageValues = messageList.sublist(messageList.length - (messageList.length - 1));
+      // List lastResponseValues = responseList.sublist(responseList.length  - (messageList.length - 1));
+       lastInformationList.clear();
+      // lastInformationList.add({"role": "system", "content": "Imagine you are a real nutritionist from ${prefs.getString(kUserCountryName)}, always happy, called Lisa answering "+name+" from "+ prefs.getString(kUserCountryName)! +", "+prefs.getDouble(kUserWeight).toString()!+" kilograms and "+prefs.getInt(kUserHeight).toString()+"cm tall. Be precise and brief in your answers"});
+      for (int i = 0; i < messageList.length; i++) {
+        var userInfo = {"role": "user" , "content": messageList[i]};
+        var assistantInfo = {"role": "assistant", "content": responseList[i]};
+        lastInformationList.add(userInfo);
+        lastInformationList.add(assistantInfo);
+      }
+    }else {
+      // List lastMessageValues = messageList.sublist(messageList.length - 3);
+      // List lastResponseValues = responseList.sublist(responseList.length  - 3);
+      lastInformationList.clear();
+      // lastInformationList.add({"role": "system", "content": "Imagine you are a real nutritionist from ${prefs.getString(kUserCountryName)}, always happy, called Lisa answering "+name+" from "+ prefs.getString(kUserCountryName)! +", "+prefs.getDouble(kUserWeight).toString()!+" kilograms and "+prefs.getInt(kUserHeight).toString()+"cm tall. Be precise and brief in your answers"});
+      for (int i = 0; i < 3; i++) {
+        var userInfo = {"role": "user" , "content": messageList[i]};
+        var assistantInfo = {"role": "assistant", "content": responseList[i]};
+        lastInformationList.add(userInfo);
+        lastInformationList.add(assistantInfo);
+      }
+    }
+
+    print(lastInformationList);
+
+    setState(() {
+
+    });
+    uploadData();
+  }
+
+  @override
+  void dispose() {
+    _textFieldController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -120,8 +310,23 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
   }
 
+  updatePersonalInformationWithGoal()async {
+    final auth = FirebaseAuth.instance;
+    final prefs = await SharedPreferences.getInstance();
+
+    await FirebaseFirestore.instance
+        .collection('users').doc(auth.currentUser!.uid)
+        .update(
+        {
+          'goal': prefs.getString(kGoalConstant),
+
+        });
+    print("PEERRRRRFEEECTLY UPDATED");
+  }
+
   var messageList = [];
   var messageStatusList = [];
+  var lastInformationList = [];
   var chatBubbleVisibility = true;
   var nutriVisibility = true;
   var aiResponseLength = 200;
@@ -133,6 +338,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var statusList = [];
   var paidStatusListColor = [];
   var message = '';
+  // String serviceId = '';
+  String serviceId = 'pic${uuid.v1().split("-")[0]}';
   var lastQuestion = '';
   List<double> opacityList = [];
   double textSize = 12.0;
@@ -145,40 +352,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
   @override
   Widget build(BuildContext context) {double width = MediaQuery.of(context).size.width * 0.6;
-  String serviceId = '';
 
-
-  Future<void> uploadData() async {
-    var finalQuestion = lastQuestion;
-    final prefs = await SharedPreferences.getInstance();
-    int? previousNutriCount = prefs.getInt(kNutriCount);
-
-
-
-    return chat.doc(serviceId)
-        .set({
-      'replied': false,
-      'status' : true,
-      'time':  DateTime.now(),
-      'message': message,
-      'response': '',
-      'userId': prefs.getString(kPhoneNumberConstant),
-      'weight': prefs.getDouble(kUserWeight),
-      'height': prefs.getInt(kUserHeight),
-      'name': prefs.getString(kFullNameConstant),
-      'token': prefs.getString(kToken),
-      'id':serviceId,
-      'length': aiResponseLength,
-      'lastQuestion': Provider.of<BlenditData>(context, listen: false).lastQuestion,
-      'manual': false,
-      'country': prefs.getString(kUserCountryName),
-    })
-        .then((value){
-          Provider.of<BlenditData>(context, listen: false).changeLastQuestion(finalQuestion);
-          prefs.setInt(kNutriCount, (previousNutriCount! + 1));
-        } )
-        .catchError((error) => print(error));
-  }
   Positioned LowerTextForm() {
     return Positioned(
       right: 0,
@@ -186,482 +360,666 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       bottom: 0,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Stack(
+        child:
+
+        Row(
           children: [
-            TextField(
-              controller: _textFieldController,  // _textFieldController is a TextEditingController object
-              maxLines: null,
-              maxLength: 100,
-              clipBehavior: Clip.antiAlias,
-              // minLines: 2,
-              // expands: true,
+            Expanded(
+              flex:7,
+              child: Stack(
+                children: [
+                  TextField(
+                    controller: _textFieldController,  // _textFieldController is a TextEditingController object
+                    maxLines: null,
+                    maxLength: 100,
+                    clipBehavior: Clip.antiAlias,
+                    // keyboardType: TextInputType.multiline,
+                    // minLines: 2,
+                    // expands: true,
 
-              decoration: InputDecoration(
-                hintText: "...lets talk",
-                fillColor: kPureWhiteColor,
-                filled: true,
+                    decoration: InputDecoration(
+                      hintText: "...lets talk",
+                      fillColor: kPureWhiteColor,
+                      filled: true,
 
-                iconColor: kPureWhiteColor,
-                border:
-                //InputBorder.none,
-                OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.green, width: 2),
-                ),
-                // shadowColor: Colors.green,
-                // shadowRadius: 5,
-                // shadowOffset: Offset(0, 2),
+                      iconColor: kPureWhiteColor,
+                      border:
+                      //InputBorder.none,
+                      OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.green, width: 2),
+                      ),
+                      // shadowColor: Colors.green,
+                      // shadowRadius: 5,
+                      // shadowOffset: Offset(0, 2),
+                    ),
+
+                    // Clear the text field when the user submits the text
+                    onSubmitted: (value) async {
+                      Focus.withExternalFocusNode(child: Text(""), focusNode: _focusNode);
+
+
+
+                      message = value;
+                      final prefs = await SharedPreferences.getInstance();
+                      if (prefs.getBool(kNutriAi) == true){
+                        print("AI IS ACTIVE");
+                        if (message != '') {
+                          increaseValueAndUploadToFirestore();
+                          lastQuestion = message;
+                          serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
+                          print(message.length);
+                          if (message.length > 20) {
+                            print(" HUHUHUHUH $message : ${message.length}");
+                            aiResponseLength = 200;
+                          } else {
+                            print(" HUHUHUHUH $message : ${message.length}");
+                            print("$message : ${message.length}");
+                            aiResponseLength = 200;
+
+                          }
+                          // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
+                          uploadData();
+                          _textFieldController.clear();
+                        }
+                      }else{
+
+                        showModalBottomSheet(
+                            context: context,
+                            // isScrollControlled: true,
+                            builder: (context) {
+                              return const NutriPayment();
+                            });
+
+                      }
+
+                    },
+                    onChanged: (value) {
+
+                      message = value;
+                      // Store the text input in a variable
+                      // _inputText = value;
+                    },
+                  ),
+                  Positioned(
+                    right: 2,
+                    // bottom: 2,
+                    top: 5,
+                    child: IconButton(
+
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
+
+
+                        if (prefs.getBool(kNutriAi) == true){
+                          // if(message != ''){
+                          //   increaseValueAndUploadToFirestore();
+                          //   lastQuestion = message;
+                          //   // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
+                          //   serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
+                          //   uploadData();
+                          //   _textFieldController.clear();
+                          //
+                          //   //}
+                          //
+                          //
+                          //
+                          // }
+                          if (message != '') {
+                            increaseValueAndUploadToFirestore();
+                            lastQuestion = message;
+                            serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
+                            print(message.length);
+                            if (message.length > 20) {
+                              print(" Long Response $message : ${message.length}");
+                              // print(messageValues);
+                              aiResponseLength = 200;
+                            } else {
+                              print(" Short Response $message : ${message.length}");
+                              print("$message : ${message.length}");
+                              // print(messageValues);
+
+                              aiResponseLength = 30;
+                            }
+                            // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
+                            _focusNode.unfocus();
+                            getLastInformation();
+                            _textFieldController.clear();
+                          }
+                        } else {
+                          showModalBottomSheet(
+                              context: context,
+                              // isScrollControlled: true,
+                              builder: (context) {
+                                return NutriPayment();
+                              });
+
+
+                        }
+
+
+
+                      }, icon:  DescribedFeatureOverlay(
+                        openDuration: const Duration(seconds: 1),
+                        overflowMode: OverflowMode.extendBackground,
+                        enablePulsingAnimation: true,
+                        barrierDismissible: false,
+                        pulseDuration: const Duration(seconds: 1),
+                        title: const Text('Have a Question? Ask Lisa'),
+                        description: Text('Whether you want a recipe to your favourite salad or the nutritional value of what you are having for lunch. Talk to Nutri Lisa', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                        contentLocation: ContentLocation.above,
+                        backgroundColor: Colors.black,
+                        targetColor: Colors.green,
+                        featureId: 'feature2',
+                        tapTarget: const Icon(Icons.send, color: kPureWhiteColor,),
+                        child: const Icon(Icons.send, color: kGreenThemeColor,)),
+                    ),
+                  ),
+                ],
               ),
-
-              // Clear the text field when the user submits the text
-              onSubmitted: (value) async {
-
-                message = value;
-                final prefs = await SharedPreferences.getInstance();
-                if (prefs.getBool(kNutriAi) == true){
-                  if (message != '') {
-                    increaseValueAndUploadToFirestore();
-                    lastQuestion = message;
-                    serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-                    if (message.length > 20) {
-                      print("$message : ${message.length}");
-                      aiResponseLength = 200;
-                    } else {
-                      print("$message : ${message.length}");
-                      aiResponseLength = 30;
-                    }
-                    // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
-                    uploadData();
-                    _textFieldController.clear();
-                  }
-                }else{
-
-                  showModalBottomSheet(
-                      context: context,
-                      // isScrollControlled: true,
-                      builder: (context) {
-                        return NutriPayment();
-                      });
-
-                }
-
-              },
-              onChanged: (value) {
-
-                message = value;
-                // Store the text input in a variable
-                // _inputText = value;
-              },
             ),
-            Positioned(
-              right: 2,
-              // bottom: 2,
-              top: 5,
-              child: IconButton(
-
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-
-
-                  if (prefs.getBool(kNutriAi) == true){
-                    if(message != ''){
-                      increaseValueAndUploadToFirestore();
-                      lastQuestion = message;
-                      // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
-                      serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-                      uploadData();
-                      _textFieldController.clear();
-
-                      //}
-
-
-
-                    }
-                  } else {
-                    showModalBottomSheet(
-                        context: context,
-                        // isScrollControlled: true,
-                        builder: (context) {
-                          return NutriPayment();
-                        });
-
-
-                  }
-
-
-
-                }, icon:  DescribedFeatureOverlay(
-                  openDuration: Duration(seconds: 1),
-                  overflowMode: OverflowMode.extendBackground,
-                  enablePulsingAnimation: true,
-                  barrierDismissible: false,
-                  pulseDuration: Duration(seconds: 1),
-                  title: Text('Have a Question? Ask Lisa'),
-                  description: Text('Whether you want a recipe to your favourite salad or the nutritional value of what you are having for lunch. Talk to Nutri Lisa', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
-                  contentLocation: ContentLocation.above,
-                  backgroundColor: Colors.black,
-                  targetColor: Colors.green,
-                  featureId: 'feature2',
-                  tapTarget: const Icon(Icons.send, color: kPureWhiteColor,),
-
-
-
-                  child: Icon(Icons.send, color: kGreenThemeColor,)),
-              ),
-            ),
+            Expanded(
+                flex: 1,child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: GestureDetector(
+                    onTap: (){
+                      pickImage(ImageSource.camera);
+                      // Navigator.pushNamed(context, UploadAiPhoto.id);
+                        //  id, aiData.activeChallengeIndex, listOfKeys.length, aiData.challengePosition, aiData.challengeDaysKeys.length, aiData.challengeName, name, currentStep, planDays[i]);
+                     // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                      // );
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: kBlueDarkColor,
+                        child: Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,)),
+                  ),
+                ))
           ],
         ),
       ),
     );
   }
 
-
-
-  return Scaffold(
-      backgroundColor: kGreyLightThemeColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
+  return GestureDetector(
+    onTap: () {
+      // Dismiss the keyboard when the user taps outside of the text field
+      _focusNode.unfocus();
+    },
+    child: Scaffold(
         backgroundColor: kGreyLightThemeColor,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: kGreyLightThemeColor,
 
-        title: Row(
-          children: [
-            Container(
-                height: 35,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
+          title: Row(
+            children: [
+              Container(
+                  height: 35,
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
+                        );
 
-                      nutriVisibility = !nutriVisibility;
-                      chatBubbleVisibility = nutriVisibility;
-                    });
-                  },
-                  child: ClipOval(
+                        // nutriVisibility = !nutriVisibility;
+                        // chatBubbleVisibility = nutriVisibility;
+                      });
+                    },
+                    child: ClipOval(
 
-                      child: Image.asset('images/bot.png', fit: BoxFit.contain,)),
-                )),
-            kSmallWidthSpacing,
+                        child: Image.asset('images/bot.png', fit: BoxFit.contain,)),
+                  )),
+              kSmallWidthSpacing,
 
 
-            Text('Nutri Lisa', style: kNormalTextStyle.copyWith(color: kBlack),),
-          ],
-        ),
-        centerTitle: true,
-        actions: [
-          // IconButton(
-          //   icon: Icon(Icons.info, color:kGreenThemeColor,),
-          //   onPressed: () {
-          //
-          //   },
-          // ),
-          // kSmallWidthSpacing,
-          IconButton(
-            icon: Icon(LineIcons.cog, color: kGreenThemeColor,),
-            onPressed: () {
-              Navigator.pushNamed(context, NewSettingsPage.id);
-            },
+              Text('Nutri Lisa', style: kNormalTextStyle.copyWith(color: kBlack),),
+            ],
           ),
-          kSmallWidthSpacing,
-        ],
-      ),
-      // floatingActionButton: FloatingActionButton(onPressed: () {
-      //   Navigator.pushNamed(context, InputPage.id);
-      //
-      //   // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
-      // },
-      //
-      // ),
-
-
-      body:
-
-      Stack(
-          children: [
+          centerTitle: true,
+          actions: [
+            // IconButton(
+            //   icon: Icon(Icons.info, color:kGreenThemeColor,),
+            //   onPressed: () {
+            //
+            //   },
+            // ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: StreamBuilder<QuerySnapshot> (
-                  stream: FirebaseFirestore.instance
-                      .collection('chat')
-                      .where('userId', isEqualTo: phone)
-                      .orderBy('time',descending: true)
-                      .snapshots(),
-                  builder: (context, snapshot)
-                  {
-                    if(!snapshot.hasData){
-                      return Container();
-                    }
-                    else{
-                      messageList = [];
-                      messageStatusList = [];
-                      manualList = [];
+              padding: const EdgeInsets.all(12.0),
+              child: GestureDetector(
+                onTap: () async{
+                  final prefs = await SharedPreferences.getInstance();
 
-                      responseList = [];
-                      idList = [];
-                      dateList = [];
-                      statusList = [];
-                      paidStatusListColor = [];
-                      opacityList = [];
+                  if (prefs.getString(kGoalConstant) != null) {
 
+                    Navigator.pushNamed(context, HomePage.id);
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+                    // );
 
+                  }else{
+                    CoolAlert.show(
 
-                      var orders = snapshot.data?.docs;
-                      for( var doc in orders!){
+                        lottieAsset: 'images/goal.json',
+                        context: context,
+                        type: CoolAlertType.success,
+                        widget: SingleChildScrollView(
 
-
-                        messageList.add(doc['message']);
-                        manualList.add(doc['manual']);
-
-                        responseList.add(doc['response']);
-                        idList.add(doc['id']);
-                        messageStatusList.add(doc['status']);
-                        dateList.add(doc['time'].toDate());
-
-
-                        if (doc['replied'] == true){
-                          statusList.add(Icon(LineIcons.doubleCheck, size: 15,color: kGreenThemeColor,));
-                          paidStatusListColor.add(Colors.blue);
-                          opacityList.add(0.0);
-
-                        } else {
-                          statusList.add(Icon(LineIcons.check, size: 15,color: kFaintGrey,));
-                          paidStatusListColor.add(Colors.grey);
-                          opacityList.add(1.0);
-                        }
-                        // print(responseList.last);
-
-
-                      }
-                      // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
-                      return  messageList.length == 0? Padding(padding: const EdgeInsets.all(20),
-                        child:
-                        Container(
-                          // height: 150,
-                          width: double.infinity,
-                          child: Column(
-                            children: [
-                              // Spacer(),
-
-                              // Text(
-                              // 'No Chat Yet', textAlign: TextAlign.center,
-                              // style: kHeading2TextStyleBold,),
-                              //Expanded(child: Lottie.asset('images/robot.json', height: 300, width: 300,)),
-                              Expanded(child: Stack(
+                            child:
+                            Container(
+                              child: Column(
                                 children: [
-                                  DescribedFeatureOverlay(
-                                      openDuration: Duration(seconds: 1),
-                                      overflowMode: OverflowMode.extendBackground,
-                                      enablePulsingAnimation: true,
-                                      barrierDismissible: false,
-                                      pulseDuration: Duration(seconds: 1),
-                                      title: Text('Your personal Nutritionist 24/7', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 20),),
-                                      description: Text('Nutri is an Artificial Intelligence powered assistant that learns your personal nutritional attributes as you interact with her.', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
-                                      contentLocation: ContentLocation.above,
-                                      backgroundColor: kGreenThemeColor,
-                                      targetColor: kBlueDarkColor,
-                                      featureId: 'feature1',
-                                      tapTarget: Lottie.asset('images/lisa.json', height: 100, width: 100,),
-
-
-
-                                      child: Lottie.asset('images/lisa.json', height: 300, width: 300,)),
-                                  Positioned(
-                                      top: 0,
-                                      left: 0,
-
-                                      child: Card(
-
-                                        // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                                        shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                                        shadowColor: kGreenThemeColor,
-                                        color: kBlueDarkColorOld,
-                                        elevation: 2.0,
-                                        child: Container(
-                                          width: 260,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text( 'Hi there, $name?, I am Lisa',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextField(
+                                      onChanged: (enteredQuestion){
+                                        question = enteredQuestion;
+                                        // instructions = customerName;
+                                        // setState(() {
+                                        // });
+                                      },
+                                      decoration: InputDecoration(
+                                          border:
+                                          //InputBorder.none,
+                                          OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                            borderSide: BorderSide(color: Colors.green, width: 2),
                                           ),
-                                        ),
-                                      )
+                                          labelText: 'Goal',
+                                          labelStyle: kNormalTextStyleExtraSmall,
+                                          hintText: 'This year I want to lose 10kg',
+                                          hintStyle: kNormalTextStyle
+                                      ),
+
+                                    ),
                                   ),
                                 ],
-                              )),
+                              ),
+                            )
+                        ),
+                        text: 'What is your main goal for this year?',
+                        title: "${prefs.getString(kFirstNameConstant)}!",
+                        confirmBtnText: 'Set Goal',
+                        confirmBtnColor: Colors.green,
+                        backgroundColor: kBackgroundGreyColor,
+                        onConfirmBtnTap: () async{
+                          if (question != ""){
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setString(kGoalConstant, question);
+                            Navigator.pop(context);
+                            prefs.setString(kUserId, auth.currentUser!.uid);
+                            // updatePersonalInformationWithGoal();
+                            dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+                              'goal': question,
+                              'userId':auth.currentUser!.uid,
+                              // orderId
+                            });
+                            // Navigator.pushNamed(context, SuccessPageNew.id);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+                            );
+                          } else {
 
-                              // Spacer()
-                            ],
-                          ),),) :
-                      Padding(
-                             padding: const EdgeInsets.only(bottom: 110.0),
-                            child:  ListView.builder(
-                            itemCount: messageList.length,
-                            reverse: true,
-                            itemBuilder: (context, index){
-                              return
-                                Column(
+                          }
+
+
+
+
+
+
+                          // Provider.of<DoctorProvider>(context, listen:false).setFormCheckboxes(question);
+                          // if (bookingButtonName == 'Book'){
+                          //   Provider.of<StyleProvider>(context, listen:false).setPaymentStatus('Submitted');
+                          //   Navigator.pushNamed(context, CalendarPage.id);
+                          // } else {
+                          //   Provider.of<StyleProvider>(context, listen:false).setPaymentStatus('Paid');
+
+                          //
+                          // Navigator.pop(context);
+                          setState(() {
+
+                          });
+                        }
+                    );
+                  }
+
+                },
+                child: Container(
+                    // height: 10,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: kGreenThemeColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(child: Text("Your Goal", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
+                  // color: kAirPink,
+                    ),
+              ),
+            ),
+            kSmallWidthSpacing,
+            IconButton(
+              icon: Icon(LineIcons.cog, color: kGreenThemeColor,),
+              onPressed: () {
+                Navigator.pushNamed(context, NewSettingsPage.id);
+              },
+            ),
+            kSmallWidthSpacing,
+          ],
+        ),
+        // floatingActionButton: FloatingActionButton(onPressed: () {
+        //   // _deleteUnrepliedChats();
+        //   Navigator.push(context,
+        //       MaterialPageRoute(builder: (context)=> QuizPage5())
+        //   );
+        //   // print(messageValues.first);
+        //
+        //   // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
+        // },
+
+       // ),
+
+
+        body:
+
+        Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: StreamBuilder<QuerySnapshot> (
+                    stream: FirebaseFirestore.instance
+                        .collection('chat')
+                        .where('userId', isEqualTo: phone)
+                        .orderBy('time',descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot)
+                    {
+                      if(!snapshot.hasData){
+                        return Container();
+                      }
+                      else{
+                        messageList = [];
+                        messageStatusList = [];
+                        manualList = [];
+
+                        responseList = [];
+                        idList = [];
+                        dateList = [];
+                        statusList = [];
+                        paidStatusListColor = [];
+                        opacityList = [];
+                        // messageValues = [];
+
+
+
+                        var orders = snapshot.data?.docs;
+                        for( var doc in orders!){
+                          messageList.add(doc['message']);
+                          manualList.add(doc['manual']);
+                          responseList.add(doc['response']);
+                          idList.add(doc['id']);
+                          messageStatusList.add(doc['status']);
+                          dateList.add(doc['time'].toDate());
+                          searchForPhrase(doc['response'], doc['id']);
+
+                          // messageValues.add({"role": "user", "content": doc['message']});
+                          // messageValues.add({"role": "assistant", "content": doc['response']});
+
+                          // print(messageValues);
+
+
+
+
+
+                          if (doc['replied'] == true){
+                            statusList.add(Icon(LineIcons.doubleCheck, size: 15,color: kGreenThemeColor,));
+                            paidStatusListColor.add(Colors.blue);
+                            opacityList.add(0.0);
+
+                          } else {
+                            statusList.add(Icon(LineIcons.check, size: 15,color: kFaintGrey,));
+                            paidStatusListColor.add(Colors.grey);
+                            opacityList.add(1.0);
+                          }
+                          // print(responseList.last);
+
+
+                        }
+                        // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
+                        return  messageList.length == 0? Padding(padding: const EdgeInsets.all(20),
+                          child:
+                          Container(
+                            // height: 150,
+                            width: double.infinity,
+                            child: Column(
+                              children: [
+                                // Spacer(),
+
+                                // Text(
+                                // 'No Chat Yet', textAlign: TextAlign.center,
+                                // style: kHeading2TextStyleBold,),
+                                //Expanded(child: Lottie.asset('images/robot.json', height: 300, width: 300,)),
+                                Expanded(child: Stack(
                                   children: [
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child:
-                                          manualList[index] == true? Container():
-                                      Card(
-
-                                        // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                                        shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-                                        shadowColor: kGreenThemeColor,
-                                        // color: kBeigeColor,
-                                        elevation: 2.0,
-                                        child: Container(
-                                          width: 260,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: [
-
-                                                    Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
-                                                        style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
-                                                    ),
-                                                    kSmallWidthSpacing,
-                                                    statusList[index]
-                                                  ],
-                                                ),
-                                                Text( "${messageList[index]}",textAlign: TextAlign.left,
-                                                    style: kNormalTextStyle2.copyWith(fontSize: 15, color: kBlueDarkColor)
-                                                ),
+                                    DescribedFeatureOverlay(
+                                        openDuration: Duration(seconds: 1),
+                                        overflowMode: OverflowMode.extendBackground,
+                                        enablePulsingAnimation: true,
+                                        barrierDismissible: false,
+                                        pulseDuration: Duration(seconds: 1),
+                                        title: Text('Your personal Nutritionist 24/7', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 20),),
+                                        description: Text('Hi, I am here as your personal nutritionist and accountability partner. The more we interact the better I will get to know you and help you', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                        contentLocation: ContentLocation.above,
+                                        backgroundColor: kGreenThemeColor,
+                                        targetColor: kBlueDarkColor,
+                                        featureId: 'feature1',
+                                        tapTarget: Lottie.asset('images/lisa.json', height: 100, width: 100,),
 
 
 
+                                        child: Lottie.asset('images/lisa.json', height: 300, width: 300,)),
+                                    Positioned(
+                                        top: 0,
+                                        left: 0,
+
+                                        child: Card(
+
+                                          // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                                          shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                          shadowColor: kGreenThemeColor,
+                                          color: kBlueDarkColorOld,
+                                          elevation: 2.0,
+                                          child: Container(
+                                            width: 260,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text( 'Hi there, $name?, I am Lisa',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                                            ),
+                                          ),
+                                        )
+                                    ),
+                                  ],
+                                )),
+
+                                // Spacer()
+                              ],
+                            ),),) :
+                        Padding(
+                               padding: const EdgeInsets.only(bottom: 110.0),
+                              child:  ListView.builder(
+                              itemCount: messageList.length,
+                              reverse: true,
+                              itemBuilder: (context, index){
+                                return
+                                  Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child:
+                                            manualList[index] == true? Container():
+                                        Card(
+
+                                          // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                                          shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                                          shadowColor: kGreenThemeColor,
+                                          // color: kBeigeColor,
+                                          elevation: 2.0,
+                                          child: Container(
+                                            width: 260,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+
+                                                      Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
+                                                          style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
+                                                      ),
+                                                      kSmallWidthSpacing,
+                                                      statusList[index]
+                                                    ],
+                                                  ),
+                                                  Text( "${messageList[index]}",textAlign: TextAlign.left,
+                                                      style: kNormalTextStyle2.copyWith(fontSize: 15, color: kBlueDarkColor)
+                                                  ),
 
 
-                                              ],
+
+
+
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    kSmallHeightSpacing,
-                                    responseList[index] == ''? Center(child: Lottie.asset('images/assistant.json', width: 50)) :Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                              height: 25,
-                                              child: ClipOval(
+                                      kSmallHeightSpacing,
+                                      responseList[index] == ''? Center(child: Lottie.asset('images/assistant.json', width: 50)) :Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                                height: 25,
+                                                child: ClipOval(
 
-                                                  child: Image.asset('images/bot.png', fit: BoxFit.contain,))),
-                                          Stack(
-                                            children: [
-                                              Card(
-                                                  color: manualList[index] == false ? kCustomColor: kBlueDarkColor,
-                                                  shadowColor: kPureWhiteColor,
+                                                    child: Image.asset('images/bot.png', fit: BoxFit.contain,))),
+                                            Stack(
+                                              children: [
+                                                Card(
+                                                    color: manualList[index] == false ? kCustomColor: kCustomColor,
+                                                    shadowColor: kPureWhiteColor,
 
-                                                  elevation: 4,
-                                                  shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                                                    elevation: 4,
+                                                    shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
 
 
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(18.0),
-                                                    child: Container(
-                                                        width: 260,
-                                                        child: Column(
-                                                          crossAxisAlignment:CrossAxisAlignment.start ,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(18.0),
+                                                      child: Container(
+                                                          width: 260,
+                                                          child: Column(
+                                                            crossAxisAlignment:CrossAxisAlignment.start ,
 
-                                                          children: [
+                                                            children: [
 
-                                                            Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
-                                                                style: kNormalTextStyle.copyWith(fontSize: 10, color: manualList[index] == false ? kBlueDarkColorOld: kPureWhiteColor,)
-                                                            ),
-                                                            Text('${responseList[index]}',textAlign: TextAlign.left,
-                                                             style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kPureWhiteColor,
-                                                                 fontSize: 15, fontWeight: FontWeight.w400),
+                                                              Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
+                                                                  style: kNormalTextStyle.copyWith(fontSize: 10, color: manualList[index] == false ? kBlueDarkColorOld: kBlueDarkColor,)
                                                               ),
-                                                          ],
-                                                        )
+                                                              Text('${responseList[index]}',textAlign: TextAlign.left,
+                                                               style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kBlueDarkColor,
+                                                                   fontSize: 15, fontWeight: FontWeight.w400),
+                                                                ),
+                                                            ],
+                                                          )
+                                                      ),
+                                                    )),
+                                                Positioned(
+                                                  top: 10,
+                                                  right: 10,
+                                                  child: Container(
+                                                    height: 20,
+                                                    width: 20,
+                                                    decoration: BoxDecoration(
+                                                      color: paidStatusListColor[index],
+                                                      borderRadius: BorderRadius.circular(10),
                                                     ),
-                                                  )),
-                                              Positioned(
-                                                top: 20,
-                                                right: 20,
-                                                child: Container(
-                                                  height: 20,
-                                                  width: 20,
-                                                  decoration: BoxDecoration(
-                                                    color: paidStatusListColor[index],
-                                                    borderRadius: BorderRadius.circular(10),
+                                                    child: GestureDetector(
+                                                        onTap: (){
+
+                                                          Share.share('${responseList[index]}\nhttps://bit.ly/3I8sa4M', subject: 'Check this out from Nutri');
+
+                                                        },
+
+                                                        child: Icon(LineIcons.alternateShare, size: 15,color: kPureWhiteColor,)),
                                                   ),
-                                                  child: GestureDetector(
-                                                      onTap: (){
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  );}
+                          ),
+                        );
+                      }
 
-                                                        Share.share('${responseList[index]}', subject: 'Check this out from Nutri');
-
-                                                      },
-
-                                                      child: Icon(LineIcons.alternateShare, size: 15,color: kPureWhiteColor,)),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                );}
-                        ),
-                      );
                     }
 
-                  }
-
+                ),
               ),
-            ),
-            LowerTextForm(),
-            Positioned(
-              bottom: 160,
-                right: 10,
 
-                child: GestureDetector(
+              LowerTextForm(),
+
+              Positioned(
+                bottom: 160,
+                  right: 10,
+
+                  child: GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          chatBubbleVisibility = !chatBubbleVisibility;
+                        });
+                      },
+
+
+                      child:
+                      nutriVisibility == true? Container():
+                      Lottie.asset('images/lisa.json', height: 100, width: 100,))),
+              Positioned(
+                bottom: 240,
+                  right: 70,
+
+                  child: GestureDetector(
                     onTap: (){
                       setState(() {
                         chatBubbleVisibility = !chatBubbleVisibility;
                       });
+
                     },
+                      child: chatBubbleVisibility == true? Container(): Card(
 
-
-                    child:
-                    nutriVisibility == true? Container():
-                    Lottie.asset('images/lisa.json', height: 100, width: 100,))),
-            Positioned(
-              bottom: 240,
-                right: 70,
-
-                child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      chatBubbleVisibility = !chatBubbleVisibility;
-                    });
-
-                  },
-                    child: chatBubbleVisibility == true? Container(): Card(
-
-                      // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                      shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                      shadowColor: kGreenThemeColor,
-                       color: kBlueDarkColorOld,
-                      elevation: 2.0,
-                      child: Container(
-                        width: 260,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text( about[random.nextInt(about.length)],textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                        // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                        shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                        shadowColor: kGreenThemeColor,
+                         color: kBlueDarkColorOld,
+                        elevation: 2.0,
+                        child: Container(
+                          width: 260,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text( about[random.nextInt(about.length)],textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                          ),
                         ),
                       ),
-                    ),
 
-                )
-            ),
+                  )
+              ),
 
-          ])
+            ])
+    ),
   );
   }
 

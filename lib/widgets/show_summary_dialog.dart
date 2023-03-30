@@ -21,7 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slider_button/slider_button.dart';
 
 
-showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, daysList, schedule, challengeId,  welcome, rules, promo, heading, shopping, difficulty, get){
+showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, daysList, schedule, challengeId,  welcome, rules, promo, heading, shopping, difficulty, get, recipe){
   var formatter = NumberFormat('#,###,000');
   List<String> parts = heading.split(",");
   List<String> getParts = get.split(",");
@@ -51,7 +51,7 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
       'community': [],
       'number': 0,
       'challengeCreateId': challengeCreateId,
-      'heading': 'Weightloss plan',
+      'heading': 'Weight loss plan',
       'promo': 'This is an amazing promo',
       'rules': "These are the rules of the fitness challenge",
       'welcome': 'Welcome to the fitness challenge',
@@ -104,34 +104,40 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
       'challengeEndTime': dateNow.add(Duration(days: 5)),
       'challengeStartTime': dateNow.add(Duration(days: 1)),
       'challengeStatus': false,
+      'client_phoneNumber': prefs.getString(kPhoneNumberConstant), // John Doe
       'community': challengeId,
       'client': prefs.getString(kFullNameConstant),
-      'heading': heading,
-      'personalImages': [],
-      'position': 0,
-      'promo': promo,
-      'rules': rules,
-      'welcome': welcome,
-      'client_phoneNumber': prefs.getString(kPhoneNumberConstant), // John Doe
-      'sender_id': prefs.getString(kEmailConstant),
-      'orderNumber': orderId,
-      'paymentMethod': 'mobileMoney',
-      'paymentStatus': 'pending',
-      'rating':0,
-      'rating_comment': '',
-      'hasRated': false,
-      'country': prefs.getString(kUserCountryName),
-      'status': 'submitted',
-      'total_price': challengeAmount,
-      'order_time': dateNow,
-      'token': prefs.getString(kToken),
-      'phoneNumber': prefs.getString(kPhoneNumberConstant),
-      'schedule': schedule,
-      'image': img,
-      'shopping': shopping,
       'completed': false,
+      'country': prefs.getString(kUserCountryName),
+      'dateSet': dateNow,
       'days': daysList,
       'difficulty': difficulty,
+      'hasRated': false,
+      'heading': heading,
+      'image': img,
+      'orderNumber': orderId,
+      'order_time': dateNow,
+      'personalImages': [],
+      'paymentMethod': 'mobileMoney',
+      'paymentStatus': 'pending',
+      'phoneNumber': prefs.getString(kPhoneNumberConstant),
+      'position': 0,
+      'promo': promo,
+      'rating':0,
+      'rating_comment': '',
+      'recipe': recipe,// Not Added
+      'schedule': schedule,
+      'scheduleRead': false,// Not Added
+      'rules': rules,
+      'rulesRead': false, // Not added
+      'sender_id': prefs.getString(kEmailConstant),
+      'status': 'submitted',
+      'total_price': challengeAmount,
+      'token': prefs.getString(kToken),
+      'shopping': shopping,
+      'welcome': welcome,
+
+
 
 
     })

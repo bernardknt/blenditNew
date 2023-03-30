@@ -13,6 +13,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
@@ -38,6 +39,7 @@ class ChallengePage extends StatefulWidget {
 class _ChallengePageState extends State<ChallengePage> {
   final requirementsIndicator = GlobalKey();
   final shoppingIndicator = GlobalKey();
+  final  recipeIndicator = GlobalKey();
   late List <Step> stepsData;
   int currentStep = 0;
   Color textColor = kCustomColor;
@@ -100,11 +102,11 @@ class _ChallengePageState extends State<ChallengePage> {
       //   initialId = 'feature1';
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         ShowCaseWidget.of(context,).startShowCase(
-            [requirementsIndicator, shoppingIndicator]);
+            [requirementsIndicator, shoppingIndicator, recipeIndicator]);
       });
       prefs.setBool(kChallengeRequirements, true);
     }
-    print("KAMUNGULUZE");
+
   }
 
   void rulesFunction() {
@@ -510,6 +512,24 @@ class _ChallengePageState extends State<ChallengePage> {
       title: Text(aiData.challengeName,textAlign:TextAlign.center, style: kHeading2TextStyle.copyWith(fontSize: 14, color: kPureWhiteColor),),
       actions: [
         Showcase(
+          key: recipeIndicator,
+          titleTextStyle: kNormalTextStyle,
+          description: 'Click here to see your Shopping list',
+          child: IconButton(
+            icon: Icon(Iconsax.menu_board, color:Colors.red,),
+            onPressed: () {
+              // var shoppingList = Provider.of<AiProvider>(context, listen: false).challengeRules.split('.');
+              var shoppingList = Provider.of<AiProvider>(context, listen: false).challengeRecipeList;
+
+
+              showShoppingListDialog(context, 'Recipes',shoppingList, ".", "\n");
+
+
+            },
+          ),
+        ),
+        kSmallWidthSpacing,
+        Showcase(
           key: shoppingIndicator,
           titleTextStyle: kNormalTextStyle,
           description: 'Click here to see your Shopping list',
@@ -530,9 +550,9 @@ class _ChallengePageState extends State<ChallengePage> {
         Showcase(
         key: requirementsIndicator,
         titleTextStyle: kNormalTextStyle,
-        description: 'Click here to check out the Shedule for your challenge',
+        description: 'Click here to check out the Schedule for your challenge',
           child: IconButton(
-            icon: Icon(Icons.document_scanner, color: kGreenThemeColor,),
+            icon: Icon(Icons.document_scanner, color: kCustomColor,),
             onPressed: () {
               var scheduleList = Provider.of<AiProvider>(context, listen: false).challengeSchedule;
 
@@ -543,6 +563,7 @@ class _ChallengePageState extends State<ChallengePage> {
           ),
         ),
         kSmallWidthSpacing,
+
       ],
 
 

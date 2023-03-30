@@ -47,7 +47,7 @@ class _ControlPageState extends State<ControlPage> {
   final tabs = [
     // ChatDesignedPage(),
     ChatThirdDesignedPage(),
-    HomePage(),
+    // HomePage(),
     // CustomizeController(),
 
     // Container(color: Colors.amber,),
@@ -76,7 +76,6 @@ class _ControlPageState extends State<ControlPage> {
       });
       prefs.setBool(kChallengeRequirements, true);
     }
-    print("KAMUNGULUZE");
   }
 
   @override
@@ -118,18 +117,18 @@ class _ControlPageState extends State<ControlPage> {
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   gap: 4,
                 ),
-                GButton(
-                  icon: Iconsax.airpod,
-                  text: 'Challenges',
-                  iconColor: kGreenThemeColor,
-                  iconActiveColor: Colors.white,
-                  textColor: Colors.white,
-
-                  // backgroundColor: kGreenThemeColor,
-                  iconSize: 24,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  gap: 4,
-                ),
+                // GButton(
+                //   icon: Iconsax.airpod,
+                //   text: 'Challenges',
+                //   iconColor: kGreenThemeColor,
+                //   iconActiveColor: Colors.white,
+                //   textColor: Colors.white,
+                //
+                //   // backgroundColor: kGreenThemeColor,
+                //   iconSize: 24,
+                //   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                //   gap: 4,
+                // ),
                 GButton(
                   icon: LineIcons.dumbbell,
                   text: 'Active Workouts',

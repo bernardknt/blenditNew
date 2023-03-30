@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:blendit_2022/screens/paywall_first_uganda.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -87,8 +88,12 @@ class _QuizPage5State extends State<QuizPage5> {
            // styleData.setUserDetailsAfterOnboard(styleDataDisplay.userSex, styleDataDisplay.userBirthday,styleDataDisplay.userPreferences, styleDataDisplay.preferencesIdSelected);
 
             Navigator.pushNamed(context, ControlPage.id);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
+            );
 
             CommonFunctions().uploadUserPreferences(aiDataDisplay.preferencesSelected, aiDataDisplay.userSex, aiDataDisplay.userBirthday, aiDataDisplay.preferencesIdSelected);
+
           },
           label: const Text("Enter Nutri", style: kNormalTextStyleWhiteButtons,),
         ),
