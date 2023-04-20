@@ -188,7 +188,17 @@ class _SignInPhoneState extends State<SignInPhone> {
                             final prefs = await SharedPreferences.getInstance();
                             await FirebaseAuth.instance.verifyPhoneNumber(
                                 phoneNumber: phoneNumberFull,
-                                verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {  },
+                                verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {
+                                  prefs.setInt(kNutriCount, 0);
+                                  prefs.setBool(kIsTutorial1Done, false);
+                                  prefs.setBool(kIsTutorial2Done, false);
+                                  prefs.setString(kUserCountryName, countryName);
+                                  prefs.setString(kUserCountryFlag, countryFlag);
+                                  prefs.setString(kUniqueUserPhoneId, phoneNumberFull);
+                                  prefs.setString(kPhoneNumberConstant, countryCode + phoneNumber);
+                                  Navigator.pushNamed(context, VerifyPinPage.id);
+
+                                },
                                 verificationFailed: (FirebaseAuthException error) {
                                    print(error);
                                   showDialog(context: context, builder: (BuildContext context){
@@ -209,14 +219,14 @@ class _SignInPhoneState extends State<SignInPhone> {
                                 codeSent: (String verificationId, int? forceResendingToken) {
                                   Provider.of<BlenditData>(context, listen:false).setVerificationId(verificationId);
                                 });
-                            prefs.setInt(kNutriCount, 0);
-                            prefs.setBool(kIsTutorial1Done, false);
-                            prefs.setBool(kIsTutorial2Done, false);
-                            prefs.setString(kUserCountryName, countryName);
-                            prefs.setString(kUserCountryFlag, countryFlag);
-                            prefs.setString(kUniqueUserPhoneId, phoneNumberFull);
-                            prefs.setString(kPhoneNumberConstant, countryCode + phoneNumber);
-                            Navigator.pushNamed(context, VerifyPinPage.id);
+                            // prefs.setInt(kNutriCount, 0);
+                            // prefs.setBool(kIsTutorial1Done, false);
+                            // prefs.setBool(kIsTutorial2Done, false);
+                            // prefs.setString(kUserCountryName, countryName);
+                            // prefs.setString(kUserCountryFlag, countryFlag);
+                            // prefs.setString(kUniqueUserPhoneId, phoneNumberFull);
+                            // prefs.setString(kPhoneNumberConstant, countryCode + phoneNumber);
+                            // Navigator.pushNamed(context, VerifyPinPage.id);
                             // Navigator.pushNamed(context, QuizPageName.id);
                             // //MaterialPageRoute(builder: (context)=> QuizPageName());
                           }

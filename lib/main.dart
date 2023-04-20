@@ -73,9 +73,9 @@ import 'models/blendit_data.dart';
 
 final _configuration = PurchasesConfiguration("appl_BypoTqpmaTnGvWTNZktkSUcOmBZ");
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+// }
 
 Future <void> main() async{
 
@@ -83,6 +83,7 @@ Future <void> main() async{
   await Purchases.configure(_configuration);
   // await Firebase.initializeApp();
   await Firebase.initializeApp(
+
 
     // Replace with actual values
     // name: 'Secondary App',

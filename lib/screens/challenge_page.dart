@@ -443,7 +443,7 @@ class _ChallengePageState extends State<ChallengePage> {
 
             stepperList: stepperDataAnother,
             stepperDirection: Axis.vertical,
-            gap: 25,
+            // gap: 25,
             iconWidth: 40,
             iconHeight: 40,
             activeBarColor: Colors.green,
