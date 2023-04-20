@@ -95,16 +95,20 @@ String kGreetingsOne = 'kGreetings';
 String kGreetingsTwo = 'kGreetings';
 String kGreetingsThree = 'kGreetings';
 String kUserCountryName =  'country_name';
+String kFirstTimePhoto = 'firstTimePhoto';
 String kUserCountryFlag =  'country_flag';
 String kUniqueUserPhoneId = 'phoneUniqueId';
 String kNutriAi = 'nutriAi';
 String kUserId = 'userUid';
 String kUserVision = 'vision';
+String kUserGoal = 'goalUser';
+String kIsGoalSet = 'isGoalSet';
 String kUserPersonalPreferences = 'personalPreferences';
 String kGoalConstant = 'goalsForTheYear';
 String kChallengeRequirements = 'locationDescription';
 String kChallengeActivated = 'newChallengeActived';
 String kMessageCount = 'messageCount';
+String kSetWeekGoal = 'kSetWeekGoal';
 
 
 String kGoogleMapsApiKey = 'AIzaSyAZO90xPWwT1bqCt9mTwWYh_Q7m7NngJoc';

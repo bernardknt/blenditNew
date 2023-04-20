@@ -2,10 +2,32 @@ import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
-class PaywallInternationalPage extends StatelessWidget {
+import '../models/ai_data.dart';
+
+class PaywallInternationalPage extends StatefulWidget {
+  @override
+  State<PaywallInternationalPage> createState() => _PaywallInternationalPageState();
+}
+
+class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
   var textColor = kPureWhiteColor;
+
   var backgroundColor = kBlack;
+
+  bool isLoading = false;
+
+  // Function to start the asynchronous process
+  void _startAsyncProcess() async {
+    print("THIS HAS STARTED");
+    // Set loading state to true
+    setState(() {
+      isLoading = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,27 +47,33 @@ class PaywallInternationalPage extends StatelessWidget {
                 'Unlock the full power of Nutri!',
                 style:kHeading2TextStyleBold.copyWith(fontSize: 20, color: textColor),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Container(
                 height: 350,
                 color: kBlack,
-                child: Lottie.asset("images/weight.json"),
+                child: Image.asset("images/video.gif"),
               ),
               kLargeHeightSpacing,
+              isLoading == false? Container(): const SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator()),
               _buildPlanCard(
                 context,
                 'Monthly',
-                '\$5.99',
+                '\$${Provider.of<AiProvider>(context, listen: false).intMonthly}',
                 'Unlock all features for 1 month',
+                "nutri_6.99_monthly"
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               _buildPlanCard(
                 context,
                 'Annual',
-                '\$59.99',
+                '\$${Provider.of<AiProvider>(context, listen: false).intYearly}',
                 'Save 20% by subscribing annually',
+                "nutri_69.99_annual_subscription"
               ),
-              SizedBox(height: 32.0),
+              const SizedBox(height: 32.0),
               Text(
                 'Features',
                 style: TextStyle(
@@ -54,22 +82,22 @@ class PaywallInternationalPage extends StatelessWidget {
                     color: textColor
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Personalized meal plans based on your goals',
+                'Personalized accountability partner to achieve your goals',
               ),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Real-time AI recommendations to optimize your nutrition',
+                'See changes in 4 weeks of consistent use',
               ),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Access to a registered dietitian for support and guidance',
+                'Take a photo of any meal and know if its good for you.',
               ),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Integration with wearable devices to track your progress',
+                'Challenges to test and help you achieve more.',
               ),
 
             ],
@@ -84,6 +112,7 @@ class PaywallInternationalPage extends StatelessWidget {
       String title,
       String price,
       String subtitle,
+      String productStoreId
       ) {
 
     return Card(
@@ -94,7 +123,21 @@ class PaywallInternationalPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () async{
+          try{
+
+            _startAsyncProcess();
+            await Purchases.purchaseProduct(productStoreId);
+            // await Future.delayed(Duration(seconds: 2));
+            // Set loading state to false after the process is complete
+            setState(() {
+              isLoading = false;
+              print("THIS HAS Ended");
+            });
+          } catch(e){
+            debugPrint("Failed to Purchase product $title");
+          }
+        },
         child: Container(
           padding: EdgeInsets.all(16.0),
           child: Column(

@@ -1,15 +1,24 @@
+import 'dart:math';
+
 import 'package:blendit_2022/models/CommonFunctions.dart';
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/nutri_mobile_money.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PaywallUgandaPage extends StatelessWidget {
   var textColor = kPureWhiteColor;
   var backgroundColor = kBlack;
+
+  int generateRandomNumber() {
+    Random random = Random();
+    int randomNumber = random.nextInt(100) + 1; // Generates a random integer between 0 and 99, and adds 1 to shift the range to 1 to 100
+    return randomNumber;
+  }
 
 
   @override
@@ -23,7 +32,7 @@ class PaywallUgandaPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -31,29 +40,29 @@ class PaywallUgandaPage extends StatelessWidget {
                 'Unlock the full power of Nutri!',
                 style:kHeading2TextStyleBold.copyWith(fontSize: 20, color: textColor),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox (height: 16.0),
               Container(
                 height: 350,
                 color: kBlack,
-                child: Lottie.asset("images/weight.json"),
+                child: Image.asset("images/video.gif"),
               ),
               kLargeHeightSpacing,
               _buildPlanCard(
                 context,
                 'Monthly',
-                '19900',
-                'Unlock all features for 1 month',
-                '567890'
+                Provider.of<AiProvider>(context, listen: false).ugMonthly,
+                'Commit to chasing your goal for 1 month',
+                  "${uuid.v1().split("-")[0]}${generateRandomNumber()}"
               ),
-              SizedBox(height: 16.0),
+              const SizedBox (height: 16.0),
               _buildPlanCard(
                 context,
                 'Annual',
-                '199000',
+                  Provider.of<AiProvider>(context, listen: false).ugYearly,
                 'Save 20% by subscribing annually',
-                '34567890'
+                  "${uuid.v1().split("-")[0]}${generateRandomNumber()}"
               ),
-              SizedBox(height: 32.0),
+              const SizedBox (height: 32.0),
               Text(
                 'Features',
                 style: TextStyle(
@@ -62,24 +71,23 @@ class PaywallUgandaPage extends StatelessWidget {
                     color: textColor
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Personalized meal plans based on your goals',
+                'Personalized accountability partner to achieve your goals',
               ),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Real-time AI recommendations to optimize your nutrition',
+                'See changes in 4 weeks of consistent use',
               ),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Access to a registered dietitian for support and guidance',
+                'Take a photo of any meal and know if its good for you.',
               ),
               _buildFeatureList(
                 Icons.check_circle_sharp,
-                'Integration with wearable devices to track your progress',
+                'Challenges to test and help you achieve more.',
               ),
-
             ],
           ),
         ),
@@ -136,34 +144,7 @@ class PaywallUgandaPage extends StatelessWidget {
                     "Ugx ${CommonFunctions().formatter.format(int.parse(price))}",
                     style: kNormalTextStyle.copyWith(color: textColor,fontSize: 16)
                   ),
-                  // SizedBox(height: 8.0),
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //     color: Theme.of(context).primaryColor,
-                  //     borderRadius: BorderRadius.circular(10.0),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.green.withOpacity(0.3),
-                  //         blurRadius: 8.0,
-                  //         offset: Offset(0, 4.0),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(
-                  //       horizontal: 24.0,
-                  //       vertical: 12.0,
-                  //     ),
-                  //     child: Text(
-                  //       'Subscribe',
-                  //       style: TextStyle(
-                  //         fontSize: 16.0,
-                  //         fontWeight: FontWeight.bold,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+
                 ],
               ),
               SizedBox(height: 8.0),

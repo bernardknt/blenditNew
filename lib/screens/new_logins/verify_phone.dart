@@ -36,6 +36,23 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
 
+  void subscribeToTopic(topicNumber)async{
+    var topic = removeFirstCharacter(topicNumber);
+    await FirebaseMessaging.instance.subscribeToTopic(topic).then((value) =>
+        print('Succefully Subscribed')
+    );
+  }
+
+
+  String removeFirstCharacter(String str) {
+    if (str.length > 1) {
+      String result = str.substring(1);
+      return result;
+    } else {
+      print('Error: String is too short to remove first character.');
+      return "";
+    }
+  }
 
   @override
   void initState() {
@@ -159,11 +176,14 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           prefs.setString(kUniqueUserPhoneId, users['email']);
                           prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
                           prefs.setString(kUserCountryName, users['country']);
-                          prefs.setString(kUserPersonalPreferences, users['preferences'].toString());
                           prefs.setBool(kIsLoggedInConstant, true);
                           prefs.setString(kUserSex, users['sex']);
+                          prefs.setString(kEmailConstant, users['email']);
+                          prefs.setString(kUserVision, users['vision']);
+                          prefs.setString(kGoalConstant, users['goal']);
                           prefs.setDouble(kUserWeight, users['weight']/1.0);
                           prefs.setInt(kUserHeight, users['height']);
+                          prefs.setBool(kIsGoalSet,users['goalSet'] );
                           prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
                           // prefs.setString(kPreferencesConstant, preferences.join(', '));
                           // prefs.setString(kPreferencesIdConstant, preferencesIds.join(', '));
@@ -172,6 +192,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           // This Function uploads the user token to the server.
                           CommonFunctions().uploadUserToken(token);
                          //  MaterialPageRoute(builder: (context)=> QuizPageName());
+                          subscribeToTopic(users['phoneNumber']);
                           Navigator.pushNamed(context, ControlPage.id);
                         } else {
                           prefs.setBool(kNutriAi, true);
@@ -179,19 +200,17 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context)=> QuizPageName())
                             );
-                          } else {
-                            _btnController.reset();
-
+                            subscribeToTopic(prefs.getString(kPhoneNumberConstant));
                           }
-
-
+                          else {
+                            _btnController.reset();
+                          }
                         }
-
 
                         prefs.setBool(kIsLoggedInConstant, true);
                         prefs.setBool(kIsFirstTimeUser, true);
                       } catch(e){
-                        print(code);
+                        print("WALALALALALLALA $e");
                         _btnController.reset();
                         print(Provider.of<BlenditData>(context, listen: false).phoneVerificationId);
                         showDialog(context: context, builder: (BuildContext context){
@@ -199,7 +218,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           return CupertinoAlertDialog(
                             title: const Text('Oops Something went Wrong'),
                             content:
-                            Text('Error message: Please make sure you have entered the correct code'),
+                            Text('Error message: $e'),
                             // Text('Error message: $e'),
                             actions: [CupertinoDialogAction(isDestructiveAction: true,
                                 onPressed: (){
@@ -239,7 +258,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                       },
 
                         child: Text("Resend Pin", style: kNormalTextStyle.copyWith(color: kBlack),)),
-                    Icon(Icons.settings_backup_restore_rounded, color: kAppPinkColor,)
+                    const Icon(Icons.settings_backup_restore_rounded, color: kAppPinkColor,)
                   ],
                 ),
               ):

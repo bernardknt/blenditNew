@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1036391886488-csll1n3057raal2safq2q2jshv228ten.apps.googleusercontent.com",
+              "client_id": "1036391886488-03rd0keh6vofpqeg3qsos8hhbb7lp3uh.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.frutsexpress.blentitapp"
+                "bundle_id": "com.nutriapp2023.com"
               }
             }
           ]
@@ -49,6 +49,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1036391886488-og4r475pespavgac9jnna5o0286mob6d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frutsexpress.blendit_2022",
+            "certificate_hash": "0e427e99ef326f4a8bbc537f8f85a736b2dfbb89"
+          }
+        },
         {
           "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
           "client_type": 3
@@ -67,10 +75,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1036391886488-csll1n3057raal2safq2q2jshv228ten.apps.googleusercontent.com",
+              "client_id": "1036391886488-03rd0keh6vofpqeg3qsos8hhbb7lp3uh.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.frutsexpress.blentitapp"
+                "bundle_id": "com.nutriapp2023.com"
               }
             }
           ]
@@ -103,10 +111,46 @@
               "client_type": 3
             },
             {
-              "client_id": "1036391886488-csll1n3057raal2safq2q2jshv228ten.apps.googleusercontent.com",
+              "client_id": "1036391886488-03rd0keh6vofpqeg3qsos8hhbb7lp3uh.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.frutsexpress.blentitapp"
+                "bundle_id": "com.nutriapp2023.com"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036391886488:android:2cb32636d0407fcbf46aed",
+        "android_client_info": {
+          "package_name": "com.kingdomfinanciers.nutriadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1TTteYi7DTUuGZwwGcehJYFdFKyDnT_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1036391886488-03rd0keh6vofpqeg3qsos8hhbb7lp3uh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nutriapp2023.com"
               }
             }
           ]

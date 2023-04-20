@@ -80,6 +80,7 @@ class _QuizPage5State extends State<QuizPage5> {
           onPressed: () async {
             final prefs = await SharedPreferences.getInstance();
             prefs.setBool(kIsFirstTimeUser, false);
+            prefs.setBool(kSetWeekGoal, false);
 
 
             // prefs.setString(kPreferencesConstant, styleDataDisplay.userPreferences.join(', '));
@@ -87,10 +88,11 @@ class _QuizPage5State extends State<QuizPage5> {
             uploadUserData();
            // styleData.setUserDetailsAfterOnboard(styleDataDisplay.userSex, styleDataDisplay.userBirthday,styleDataDisplay.userPreferences, styleDataDisplay.preferencesIdSelected);
 
-            Navigator.pushNamed(context, ControlPage.id);
+            // Navigator.pushNamed(context, ControlPage.id);
             Navigator.push(context,
                 MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
             );
+            prefs.setString(kUserPersonalPreferences, aiData.preferencesIdSelected.join(", "));
 
             CommonFunctions().uploadUserPreferences(aiDataDisplay.preferencesSelected, aiDataDisplay.userSex, aiDataDisplay.userBirthday, aiDataDisplay.preferencesIdSelected);
 

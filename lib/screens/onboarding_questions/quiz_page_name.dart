@@ -133,7 +133,7 @@ class _QuizPageNameState extends State<QuizPageName> {
                         width: 260,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text( "Welcome to Nutri, Il be your Host. Let me set you up. "
+                          child: Text( "Welcome to Nutri, My name is Lisa. Let me set you up. "
                               "Could you tell me your names?",textAlign: TextAlign.left,
                               style: kNormalTextStyle.copyWith(fontSize: 17, color: kBlack)),
                         ),

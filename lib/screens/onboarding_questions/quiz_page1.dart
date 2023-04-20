@@ -48,8 +48,7 @@ class _QuizPage1State extends State<QuizPage1> {
 
   animationTimer() {
     Timer(const Duration(milliseconds: 500), () {
-     // Provider.of<StyleProvider>(context, listen: false).resetQuestionButtonColors();
-      // Navigator.pop(context);
+
       Provider.of<AiProvider>(context, listen: false).resetQuestionButtonColors();
       // Navigator.pop(context);
       Navigator.push(context,
@@ -64,10 +63,7 @@ class _QuizPage1State extends State<QuizPage1> {
     // Provider.of<StyleProvider>(context, listen: false).resetQuestionButtonColors();
     return Scaffold(
         backgroundColor: kBlueDarkColorOld,
-        // appBar: AppBar(
-        //   backgroundColor: Colors.deepOrangeAccent,
-        //
-        // ),
+
         body:
         Stack(
             children :
@@ -77,7 +73,7 @@ class _QuizPage1State extends State<QuizPage1> {
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.only(top:20.0),
-                      child: Text('$name, are you male or female?',
+                      child: Text('Hi $name, are you male or female?',
                         textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
                     ),),
                   height: 150,

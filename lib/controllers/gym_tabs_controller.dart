@@ -74,13 +74,18 @@ class _AppointmentsTabControllerState extends State<AppointmentsTabController> {
               ],
             ),
           ),
-          body: TabBarView(
-            children: [
-              ChallengeActivePage(),
-             ChallengeCompletedPage()
+          body: WillPopScope(
+            onWillPop: () async {
+              return false; // return a `Future` with false value so this route cant be popped or closed.
+            },
+            child: TabBarView(
+              children: [
+                ChallengeActivePage(),
+               ChallengeCompletedPage()
 
-              // VisaPage(),
-            ],
+                // VisaPage(),
+              ],
+            ),
           )
       ),
     );

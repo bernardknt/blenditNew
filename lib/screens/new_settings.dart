@@ -1,15 +1,20 @@
 
 import 'package:blendit_2022/models/CommonFunctions.dart';
-import 'package:blendit_2022/screens/welcome_page.dart';
+import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/paywall_international.dart';
+import 'package:blendit_2022/screens/paywall_uganda.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
+import 'package:blendit_2022/widgets/designed_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:intl/intl.dart';
 
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +22,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
+import '../widgets/TicketDots.dart';
+import 'edit_page.dart';
 import 'login_page.dart';
 
 
@@ -61,6 +68,30 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
     });
   }
+
+  Future<void> unsubscribeFromTopic(number) async {
+    try {
+      FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+      var topic = removeFirstCharacter(number);
+      await firebaseMessaging.unsubscribeFromTopic(topic).then((value) =>print('Succefully UnSubscribed'));
+      print('Successfully unsubscribed from topic: $topic');
+    } catch (e) {
+      print('Failed to unsubscribe from topic: tokens. Error: $e');
+      // Handle error here
+    }
+  }
+
+  String removeFirstCharacter(String str) {
+    if (str.length > 1) {
+      String result = str.substring(1);
+      return result;
+    } else {
+      print('Error: String is too short to remove first character.');
+      return "";
+    }
+  }
+  
+  
   double textSize = 15;
   String preferences = '';
   String country = '';
@@ -74,6 +105,32 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
   String phoneNumber = '';
   int height = 150;
 
+  void checkStringType(String input) {
+    // Regular expression pattern to match a phone number
+    RegExp phoneNumberPattern = RegExp(r'^\+?\d{1,3}[-.\s]?\(?\d{1,3}\)?[-.\s]?\d{1,3}[-.\s]?\d{1,9}$');
+
+    // Regular expression pattern to match a website link
+    RegExp websiteLinkPattern = RegExp(r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-zA-Z0-9]+\.[a-zA-Z]{2,}$');
+
+    // Check if the input matches the phone number pattern
+    if (phoneNumberPattern.hasMatch(input)) {
+      print('Phone');
+    }
+    // Check if the input matches the website link pattern
+    else if (websiteLinkPattern.hasMatch(input)) {
+      print('Link');
+    }
+    // If the input does not match either pattern, print an error message
+    else {
+      print('Invalid input');
+    }
+  }
+
+
+
+
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -84,7 +141,9 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
 
   @override
+
   Widget build(BuildContext context) {
+    var aiData = Provider.of<AiProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -98,9 +157,19 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
           var prefs = await SharedPreferences.getInstance();
 
-           launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
-          //  launchUrl(Uri.parse('${prefs.getString(kWhatsappNumber)}'));
-           // launchUrl(Uri.parse('www.google.com'));
+           // launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
+           //
+
+          if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
+             CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+          }else {
+            CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+
+          }
+
+
+
+
 
          // print('${prefs.getString(kWhatsappNumber)}');
 
@@ -109,7 +178,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
 
         },
-        child: Lottie.asset('images/whatsapp.json', ),
+        child: Icon(Icons.support_agent),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
@@ -126,7 +195,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
               //
 
               kSmallWidthSpacing,
-              Text(name, style: kNormalTextStyleWhiteButtons.copyWith(color: kGreenThemeColor),),
+              // Text(name, style: kNormalTextStyleWhiteButtons.copyWith(color: kGreenThemeColor),),
 
               // Card(
               //   color: kPureWhiteColor,
@@ -143,68 +212,174 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
               // ),
               kSmallHeightSpacing,
               // const Center(child: Text('Transaction Info', style: kNormalTextStyleSmall,)),
-              Card(
-                margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-                shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
-                shadowColor: kNewGreenThemeColor,
-                elevation: 5.0,
-                child:
-                Column(
-                  children: [
+              // Card(
+              //   margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+              //   shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+              //   shadowColor: kNewGreenThemeColor,
+              //   elevation: 5.0,
+              //   child:
+              //   Column(
+              //     children: [
+              //
+              //
+              //     ],
+              //   ),
+              // ),
+              // kSmallHeightSpacing,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Membership', style: kNormalTextStyleSmall,),
+                  kMediumWidthSpacing,
+                  GestureDetector(
+                    onTap: ()async{
+
+                        CoolAlert.show(
 
 
-                  ],
-                ),
+                            context: context,
+                            type:
+                            CoolAlertType.success,
+                            widget: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  aiData.subscriptionType != "Basic" ? Text('This subscription package expires on \n${DateFormat('EE, dd MMM, yyyy').format(aiData.subscriptionDate)} ', style: kNormalTextStyle.copyWith(fontSize: 14
+                                  ), textAlign: TextAlign.center,):
+                                  Text("You don't have a running Subscription", style: kNormalTextStyle.copyWith(fontSize: 14
+                                  ), textAlign: TextAlign.center,),
+                                  TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
+                                  // Text('Appointment Details', style: kNormalTextStyleSmallGrey,),
+
+                                  // ListView.builder(
+                                  //
+                                  //
+                                  //     shrinkWrap: true,
+                                  //     itemCount: productsList[index].length,
+                                  //     itemBuilder: (context, i){
+                                  //       return OrderedContentsWidget(
+                                  //           defaultFontSize: 12.0,
+                                  //
+                                  //           orderIndex: i + 1,
+                                  //           quantity: productsList[index][i]['quantity'],
+                                  //           productDescription:productsList[index][i]['product'] ,
+                                  //           productName: productsList[index][i]['description'],
+                                  //           price: productsList[index][i]['totalPrice']);
+                                  //     }),
+                                  // TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
+
+                                  // Text('${productsList[index][0]['product']} - ${productsList[index][0]['description']}', style: kNormalTextStyleSmallGrey,)
+                                ],
+                              ),
+                            ),
+                            title: '${aiData.subscriptionType} Subscription',
+                            confirmBtnText: aiData.subscriptionType != "Premium"?'Subscribe':"Ok",
+
+                            confirmBtnColor: kAppPinkColor,
+                            confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
+                            lottieAsset: 'images/loyalty.json', showCancelBtn: true, backgroundColor: kPureWhiteColor,
+
+
+                            onConfirmBtnTap: () async{
+                              final prefs = await SharedPreferences.getInstance();
+                              if (aiData.subscriptionType!= "Premium"){
+                                if (prefs.getString(kUserCountryName) == "Uganda") {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => PaywallUgandaPage())
+                                  );
+                                }else {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                                  );}
+                              } else {
+
+                                setState((){
+                                  Navigator.pop(context);
+                                });
+                              }
+
+                            }
+                            );
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 100,
+
+                      decoration: BoxDecoration(
+                        color: kBlack,
+                        borderRadius: BorderRadius.all(Radius.circular(10))
+                      ),
+                      child: Center(child: Text(Provider.of<AiProvider>(context, listen: false).subscriptionType,style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),),
+                  )
+                ],
               ),
-              kSmallHeightSpacing,
-              Center(child: Text('Health Info', style: kNormalTextStyleSmall,)),
+              kLargeHeightSpacing,
+              DesignedButton(continueFunction: (){
+                Share.share('Hey, I found this application called Nutri that helps keep you accountable and on track with your Health goals. You need to try it out. Follow the link \nhttps://bit.ly/3I8sa4M', subject: 'You need to try out Nutri');
+              }, title: "Recommend Nutri", backgroundColor: kCustomColor,textColor: kBlack,),
+              kLargeHeightSpacing,
 
-              Card(
-                margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-                shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
-                shadowColor: kGreenDarkColorOld,
-                elevation: 5.0,
-                child:
-                Column(
-                  children: [
-                    ListTile(
-                      leading: Icon(Iconsax.people, color: kGreenDarkColorOld,),
-                      title:Text(sex, style: kNormalTextStyle),
-                      // trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                    _buildDivider(),
-                    ListTile(
-                      leading: Icon(Iconsax.ruler, color: kGreenDarkColorOld,),
-                      title:Text( '$height cm', style: kNormalTextStyle),
-                      // trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                    _buildDivider(),
-                    ListTile(
-                      leading: Icon(Iconsax.weight, color:kGreenDarkColorOld,),
-                      title:Text('$weight kg', style: kNormalTextStyle),
-                      // trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                    _buildDivider(),
-                    ListTile(
-                      leading: Icon(Iconsax.health, color: kGreenDarkColorOld,),
-                      title:Text('BMI: $bmi', style:kNormalTextStyle),
-                      // trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                    _buildDivider(),
-                    ListTile(
-                      leading: Icon(Iconsax.tag, color: kGreenDarkColorOld,),
-                      title:Text('Focus: $preferences', style:kNormalTextStyle),
-                      // trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                    _buildDivider(),
-                    ListTile(
-                      leading: Icon(Iconsax.cake, color: kGreenDarkColorOld,),
-                      title:Text('DOB: $birthday', style:kNormalTextStyle),
-                      // trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
 
-                  ],
-                ),
+              Stack(
+                children: [
+                  Card(
+                    margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+                    shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+                    shadowColor: kGreenDarkColorOld,
+                    elevation: 5.0,
+                    child:
+                    Column(
+                      children: [
+                        ListTile(
+                          leading: Icon(Iconsax.people, color: kGreenDarkColorOld,),
+                          title:Text(sex, style: kNormalTextStyle),
+                          // trailing: Icon(Icons.keyboard_arrow_right),
+                        ),
+                        _buildDivider(),
+                        ListTile(
+                          leading: Icon(Iconsax.ruler, color: kGreenDarkColorOld,),
+                          title:Text( '$height cm', style: kNormalTextStyle),
+                          // trailing: Icon(Icons.keyboard_arrow_right),
+                        ),
+                        _buildDivider(),
+                        ListTile(
+                          leading: Icon(Iconsax.weight, color:kGreenDarkColorOld,),
+                          title:Text('$weight kg', style: kNormalTextStyle),
+                          // trailing: Icon(Icons.keyboard_arrow_right),
+                        ),
+                        _buildDivider(),
+                        ListTile(
+                          leading: Icon(Iconsax.health, color: kGreenDarkColorOld,),
+                          title:Text('BMI: $bmi', style:kNormalTextStyle),
+                          // trailing: Icon(Icons.keyboard_arrow_right),
+                        ),
+                        _buildDivider(),
+                        ListTile(
+                          leading: Icon(Iconsax.tag, color: kGreenDarkColorOld,),
+                          title:Text('Focus: $preferences', style:kNormalTextStyle),
+                          // trailing: Icon(Icons.keyboard_arrow_right),
+                        ),
+                        _buildDivider(),
+                        ListTile(
+                          leading: Icon(Iconsax.cake, color: kGreenDarkColorOld,),
+                          title:Text('DOB: $birthday', style:kNormalTextStyle),
+                          // trailing: Icon(Icons.keyboard_arrow_right),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                  Positioned(
+
+                    child:
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfilePage()));
+                      },
+                      child: CircleAvatar(
+                          backgroundColor: kGreenThemeColor,
+                          child: Icon(Icons.edit, color: kPureWhiteColor,)),
+                    ),
+                    top: 0, right: 10,),
+                ],
               ),
               Center(child: Text('Personal Info', style: kNormalTextStyleSmall,)),
 
@@ -217,6 +392,11 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                 child:
                 Column(
                   children: [
+                    ListTile(
+                      leading: Icon(Iconsax.personalcard, color: kGreenDarkColorOld,),
+                      title:Text(name, style: kNormalTextStyle),
+                      // trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
 
                     ListTile(
                       leading: Icon(Icons.phone, color: kGreenDarkColorOld,),
@@ -248,12 +428,8 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                         // trailing: Icon(Icons.keyboard_arrow_right),
                       ),
                     ),
-                    // _buildDivider(),
-                    // ListTile(
-                    //   leading: Icon(Iconsax.scissor, color: kGreenDarkColorOld,),
-                    //   title:Text(preferences, style: kNormalTextStyle),
-                    //   // trailing: Icon(Icons.keyboard_arrow_right),
-                    // ),
+
+
                   ],
                 ),
               ),
@@ -286,7 +462,12 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                                 final prefs = await SharedPreferences.getInstance();
                                 prefs.setBool(kIsLoggedInConstant, false);
                                 prefs.setBool(kIsFirstTimeUser, true);
-                                await auth.signOut().then((value) => Navigator.pushNamed(context, WelcomePageNew.id));
+                                await auth.signOut().then((value) {
+                                  unsubscribeFromTopic(prefs.getString(kPhoneNumberConstant));
+                                  Navigator.pushNamed(context, WelcomePageNew.id); 
+                                  
+                                } );
+                                
 
 
 
@@ -359,7 +540,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                           Icon(LineIcons.copyright, color: Colors.black,size: 15,),
                           SizedBox(width: 5,),
                           Opacity (opacity: 0.7,
-                              child: Text('Frutsexpress 2023', style: kHeadingTextStyle,)),
+                              child: Text('Nutri 2023', style: kHeadingTextStyle,)),
                         ],
                       ),
                     )

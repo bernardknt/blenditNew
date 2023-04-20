@@ -1,5 +1,6 @@
 
 
+import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -54,7 +55,7 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
   }
 // CALLABLE FUNCTIONS FOR THE NODEJS SERVER (FIREBASE)
   final HttpsCallable callableBeyonicPayment = FirebaseFunctions.instance.httpsCallable(kBeyonicServerName);
-  final HttpsCallable callableTransactionEmail = FirebaseFunctions.instance.httpsCallable(kEmailServerName);
+  // final HttpsCallable callableTransactionEmail = FirebaseFunctions.instance.httpsCallable(kEmailServerName);
 
 
 
@@ -69,19 +70,6 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
 
     var start = FirebaseFirestore.instance.collection('transactions').where('uniqueID', isEqualTo: orderId).where('payment_status', isEqualTo: true).snapshots().listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
-        print("ZUNGULULULULULULU OMWANA AYIMIRIDE");
-        // TRIGGER SERVER TRANSACTIONS EMAIL AND BEYONIC
-        // dynamic emailResp = await callableTransactionEmail.call(<String, dynamic>{
-        //   'name': name,
-        //   'emailAddress':kEmailConstant,
-        //   'templateID':'bernard.ntege@tracnode.com',
-        //   'currency': 'UGX',
-        //   'purpose': orderId,
-        //   'amount': amount,
-        //   'transactionID': orderId,
-        //   'subject': 'Blendit Transaction',
-        //
-        // });
         setState(() {
           CoolAlert.show(
               lottieAsset: 'images/thankyou.json',
@@ -91,21 +79,28 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
               title: "Payment Made",
               confirmBtnText: 'Ok 👍',
               confirmBtnColor: kGreenThemeColor,
-              backgroundColor: kBlueDarkColor
+              backgroundColor: kBlueDarkColor,
+              onConfirmBtnTap: (){
+                Navigator.pop(context); 
+                Navigator.pop(context); 
+                Navigator.pushNamed(context, ControlPage.id);
+                
+                setState(() {
+
+                });
+              }
           );
-
         });
-
       });
     });
-
 
     return start;
   }
 
   // FIREBASE FIRESTORE FUNCTION TO ADD DOCUMENT
 
-  Future<void> addMobileMoneyTransaction() {
+  Future<void> addMobileMoneyTransaction() async {
+    final prefs = await SharedPreferences.getInstance();
 
     final User? user = auth.currentUser;
     final emailUID = user!.email;
@@ -118,10 +113,13 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
       'payment_status': false,
       'currency': 'Ugx', // John Doe
       'date': dateNow, // Stokes and Sons
-      'purpose': orderId,
+      'purpose': reason,
       'uniqueID': orderId,
       'testID': transactionId,
-      'email': 'nutri',
+      'email': 'nutriPayment',
+      'uid': user.uid,
+      "registered_number": prefs.getString(kPhoneNumberConstant),
+      'token': prefs.getString(kToken)
     })
         .then((value){
       print('Nice');
@@ -147,7 +145,7 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
   }
   // VARIABLE DECLARATIONS
   var formatter = NumberFormat('#,###,000');
-  String transactionId = 'mm${uuid.v1().split("-")[0]}';
+  String transactionId = 'mmUgNutri${uuid.v1().split("-")[0]}';
   String amount = '';
   String reason = '';
   String amountToCharge = '';

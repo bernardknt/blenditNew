@@ -41,6 +41,10 @@ class _YourVisionState extends State<YourVision> {
     name = prefs.getString(kFullNameConstant)!;
     firstName = prefs.getString(kFirstNameConstant)!;
 
+    // setState(() {
+    //
+    // });
+
 
 
   }

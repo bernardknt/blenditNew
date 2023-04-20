@@ -1,4 +1,6 @@
+import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/screens/loading_free_trial.dart';
 import 'package:blendit_2022/screens/nutri_mobile_money.dart';
@@ -8,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PaywallFirstUgandaPage extends StatelessWidget {
@@ -37,7 +40,7 @@ class PaywallFirstUgandaPage extends StatelessWidget {
               ),
               kLargeHeightSpacing,
               Text(
-                'Enjoy free 3 Day Trial, then Ugx 20k/month!', textAlign: TextAlign.center,
+                'Enjoy free 3 Day Trial, then Ugx ${Provider.of<AiProvider>(context,listen: false).ugTrial}/month!', textAlign: TextAlign.center,
                 style:kHeading2TextStyleBold.copyWith(fontSize: 20, color: textColor),
               ),
               kLargeHeightSpacing,
@@ -118,7 +121,10 @@ class PaywallFirstUgandaPage extends StatelessWidget {
           // String? newOrderId = prefs.getString(kOrderId);
           // String? newOrderReason = prefs.getString(kOrderReason);
           CommonFunctions().startTrialSubscription();
-          Navigator.pop(context);
+          CommonFunctions().showNotification("Subscription Activated", "Nice, Time to get to work on achieving your goals");
+          Navigator.pushNamed(context, ControlPage.id);
+
+
           Navigator.push(context,
 
               MaterialPageRoute(builder: (context)=> LoadingFreeTrialPage())

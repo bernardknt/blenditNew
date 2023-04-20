@@ -41,6 +41,8 @@ class _SignInPhoneState extends State<SignInPhone> {
   var phoneNumber = '';
   final formKey = GlobalKey<FormState>();
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,13 +81,10 @@ class _SignInPhoneState extends State<SignInPhone> {
                   style: kNormalTextStyle.copyWith(color: kFontGreyColor, fontSize: 14),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
-                // InputFieldWidget(boxRadius: 10,  leftPadding: 0,  labelText:' Full Names' ,hintText: 'Cathy Nalya', keyboardType: TextInputType.text, onTypingFunction: (value){
-                //   fullName = value;
-                //   firstName = fullName.split(" ")[0]; // Gets the first name in the 0 positiion from the full names
-                // },),
+
                 Container(
                   height: 53,
                   decoration: BoxDecoration(
@@ -94,7 +93,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       CountryCodePicker(
@@ -111,8 +110,8 @@ class _SignInPhoneState extends State<SignInPhone> {
 
                         },
                         // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                        initialSelection: 'US',
-                        favorite: const ['+256','UG'],
+                        initialSelection: 'UG',
+                        favorite: const ['+254','+255',"US"],
                         // optional. Shows only country name and flag
                         showCountryOnly: false,
                         // optional. Shows only country name and flag when popup is closed.
@@ -191,6 +190,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                                 phoneNumber: phoneNumberFull,
                                 verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {  },
                                 verificationFailed: (FirebaseAuthException error) {
+                                   print(error);
                                   showDialog(context: context, builder: (BuildContext context){
 
                                     return CupertinoAlertDialog(

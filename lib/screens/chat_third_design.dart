@@ -1,28 +1,26 @@
-import 'dart:io';
+
 
 import 'package:blendit_2022/models/CommonFunctions.dart';
-import 'package:blendit_2022/screens/home_page.dart';
-import 'package:blendit_2022/screens/loading_goals_page.dart';
-import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
-import 'package:blendit_2022/screens/paywall_first_uganda.dart';
+import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/ios_onboarding.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_uganda.dart';
-import 'package:blendit_2022/screens/success_appointment_create.dart';
-import 'package:blendit_2022/screens/success_page.dart';
-import 'package:blendit_2022/screens/upload_photo.dart';
+import 'package:blendit_2022/screens/photo_onboarding.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:cool_alert/cool_alert.dart';
+
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
+
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
@@ -34,11 +32,8 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/blendit_data.dart';
-import '../utilities/paymentButtons.dart';
-import '../widgets/InputFieldWidget.dart';
-import '../widgets/nutri_payment.dart';
 import 'delivery_page.dart';
-import 'loading_challenge.dart';
+import 'goals.dart';
 import 'new_settings.dart';
 
 class ChatThirdDesignedPage extends StatefulWidget {
@@ -91,8 +86,22 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     await deleteUnrepliedChats();
     print('Unreplied chats deleted successfully');
   }
+  String removeFirstCharacter(String str) {
+    if (str.length > 1) {
+      String result = str.substring(1);
+      return result;
+    } else {
+      print('Error: String is too short to remove first character.');
+      return "";
+    }
+  }
 
-
+  void subscribeToTopic(topicNumber)async{
+    var topic = removeFirstCharacter(topicNumber);
+    await FirebaseMessaging.instance.subscribeToTopic(topic).then((value) =>
+    print('Succefully Subscribed to $topic')
+    );
+  }
   // THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
@@ -102,7 +111,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       initialId = 'feature1';
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         FeatureDiscovery.discoverFeatures(context,
-            <String>['feature1','feature2' ]);
+            <String>['feature1','feature2','feature3' ]);
            // <String>['feature1','feature2', 'feature3', 'feature4', 'feature5']);
       });
     }else{
@@ -110,6 +119,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     }
     prefs.setBool(kIsTutorial1Done, true);
   }
+
+
 // CALLABLE FUNCTIONS FOR THE NODEJS SERVER (FIREBASE)
   final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('updateUserVision');
   CollectionReference trends = FirebaseFirestore.instance.collection('photoUpLoads');
@@ -135,51 +146,23 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     }
   }
 
+
+
   void searchForPhrase(String text, String docId) async{
     final chatRef = FirebaseFirestore.instance.collection('chat').doc(docId);
-    if (text.toLowerCase().contains("ai language model")) {
+    var possibleResponses = ['Wow, you know what $name, am not sure how to respond to that', 'It depends', 'Let me think about that for a moment $name' ];
+    final random = Random();
+    final randomIndex = random.nextInt(possibleResponses.length);
+    final randomWord = possibleResponses[randomIndex];
+    if (text.toLowerCase().contains("ai language model") || text.toLowerCase().contains("language model")) {
       print("Error detected: $text");
-      await chatRef.update({'response': 'I am well'});
+      // randomly generate a value from the array possibleResponses
+
+
+      await chatRef.update({'response': randomWord});
     }
 
 
-  }
-  File? image;
-  var imageUploaded = false;
-  UploadTask? uploadTask;
-
-
-
-
-  Future pickImage(ImageSource source)async{
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      // await ImagePicker().pickImage(source: ImageSource.gallery);
-
-      if (image == null){
-        return ;
-      }else {
-        var file = File(image.path);
-
-        // final sizeImageBeforeCompression = file.lengthSync() / 1024;
-        // print("BEFORE COMPRESSION: ${sizeImageBeforeCompression}kb");
-
-
-
-        setState(() {
-          imageUploaded = true;
-          this.image = file;
-
-        });
-        serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-        CommonFunctions().showBottomSheet(context, serviceId, this.image);
-
-       // CommonFunctions().uploadPhoto(image.path, image.name, challengeId, activeChallengeIndex, listOfKeysLength, challengePosition, challengeDayKeysLength, challengeName, customerName, currentChallengeStep, planDay, context);
-      }
-    } on PlatformException catch (e) {
-      print('Failed to pick image $e');
-
-    }
   }
 
   Future<void> uploadData() async {
@@ -207,15 +190,20 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       'manual': false,
       'photo': false,
       'country': prefs.getString(kUserCountryName),
-      'birthday': prefs.getString(kUserBirthday), 
-      'preferences': prefs.getString(kUserPersonalPreferences)
+      'birthday': prefs.getString(kUserBirthday),
+      'preferences': prefs.getString(kUserPersonalPreferences),
+      "image": "",
+      'agent': false,
+      'visible': true,
+      'replyTime': DateTime.now()
     })
         .then((value){
       Provider.of<BlenditData>(context, listen: false).changeLastQuestion(finalQuestion);
       prefs.setInt(kNutriCount, (previousNutriCount! + 1));
       users.doc(auth.currentUser!.uid).update({
-        // "aiActive": false,
+
         "articleCount": messageCount,
+
       });
 
     } )
@@ -249,8 +237,11 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     final prefs = await SharedPreferences.getInstance();
     phone =  prefs.getString(kPhoneNumberConstant)!;
     name = prefs.getString(kFirstNameConstant)!;
+
+    CommonFunctions().userStream(context);
     setState(() {
       updateMe =  Provider.of<BlenditData>(context, listen: false).updateApp;
+
     });
   }
 
@@ -332,7 +323,10 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var aiResponseLength = 200;
   var responseList = [];
   var manualList = [];
+  var photoList = [];
+  var photoImage = [];
   var manualListText = [];
+  // var visibleList = [];
   var idList = [];
   var dateList = [];
   var statusList = [];
@@ -351,7 +345,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
 
   @override
-  Widget build(BuildContext context) {double width = MediaQuery.of(context).size.width * 0.6;
+  Widget build(BuildContext context) {
+
 
   Positioned LowerTextForm() {
     return Positioned(
@@ -368,10 +363,11 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               flex:7,
               child: Stack(
                 children: [
+
                   TextField(
                     controller: _textFieldController,  // _textFieldController is a TextEditingController object
                     maxLines: null,
-                    maxLength: 100,
+                    maxLength: 200,
                     clipBehavior: Clip.antiAlias,
                     // keyboardType: TextInputType.multiline,
                     // minLines: 2,
@@ -396,14 +392,14 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
                     // Clear the text field when the user submits the text
                     onSubmitted: (value) async {
-                      Focus.withExternalFocusNode(child: Text(""), focusNode: _focusNode);
+
 
 
 
                       message = value;
                       final prefs = await SharedPreferences.getInstance();
-                      if (prefs.getBool(kNutriAi) == true){
-                        print("AI IS ACTIVE");
+                      // if (prefs.getBool(kNutriAi) == true){
+                      //   print("AI IS ACTIVE");
                         if (message != '') {
                           increaseValueAndUploadToFirestore();
                           lastQuestion = message;
@@ -422,16 +418,17 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                           uploadData();
                           _textFieldController.clear();
                         }
-                      }else{
-
-                        showModalBottomSheet(
-                            context: context,
-                            // isScrollControlled: true,
-                            builder: (context) {
-                              return const NutriPayment();
-                            });
-
-                      }
+                     // }
+                      // else{
+                      //
+                      //   showModalBottomSheet(
+                      //       context: context,
+                      //       // isScrollControlled: true,
+                      //       builder: (context) {
+                      //         return const NutriPayment();
+                      //       });
+                      //
+                      // }
 
                     },
                     onChanged: (value) {
@@ -448,10 +445,15 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                     child: IconButton(
 
                       onPressed: () async {
+
+
                         final prefs = await SharedPreferences.getInstance();
+                        DateTime subscriptionDate = Provider.of<AiProvider>(context, listen: false).subscriptionDate;
+                        DateTime today = DateTime.now();
 
 
-                        if (prefs.getBool(kNutriAi) == true){
+
+                        if (subscriptionDate.isAfter(today)){
                           // if(message != ''){
                           //   increaseValueAndUploadToFirestore();
                           //   lastQuestion = message;
@@ -466,6 +468,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                           //
                           // }
                           if (message != '') {
+                            // Focus.withExternalFocusNode(child: Text(""), focusNode: _focusNode);
                             increaseValueAndUploadToFirestore();
                             lastQuestion = message;
                             serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
@@ -479,7 +482,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                               print("$message : ${message.length}");
                               // print(messageValues);
 
-                              aiResponseLength = 30;
+                              aiResponseLength = 100;
                             }
                             // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
                             _focusNode.unfocus();
@@ -487,18 +490,17 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                             _textFieldController.clear();
                           }
                         } else {
-                          showModalBottomSheet(
-                              context: context,
-                              // isScrollControlled: true,
-                              builder: (context) {
-                                return NutriPayment();
-                              });
 
-
+                          if (prefs.getString(kUserCountryName) == "Uganda"){
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
+                            );
+                          } else {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                            );
+                          }
                         }
-
-
-
                       }, icon:  DescribedFeatureOverlay(
                         openDuration: const Duration(seconds: 1),
                         overflowMode: OverflowMode.extendBackground,
@@ -522,17 +524,45 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                 flex: 1,child: Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: GestureDetector(
-                    onTap: (){
-                      pickImage(ImageSource.camera);
-                      // Navigator.pushNamed(context, UploadAiPhoto.id);
-                        //  id, aiData.activeChallengeIndex, listOfKeys.length, aiData.challengePosition, aiData.challengeDaysKeys.length, aiData.challengeName, name, currentStep, planDays[i]);
-                     // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
-                      // );
+                    onTap: () async{
+                      final prefs = await SharedPreferences.getInstance();
+                      DateTime subscriptionDate = Provider.of<AiProvider>(context, listen: false).subscriptionDate;
+                      DateTime today = DateTime.now();
+
+                      if (subscriptionDate.isAfter(today)){
+                        CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+
+                      } else {
+                        if (prefs.getString(kUserCountryName) == "Uganda"){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
+                          );
+                        } else {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                          );
+                        }
+                      }
                     },
-                    child: CircleAvatar(
-                      backgroundColor: kBlueDarkColor,
-                        child: Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,)),
+
+
+                    child: DescribedFeatureOverlay(
+                      openDuration: const Duration(seconds: 1),
+                      overflowMode: OverflowMode.extendBackground,
+                      enablePulsingAnimation: true,
+                      barrierDismissible: false,
+                      pulseDuration: const Duration(seconds: 1),
+                      title: const Text('Take a Photo of your food or Fridge', style: TextStyle(color: kBlack),),
+                      description: Text('Snap your kitchen ingredients, Meals, Grocery and ask for a meal recipe, or get the benefits. You are limited only by your imagination', style: kNormalTextStyle.copyWith(color: kBlack),),
+                      contentLocation: ContentLocation.above,
+                      backgroundColor: kCustomColor,
+                      targetColor: kBlueDarkColor,
+                      featureId: 'feature3',
+                      tapTarget: const Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,),
+                      child: CircleAvatar(
+                        backgroundColor: kBlueDarkColor,
+                          child: Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,)),
+                    ),
                   ),
                 ))
           ],
@@ -541,10 +571,13 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     );
   }
 
+  var aiData =  Provider.of<AiProvider>(context, listen: false);
+
   return GestureDetector(
     onTap: () {
       // Dismiss the keyboard when the user taps outside of the text field
-      _focusNode.unfocus();
+      // _focusNode.unfocus();
+      FocusManager.instance.primaryFocus?.unfocus();
     },
     child: Scaffold(
         backgroundColor: kGreyLightThemeColor,
@@ -557,15 +590,16 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               Container(
                   height: 35,
                   child: InkWell(
-                    onTap: () {
-                      setState(() {
+                    onDoubleTap: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
+                      // setState(() {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
+                            MaterialPageRoute(builder: (context)=>
+                               PaywallInternationalPage()
+                            // PhotoOnboarding()
+                            )
                         );
-
-                        // nutriVisibility = !nutriVisibility;
-                        // chatBubbleVisibility = nutriVisibility;
-                      });
                     },
                     child: ClipOval(
 
@@ -585,121 +619,112 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
             //
             //   },
             // ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: GestureDetector(
-                onTap: () async{
-                  final prefs = await SharedPreferences.getInstance();
 
-                  if (prefs.getString(kGoalConstant) != null) {
-
-                    Navigator.pushNamed(context, HomePage.id);
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-                    // );
-
-                  }else{
-                    CoolAlert.show(
-
-                        lottieAsset: 'images/goal.json',
-                        context: context,
-                        type: CoolAlertType.success,
-                        widget: SingleChildScrollView(
-
-                            child:
-                            Container(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextField(
-                                      onChanged: (enteredQuestion){
-                                        question = enteredQuestion;
-                                        // instructions = customerName;
-                                        // setState(() {
-                                        // });
-                                      },
-                                      decoration: InputDecoration(
-                                          border:
-                                          //InputBorder.none,
-                                          OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                            borderSide: BorderSide(color: Colors.green, width: 2),
-                                          ),
-                                          labelText: 'Goal',
-                                          labelStyle: kNormalTextStyleExtraSmall,
-                                          hintText: 'This year I want to lose 10kg',
-                                          hintStyle: kNormalTextStyle
-                                      ),
-
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                        ),
-                        text: 'What is your main goal for this year?',
-                        title: "${prefs.getString(kFirstNameConstant)}!",
-                        confirmBtnText: 'Set Goal',
-                        confirmBtnColor: Colors.green,
-                        backgroundColor: kBackgroundGreyColor,
-                        onConfirmBtnTap: () async{
-                          if (question != ""){
-                            final prefs = await SharedPreferences.getInstance();
-                            prefs.setString(kGoalConstant, question);
-                            Navigator.pop(context);
-                            prefs.setString(kUserId, auth.currentUser!.uid);
-                            // updatePersonalInformationWithGoal();
-                            dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-                              'goal': question,
-                              'userId':auth.currentUser!.uid,
-                              // orderId
-                            });
-                            // Navigator.pushNamed(context, SuccessPageNew.id);
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-                            );
-                          } else {
-
-                          }
-
-
-
-
-
-
-                          // Provider.of<DoctorProvider>(context, listen:false).setFormCheckboxes(question);
-                          // if (bookingButtonName == 'Book'){
-                          //   Provider.of<StyleProvider>(context, listen:false).setPaymentStatus('Submitted');
-                          //   Navigator.pushNamed(context, CalendarPage.id);
-                          // } else {
-                          //   Provider.of<StyleProvider>(context, listen:false).setPaymentStatus('Paid');
-
-                          //
-                          // Navigator.pop(context);
-                          setState(() {
-
-                          });
-                        }
-                    );
-                  }
-
-                },
-                child: Container(
-                    // height: 10,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    color: kGreenThemeColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(child: Text("Your Goal", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
-                  // color: kAirPink,
-                    ),
-              ),
-            ),
+            // HERE IS WHERE THE CODE FOR YOUR GOAL STARTS
+            // Padding(
+            //   padding: const EdgeInsets.all(12.0),
+            //   child: GestureDetector(
+            //     onTap: () async{
+            //       final prefs = await SharedPreferences.getInstance();
+            //
+            //       if (prefs.getBool(kIsGoalSet) == false ||prefs.getBool(kIsGoalSet) == null ) {
+            //         print(prefs.getBool(kIsGoalSet));
+            //         CoolAlert.show(
+            //
+            //             lottieAsset: 'images/goal.json',
+            //             context: context,
+            //             type: CoolAlertType.success,
+            //             widget: SingleChildScrollView(
+            //
+            //                 child:
+            //                 Column(
+            //                   children: [
+            //                     Padding(
+            //                       padding: const EdgeInsets.all(8.0),
+            //                       child: TextField(
+            //                         onChanged: (enteredQuestion){
+            //                           question = enteredQuestion;
+            //                           // instructions = customerName;
+            //                           // setState(() {
+            //                           // });
+            //                         },
+            //                         decoration: InputDecoration(
+            //                             border:
+            //                             //InputBorder.none,
+            //                             OutlineInputBorder(
+            //                               borderRadius: BorderRadius.circular(10),
+            //                               borderSide: BorderSide(color: Colors.green, width: 2),
+            //                             ),
+            //                             labelText: 'Goal',
+            //                             labelStyle: kNormalTextStyleExtraSmall,
+            //                             hintText: 'This year I want to lose 10kg',
+            //                             hintStyle: kNormalTextStyle
+            //                         ),
+            //
+            //                       ),
+            //                     ),
+            //                   ],
+            //                 )
+            //             ),
+            //             text: 'What is your main goal for this year?',
+            //             title: "${prefs.getString(kFirstNameConstant)}!",
+            //             confirmBtnText: 'Set Goal',
+            //             confirmBtnColor: Colors.green,
+            //             backgroundColor: kBackgroundGreyColor,
+            //             onConfirmBtnTap: () async{
+            //               if (question != ""){
+            //                 final prefs = await SharedPreferences.getInstance();
+            //                 prefs.setString(kGoalConstant, question);
+            //                 prefs.setBool(kIsGoalSet, true);
+            //                 Navigator.pop(context);
+            //                 prefs.setString(kUserId, auth.currentUser!.uid);
+            //                 // updatePersonalInformationWithGoal();
+            //                 dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+            //                   'goal': question,
+            //                   'userId':auth.currentUser!.uid,
+            //                   // orderId
+            //                 });
+            //                 // Navigator.pushNamed(context, SuccessPageNew.id);
+            //                 Navigator.push(context,
+            //                     MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+            //                 );
+            //               } else {
+            //
+            //               }
+            //
+            //
+            //
+            //               setState(() {
+            //
+            //               });
+            //             }
+            //         );
+            //
+            //
+            //
+            //       }else{
+            //         // Navigator.pushNamed(context, HomePage.id);
+            //         Navigator.push(context,
+            //             MaterialPageRoute(builder: (context)=> GoalsPage())
+            //         );
+            //       }
+            //
+            //     },
+            //     child: Container(
+            //         // height: 10,
+            //       width: 100,
+            //       decoration: BoxDecoration(
+            //         color: kGreenThemeColor,
+            //         borderRadius: BorderRadius.circular(10),
+            //       ),
+            //       child: Center(child: Text("Your Goal", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
+            //       // color: kAirPink,
+            //         ),
+            //   ),
+            // ),
             kSmallWidthSpacing,
             IconButton(
-              icon: Icon(LineIcons.cog, color: kGreenThemeColor,),
+              icon: Icon(Icons.menu , color: kBlack,),
               onPressed: () {
                 Navigator.pushNamed(context, NewSettingsPage.id);
               },
@@ -707,318 +732,388 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
             kSmallWidthSpacing,
           ],
         ),
-        // floatingActionButton: FloatingActionButton(onPressed: () {
-        //   // _deleteUnrepliedChats();
-        //   Navigator.push(context,
-        //       MaterialPageRoute(builder: (context)=> QuizPage5())
-        //   );
+        // floatingActionButton: FloatingActionButton(onPressed: ()async {
+        //   final prefs = await SharedPreferences.getInstance();
+        //
+        //   prefs.setBool(kSetWeekGoal, false);
+        //
+        //   _deleteUnrepliedChats();
+        //  // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
+        //  //  Navigator.push(context,
+        //  //      MaterialPageRoute(builder: (context)=> NutriOnboardingPage())
+        //  //  );
         //   // print(messageValues.first);
         //
         //   // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
         // },
 
-       // ),
+      // ),
 
 
         body:
 
-        Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder<QuerySnapshot> (
-                    stream: FirebaseFirestore.instance
-                        .collection('chat')
-                        .where('userId', isEqualTo: phone)
-                        .orderBy('time',descending: true)
-                        .snapshots(),
-                    builder: (context, snapshot)
-                    {
-                      if(!snapshot.hasData){
-                        return Container();
-                      }
-                      else{
-                        messageList = [];
-                        messageStatusList = [];
-                        manualList = [];
+        WillPopScope(
+          onWillPop: () async {
+            return false; // return a `Future` with false value so this route cant be popped or closed.
+          },
+          child: Stack(
 
-                        responseList = [];
-                        idList = [];
-                        dateList = [];
-                        statusList = [];
-                        paidStatusListColor = [];
-                        opacityList = [];
-                        // messageValues = [];
+              children: [
 
-
-
-                        var orders = snapshot.data?.docs;
-                        for( var doc in orders!){
-                          messageList.add(doc['message']);
-                          manualList.add(doc['manual']);
-                          responseList.add(doc['response']);
-                          idList.add(doc['id']);
-                          messageStatusList.add(doc['status']);
-                          dateList.add(doc['time'].toDate());
-                          searchForPhrase(doc['response'], doc['id']);
-
-                          // messageValues.add({"role": "user", "content": doc['message']});
-                          // messageValues.add({"role": "assistant", "content": doc['response']});
-
-                          // print(messageValues);
-
-
-
-
-
-                          if (doc['replied'] == true){
-                            statusList.add(Icon(LineIcons.doubleCheck, size: 15,color: kGreenThemeColor,));
-                            paidStatusListColor.add(Colors.blue);
-                            opacityList.add(0.0);
-
-                          } else {
-                            statusList.add(Icon(LineIcons.check, size: 15,color: kFaintGrey,));
-                            paidStatusListColor.add(Colors.grey);
-                            opacityList.add(1.0);
-                          }
-                          // print(responseList.last);
-
-
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                  StreamBuilder<QuerySnapshot> (
+                      stream: FirebaseFirestore.instance
+                          .collection('chat')
+                          .where('userId', isEqualTo: phone)
+                          .where('visible', isEqualTo: true)
+                          .orderBy('time',descending: true)
+                          .snapshots(),
+                      builder: (context, snapshot)
+                      {
+                        if(!snapshot.hasData){
+                          return Container();
                         }
-                        // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
-                        return  messageList.length == 0? Padding(padding: const EdgeInsets.all(20),
-                          child:
-                          Container(
-                            // height: 150,
-                            width: double.infinity,
-                            child: Column(
-                              children: [
-                                // Spacer(),
+                        else{
+                          messageList = [];
+                          messageStatusList = [];
+                          manualList = [];
+                          photoList = [];
+                          photoImage = [];
+                          // visibleList = [];
 
-                                // Text(
-                                // 'No Chat Yet', textAlign: TextAlign.center,
-                                // style: kHeading2TextStyleBold,),
-                                //Expanded(child: Lottie.asset('images/robot.json', height: 300, width: 300,)),
-                                Expanded(child: Stack(
-                                  children: [
-                                    DescribedFeatureOverlay(
-                                        openDuration: Duration(seconds: 1),
-                                        overflowMode: OverflowMode.extendBackground,
-                                        enablePulsingAnimation: true,
-                                        barrierDismissible: false,
-                                        pulseDuration: Duration(seconds: 1),
-                                        title: Text('Your personal Nutritionist 24/7', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 20),),
-                                        description: Text('Hi, I am here as your personal nutritionist and accountability partner. The more we interact the better I will get to know you and help you', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
-                                        contentLocation: ContentLocation.above,
-                                        backgroundColor: kGreenThemeColor,
-                                        targetColor: kBlueDarkColor,
-                                        featureId: 'feature1',
-                                        tapTarget: Lottie.asset('images/lisa.json', height: 100, width: 100,),
+                          responseList = [];
+                          idList = [];
+                          dateList = [];
+                          statusList = [];
+                          paidStatusListColor = [];
+                          opacityList = [];
+                          // messageValues = [];
 
 
 
-                                        child: Lottie.asset('images/lisa.json', height: 300, width: 300,)),
-                                    Positioned(
-                                        top: 0,
-                                        left: 0,
+                          var orders = snapshot.data?.docs;
+                          for( var doc in orders!){
+                            messageList.add(doc['message']);
+                            // visibleList.add(doc['visible']);
+                            manualList.add(doc['manual']);
+                            photoList.add(doc['photo']);
+                            photoImage.add(doc['image']);
+                            responseList.add(doc['response']);
+                            idList.add(doc['id']);
+                            messageStatusList.add(doc['status']);
+                            dateList.add(doc['time'].toDate());
+                            searchForPhrase(doc['response'], doc['id']);
 
-                                        child: Card(
+                            // messageValues.add({"role": "user", "content": doc['message']});
+                            // messageValues.add({"role": "assistant", "content": doc['response']});
 
-                                          // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                                          shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                                          shadowColor: kGreenThemeColor,
-                                          color: kBlueDarkColorOld,
-                                          elevation: 2.0,
-                                          child: Container(
-                                            width: 260,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text( 'Hi there, $name?, I am Lisa',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
-                                            ),
-                                          ),
-                                        )
-                                    ),
-                                  ],
-                                )),
+                            // print(messageValues);
 
-                                // Spacer()
-                              ],
-                            ),),) :
-                        Padding(
-                               padding: const EdgeInsets.only(bottom: 110.0),
-                              child:  ListView.builder(
-                              itemCount: messageList.length,
-                              reverse: true,
-                              itemBuilder: (context, index){
-                                return
-                                  Column(
+                            if (doc['replied'] == true){
+                              statusList.add(Icon(LineIcons.doubleCheck, size: 15,color: kGreenThemeColor,));
+                              paidStatusListColor.add(Colors.blue);
+                              opacityList.add(0.0);
+
+                            } else {
+                              statusList.add(Icon(LineIcons.check, size: 15,color: kFaintGrey,));
+                              paidStatusListColor.add(Colors.grey);
+                              opacityList.add(1.0);
+                            }
+                            // print(responseList.last);
+
+
+                          }
+                          // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
+                          return  messageList.length == 0? Padding(padding: const EdgeInsets.all(20),
+                            child:
+                            Container(
+                              // height: 150,
+                              width: double.infinity,
+                              child: Column(
+                                children: [
+                                  // Spacer(),
+
+                                  // Text(
+                                  // 'No Chat Yet', textAlign: TextAlign.center,
+                                  // style: kHeading2TextStyleBold,),
+                                  //Expanded(child: Lottie.asset('images/robot.json', height: 300, width: 300,)),
+                                  Expanded(child: Stack(
                                     children: [
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child:
-                                            manualList[index] == true? Container():
-                                        Card(
+                                      DescribedFeatureOverlay(
+                                          openDuration: Duration(seconds: 1),
+                                          overflowMode: OverflowMode.extendBackground,
+                                          enablePulsingAnimation: true,
+                                          barrierDismissible: false,
+                                          pulseDuration: Duration(seconds: 1),
+                                          title: Text('Your personal Nutritionist 24/7', style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 20),),
+                                          description: Text('Hi, I am here as your personal nutritionist and accountability partner. The more we interact the better I will get to know you and help you', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                          contentLocation: ContentLocation.above,
+                                          backgroundColor: kGreenThemeColor,
+                                          targetColor: kBlueDarkColor,
+                                          featureId: 'feature1',
+                                          tapTarget: Lottie.asset('images/lisa.json', height: 100, width: 100,),
 
-                                          // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                                          shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-                                          shadowColor: kGreenThemeColor,
-                                          // color: kBeigeColor,
-                                          elevation: 2.0,
-                                          child: Container(
-                                            width: 260,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
 
-                                                      Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
-                                                          style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
+
+                                          child: Lottie.asset('images/lisa.json', height: 300, width: 300,)),
+                                      Positioned(
+                                          top: 0,
+                                          left: 0,
+
+                                          child: Card(
+
+                                            // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                                            shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                            shadowColor: kGreenThemeColor,
+                                            color: kBlueDarkColorOld,
+                                            elevation: 2.0,
+                                            child: Container(
+                                              width: 260,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text( 'Hi there, $name?, I am Lisa',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                                              ),
+                                            ),
+                                          )
+                                      ),
+                                    ],
+                                  )),
+
+                                  // Spacer()
+                                ],
+                              ),),) :
+                          Padding(
+                                 padding: const EdgeInsets.only(bottom: 110.0),
+                                child:  ListView.builder(
+                                itemCount: messageList.length,
+                                reverse: true,
+                                itemBuilder: (context, index){
+                                  return
+                                    Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child:
+                                              manualList[index] == true? Container():
+                                          Card(
+
+                                            // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                                            shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                                            shadowColor: kGreenThemeColor,
+                                            // color: kBeigeColor,
+                                            elevation: 2.0,
+                                            child: Container(
+                                              width: 260,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
+                                                            style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
+                                                        ),
+                                                        kSmallWidthSpacing,
+                                                        statusList[index]
+                                                      ],
+                                                    ),
+                                                    Text( "${messageList[index]}",textAlign: TextAlign.left,
+                                                        style: kNormalTextStyle2.copyWith(fontSize: 15, color: kBlueDarkColor)
+                                                    ),
+                                                    kSmallHeightSpacing,
+                                                    photoList[index]== false ? Container():
+                                                    Container(
+                                                      height: 130,
+                                                      width: 150,
+                                                      margin: const EdgeInsets.only(
+                                                          top: 10,
+                                                          right: 0,
+                                                          left: 0,
+                                                          bottom: 3),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                          BorderRadius.circular(25),
+                                                          // color: backgroundColor,
+                                                          image: DecorationImage(
+                                                            image:
+                                                            // NetworkImage(image[index]),
+                                                            CachedNetworkImageProvider(photoImage[index]),
+                                                            //NetworkImage(images[index]),
+                                                            // fit: BoxFit.cover,
+                                                          )
+                                                        //colours[index],
                                                       ),
-                                                      kSmallWidthSpacing,
-                                                      statusList[index]
-                                                    ],
-                                                  ),
-                                                  Text( "${messageList[index]}",textAlign: TextAlign.left,
-                                                      style: kNormalTextStyle2.copyWith(fontSize: 15, color: kBlueDarkColor)
-                                                  ),
+
+                                                    ),
 
 
 
 
 
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      kSmallHeightSpacing,
-                                      responseList[index] == ''? Center(child: Lottie.asset('images/assistant.json', width: 50)) :Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                                height: 25,
-                                                child: ClipOval(
+                                        kSmallHeightSpacing,
+                                        responseList[index] == ''? Center(child: Lottie.asset('images/assistant.json', width: 50)) :Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                  height: 25,
+                                                  child: ClipOval(
 
-                                                    child: Image.asset('images/bot.png', fit: BoxFit.contain,))),
-                                            Stack(
-                                              children: [
-                                                Card(
-                                                    color: manualList[index] == false ? kCustomColor: kCustomColor,
-                                                    shadowColor: kPureWhiteColor,
+                                                      child: Image.asset('images/bot.png', fit: BoxFit.contain,))),
+                                              Stack(
+                                                children: [
+                                                  GestureDetector(
+                                                    onLongPress: (){
+                                                      Share.share('${responseList[index]}\nhttps://bit.ly/3I8sa4M', subject: 'Check this out from Nutri');
+                                                     },
+                                                    child: Card(
+                                                        color: manualList[index] == false ? kCustomColor: kCustomColor,
+                                                        shadowColor: kPureWhiteColor,
 
-                                                    elevation: 4,
-                                                    shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                                                        elevation: 4,
+                                                        shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
 
 
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(18.0),
-                                                      child: Container(
-                                                          width: 260,
-                                                          child: Column(
-                                                            crossAxisAlignment:CrossAxisAlignment.start ,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(18.0),
+                                                          child: Container(
+                                                              width: 260,
+                                                              child: Column(
+                                                                crossAxisAlignment:CrossAxisAlignment.start ,
 
-                                                            children: [
+                                                                children: [
 
-                                                              Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
-                                                                  style: kNormalTextStyle.copyWith(fontSize: 10, color: manualList[index] == false ? kBlueDarkColorOld: kBlueDarkColor,)
-                                                              ),
-                                                              Text('${responseList[index]}',textAlign: TextAlign.left,
-                                                               style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kBlueDarkColor,
-                                                                   fontSize: 15, fontWeight: FontWeight.w400),
-                                                                ),
-                                                            ],
-                                                          )
-                                                      ),
-                                                    )),
-                                                Positioned(
-                                                  top: 10,
-                                                  right: 10,
-                                                  child: Container(
-                                                    height: 20,
-                                                    width: 20,
-                                                    decoration: BoxDecoration(
-                                                      color: paidStatusListColor[index],
-                                                      borderRadius: BorderRadius.circular(10),
-                                                    ),
-                                                    child: GestureDetector(
-                                                        onTap: (){
+                                                                  Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
+                                                                      style: kNormalTextStyle.copyWith(fontSize: 10, color: manualList[index] == false ? kBlueDarkColorOld: kBlueDarkColor,)
+                                                                  ),
+                                                                  Linkify(
+                                                                      onOpen: (link) {
+                                                                        CommonFunctions().goToLink(link.url);
+                                                                        // if (await canLaunch(link.url)) {
+                                                                        //   await CommonFunctions().goToLink(link.url);
+                                                                        // } else {
+                                                                        //   throw 'Could not launch ${link.url}';
+                                                                        // }
+                                                                      },
+                                                                       style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kBlueDarkColor,
+                                                                           fontSize: 15, fontWeight: FontWeight.w400),
+                                                                      linkStyle: TextStyle(color: Colors.blue),
+                                                                      text: responseList[index]),
 
-                                                          Share.share('${responseList[index]}\nhttps://bit.ly/3I8sa4M', subject: 'Check this out from Nutri');
-
-                                                        },
-
-                                                        child: Icon(LineIcons.alternateShare, size: 15,color: kPureWhiteColor,)),
+                                                                  // Text('${responseList[index]}',textAlign: TextAlign.left,
+                                                                  //  style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kBlueDarkColor,
+                                                                  //      fontSize: 15, fontWeight: FontWeight.w400),
+                                                                  //   ),
+                                                                ],
+                                                              )
+                                                          ),
+                                                        )),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  );}
-                          ),
-                        );
+                                                  Positioned(
+                                                    top: 10,
+                                                    right: 10,
+                                                    child: Container(
+                                                      height: 20,
+                                                      width: 20,
+                                                      decoration: BoxDecoration(
+                                                        color: paidStatusListColor[index],
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      child: GestureDetector(
+                                                          onTap: (){
+
+                                                            Share.share('${responseList[index]}\nhttps://bit.ly/3I8sa4M', subject: 'Check this out from Nutri');
+
+                                                          },
+
+                                                          child: Icon(LineIcons.alternateShare, size: 15,color: kPureWhiteColor,)),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    );}
+                            ),
+                          );
+                        }
+
                       }
 
-                    }
-
+                  ),
                 ),
-              ),
 
-              LowerTextForm(),
+                LowerTextForm(),
 
-              Positioned(
-                bottom: 160,
-                  right: 10,
+                Positioned(
+                  bottom: 160,
+                    right: 10,
 
-                  child: GestureDetector(
+                    child:
+
+                    GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            chatBubbleVisibility = !chatBubbleVisibility;
+                          });
+                        },
+
+
+                        child:
+                        nutriVisibility == true? Container():
+                        Lottie.asset('images/lisa.json', height: 100, width: 100,))
+                ),
+                Positioned(
+                  bottom: 240,
+                    right: 70,
+
+                    child: GestureDetector(
                       onTap: (){
                         setState(() {
-                          chatBubbleVisibility = !chatBubbleVisibility;
+                          Provider.of<AiProvider>(context, listen: false).setTipStatus();
+                          // chatBubbleVisibility = !chatBubbleVisibility;
                         });
+
                       },
+                        child:  Provider.of<AiProvider>(context, listen: false).tipStatus != true? Container(): Card(
 
-
-                      child:
-                      nutriVisibility == true? Container():
-                      Lottie.asset('images/lisa.json', height: 100, width: 100,))),
-              Positioned(
-                bottom: 240,
-                  right: 70,
-
-                  child: GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        chatBubbleVisibility = !chatBubbleVisibility;
-                      });
-
-                    },
-                      child: chatBubbleVisibility == true? Container(): Card(
-
-                        // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                        shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                        shadowColor: kGreenThemeColor,
-                         color: kBlueDarkColorOld,
-                        elevation: 2.0,
-                        child: Container(
-                          width: 260,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text( about[random.nextInt(about.length)],textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                          // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                          shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                          shadowColor: kGreenThemeColor,
+                           color: kBlueDarkColorOld,
+                          elevation: 2.0,
+                          child: Container(
+                            width: 260,
+                            height: 200,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Text("Tip of the Day 💡", style: kHeading2TextStyle.copyWith(color: kPureWhiteColor),),
+                                  kLargeHeightSpacing,
+                                  Text( aiData.nutriTips[random.nextInt(aiData.nutriTips.length)],textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
 
-                  )
-              ),
+                    )
+                ),
 
-            ])
+              ]),
+        )
     ),
   );
   }

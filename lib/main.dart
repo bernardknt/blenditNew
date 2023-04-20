@@ -52,6 +52,7 @@ import 'package:blendit_2022/screens/upload_photo.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +60,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/models/purchases_configuration.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -68,7 +71,7 @@ import 'controllers/push_notification_service.dart';
 import 'models/blendit_data.dart';
 
 
-
+final _configuration = PurchasesConfiguration("appl_BypoTqpmaTnGvWTNZktkSUcOmBZ");
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -77,6 +80,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future <void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+  await Purchases.configure(_configuration);
   // await Firebase.initializeApp();
   await Firebase.initializeApp(
 
@@ -90,10 +94,17 @@ Future <void> main() async{
     //   projectId: "blend-it-8a622",
     // ),
   );
+  // Get an instance of FirebaseAppCheck
+  FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.instance;
+
+// Install the Play Integrity provider factory
+  firebaseAppCheck.activate();
+  // installAppCheckProviderFactory(
+  //     PlayIntegrityAppCheckProviderFactory()
+  // );
   await PushNotificationService().setupInteractedMessage();
   runApp(MyApp());
-  RemoteMessage? initialMessage =
-  await FirebaseMessaging.instance.getInitialMessage();
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
   if (initialMessage != null) {
     // App received a notification when it was killed
   }

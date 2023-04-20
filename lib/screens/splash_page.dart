@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
@@ -26,6 +28,9 @@ class _SplashPageState extends State<SplashPage> {
 
     bool isLoggedIn = prefs.getBool(kIsLoggedInConstant) ?? false;
     prefs.setBool(kChallengeRequirements, false);
+
+
+    Provider.of<AiProvider>(context, listen: false).setTipStatus();
 
     setState(() {
       userLoggedIn = isLoggedIn ;
@@ -53,10 +58,11 @@ class _SplashPageState extends State<SplashPage> {
   Future deliveryStream() async {
     final prefs = await SharedPreferences.getInstance();
     final users = await FirebaseFirestore.instance
-        .collection('users').doc(auth.currentUser!.uid)
+        .collection('variables').doc("7hkqndmv9b0arEWy4vc9")
         .get();
-    prefs.setBool(kNutriAi, users['aiActive']);
-    print("MUTUNDWE: ${users['aiActive']}");
+    
+    Provider.of<AiProvider>(context, listen: false).setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"] );
+ 
   }
 
   bool userLoggedIn = false;

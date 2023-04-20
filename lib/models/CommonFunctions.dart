@@ -5,11 +5,15 @@ import 'dart:async';
 import 'dart:io';
 import 'package:blendit_2022/screens/calendar_page.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
+import 'package:blendit_2022/screens/photo_onboarding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -22,8 +26,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import '../screens/ios_onboarding.dart';
 import '../screens/success_challenge_done.dart';
 import '../utilities/constants.dart';
+import '../utilities/font_constants.dart';
 import '../widgets/InputFieldWidget.dart';
 import 'ai_data.dart';
 
@@ -274,9 +280,14 @@ class CommonFunctions {
 
     launchUrl(Uri.parse(googleUrl));
   }
-
+// call number
   void callPhoneNumber (String phoneNumber){
     launchUrl(Uri.parse('tel://$phoneNumber'));
+  }
+
+  // Visit Link
+  void goToLink (String link){
+    launchUrl(Uri.parse(link));
   }
 
   Future<void> uploadUserToken(token) async {
@@ -423,6 +434,7 @@ class CommonFunctions {
         .collection('users').doc(auth.currentUser!.uid)
         .update(
         {
+          'email': "",
           'preferences': preferences,
           'preferencesId': preferenceId,
           'sex': sex,
@@ -474,7 +486,7 @@ class CommonFunctions {
       'replied': false,
       'status' : true,
       'time':  DateTime.now(),
-      'message': "Image of '$description' uploaded",
+      'message': "📸 '$description' uploaded",
       'response': '',
       'userId': prefs.getString(kPhoneNumberConstant),
       'weight': prefs.getDouble(kUserWeight),
@@ -490,7 +502,10 @@ class CommonFunctions {
       'country': prefs.getString(kUserCountryName),
       'birthday': prefs.getString(kUserBirthday),
       'preferences': prefs.getString(kUserPersonalPreferences),
-      'image': "image"
+      'image': image,
+      'agent': false,
+      'visible': true,
+      'replyTime': DateTime.now()
     })
     //     .set({
     //   'active': true, // John Doe
@@ -531,6 +546,26 @@ class CommonFunctions {
     }
   }
 
+  Future<File?> compressImage(File file)async {
+    File? compressedImage;
+
+    // Wrap the async operation in a try-catch block to handle exceptions
+    try {
+      final compressedImageFile = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path,
+        "${file.path}_compressed.jpg",
+        quality: 50,
+      );
+      compressedImage = compressedImageFile;
+    } catch (e) {
+      // Handle exceptions if any
+      print('Failed to compress image: $e');
+    }
+
+
+    return compressedImage;
+  }
+
   void showBottomSheet(BuildContext context, String serviceId, File? imageReceived) {
     showModalBottomSheet(
       isScrollControlled: true,
@@ -541,7 +576,7 @@ class CommonFunctions {
               bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SingleChildScrollView(
             child: Container(
-              color: kBlack,
+              color: kBlueDarkColor,
               // height: 200,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -556,7 +591,8 @@ class CommonFunctions {
 
                       imageReceived != null ? Image.file(imageReceived!, height: 150,) : Container(
                         width: double.infinity,
-                        height: 180,
+                        height: 250,
+
                         child: Text("data"),
                         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), color: kPureWhiteColor),
 
@@ -566,12 +602,42 @@ class CommonFunctions {
 
 
                     Container(
-                      height: 70,
+                      height: 80,
                       child:
+                      // InputFieldWidget(hintText: "Is this good for me?", onTypingFunction: (value){description = value;}, keyboardType: TextInputType.text, labelText: " What's your Question", inputTextColor: kPureWhiteColor,),
+                      //
+                      TextField(
+                        // obscureText: passwordType,
+                        // keyboardType: keyboardType,
+                        onChanged: (value){description = value;},
+                        textAlign: TextAlign.center,
+                        cursorColor: Colors.green,
+                        style: kNormalTextStyle.copyWith(color: kPureWhiteColor),
+                        //keyboardType: TextInputType.number,
 
+                        decoration: InputDecoration(
 
-                       InputFieldWidget(hintText: "Is this good for me?", onTypingFunction: (value){description = value;}, keyboardType: TextInputType.text, labelText: " What's your Question", inputTextColor: kPureWhiteColor,),
+                          hintText: "Is this good for me?",
+                          fillColor: kPureWhiteColor,
+                          hintStyle: TextStyle(fontSize: 14, color: Colors.grey[300]),
+                          labelText: " Add Question / Note ",
 
+                          labelStyle: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                          contentPadding:
+                          EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: kGreenJavasThemeColor, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: kGreenJavasThemeColor, width: 0),
+                            borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                          ),
+                        ),
+                      ),
                     ),
                     RoundedLoadingButton(
                       width: 120,
@@ -596,6 +662,8 @@ class CommonFunctions {
                               );
                           });
                         }else {
+                          // compressImage(image!, serviceId, description, context);
+
 
                           uploadFile(image!.path, serviceId, description, context );
 
@@ -616,7 +684,7 @@ class CommonFunctions {
       },
     );
   }
-
+  // STARTING SUBSCRIPTION FOR NUTRI
   void startTrialSubscription() {
     final now = DateTime.now();
     final futureDate = now.add(Duration(days: 3));
@@ -627,18 +695,56 @@ class CommonFunctions {
       "subscriptionEndDate": futureDate,
       "subscriptionStartDate": now,
       "subscribed": false,
-      "trial": true,
+      "trial": "Trial",
 
     });
 
-
-
-
-
-
-    FirebaseFirestore.instance.collection('users').doc('5678902902').set({
-      'futureDate': formattedDate,
-    });
   }
+
+  Future pickImage(ImageSource source, serviceId, context) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getBool(kFirstTimePhoto)== false){
+      try {
+        final image = await ImagePicker().pickImage(source: source);
+        // await ImagePicker().pickImage(source: ImageSource.gallery);
+
+        if (image == null){
+          return ;
+        }else {
+          final compressedImage = await compressImage(File(image.path));
+
+          var file = File(image.path);
+          showBottomSheet(context, serviceId, compressedImage);
+        }
+      } on PlatformException catch (e) {
+        print('Failed to pick image $e');
+
+      }
+
+    }
+    else{
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context)=> PhotoOnboarding())
+      );
+
+
+    }
+  }
+  // STREAMING DATA FROM THE USERS PROFILE
+  Future userStream(context) async {
+    var userData = await users.doc(auth.currentUser!.uid).get();
+    Provider.of<AiProvider>(context,listen: false).setCommonVariables(
+      userData['loyalty'],
+      userData['subscriptionEndDate'].toDate(),
+      userData['trial']
+    );
+
+  }
+
+
+
+
+
 
 }

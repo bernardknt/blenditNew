@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utilities/font_constants.dart';
+import 'goals.dart';
 import 'home_page.dart';
 
 
@@ -115,7 +116,9 @@ class _LoadingGoalsPageState extends State<LoadingGoalsPage> {
                     //   "articleCount": messageCount,
                     // });
                     Navigator.pop(context);
-                    Navigator.pushNamed(context, HomePage.id);
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context)=> GoalsPage())
+                    // );
 
                   }, child: Text("I am Ready", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
             ),
