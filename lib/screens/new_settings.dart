@@ -464,7 +464,8 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                                 prefs.setBool(kIsFirstTimeUser, true);
                                 await auth.signOut().then((value) {
                                   unsubscribeFromTopic(prefs.getString(kPhoneNumberConstant));
-                                  Navigator.pushNamed(context, WelcomePageNew.id); 
+                                  Navigator.pushNamed(context, WelcomePageNew.id);
+                                  CommonFunctions().cancelNotification();
                                   
                                 } );
                                 
@@ -515,7 +516,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
                             await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).delete().then((value) async =>
                             await auth.signOut().then((value){
-                              Navigator.pushNamed(context, LoginPage.id);
+                              Navigator.pushNamed(context, WelcomePageNew.id);
                               CommonFunctions().cancelNotification(); //cancel all notifications
 
                             }

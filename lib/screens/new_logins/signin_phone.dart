@@ -188,7 +188,9 @@ class _SignInPhoneState extends State<SignInPhone> {
                             final prefs = await SharedPreferences.getInstance();
                             await FirebaseAuth.instance.verifyPhoneNumber(
                                 phoneNumber: phoneNumberFull,
-                                verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {  },
+                                verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async{
+                                  await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+                                },
                                 verificationFailed: (FirebaseAuthException error) {
                                    print(error);
                                   showDialog(context: context, builder: (BuildContext context){

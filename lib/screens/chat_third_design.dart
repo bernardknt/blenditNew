@@ -70,6 +70,44 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
+  var notes = [
+    "Ask Nutri for personalized meal plans tailored to your health goals!",
+    "Capture photos of your breakfast, lunch, and dinner to track your daily food intake with Nutri.",
+    "Snap a pic of your post-workout snack to get insights into its nutritional value.",
+    "Ask Nutri for healthy recipe ideas based on the ingredients you have in your fridge!",
+    "Take photos of your snacks to see how they fit into your goal.",
+    "Capture your pre- and post-workout meals to optimize your fitness routine.",
+    "Get tips from Nutri on how to build healthy eating habits that last.",
+    "Ask Nutri for advice on portions to eat",
+    "Snap a pic of your favorite restaurant meal to see how it fits into your nutrition plan.",
+    "Capture your daily water intake to stay hydrated and track your progress.",
+    "Ask Nutri for suggestions on how to manage food allergies or intolerances.",
+    "Take photos of your home-cooked meals to monitor your nutrient intake.",
+    "Get insights from Nutri on how to optimize your protein, carb, and fat intake.",
+    "Ask for a local dish to have today",
+  ];
+  Future<void> upLoadOrder ()async {
+    final dateNow = new DateTime.now();
+    CollectionReference userOrder = FirebaseFirestore.instance.collection('variables');
+    final prefs =  await SharedPreferences.getInstance();
+
+    String orderId = '${DateTime.now()}${uuid.v1().split("-")[0]}';
+
+    return userOrder.doc("7hkqndmv9b0arEWy4vc9")
+        .set({
+
+      'tips': notes,
+      "ugandaOneMonth": "19,000",
+      "ugandaOneYear": "199,000",
+      "internationalOneMonth": "5.99",
+      "internationalOneYear": "59.99",
+      "ugFirstAmount": 20000,
+      "intFirstAmount": 5.99 ,
+      "customerCare": "+256700457826",
+      'notify': []
+
+    });
+  }
 
   Future<void> deleteUnrepliedChats() async {
     final QuerySnapshot unrepliedChats = await FirebaseFirestore.instance
@@ -81,6 +119,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     unrepliedChats.docs.forEach((doc) => batch.delete(doc.reference));
     await batch.commit();
   }
+
 
   Future<void> _deleteUnrepliedChats() async {
     await deleteUnrepliedChats();
@@ -105,8 +144,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   // THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
-    tutorialDone = false;
-        //prefs.getBool(kIsTutorialDone) ?? false;
+    tutorialDone =prefs.getBool(kIsTutorial1Done) ?? false;
+
     if (tutorialDone == false){
       initialId = 'feature1';
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -195,7 +234,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       "image": "",
       'agent': false,
       'visible': true,
-      'replyTime': DateTime.now()
+      'replyTime': DateTime.now(),
+      "agentName": "",
+      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty
     })
         .then((value){
       Provider.of<BlenditData>(context, listen: false).changeLastQuestion(finalQuestion);
@@ -454,19 +495,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
 
                         if (subscriptionDate.isAfter(today)){
-                          // if(message != ''){
-                          //   increaseValueAndUploadToFirestore();
-                          //   lastQuestion = message;
-                          //   // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
-                          //   serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-                          //   uploadData();
-                          //   _textFieldController.clear();
-                          //
-                          //   //}
-                          //
-                          //
-                          //
-                          // }
+
                           if (message != '') {
                             // Focus.withExternalFocusNode(child: Text(""), focusNode: _focusNode);
                             increaseValueAndUploadToFirestore();
@@ -732,21 +761,22 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
             kSmallWidthSpacing,
           ],
         ),
-        // floatingActionButton: FloatingActionButton(onPressed: ()async {
-        //   final prefs = await SharedPreferences.getInstance();
-        //
-        //   prefs.setBool(kSetWeekGoal, false);
-        //
-        //   _deleteUnrepliedChats();
-        //  // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
-        //  //  Navigator.push(context,
-        //  //      MaterialPageRoute(builder: (context)=> NutriOnboardingPage())
-        //  //  );
-        //   // print(messageValues.first);
-        //
-        //   // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
-        // },
-
+      //   floatingActionButton: FloatingActionButton(onPressed: ()async {
+      //     final prefs = await SharedPreferences.getInstance();
+      //
+      //     prefs.setBool(kSetWeekGoal, false);
+      //     upLoadOrder();
+      //
+      //     // _deleteUnrepliedChats();
+      //    // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
+      //    //  Navigator.push(context,
+      //    //      MaterialPageRoute(builder: (context)=> NutriOnboardingPage())
+      //    //  );
+      //     // print(messageValues.first);
+      //
+      //     // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
+      //   },
+      //
       // ),
 
 

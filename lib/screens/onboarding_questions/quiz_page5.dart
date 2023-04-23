@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:blendit_2022/screens/paywall_first_international.dart';
 import 'package:blendit_2022/screens/paywall_first_uganda.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -92,7 +93,18 @@ class _QuizPage5State extends State<QuizPage5> {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
             );
-            prefs.setString(kUserPersonalPreferences, aiData.preferencesIdSelected.join(", "));
+            if (prefs.getString(kUserCountryName) == "Uganda"){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
+              );
+            } else {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context)=> PaywallFirstInternationalPage())
+              );
+            }
+
+
+            prefs.setString(kUserPersonalPreferences, aiData.preferencesSelected.join(", "));
 
             CommonFunctions().uploadUserPreferences(aiDataDisplay.preferencesSelected, aiDataDisplay.userSex, aiDataDisplay.userBirthday, aiDataDisplay.preferencesIdSelected);
 

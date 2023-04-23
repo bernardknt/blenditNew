@@ -54,16 +54,28 @@ class _SplashPageState extends State<SplashPage> {
     });
   }
 
+  Future deliveryStream()async{
 
-  Future deliveryStream() async {
-    final prefs = await SharedPreferences.getInstance();
-    final users = await FirebaseFirestore.instance
-        .collection('variables').doc("7hkqndmv9b0arEWy4vc9")
-        .get();
-    
-    Provider.of<AiProvider>(context, listen: false).setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"] );
- 
+    var start = FirebaseFirestore.instance.collection('variables').snapshots().listen((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((users) async {
+        setState(() {
+          Provider.of<AiProvider>(context, listen: false).
+          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'] );
+        });
+      });
+    });
+
+    return start;
   }
+  // Future deliveryStream() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final users = await FirebaseFirestore.instance
+  //       .collection('variables').doc("7hkqndmv9b0arEWy4vc9")
+  //       .get();
+  //
+  //   Provider.of<AiProvider>(context, listen: false).setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'] );
+  //
+  // }
 
   bool userLoggedIn = false;
   @override

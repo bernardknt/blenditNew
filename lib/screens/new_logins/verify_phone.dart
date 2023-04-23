@@ -160,15 +160,10 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                       final prefs = await SharedPreferences.getInstance();
                       try {
                         PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: Provider.of<BlenditData>(context, listen: false).phoneVerificationId, smsCode: code);
-                        final user = await auth.signInWithCredential(credential);
-                        final users = await FirebaseFirestore.instance
-                            .collection('users').doc(auth.currentUser!.uid)
-                            .get();
+                        await auth.signInWithCredential(credential);
+                        final users = await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).get();
                         if (users.exists){
 
-                          print("NULULULULULU ${users.data()}");
-
-                          final prefs = await SharedPreferences.getInstance();
                           prefs.setBool(kNutriAi, true);
                           prefs.setString(kUserPersonalPreferences, users['preferences'].join(", "));
                           prefs.setString(kFullNameConstant, users['lastName']);
@@ -185,8 +180,6 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           prefs.setInt(kUserHeight, users['height']);
                           prefs.setBool(kIsGoalSet,users['goalSet'] );
                           prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
-                          // prefs.setString(kPreferencesConstant, preferences.join(', '));
-                          // prefs.setString(kPreferencesIdConstant, preferencesIds.join(', '));
                           prefs.setString(kToken, token);
 
                           // This Function uploads the user token to the server.
@@ -194,22 +187,25 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                          //  MaterialPageRoute(builder: (context)=> QuizPageName());
                           subscribeToTopic(users['phoneNumber']);
                           Navigator.pushNamed(context, ControlPage.id);
-                        } else {
-                          prefs.setBool(kNutriAi, true);
-                          if (prefs.getString(kFullNameConstant) == ''){
+                        }
+                        else {
+                          // prefs.setBool(kNutriAi, true);
+                          // if (prefs.getString(kFullNameConstant) == '') {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context)=> QuizPageName())
                             );
-                            subscribeToTopic(prefs.getString(kPhoneNumberConstant));
-                          }
-                          else {
+                          //   subscribeToTopic(prefs.getString(kPhoneNumberConstant));
+                          // }
+                          // else {
                             _btnController.reset();
-                          }
+                         // }
                         }
 
                         prefs.setBool(kIsLoggedInConstant, true);
                         prefs.setBool(kIsFirstTimeUser, true);
-                      } catch(e){
+                      }
+                      catch (e)
+                      {
                         print("WALALALALALLALA $e");
                         _btnController.reset();
                         print(Provider.of<BlenditData>(context, listen: false).phoneVerificationId);
@@ -254,6 +250,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                   children: [
                     InkWell(
                       onTap: (){
+                        Navigator.pop(context);
 
                       },
 

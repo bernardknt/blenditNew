@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page1.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -73,7 +74,7 @@ class _QuizPageNameState extends State<QuizPageName> {
 
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: InputFieldWidget2(fontColor: kPureWhiteColor, boxRadius: 10,  leftPadding: 0,  labelText:' Full Names' ,hintText: 'Cathy Nalya', keyboardType: TextInputType.text, onTypingFunction: (value){
+                      child: InputFieldWidget2(fontColor: kPureWhiteColor, boxRadius: 10,  leftPadding: 0,  labelText:' Full Names' ,hintText: '', keyboardType: TextInputType.text, onTypingFunction: (value){
                         fullName = value;
                         firstName = fullName.split(" ")[0]; // Gets the first name in the 0 positiion from the full names
                       }, onTapFunction: () {
@@ -106,6 +107,7 @@ class _QuizPageNameState extends State<QuizPageName> {
                             prefs.setString(kFullNameConstant, fullName);
 
                             prefs.setString(kFirstNameConstant, firstName);
+                            Provider.of<AiProvider>(context, listen: false).setUseName(firstName);
                             // Navigator.push(context,
                             //     MaterialPageRoute(builder: (context)=> QuizPage1())
                             // );
@@ -133,9 +135,14 @@ class _QuizPageNameState extends State<QuizPageName> {
                         width: 260,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text( "Welcome to Nutri, My name is Lisa. Let me set you up. "
-                              "Could you tell me your names?",textAlign: TextAlign.left,
-                              style: kNormalTextStyle.copyWith(fontSize: 17, color: kBlack)),
+                          child:
+                          // Welcome to Nutri, My name is Lisa. Let me set you up. "
+                          //   "Could you tell me your names?
+
+                          Text( "Welcome to Nutri! Your 24/7 Nutritionist is here to help you achieve your health goals and keep you accountable. Let's get started",
+                              textAlign: TextAlign.left,
+                              style: kNormalTextStyle.copyWith(fontSize: 17, color: kBlack)
+                          ),
                         ),
                       ),
                     ),
@@ -143,7 +150,7 @@ class _QuizPageNameState extends State<QuizPageName> {
               ),
               Positioned(
                   top: 110,
-                  right:40,
+                  right:30,
                   child: Opacity(
                       opacity: botOpacity.toDouble(),
                       child: Lottie.asset('images/lisa.json', height: 170, width: 170,)),
