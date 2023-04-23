@@ -13,7 +13,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PaywallFirstUgandaPage extends StatelessWidget {
+class PaywallFirstInternationalPage extends StatelessWidget {
   var textColor = kPureWhiteColor;
   var backgroundColor = kBlack;
 
@@ -40,7 +40,7 @@ class PaywallFirstUgandaPage extends StatelessWidget {
               ),
               kLargeHeightSpacing,
               Text(
-                '${Provider.of<AiProvider>(context, listen: false).userName} Enjoy free 3 Day Trial, then Ugx ${Provider.of<AiProvider>(context,listen: false).ugTrial}/month!', textAlign: TextAlign.center,
+                '${Provider.of<AiProvider>(context, listen: false).userName} Enjoy free 3 Day Trial, then USD ${Provider.of<AiProvider>(context,listen: false).intTrial} /month!', textAlign: TextAlign.center,
                 style:kHeading2TextStyleBold.copyWith(fontSize: 20, color: textColor),
               ),
               kLargeHeightSpacing,

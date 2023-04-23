@@ -35,6 +35,7 @@ class AiProvider extends ChangeNotifier{
   String ugTrial = "20k";
   String intTrial = "5.99";
   String customerCareNumber = "+256700457826";
+  String userName = "";
 
 
   // Challenge Variables
@@ -53,6 +54,7 @@ class AiProvider extends ChangeNotifier{
   int activeChallengeIndex = 0;
   Map<String, dynamic> challengeDays = {};
   List <Step> challengeSteps = [Step(title: Text("TEST"), content: Text('Infor'))];
+  List adminsOnDuty = [];
   List nutriTips = [
     "Ask Nutri for personalized meal plans tailored to your health goals!",
     "Capture photos of your breakfast, lunch, and dinner to track your daily food intake with Nutri.",
@@ -82,6 +84,11 @@ class AiProvider extends ChangeNotifier{
  //   dayIcons[index] = image;
  //   notifyListeners();
  // }
+  setUseName(name){
+    userName = name;
+
+    notifyListeners();
+  }
   setChallengePosition (){
     challengePosition += 1;
     activeChallengeIndex = 0;
@@ -230,7 +237,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     subscriptionType = subscription;
 
   }
-  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList){
+  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify){
     ugMonthly = ugMonth.toString();
     ugYearly = ugYear.toString();
     intMonthly = intMonth.toString();
@@ -239,6 +246,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     intTrial = intTrialAmount;
     customerCareNumber = customerCare;
     nutriTips = tipsList;
+    adminsOnDuty = notify;
 
     notifyListeners();
   }

@@ -505,18 +505,11 @@ class CommonFunctions {
       'image': image,
       'agent': false,
       'visible': true,
-      'replyTime': DateTime.now()
+      'replyTime': DateTime.now(),
+      "agentName": "",
+      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty
     })
-    //     .set({
-    //   'active': true, // John Doe
-    //   'approved': false,
-    //   'images': image,
-    //   'name': name,
-    //   'question': description,
-    //   'id' : trendsId,
-    //   // Stokes and Sons
-    //
-    // })
+
         .then((value) {
       Navigator.pop(context); getImageUrl(name);
 
@@ -685,10 +678,12 @@ class CommonFunctions {
     );
   }
   // STARTING SUBSCRIPTION FOR NUTRI
-  void startTrialSubscription() {
+  void startTrialSubscription(context) {
     final now = DateTime.now();
     final futureDate = now.add(Duration(days: 3));
     final formattedDate = Timestamp.fromDate(futureDate);
+
+    Provider.of<AiProvider>(context, listen: false).setCommonVariables(1500, DateTime.now().add(Duration(days: 3)),"Trial");
 
     users.doc(auth.currentUser!.uid).update({
       // "aiActive": false,
