@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_id": "1036391886488-r7fmdunklhp4nd90n99pfetagkh46haj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -50,6 +50,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1036391886488-93qqk35685ph3m74bu1ochb7n43rfb9k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frutsexpress.blendit_2022",
+            "certificate_hash": "d3c7dfc030016b18e1cd66fc0d8b7b2e35bed828"
+          }
+        },
+        {
           "client_id": "1036391886488-og4r475pespavgac9jnna5o0286mob6d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -58,7 +66,7 @@
           }
         },
         {
-          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_id": "1036391886488-r7fmdunklhp4nd90n99pfetagkh46haj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -94,7 +102,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_id": "1036391886488-r7fmdunklhp4nd90n99pfetagkh46haj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -130,7 +138,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
+          "client_id": "1036391886488-r7fmdunklhp4nd90n99pfetagkh46haj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

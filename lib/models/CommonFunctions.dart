@@ -423,6 +423,7 @@ class CommonFunctions {
   // This function Updates the users personal preferences to the servers
 
   Future<void> uploadUserPreferences(preferences, sex, dateOfBirth, List preferenceId) async {
+    final prefs = await SharedPreferences.getInstance();
     print("THIS RUN AND TRIGGERED auth id: ${auth.currentUser!.uid} plus: $preferenceId");
 
 
@@ -434,7 +435,7 @@ class CommonFunctions {
         .collection('users').doc(auth.currentUser!.uid)
         .update(
         {
-          'email': "",
+          'email': prefs.getString(kEmailConstant) ?? "",
           'preferences': preferences,
           'preferencesId': preferenceId,
           'sex': sex,
@@ -488,7 +489,7 @@ class CommonFunctions {
       'time':  DateTime.now(),
       'message': "📸 '$description' uploaded",
       'response': '',
-      'userId': prefs.getString(kPhoneNumberConstant),
+      'userId': prefs.getString(kUniqueIdentifier),
       'weight': prefs.getDouble(kUserWeight),
       'height': prefs.getInt(kUserHeight),
       'name': prefs.getString(kFullNameConstant),

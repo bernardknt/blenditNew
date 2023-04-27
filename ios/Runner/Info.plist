@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <!-- TODO Replace this value: -->
+                <!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+                <string>com.googleusercontent.apps.1036391886488-9651q6vnjdvi0anf3o7pf5vutfr9151b</string>
+            </array>
+        </dict>
+    </array>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Nutri would like to allow access to your microphone to use the app properly</string>
 	<key>NSPhotoLibraryUsageDescription</key>

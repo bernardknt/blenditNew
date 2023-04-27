@@ -17,7 +17,7 @@ import '../utilities/font_constants.dart';
 import '../utilities/icons_constants.dart';
 import '../utilities/roundedButtons.dart';
 import 'browse_store.dart';
-import 'new_logins/signin_phone.dart';
+import 'new_logins/sign_in_options.dart';
 
 
 
@@ -114,7 +114,8 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
 
                       )
                     ]
-                ),),
+                ),
+                ),
               ),
               Positioned(
                   right: 20,
@@ -151,7 +152,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                               buttonHeight: 45,
                               title: 'Start Here',
                               onPressedFunction: () {
-                                Navigator.pushNamed(context, SignInPhone.id);
+                                Navigator.pushNamed(context, SignInOptions.id);
                                 CommonFunctions().cancelNotification();
                                //  Navigator.pushNamed(context, QuizPage0.id);
                               },
@@ -159,6 +160,8 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                           ],
                         )
                     ),
+
+
                   ],
                 ),
               ),

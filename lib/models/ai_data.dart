@@ -51,6 +51,7 @@ class AiProvider extends ChangeNotifier{
   List challengeDaysValues = [];
   String challengeShoppingList = '';
   String challengeRecipeList = '';
+  String tagline = 'Its time to start achieving your Goals';
   int activeChallengeIndex = 0;
   Map<String, dynamic> challengeDays = {};
   List <Step> challengeSteps = [Step(title: Text("TEST"), content: Text('Infor'))];
@@ -227,7 +228,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
 
   void setChallengeDays (ChallengeDays listData){
     challengeDayData.add(listData);
-    // print('YUYUYUYUYUYUYUYU ${listData.answers}');
+
     notifyListeners();
   }
 
@@ -237,7 +238,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     subscriptionType = subscription;
 
   }
-  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify){
+  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline){
     ugMonthly = ugMonth.toString();
     ugYearly = ugYear.toString();
     intMonthly = intMonth.toString();
@@ -247,6 +248,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     customerCareNumber = customerCare;
     nutriTips = tipsList;
     adminsOnDuty = notify;
+    tagline = welcomeTagline;
 
     notifyListeners();
   }

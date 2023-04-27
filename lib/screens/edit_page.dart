@@ -28,9 +28,7 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final _auth = FirebaseAuth.instance;
-  // final HttpsCallable callableSMS = FirebaseFunctions.instance.httpsCallable('sendWelcomeSMS');
-  // final HttpsCallable callableEmail = FirebaseFunctions.instance.httpsCallable('sendEmail');
+
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
 

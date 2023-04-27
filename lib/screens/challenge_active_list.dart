@@ -30,7 +30,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
   void defaultsInitiation() async{
     final prefs = await SharedPreferences.getInstance();
 
-    userId = prefs.getString(kPhoneNumberConstant)!;
+    userId = prefs.getString(kUniqueIdentifier)!;
     setState((){
     });
 

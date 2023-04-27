@@ -73,7 +73,7 @@ class _QuizPage1State extends State<QuizPage1> {
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.only(top:20.0),
-                      child: Text('Hi $name, are you male or female?',
+                      child: Text('$name, are you male or female?',
                         textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
                     ),),
                   height: 150,

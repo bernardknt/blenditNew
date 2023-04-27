@@ -51,9 +51,11 @@ class _QuizPage5State extends State<QuizPage5> {
         {
           'country': prefs.getString(kUserCountryName),
           'firstName': prefs.getString(kFirstNameConstant),
-          'email': prefs.getString(kUniqueUserPhoneId),
+          'email': prefs.getString(kEmailConstant) ,
           'lastName': prefs.getString(kFullNameConstant),
           'phoneNumber': prefs.getString(kPhoneNumberConstant),
+          'weight': prefs.getDouble(kUserWeight),
+          'height': prefs.getInt(kUserHeight),
           'subscribed': true,
           'token': token
         });
@@ -90,9 +92,7 @@ class _QuizPage5State extends State<QuizPage5> {
            // styleData.setUserDetailsAfterOnboard(styleDataDisplay.userSex, styleDataDisplay.userBirthday,styleDataDisplay.userPreferences, styleDataDisplay.preferencesIdSelected);
 
             // Navigator.pushNamed(context, ControlPage.id);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
-            );
+
             if (prefs.getString(kUserCountryName) == "Uganda"){
               Navigator.push(context,
                   MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())

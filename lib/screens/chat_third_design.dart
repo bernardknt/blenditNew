@@ -6,6 +6,7 @@ import 'package:blendit_2022/screens/ios_onboarding.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_uganda.dart';
 import 'package:blendit_2022/screens/photo_onboarding.dart';
+import 'package:blendit_2022/screens/welcome_to_nutri_sign_up.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -49,7 +50,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   bool tutorialDone = true;
   late int quantity = 1;
   var formatter = NumberFormat('#,###,000');
-  var phone = '';
+  var userIdentifier = '';
   var description = '';
   var name = '';
   var question = '';
@@ -217,7 +218,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       'time':  DateTime.now(),
       'message': message,
       'response': '',
-      'userId': prefs.getString(kPhoneNumberConstant),
+      'userId': prefs.getString(kUniqueIdentifier),
       'weight': prefs.getDouble(kUserWeight),
       'height': prefs.getInt(kUserHeight),
       'name': prefs.getString(kFullNameConstant),
@@ -276,7 +277,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
-    phone =  prefs.getString(kPhoneNumberConstant)!;
+    userIdentifier =  prefs.getString(kUniqueIdentifier)?? "";
     name = prefs.getString(kFirstNameConstant)!;
 
     CommonFunctions().userStream(context);
@@ -625,7 +626,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       // setState(() {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context)=>
-                               PaywallInternationalPage()
+                                WelcomeToNutri()
+                               // PaywallInternationalPage()
                             // PhotoOnboarding()
                             )
                         );
@@ -796,7 +798,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                   StreamBuilder<QuerySnapshot> (
                       stream: FirebaseFirestore.instance
                           .collection('chat')
-                          .where('userId', isEqualTo: phone)
+                          .where('userId', isEqualTo: userIdentifier)
                           .where('visible', isEqualTo: true)
                           .orderBy('time',descending: true)
                           .snapshots(),
@@ -903,7 +905,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                               width: 260,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
-                                                child: Text( 'Hi there, $name?, I am Lisa',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                                                child: Text( 'Hi there, $name?, How are you?',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
                                               ),
                                             ),
                                           )

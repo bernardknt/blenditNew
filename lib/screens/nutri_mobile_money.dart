@@ -249,7 +249,10 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
                 SizedBox(height: 30,),
                 ingredientButtons(buttonTextColor:Colors.white,buttonColor: Colors.green,lineIconFirstButton: LineIcons.alternateWavyMoneyBill,
                     firstButtonFunction: ()async{
+                  final prefs = await SharedPreferences.getInstance();
                       Navigator.pushNamed(context, MakePaymentPage.id);
+                      prefs.setString(kPhoneNumberConstant,  "+256"+phoneNumber);
+
                       showModalBottomSheet(context: context, builder: (context) => Container(
                         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: PaymentProcessing(),

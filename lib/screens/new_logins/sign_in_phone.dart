@@ -49,7 +49,7 @@ class _SignInPhoneState extends State<SignInPhone> {
       appBar: AppBar(
         backgroundColor: kGreenThemeColor,
         foregroundColor: kPureWhiteColor,
-        title: Text("Sign In",style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+        title: Text("Phone Signin",style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
       ),
       body: Form(
         key: formKey,
@@ -182,47 +182,48 @@ class _SignInPhoneState extends State<SignInPhone> {
 
                         final isValidForm = formKey.currentState!.validate();
 
-                          if(isValidForm){
-                            print('WALALALALLA $countryName');
-                            var phoneNumberFull = '$countryCode$phoneNumber';
-                            final prefs = await SharedPreferences.getInstance();
-                            await FirebaseAuth.instance.verifyPhoneNumber(
-                                phoneNumber: phoneNumberFull,
-                                verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async{
-                                  await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
-                                },
-                                verificationFailed: (FirebaseAuthException error) {
-                                   print(error);
-                                  showDialog(context: context, builder: (BuildContext context){
+                        if(isValidForm){
+                          print('WALALALALLA $countryName');
+                          var phoneNumberFull = '$countryCode$phoneNumber';
+                          final prefs = await SharedPreferences.getInstance();
+                          await FirebaseAuth.instance.verifyPhoneNumber(
+                              phoneNumber: phoneNumberFull,
+                              verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async{
+                                await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+                              },
+                              verificationFailed: (FirebaseAuthException error) {
+                                print(error);
+                                showDialog(context: context, builder: (BuildContext context){
 
-                                    return CupertinoAlertDialog(
-                                      title: const Text('Ooops Something Happened'),
-                                      content: Text('There was an issue $error', style: kNormalTextStyle.copyWith(color: kBlack),),
-                                      actions: [CupertinoDialogAction(isDestructiveAction: true,
-                                          onPressed: (){
-                                            // _btnController.reset();
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Cancel'))],
-                                    );
-                                  });
-                                },
-                                codeAutoRetrievalTimeout: (String verificationId) {  },
-                                codeSent: (String verificationId, int? forceResendingToken) {
-                                  Provider.of<BlenditData>(context, listen:false).setVerificationId(verificationId);
+                                  return CupertinoAlertDialog(
+                                    title: const Text('Ooops Something Happened'),
+                                    content: Text('There was an issue $error', style: kNormalTextStyle.copyWith(color: kBlack),),
+                                    actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                        onPressed: (){
+                                          // _btnController.reset();
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Cancel'))],
+                                  );
                                 });
-                            prefs.setInt(kNutriCount, 0);
-                            prefs.setBool(kIsTutorial1Done, false);
-                            prefs.setBool(kIsTutorial2Done, false);
-                            prefs.setString(kUserCountryName, countryName);
-                            prefs.setString(kUserCountryFlag, countryFlag);
-                            prefs.setString(kUniqueUserPhoneId, phoneNumberFull);
-                            prefs.setString(kPhoneNumberConstant, countryCode + phoneNumber);
-                            Navigator.pushNamed(context, VerifyPinPage.id);
-                            // Navigator.pushNamed(context, QuizPageName.id);
-                            // //MaterialPageRoute(builder: (context)=> QuizPageName());
-                          }
-                        },
+                              },
+                              codeAutoRetrievalTimeout: (String verificationId) {  },
+                              codeSent: (String verificationId, int? forceResendingToken) {
+                                Provider.of<BlenditData>(context, listen:false).setVerificationId(verificationId);
+                              });
+                          prefs.setInt(kNutriCount, 0);
+                          prefs.setBool(kIsTutorial1Done, false);
+                          prefs.setBool(kIsTutorial2Done, false);
+                          prefs.setString(kUserCountryName, countryName);
+                          prefs.setString(kUserCountryFlag, countryFlag);
+                          prefs.setString(kUniqueUserPhoneId, phoneNumberFull);
+                          prefs.setString(kPhoneNumberConstant, countryCode + phoneNumber);
+                          prefs.setString(kUniqueIdentifier, countryCode + phoneNumber);
+                          Navigator.pushNamed(context, VerifyPinPage.id);
+                          // Navigator.pushNamed(context, QuizPageName.id);
+                          // //MaterialPageRoute(builder: (context)=> QuizPageName());
+                        }
+                      },
 
 
                       child: Text("Continue", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),

@@ -46,7 +46,7 @@ class _MakePaymentPageState extends State<MakePaymentPage> {
             children: [
               Lottie.asset('images/payment.json', height: 150, width: 150, fit: BoxFit.cover ),
               kSmallHeightSpacing,
-              Center(child: Text("Provider.of<StyleProvider>(context).pendingPaymentStatement",textAlign: TextAlign.center, style: kNormalTextStyle)),
+              Center(child: Text("Payment in Progress..",textAlign: TextAlign.center, style: kNormalTextStyle)),
               kSmallHeightSpacing,
               Lottie.asset('images/loading.json', height: 50, width: 150,),
               kLargeHeightSpacing,

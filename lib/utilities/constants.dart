@@ -55,6 +55,7 @@ String kBillValue = 'billValue';
 String kOrderId = 'transactionId';
 String kOrderReason = 'orderReason';
 String kPhoneNumberConstant = 'phone';
+String kUniqueIdentifier = 'identifier';
 
 String kAmountConstant = 'amount';
 String kIsLoggedInConstant = 'loggedIn';

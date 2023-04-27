@@ -29,7 +29,8 @@ import 'package:blendit_2022/screens/make_payment_page.dart';
 import 'package:blendit_2022/screens/mobileMoney.dart';
 import 'package:blendit_2022/screens/blog_comments_page.dart';
 import 'package:blendit_2022/screens/blog_page.dart';
-import 'package:blendit_2022/screens/new_logins/signin_phone.dart';
+import 'package:blendit_2022/screens/new_logins/sign_in_options.dart';
+import 'package:blendit_2022/screens/new_logins/sign_in_phone.dart';
 import 'package:blendit_2022/screens/new_logins/verify_phone.dart';
 import 'package:blendit_2022/screens/new_settings.dart';
 import 'package:blendit_2022/screens/nutri_mobile_money.dart';
@@ -182,6 +183,7 @@ class MyApp extends StatelessWidget {
             VerifyPinPage.id: (context)=>VerifyPinPage(),
             HomePageOriginal.id: (context)=>HomePageOriginal(),
             MakePaymentPage.id: (context)=>MakePaymentPage(),
+            SignInOptions.id: (context)=>SignInOptions(),
             SignInPhone.id: (context)=>SignInPhone(),
             QuizPageName.id: (context)=>QuizPageName(),
             QuizPage1.id: (context)=>QuizPage1(),

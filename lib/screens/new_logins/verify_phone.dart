@@ -170,6 +170,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           prefs.setString(kFirstNameConstant, users['firstName']);
                           prefs.setString(kUniqueUserPhoneId, users['email']);
                           prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
+                          prefs.setString(kUniqueIdentifier, users['phoneNumber']);
                           prefs.setString(kUserCountryName, users['country']);
                           prefs.setBool(kIsLoggedInConstant, true);
                           prefs.setString(kUserSex, users['sex']);
@@ -185,7 +186,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           // This Function uploads the user token to the server.
                           CommonFunctions().uploadUserToken(token);
                          //  MaterialPageRoute(builder: (context)=> QuizPageName());
-                          subscribeToTopic(users['phoneNumber']);
+                         //  subscribeToTopic(users['phoneNumber']);
                           Navigator.pushNamed(context, ControlPage.id);
                         }
                         else {
