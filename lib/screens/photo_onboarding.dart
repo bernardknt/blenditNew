@@ -4,10 +4,7 @@ import 'package:blendit_2022/widgets/designed_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+// import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/CommonFunctions.dart';

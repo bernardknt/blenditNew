@@ -2,6 +2,7 @@
 
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page0.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,6 +32,9 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool(kIsLoggedInConstant) ?? false;
+    _firebaseMessaging.getToken().then((value) =>
+        prefs.setString(kToken, value!)
+    );
 
     setState(() {
       userLoggedIn = isLoggedIn ;
@@ -42,11 +46,16 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
 
       }
 
+
+
     });
   }
   bool userLoggedIn = false;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   var urlImages = ["images/page1.png", "images/page2.png","images/page3.png"];// MHM17 trends];
   var heights = double.maxFinite;
+  var token = "";
+
   int newDots = 0;
   var heading = ['Your Personal Guide & Nutritionist', 'Smash Your Goals, No Excuses', 'Goodbye Frustration, Hello Consistency'];
 

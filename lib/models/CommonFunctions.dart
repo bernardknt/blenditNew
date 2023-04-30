@@ -440,6 +440,7 @@ class CommonFunctions {
           'preferencesId': preferenceId,
           'sex': sex,
           'dateOfBirth': dateOfBirth,
+          'level': "Beginner"
         }).then((value) =>
        print("KOKOKOKOKOKOKOKOKOKO preferences: $preferences , sex: $sex , date of Birth: $dateOfBirth uploaded"
     )

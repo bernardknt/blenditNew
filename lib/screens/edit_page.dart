@@ -2,6 +2,7 @@
 import 'package:blendit_2022/utilities/input_widet_2.dart';
 import 'package:blendit_2022/widgets/designed_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -46,6 +47,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String idNumber = '';
   String birth = '';
   String allergies = '';
+  String uniqueIdentifier = '';
   String birthday = '';
   DateTime birthdayDate = DateTime.now();
   int height = 0;
@@ -55,10 +57,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   //bool showSpinner = false;
   String errorMessage = 'Error Signing Up';
   double errorMessageOpacity = 0.0;
+  late String country;
   late String countryCode;
   String token = '';
   final formKey = GlobalKey<FormState>();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  bool isEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
 
   Future<void> uploadUserData() async {
 
@@ -77,6 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           'sex': prefs.getString(kUserSex),
           'phoneNumber': prefs.getString(kPhoneNumberConstant),
           'email': prefs.getString(kEmailConstant),
+          'country': prefs.getString(kUserCountryName),
         });
 
    Get.snackbar('Success', 'Profile Updated');
@@ -91,6 +101,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     weight = prefs.getDouble(kUserWeight)!;
     height = prefs.getInt(kUserHeight)!;
     birth = prefs.getString(kUserBirthday)??" ";
+    country = prefs.getString(kUserCountryName)!;
+    uniqueIdentifier = prefs.getString(kUniqueIdentifier)!;
+
 
 
 
@@ -156,6 +169,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       fullName = value;
                       firstName = fullName.split(" ")[0]; // Gets the first name in the 0 positiion from the full names
                     }, onFinishedTypingFunction: () {  },),
+
+
+
+                    isEmail(uniqueIdentifier) == false ?
                     InputFieldWidgetEditInfo(labelText: ' Mobile Number (+2567xxxxxx)',readOnlyVariable: true,  controller: phoneNumber,hintText: '+25677100100', keyboardType: TextInputType.text,
 
                       onTypingFunction: (value){
@@ -178,26 +195,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                         phoneNumber = value;
                       }, onFinishedTypingFunction: () {  },
-                    ),
+                    ):Container(),
                     kSmallHeightSpacing,
                     // SizedBox(height: 10.0,),
                     InputFieldWidgetEditInfo(labelText: ' Email', hintText: 'abc@gmail.com',controller: email,readOnlyVariable: false, keyboardType: TextInputType.emailAddress, onTypingFunction: (value){
                       email = value;
                     }, onFinishedTypingFunction: () {  },),
-                    // SizedBox(height: 8.0,),
-                    //
-                    // InputFieldWidget(labelText: ' Next of Kin', hintText: 'John',controller: kin,readOnlyVariable: false, keyboardType: TextInputType.text, onTypingFunction: (value){
-                    //   kin = value;
-                    // }, onFinishedTypingFunction: () {  },),
-                    // InputFieldWidget(labelText: ' Next of Kin Number', hintText: '', controller: kinNumber,readOnlyVariable: false, keyboardType: TextInputType.number, onTypingFunction: (value){
-                    //   kinNumber = value;
-                    // }, onFinishedTypingFunction: () {  },),
-                    // InputFieldWidget(labelText: ' Allergies', hintText: "Pineapples, Milk",controller: allergies,readOnlyVariable: false, keyboardType: TextInputType.text, onTypingFunction: (value){
-                    //   allergies = value;
-                    // }, onFinishedTypingFunction: () {  },),
-                    // InputFieldWidget(labelText: ' ID Number', hintText: 'CM78923YUE090324', controller: idNumber,keyboardType: TextInputType.text, onTypingFunction: (value){
-                    //   idNumber = value;
-                    // }, onFinishedTypingFunction: () {  },),
 
                     InputFieldWidgetEditInfo(labelText: ' Weight (kg)',controller: weight.toString(),readOnlyVariable: false, hintText: '85', keyboardType: TextInputType.number, onTypingFunction: (value){
                       weight = double.parse(value) ;
@@ -210,6 +213,98 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       hintText: '16/May/1989',controller: birth,readOnlyVariable: true, keyboardType: TextInputType.text, onTypingFunction: (value){
                       birth = value;
                     }, onFinishedTypingFunction: () {  },),
+
+
+                    isEmail(uniqueIdentifier) == true ?
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, left: 15, right: 15, bottom: 8.0),
+                      child: Container(
+                        height: 53,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            CountryCodePicker(
+                              onInit: (value){
+                                // country = value!.dialCode!;
+                                countryCode = value!.dialCode!;
+                                // countryName = value!.name!;
+                                // countryFlag = value!.flagUri!;
+
+                              },
+                              onChanged: (value){
+                                country = value.name!;
+                                countryCode = value.dialCode!;
+                                // countryName = value.name!;
+                                // countryFlag = value.flagUri!;
+
+                              },
+
+                              // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                              initialSelection: country,
+
+                              // favorite: const ['+254','+255',"US"],
+                              // optional. Shows only country name and flag
+                              showCountryOnly: true,
+                              // optional. Shows only country name and flag when popup is closed.
+                              showOnlyCountryWhenClosed: false,
+                              // optional. aligns the flag and the Text left
+                              alignLeft: false,
+                            ),
+                            Text(
+                              "|",
+                              style: TextStyle(fontSize: 25, color: Colors.grey),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                                child:
+
+                                TextFormField(
+                                  validator: (value){
+                                    List letters = List<String>.generate(
+                                        value!.length,
+                                            (index) => value[index]);
+                                    print(letters);
+
+
+                                    if (value!=null && value.length > 10){
+                                      return 'Number is too long';
+                                    }else if (value == "") {
+                                      return 'Enter phone number';
+                                    } else if (letters[0] == '0'){
+                                      return 'Number cannot start with a 0';
+                                    } else if (value!= null && value.length < 9){
+                                      return 'Number short';
+
+                                    }
+                                    else {
+                                      return null;
+                                    }
+                                  },
+
+                                  onChanged: (value){
+                                    phoneNumber = value;
+                                  },
+                                  keyboardType: TextInputType.phone,
+                                  decoration: InputDecoration(
+
+                                      border: InputBorder.none,
+                                      hintText: "77xxxxxx",
+                                      hintStyle: kNormalTextStyle.copyWith(color: Colors.grey[500])
+
+                                  ),
+                                ))
+                          ],
+                        ),
+                      ),
+                    ): Container(),
 
 
                     Padding(
@@ -229,11 +324,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                             prefs.setString(kUserBirthday, birth);
                             prefs.setString(kFirstNameConstant, fullName.split(" ")[0]);
-                            prefs.setString(kPhoneNumberConstant, phoneNumber);
+                            prefs.setString(kPhoneNumberConstant, countryCode +  phoneNumber);
                             prefs.setString(kFullNameConstant, fullName);
                             prefs.setString(kEmailConstant, email);
                             prefs.setInt(kUserHeight, height);
                             prefs.setDouble(kUserWeight, weight);
+                            prefs.setString(kUserCountryName, country);
+
 
                             uploadUserData();
 

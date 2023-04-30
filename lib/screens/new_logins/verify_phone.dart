@@ -170,7 +170,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           prefs.setString(kFirstNameConstant, users['firstName']);
                           prefs.setString(kUniqueUserPhoneId, users['email']);
                           prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
-                          prefs.setString(kUniqueIdentifier, users['phoneNumber']);
+                          prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
                           prefs.setString(kUserCountryName, users['country']);
                           prefs.setBool(kIsLoggedInConstant, true);
                           prefs.setString(kUserSex, users['sex']);
@@ -192,6 +192,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                         else {
                           // prefs.setBool(kNutriAi, true);
                           // if (prefs.getString(kFullNameConstant) == '') {
+                          prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context)=> QuizPageName())
                             );

@@ -71,45 +71,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
-  var notes = [
-    "Ask Nutri for personalized meal plans tailored to your health goals!",
-    "Capture photos of your breakfast, lunch, and dinner to track your daily food intake with Nutri.",
-    "Snap a pic of your post-workout snack to get insights into its nutritional value.",
-    "Ask Nutri for healthy recipe ideas based on the ingredients you have in your fridge!",
-    "Take photos of your snacks to see how they fit into your goal.",
-    "Capture your pre- and post-workout meals to optimize your fitness routine.",
-    "Get tips from Nutri on how to build healthy eating habits that last.",
-    "Ask Nutri for advice on portions to eat",
-    "Snap a pic of your favorite restaurant meal to see how it fits into your nutrition plan.",
-    "Capture your daily water intake to stay hydrated and track your progress.",
-    "Ask Nutri for suggestions on how to manage food allergies or intolerances.",
-    "Take photos of your home-cooked meals to monitor your nutrient intake.",
-    "Get insights from Nutri on how to optimize your protein, carb, and fat intake.",
-    "Ask for a local dish to have today",
-  ];
-  Future<void> upLoadOrder ()async {
-    final dateNow = new DateTime.now();
-    CollectionReference userOrder = FirebaseFirestore.instance.collection('variables');
-    final prefs =  await SharedPreferences.getInstance();
-
-    String orderId = '${DateTime.now()}${uuid.v1().split("-")[0]}';
-
-    return userOrder.doc("7hkqndmv9b0arEWy4vc9")
-        .set({
-
-      'tips': notes,
-      "ugandaOneMonth": "19,000",
-      "ugandaOneYear": "199,000",
-      "internationalOneMonth": "5.99",
-      "internationalOneYear": "59.99",
-      "ugFirstAmount": 20000,
-      "intFirstAmount": 5.99 ,
-      "customerCare": "+256700457826",
-      'notify': []
-
-    });
-  }
-
   Future<void> deleteUnrepliedChats() async {
     final QuerySnapshot unrepliedChats = await FirebaseFirestore.instance
         .collection('chat')
@@ -179,10 +140,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
         'breathingRate': false,
       });
 
-      // Update the "photoTwoStatement" field to an empty string
-      // await document.reference.update({
-      //   'photoTwoStatement': '',
-      // });
     }
   }
 
@@ -204,6 +161,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
 
   }
+
 
   Future<void> uploadData() async {
     var finalQuestion = lastQuestion;
@@ -440,8 +398,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
                       message = value;
                       final prefs = await SharedPreferences.getInstance();
-                      // if (prefs.getBool(kNutriAi) == true){
-                      //   print("AI IS ACTIVE");
+
                         if (message != '') {
                           increaseValueAndUploadToFirestore();
                           lastQuestion = message;
@@ -764,10 +721,11 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
           ],
         ),
       //   floatingActionButton: FloatingActionButton(onPressed: ()async {
-      //     final prefs = await SharedPreferences.getInstance();
-      //
-      //     prefs.setBool(kSetWeekGoal, false);
-      //     upLoadOrder();
+      //     // final prefs = await SharedPreferences.getInstance();
+      //     //
+      //     // prefs.setBool(kSetWeekGoal, false);
+      //     // upLoadOrder();
+      //     updateSubscribedUsers();
       //
       //     // _deleteUnrepliedChats();
       //    // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
@@ -865,12 +823,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                               width: double.infinity,
                               child: Column(
                                 children: [
-                                  // Spacer(),
 
-                                  // Text(
-                                  // 'No Chat Yet', textAlign: TextAlign.center,
-                                  // style: kHeading2TextStyleBold,),
-                                  //Expanded(child: Lottie.asset('images/robot.json', height: 300, width: 300,)),
                                   Expanded(child: Stack(
                                     children: [
                                       DescribedFeatureOverlay(
@@ -1027,24 +980,16 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                                                   Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
                                                                       style: kNormalTextStyle.copyWith(fontSize: 10, color: manualList[index] == false ? kBlueDarkColorOld: kBlueDarkColor,)
                                                                   ),
+                                                                  // Linkify enables links to be clickable in the text
                                                                   Linkify(
                                                                       onOpen: (link) {
                                                                         CommonFunctions().goToLink(link.url);
-                                                                        // if (await canLaunch(link.url)) {
-                                                                        //   await CommonFunctions().goToLink(link.url);
-                                                                        // } else {
-                                                                        //   throw 'Could not launch ${link.url}';
-                                                                        // }
                                                                       },
                                                                        style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kBlueDarkColor,
                                                                            fontSize: 15, fontWeight: FontWeight.w400),
                                                                       linkStyle: TextStyle(color: Colors.blue),
                                                                       text: responseList[index]),
 
-                                                                  // Text('${responseList[index]}',textAlign: TextAlign.left,
-                                                                  //  style: kNormalTextStyle2.copyWith(color: manualList[index] == false ? kBlack: kBlueDarkColor,
-                                                                  //      fontSize: 15, fontWeight: FontWeight.w400),
-                                                                  //   ),
                                                                 ],
                                                               )
                                                           ),

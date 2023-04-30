@@ -104,7 +104,7 @@ showSummaryDialog(context, img, challengeName, challengePromo, challengeAmount, 
       'challengeEndTime': dateNow.add(Duration(days: 5)),
       'challengeStartTime': dateNow.add(Duration(days: 1)),
       'challengeStatus': false,
-      'client_phoneNumber': prefs.getString(kPhoneNumberConstant), // John Doe
+      'client_phoneNumber': prefs.getString(kUniqueIdentifier), // John Doe
       'community': challengeId,
       'client': prefs.getString(kFullNameConstant),
       'completed': false,

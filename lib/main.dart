@@ -61,8 +61,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_flutter/models/purchases_configuration.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+// import 'package:purchases_flutter/models/purchases_configuration.dart';
+// import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -72,7 +72,7 @@ import 'controllers/push_notification_service.dart';
 import 'models/blendit_data.dart';
 
 
-final _configuration = PurchasesConfiguration("appl_BypoTqpmaTnGvWTNZktkSUcOmBZ");
+// final _configuration = PurchasesConfiguration("appl_BypoTqpmaTnGvWTNZktkSUcOmBZ");
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -81,7 +81,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future <void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Purchases.configure(_configuration);
+  // await Purchases.configure(_configuration);
   // await Firebase.initializeApp();
   await Firebase.initializeApp(
 
@@ -89,6 +89,7 @@ Future <void> main() async{
     // name: 'Secondary App',
 
     // options: const FirebaseOptions(
+
     //   apiKey: "AIzaSyCwEb8qLqVUVgx6ZVHq49eu2BIRdGms2h4",
     //   appId: "1:1036391886488:web:ebbbb16f292e260af46aed",
     //   messagingSenderId: "1036391886488",
@@ -97,6 +98,8 @@ Future <void> main() async{
   );
   // Get an instance of FirebaseAppCheck
   FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.instance;
+  // Disable App Check temporarily
+  // await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(false);
 
 // Install the Play Integrity provider factory
   firebaseAppCheck.activate();

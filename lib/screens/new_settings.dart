@@ -412,14 +412,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                     _buildDivider(),
                     GestureDetector(
                       onTap: (){
-                        // showModalBottomSheet(
-                        //     context: context,
-                        //     builder: (context) {
-                        //       return Container(color: kBackgroundGreyColor,
-                        //         child: InputPage(),
-                        //       );
-                        //     });
-                        //
+
 
                       },
                       child:  ListTile(

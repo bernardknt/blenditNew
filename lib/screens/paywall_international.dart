@@ -3,7 +3,7 @@ import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+// import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../models/ai_data.dart';
 
@@ -127,7 +127,7 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
           try{
 
             _startAsyncProcess();
-            await Purchases.purchaseProduct(productStoreId);
+            // await Purchases.purchaseProduct(productStoreId);
             // await Future.delayed(Duration(seconds: 2));
             // Set loading state to false after the process is complete
             setState(() {
