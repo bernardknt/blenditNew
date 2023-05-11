@@ -1,11 +1,19 @@
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:purchases_flutter/purchases_flutter.dart';
 
+import '../controllers/home_controller.dart';
 import '../models/ai_data.dart';
+import 'delivery_page.dart';
+import 'make_payment_page.dart';
 
 class PaywallInternationalPage extends StatefulWidget {
   @override
@@ -16,6 +24,9 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
   var textColor = kPureWhiteColor;
 
   var backgroundColor = kBlack;
+  var customerID = "";
+  List <Offering> products = [];
+  var offerings;
 
   bool isLoading = false;
 
@@ -28,7 +39,88 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
     });
   }
 
+  final HttpsCallable callableRevenueCatPayment = FirebaseFunctions.instance.httpsCallable(kRevenueCatPayment);
+  int parseAmount(String amountString) {
+    // Remove the dollar sign from the string
+    String amountWithoutDollar = amountString.replaceAll('\$', '');
+
+    // Parse the remaining string as a double
+    double amount = double.tryParse(amountWithoutDollar) ?? 0.0;
+
+    // Return the integer value of the amount
+    return amount.toInt();
+  }
+
+  void defaultInitialization () async {
+    products = Provider.of<AiProvider>(context, listen: false).subscriptionProducts;
+    offerings = products.map((offer) => offer.availablePackages)
+        .expand((pair) => pair)
+        .toList();
+    setState(() {
+      print(offerings);
+
+    });
+  }
+
+  Future transactionStream()async{
+    print("WULULULULULU: $customerID");
+
+    var start = FirebaseFirestore.instance.collection('app_purchases').where('original_app_user_id', isEqualTo: customerID).where('type', isEqualTo: "PRODUCT_CHANGE").snapshots().listen((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) async {
+        print("YES PLEASE: $customerID");
+        setState(() {
+          CoolAlert.show(
+              lottieAsset: 'images/thankyou.json',
+              context: context,
+              type: CoolAlertType.success,
+              text: "Your Payment was successfully Received and Updated",
+              title: "Payment Made",
+              confirmBtnText: 'Ok 👍',
+              confirmBtnColor: kGreenThemeColor,
+              backgroundColor: kBlueDarkColor,
+              onConfirmBtnTap: (){
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pushNamed(context, ControlPage.id);
+
+                setState(() {
+
+                });
+              }
+          );
+        });
+      });
+    });
+
+    return start;
+  }
+
+
+
+  void fetchCustomerID() async {
+    try {
+      var purchaserInfo = await Purchases.getCustomerInfo();
+      setState(() {
+        customerID = purchaserInfo.originalAppUserId;
+      });
+    } on Error catch (e) {
+      print('Error fetching customer ID: $e');
+    }
+  }
+
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    defaultInitialization();
+    fetchCustomerID();
+
+
+
+  }
+
+  @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -44,7 +136,7 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Unlock the full power of Nutri!',
+                'Achieve more with Nutri', textAlign: TextAlign.center,
                 style:kHeading2TextStyleBold.copyWith(fontSize: 20, color: textColor),
               ),
               const SizedBox(height: 16.0),
@@ -60,10 +152,13 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
                   child: CircularProgressIndicator()),
               _buildPlanCard(
                 context,
-                'Monthly',
+                // products[0],
+                  "Monthly",
                 '\$${Provider.of<AiProvider>(context, listen: false).intMonthly}',
                 'Unlock all features for 1 month',
-                "nutri_6.99_monthly"
+                "nutri_6.99_monthly",
+                30,
+                0
               ),
               const SizedBox(height: 16.0),
               _buildPlanCard(
@@ -71,7 +166,9 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
                 'Annual',
                 '\$${Provider.of<AiProvider>(context, listen: false).intYearly}',
                 'Save 20% by subscribing annually',
-                "nutri_69.99_annual_subscription"
+                "nutri_69.99_annual_subscription",
+                365,
+                1
               ),
               const SizedBox(height: 32.0),
               Text(
@@ -112,89 +209,116 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
       String title,
       String price,
       String subtitle,
-      String productStoreId
+      String productStoreId,
+      int duration,
+      double opacity,
       ) {
 
-    return Card(
-      shadowColor: kGreenThemeColor,
-      color: Colors.blue,
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: InkWell(
-        onTap: () async{
-          try{
+    return Stack(
+      children: [
+        Card(
+          shadowColor: Colors.blue,
+          color: kGreenThemeColor,
+          elevation: 4.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: InkWell(
+            onTap: () async{
+              print(customerID);
+              String transactionId = 'revenueCatNutri${uuid.v1().split("-")[0]}';
+              final prefs = await SharedPreferences.getInstance();
+              try{
 
-            _startAsyncProcess();
-            // await Purchases.purchaseProduct(productStoreId);
-            // await Future.delayed(Duration(seconds: 2));
-            // Set loading state to false after the process is complete
-            setState(() {
-              isLoading = false;
-              print("THIS HAS Ended");
-            });
-          } catch(e){
-            debugPrint("Failed to Purchase product $title");
-          }
-        },
-        child: Container(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+                // _startAsyncProcess();
+                showDialog(context: context, builder:
+                    ( context) {
+                  return const Center(child: CircularProgressIndicator());
+                });
+                 await Purchases.purchaseProduct(productStoreId);
+                 var userInfo = await Purchases.getCustomerInfo();
+                 // userInfo.
+                Provider.of<AiProvider>(context, listen: false).setShowPaymentDialogue(true);
+                Navigator.pushNamed(context, MakePaymentPage.id);
+                transactionStream();
+                // Navigator.pop(context);
+                // Navigator.pop(context);
+                await callableRevenueCatPayment.call(<String, dynamic>{
+                  'id': productStoreId,
+                  'amount': parseAmount(price),
+                  'product': title,
+                  'transId': transactionId,
+                  'duration': duration,
+                  'token': prefs.getString(kToken),
+                  'uid' : prefs.getString(kUniqueIdentifier),
+                  'name': prefs.getString(kFullNameConstant),
+                  'revenueCatId': customerID,
+                  // orderId
+                }).then((value) => null);
 
-              Row(
+
+
+
+
+                print("SUCCEESSSS");
+
+                await Future.delayed(Duration(seconds: 2));
+                // Set loading state to false after the process is complete
+                setState(() {
+                  isLoading = false;
+                  print("THIS has Ended");
+                });
+              } catch(e){
+                debugPrint("Failed to Purchase product $title, error: $e");
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: kNormalTextStyle.copyWith(color: textColor, fontSize: 16)
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: kNormalTextStyle.copyWith(color: textColor, fontSize: 16)
+                      ),
+                      kMediumWidthSpacing,
+                      Text(
+                        price,
+                        style: kNormalTextStyle.copyWith(color: textColor,fontSize: 16)
+                      ),
+                    ],
                   ),
-                  kMediumWidthSpacing,
+                  SizedBox(height: 8.0),
                   Text(
-                    price,
-                    style: kNormalTextStyle.copyWith(color: textColor,fontSize: 16)
+                    subtitle,
+                    style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),
                   ),
-                  // SizedBox(height: 8.0),
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //     color: Theme.of(context).primaryColor,
-                  //     borderRadius: BorderRadius.circular(10.0),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.green.withOpacity(0.3),
-                  //         blurRadius: 8.0,
-                  //         offset: Offset(0, 4.0),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(
-                  //       horizontal: 24.0,
-                  //       vertical: 12.0,
-                  //     ),
-                  //     child: Text(
-                  //       'Subscribe',
-                  //       style: TextStyle(
-                  //         fontSize: 16.0,
-                  //         fontWeight: FontWeight.bold,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
-              SizedBox(height: 8.0),
-              Text(
-                subtitle,
-                style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        Positioned(
+          top: 10,
+          right: 10,
+            child: Opacity(
+              opacity: opacity,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: kAppPinkColor, borderRadius: BorderRadius.circular(10)
+
+                ),
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Best Value", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),),
+                  )),
+            ))
+      ],
     );
   }
 

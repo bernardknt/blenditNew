@@ -2,39 +2,33 @@
 
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/ios_onboarding.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_uganda.dart';
-import 'package:blendit_2022/screens/photo_onboarding.dart';
-import 'package:blendit_2022/screens/welcome_to_nutri_sign_up.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:cloud_functions/cloud_functions.dart';
-
+import 'package:cool_alert/cool_alert.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/blendit_data.dart';
 import 'delivery_page.dart';
-import 'goals.dart';
 import 'new_settings.dart';
 
 class ChatThirdDesignedPage extends StatefulWidget {
@@ -52,22 +46,20 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var formatter = NumberFormat('#,###,000');
   var userIdentifier = '';
   var description = '';
+  var instructions = [];
   var name = '';
   var question = '';
   String initialId = 'feature';
   Random random = Random();
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
+  bool isAfricanCountry(String countryName) {
+    List africanCountries = Provider.of<AiProvider>(context, listen: false).countries;
 
-  var about = ['Nutri is an Artificial Intelligence powered assistant that learns your personal nutritional attributes as you interact with it.',
-      ' For best results please enter your information as accurately as possible.',
-      'feel free to ask questions you may have about your health and nutrition.',
-    'Some thing has came to me! ask: Do you need a recipe for your salad..?',
-    'Here is a great question: Can you make for me a detox plan for 2 days starting monday for weight gain?',
-    'You are only limited by your imagination.',
-      ' Ask any question like: Can I have matooke for super?', 'Here is a great question to ask: I want to lose weight, what should I do?','Give me a recipe for a healthy breakfast',
-      ' Some answers may not be as accurate but usually helpful to keep you on track to achieve your goals', "Hi there"];
-  // var messageValues = [];
+    return africanCountries.contains(countryName);
+  }
+
+
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
@@ -121,6 +113,22 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     prefs.setBool(kIsTutorial1Done, true);
   }
 
+// This code Fetches the products from the products list
+
+  Future <List<Offering>> fetchOffers() async{
+    try {
+      final offerings = await Purchases.getOfferings();
+      final current = offerings.current;
+      print(current);
+
+      return current == null ? [] : [current];
+    } on PlatformException catch (e){
+      print(e);
+      return [];
+
+    }
+  }
+
 
 // CALLABLE FUNCTIONS FOR THE NODEJS SERVER (FIREBASE)
   final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('updateUserVision');
@@ -139,7 +147,29 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       await document.reference.update({
         'breathingRate': false,
       });
+    }
+  }
 
+  // This Function separates the response received into a JSON object and text allowing us to use the JSON to manipulate more date
+  void separateJsonAndText(String input) {
+    int startIndex = input.indexOf('{');
+    int endIndex = input.lastIndexOf('}');
+
+    if (startIndex != -1 && endIndex != -1) {
+      String textFull = input.substring(0, startIndex);
+      String textJson = input.substring(startIndex, endIndex + 1);
+
+      instructions.add(textJson);
+
+      responseList.add(textFull);
+
+      // print('textFull: $textFull');
+      // print('textJson: $textJson');
+    } else {
+      // print('No JSON found in the input string.');
+      // print('Full text: $input');
+      responseList.add(input);
+      instructions.add(null);
     }
   }
 
@@ -154,12 +184,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     if (text.toLowerCase().contains("ai language model") || text.toLowerCase().contains("language model")) {
       print("Error detected: $text");
       // randomly generate a value from the array possibleResponses
-
-
       await chatRef.update({'response': randomWord});
     }
-
-
   }
 
 
@@ -211,8 +237,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   }
 
 
-
   bool updateMe = true;
+  bool isAfrican = true;
 
 
   void increaseValueAndUploadToFirestore() async {
@@ -224,10 +250,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       prefs.setInt(kMessageCount,messageCount+1);
 
     } else if (prefs.getInt(kMessageCount)! == 10){
-      // users.doc(auth.currentUser!.uid).update({
-      //   "aiActive": false,
-      //   "articleCount": messageCount,
-      // });
     }else{
       prefs.setInt(kMessageCount,messageCount+1);
     }
@@ -237,12 +259,35 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     final prefs = await SharedPreferences.getInstance();
     userIdentifier =  prefs.getString(kUniqueIdentifier)?? "";
     name = prefs.getString(kFirstNameConstant)!;
+    isAfrican = isAfricanCountry(prefs.getString(kUserCountryName)!);
 
     CommonFunctions().userStream(context);
     setState(() {
       updateMe =  Provider.of<BlenditData>(context, listen: false).updateApp;
-
     });
+
+    // if (Provider.of<AiProvider>(context, listen: false).showPaymentNotification == true){
+    //   CoolAlert.show(
+    //       lottieAsset: 'images/thankyou.json',
+    //       context: context,
+    //       type: CoolAlertType.success,
+    //       text: "Your Payment was successfully Received and Updated",
+    //       title: "Payment Made",
+    //       confirmBtnText: 'Ok 👍',
+    //       confirmBtnColor: kGreenThemeColor,
+    //       backgroundColor: kBlueDarkColor,
+    //       onConfirmBtnTap: (){
+    //         Provider.of<AiProvider>(context, listen: false).setShowPaymentDialogue(false);
+    //         Navigator.pop(context);
+    //         // Navigator.pop(context);
+    //         // Navigator.pushNamed(context, ControlPage.id);
+    //
+    //         setState(() {
+    //
+    //         });
+    //       }
+    //   );
+    // };
   }
 
   void getLastInformation() async{
@@ -483,9 +528,17 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                 MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
                             );
                           } else {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                            // This
+                            fetchOffers().then(
+                                    (value) {
+                                      Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                                      );
+
+                                    }
                             );
+
                           }
                         }
                       }, icon:  DescribedFeatureOverlay(
@@ -545,10 +598,13 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       backgroundColor: kCustomColor,
                       targetColor: kBlueDarkColor,
                       featureId: 'feature3',
-                      tapTarget: const Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,),
+                      tapTarget:
+                      const Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,),
                       child: CircleAvatar(
                         backgroundColor: kBlueDarkColor,
-                          child: Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,)),
+                          child:
+                          Lottie.asset("images/snap.json", height: 20))
+                          //Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,)),
                     ),
                   ),
                 ))
@@ -583,15 +639,18 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       // setState(() {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context)=>
-                                WelcomeToNutri()
-                               // PaywallInternationalPage()
+                                // WelcomeToNutri()
+                               PaywallInternationalPage()
                             // PhotoOnboarding()
                             )
                         );
                     },
                     child: ClipOval(
 
-                        child: Image.asset('images/bot.png', fit: BoxFit.contain,)),
+                        child:
+                        isAfrican == true ? Image.asset('images/bot.png', fit: BoxFit.contain,):
+                        Image.asset('images/nutritionist.jpg', fit: BoxFit.contain,)
+                    ),
                   )),
               kSmallWidthSpacing,
 
@@ -725,12 +784,15 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       //     //
       //     // prefs.setBool(kSetWeekGoal, false);
       //     // upLoadOrder();
-      //     updateSubscribedUsers();
+      //
+      //
       //
       //     // _deleteUnrepliedChats();
       //    // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
       //    //  Navigator.push(context,
-      //    //      MaterialPageRoute(builder: (context)=> NutriOnboardingPage())
+      //    //      MaterialPageRoute(builder: (context)=>
+      //    //          QuizPage5()
+      //    //      )
       //    //  );
       //     // print(messageValues.first);
       //
@@ -738,7 +800,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       //   },
       //
       // ),
-
+      //
 
         body:
 
@@ -771,6 +833,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                           manualList = [];
                           photoList = [];
                           photoImage = [];
+                          instructions = [];
                           // visibleList = [];
 
                           responseList = [];
@@ -790,11 +853,12 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                             manualList.add(doc['manual']);
                             photoList.add(doc['photo']);
                             photoImage.add(doc['image']);
-                            responseList.add(doc['response']);
+                            // responseList.add(doc['response']);
                             idList.add(doc['id']);
                             messageStatusList.add(doc['status']);
                             dateList.add(doc['time'].toDate());
                             searchForPhrase(doc['response'], doc['id']);
+                            separateJsonAndText(doc['response']);
 
                             // messageValues.add({"role": "user", "content": doc['message']});
                             // messageValues.add({"role": "assistant", "content": doc['response']});
@@ -858,7 +922,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                               width: 260,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
-                                                child: Text( 'Hi there, $name?, How are you?',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                                                child: Text( 'Hi $name, am glad to see you.',textAlign: TextAlign.left, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
                                               ),
                                             ),
                                           )
@@ -945,15 +1009,20 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                           ),
                                         ),
                                         kSmallHeightSpacing,
-                                        responseList[index] == ''? Center(child: Lottie.asset('images/assistant.json', width: 50)) :Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Row(
-                                            children: [
+                                        // Lottie.asset('images/assistant.json',
+                                        responseList[index] == ''?
+                                        Align(
+                                            alignment:  Alignment.centerLeft,
+                                            child: Lottie.asset('images/incoming.json', width: 90))
+                                            :Align(alignment: Alignment.centerLeft, child: Row( children: [
                                               Container(
                                                   height: 25,
                                                   child: ClipOval(
 
-                                                      child: Image.asset('images/bot.png', fit: BoxFit.contain,))),
+                                                      child:  isAfrican == true ? Image.asset('images/bot.png', fit: BoxFit.contain,):
+                                                      Image.asset('images/nutritionist.jpg', fit: BoxFit.contain,)
+                                                  )
+                                              ),
                                               Stack(
                                                 children: [
                                                   GestureDetector(
@@ -1017,6 +1086,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                                   )
                                                 ],
                                               ),
+                                              instructions[index]!= null? Lottie.asset("images/cook.json", height: 30, width: 30): Container()
+
                                             ],
                                           ),
                                         )

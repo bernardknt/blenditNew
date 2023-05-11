@@ -509,7 +509,8 @@ class CommonFunctions {
       'visible': true,
       'replyTime': DateTime.now(),
       "agentName": "",
-      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty
+      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty,
+      "tag": trendsId
     })
 
         .then((value) {
@@ -566,12 +567,11 @@ class CommonFunctions {
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom),
+        return Container(
+          color: kRoundedContainerColor,
           child: SingleChildScrollView(
             child: Container(
-              color: kBlueDarkColor,
+
               // height: 200,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -584,7 +584,10 @@ class CommonFunctions {
 
                       child:
 
-                      imageReceived != null ? Image.file(imageReceived!, height: 150,) : Container(
+                      imageReceived != null ?
+                      Image.file(imageReceived!, height: 200,) :
+
+                      Container(
                         width: double.infinity,
                         height: 250,
 
@@ -607,14 +610,14 @@ class CommonFunctions {
                         onChanged: (value){description = value;},
                         textAlign: TextAlign.center,
                         cursorColor: Colors.green,
-                        style: kNormalTextStyle.copyWith(color: kPureWhiteColor),
+                        style: kNormalTextStyle.copyWith(color: kBlack),
                         //keyboardType: TextInputType.number,
 
                         decoration: InputDecoration(
 
                           hintText: "Is this good for me?",
                           fillColor: kPureWhiteColor,
-                          hintStyle: TextStyle(fontSize: 14, color: Colors.grey[300]),
+                          hintStyle: TextStyle(fontSize: 14, color: Colors.grey[500]),
                           labelText: " Add Question / Note ",
 
                           labelStyle: TextStyle(fontSize: 14, color: Colors.grey[500]),
@@ -624,11 +627,11 @@ class CommonFunctions {
                             borderRadius: BorderRadius.all(Radius.circular(15.0)),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: kGreenJavasThemeColor, width: 1.0),
+                            borderSide: BorderSide(color: kBlueDarkColor, width: 1.0),
                             borderRadius: BorderRadius.all(Radius.circular(15.0)),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: kGreenJavasThemeColor, width: 0),
+                            borderSide: BorderSide(color: kBlueDarkColor, width: 0),
                             borderRadius: BorderRadius.all(Radius.circular(32.0)),
                           ),
                         ),
@@ -636,8 +639,8 @@ class CommonFunctions {
                     ),
                     RoundedLoadingButton(
                       width: 120,
-                      color: kCustomColor,
-                      child: Text('Send to Nutri', style: TextStyle(color: kBlack)),
+                      color: kBlueDarkColor,
+                      child: Text('Send to Nutri', style: TextStyle(color: kPureWhiteColor)),
                       controller: _btnController,
                       onPressed: () async {
                         image = imageReceived;
@@ -667,12 +670,18 @@ class CommonFunctions {
                         }
                       },
                     ),
-                    Opacity(
+                    const Opacity(
                         opacity: 0,
                         child: Text("There was an error", style: TextStyle(color: Colors.red),)),
                   ],
                 )),
               ),
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: kBackgroundGreyColor ,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+
             ),
           ),
         );
@@ -680,9 +689,9 @@ class CommonFunctions {
     );
   }
   // STARTING SUBSCRIPTION FOR NUTRI
-  void startTrialSubscription(context) {
+  void startTrialSubscription(context, int time) {
     final now = DateTime.now();
-    final futureDate = now.add(Duration(days: 3));
+    final futureDate = now.add(Duration(days: time));
     final formattedDate = Timestamp.fromDate(futureDate);
 
     Provider.of<AiProvider>(context, listen: false).setCommonVariables(1500, DateTime.now().add(Duration(days: 3)),"Trial");

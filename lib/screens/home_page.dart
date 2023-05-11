@@ -622,32 +622,32 @@ class _HomePageState extends State<HomePage> {
 
                   ],
                 ),
-                Positioned(
-                  bottom: 200,
-                    right: 10,
-
-                    child: Showcase(
-                      disposeOnTap: true,
-                      onToolTipClick: ()async{
-                        print("WOOOOOEEEEEWWEEEE this run");
-                        final prefs = await SharedPreferences.getInstance();
-                        prefs.setBool(kChallengeActivated, false);
-
-
-                      },
-                      onTargetClick: ()async{
-                        print('Target clicked');
-                        final prefs = await SharedPreferences.getInstance();
-                        prefs.setBool(kChallengeActivated, false);
-
-                        print('Target clicked');
-                      },
-
-                  key: newchallengeIndicator,
-                  titleTextStyle: kNormalTextStyle,
-                  description: 'Looks like you have an active challenge. Go to Workouts Tab',
-                  child: Text("")
-                  ,))
+                // Positioned(
+                //   bottom: 200,
+                //     right: 10,
+                //
+                //     child: Showcase(
+                //       disposeOnTap: true,
+                //       onToolTipClick: ()async{
+                //         print("WOOOOOEEEEEWWEEEE this run");
+                //         final prefs = await SharedPreferences.getInstance();
+                //         prefs.setBool(kChallengeActivated, false);
+                //
+                //
+                //       },
+                //       onTargetClick: ()async{
+                //         print('Target clicked');
+                //         final prefs = await SharedPreferences.getInstance();
+                //         prefs.setBool(kChallengeActivated, false);
+                //
+                //         print('Target clicked');
+                //       },
+                //
+                //   key: newchallengeIndicator,
+                //   titleTextStyle: kNormalTextStyle,
+                //   description: 'Looks like you have an active challenge. Go to Workouts Tab',
+                //   child: Text("")
+                //   ,))
               ],
             ),
           )

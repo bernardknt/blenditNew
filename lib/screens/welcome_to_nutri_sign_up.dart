@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utilities/font_constants.dart';
+import '../widgets/gliding_text.dart';
 import 'onboarding_questions/quiz_page1.dart';
 
 
@@ -41,17 +42,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
 
 
   }
-  //
-  // Future<Object?> getUserAge(String uid) async {
-  //
-  //   final prefs = await SharedPreferences.getInstance();
-  //
-  //   final DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-  //   prefs.setString(kUserVision, userDoc["vision"]);
-  //   final userData = userDoc.data();
-  //
-  //   return userData;
-  // }
+
   @override
 
   void initState() {
@@ -75,14 +66,9 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
   // }
 
   void _startTyping() {
-    Timer.periodic(Duration(milliseconds: 70), (timer) {
+    Timer.periodic(Duration(milliseconds: 10), (timer) {
       setState(() {
-        if (_characterIndex < inspiration.length) {
-          _displayText += inspiration[_characterIndex];
-          _characterIndex++;
-        } else {
-          timer.cancel();
-        }
+
       });
     });
   }
@@ -92,7 +78,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
     final prefs = await SharedPreferences.getInstance();
     // final player = AudioCache();
     // player.play("transition.wav");
-    _timer = Timer(const Duration(milliseconds: 7000), () {
+    _timer = Timer(const Duration(milliseconds: 3000), () {
       prefs.setBool(kChallengeActivated, true);
 
 
@@ -112,7 +98,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
     // var points = Provider.of<BlenditData>(context, listen: false).rewardPoints ;
 
     return Scaffold(
-      backgroundColor: kBlueDarkColorOld,
+      backgroundColor: kPureWhiteColor,
       body: Container(
 
         padding: EdgeInsets.all(20),
@@ -120,12 +106,39 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
           mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Center(child: Text(_displayText ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 15, color: kPureWhiteColor),)),
+            Hero(
+              tag: "message",
+              child: Card(
+                color: kCustomColor,
+                shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
+                // shadowColor: kGreenThemeColor,
+                // color: kBeigeColor,
+                elevation: 1.0,
+
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      width: 260,
+                      child:
+                      Center(child: GlidingText(
+                        text: inspiration,
+                        delay: const Duration(seconds: 1),
+                      ),
+
+
+                      // Text(_displayText ,textAlign: TextAlign.right, style: kNormalTextStyle2.copyWith(fontSize: 17, color: kBlack, fontWeight: FontWeight.normal),
+                      //
+                      // )
+                      )
+                  ),
+                ),
+              ),
             ),
             kLargeHeightSpacing,
-            Lottie.asset('images/lisa.json', height: 300, width: 300, fit: BoxFit.contain ),
+            Hero(
+
+                tag: "tag",
+                child: Lottie.asset('images/white.json', height: 300, width: 300, fit: BoxFit.contain )),
             kSmallHeightSpacing,
 
             Opacity(
@@ -134,62 +147,40 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kCustomColor)),
-                      onPressed: ()async {
-                        final prefs = await SharedPreferences.getInstance();
-                        countrySelected = true;
-                        setState(() {
+                  CountryCodePicker(
+                        onInit: (value){
+                          countryCode = value!.dialCode!;
+                          countryName = value!.name!;
+                          countryFlag = value!.flagUri!;
 
-                        });
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (context)=> QuizPage1())
-                        // );
-                        // getUserAge(prefs.getString(kUserId)!);
-                        // users.doc(auth.currentUser!.uid).update({
-                        //   // "aiActive": false,
-                        //   "articleCount": messageCount,
-                        // });
-                        // Navigator.pop(context);
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (context)=> GoalsPage())
-                        // );
+                        },
+                        onChanged: (value){
+                          countryCode = value.dialCode!;
+                          countryName = value.name!;
+                          countryFlag = value.flagUri!;
+                          countrySelected = true;
+                          setState(() {
 
-                      }, child:
-                      CountryCodePicker(
-                            onInit: (value){
-                              countryCode = value!.dialCode!;
-                              countryName = value!.name!;
-                              countryFlag = value!.flagUri!;
+                          });
+                          // Navigator.pop(context);
 
-                            },
-                            onChanged: (value){
-                              countryCode = value.dialCode!;
-                              countryName = value.name!;
-                              countryFlag = value.flagUri!;
-                              countrySelected = true;
-                              setState(() {
+                        },
+                        // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                        initialSelection: 'Uganda',
+                        favorite: const ['+256','+254','+255',"US"],
+                        // optional. Shows only country name and flag
+                        showCountryOnly: true,
 
-                              });
-                              // Navigator.pop(context);
-
-                            },
-                            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                            initialSelection: 'Uganda',
-                            favorite: const ['+254','+255',"US"],
-                            // optional. Shows only country name and flag
-                            showCountryOnly: true,
-                            // optional. Shows only country name and flag when popup is closed.
-                            showOnlyCountryWhenClosed: false,
-                            // optional. aligns the flag and the Text left
-                            alignLeft: false,
-                          ),
-
-                  //Text("I am Ready", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
-            ),
+                        // optional. Shows only country name and flag when popup is closed.
+                        showOnlyCountryWhenClosed: false,
+                        // optional. aligns the flag and the Text left
+                        alignLeft: false,
+                      ),
                   kMediumWidthSpacing,
-                  GestureDetector(
-                    onTap: () async{
+                  ElevatedButton(
+                    // radius: 25,
+                    // backgroundColor: kCustomColor,
+                    onPressed: () async {
                       final prefs = await SharedPreferences.getInstance();
                       print(countryName);
                       prefs.setInt(kNutriCount, 0);
@@ -201,29 +192,10 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context)=> QuizPage1())
                       );
-
-
                     },
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: kCustomColor,
-                      child:
-                      countrySelected == false ? Icon(Icons.thumb_up) :  Center(
-                        child: Stack(
+                    child:
+                    Text("CONTINUE", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)
 
-                          children: [
-
-
-                            Lottie.asset('images/pulse.json', height: 100, width: 100, fit: BoxFit.contain ),
-                            Positioned(
-                                left: 2,
-                                right: 2,
-                                top: 10,
-                                child: Icon(Icons.thumb_up, color: kBlueDarkColor,)),
-                          ],
-                        ),
-                      ),
-                    ),
                   )
                 ],
               ),

@@ -106,6 +106,7 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
     final emailUID = user!.email;
     return paymentTransactions.doc(transactionId).set({
       'name': name,
+      'mode': 'Mobile Money',
       'amount_paid': int.parse(amount), // John Doe
       'beyonic_charge': amountToCharge,
       'collectionID':0,
@@ -181,11 +182,12 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
               //mainAxisAlignment: MainAxisAlignment.center,
               //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Enter Mobile Number', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),),
-                SizedBox(height: 40,),
+                const Text('Enter Mobile Number', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),),
+                const SizedBox (height: 40,),
                 Row(
-                  children: [Text('+256'),
-                    SizedBox(width: 10,),
+                  children: [
+                    const Text('+256'),
+                    const SizedBox(width: 10,),
                     Expanded(
                       child:
                       TextField(
@@ -216,7 +218,7 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
                           });
                         }
                         ,keyboardType: TextInputType.number ,decoration:
-                      InputDecoration(filled: true,
+                      const InputDecoration(filled: true,
                         fillColor: Colors.white, labelText: 'Mobile Number',
                         border:OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10),),),),),
                     ),],

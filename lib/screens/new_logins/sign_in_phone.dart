@@ -197,10 +197,12 @@ class _SignInPhoneState extends State<SignInPhone> {
 
                                   return CupertinoAlertDialog(
                                     title: const Text('Ooops Something Happened'),
-                                    content: Text('There was an issue $error', style: kNormalTextStyle.copyWith(color: kBlack),),
+                                    content: Text('There was an issue use another Sign in method', style: kNormalTextStyle.copyWith(color: kBlack),),
                                     actions: [CupertinoDialogAction(isDestructiveAction: true,
                                         onPressed: (){
                                           // _btnController.reset();
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Cancel'))],

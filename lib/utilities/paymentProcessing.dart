@@ -22,7 +22,7 @@ class _PaymentProcessingState extends State<PaymentProcessing> {
 
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFF757575),
+      color: kRoundedContainerColor,
 
       child: Container(
         child: Column(children: [

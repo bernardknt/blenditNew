@@ -3,13 +3,12 @@ import 'dart:io';
 
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/new_logins/sign_in_phone.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:blendit_2022/screens/welcome_to_nutri_sign_up.dart';
 import 'package:blendit_2022/services/google_auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' show Platform;
@@ -66,8 +65,15 @@ class _SignInOptionsState extends State<SignInOptions> {
 
   Future<void> handleGoogleSignIn() async {
     final prefs = await SharedPreferences.getInstance();
+
+
     try {
+      showDialog(context: context, builder:
+          ( context) {
+        return const Center(child: CircularProgressIndicator());
+      });
       final UserCredential userCredential = await GoogleAuthService().signInWithGoogle();
+      Navigator.pop(context) ;
       final User user = userCredential.user!;
 
       // Check if the user is new or existing and navigate accordingly
@@ -86,6 +92,7 @@ class _SignInOptionsState extends State<SignInOptions> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context)=> WelcomeToNutri())
         );
+        CommonFunctions().uploadUserToken(token);
 
         // Navigate to the new user account page
 
@@ -102,6 +109,7 @@ class _SignInOptionsState extends State<SignInOptions> {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context)=> WelcomeToNutri())
             );
+            CommonFunctions().uploadUserToken(token);
 
 
           }
@@ -142,6 +150,19 @@ class _SignInOptionsState extends State<SignInOptions> {
       }
     } catch (e) {
       // Handle sign-in errors
+      showDialog(context: context, builder: (BuildContext context){
+
+        return CupertinoAlertDialog(
+          title: const Text('Ooops Something Happened'),
+          content: Text('There was an issue $e', style: kNormalTextStyle.copyWith(color: kBlack),),
+          actions: [CupertinoDialogAction(isDestructiveAction: true,
+              onPressed: (){
+                // _btnController.reset();
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'))],
+        );
+      });
       print(e);
     }
   }
@@ -154,6 +175,10 @@ class _SignInOptionsState extends State<SignInOptions> {
     switch (authIOS.status) {
       case AuthorizationStatus.authorized:
         try {
+          showDialog(context: context, builder:
+              ( context) {
+            return const Center(child: CircularProgressIndicator());
+          });
           AppleIdCredential? appleCredentials = authIOS.credential;
           OAuthProvider oAuthProvider = OAuthProvider("apple.com");
           OAuthCredential oAuthCredential = oAuthProvider.credential(
@@ -161,12 +186,14 @@ class _SignInOptionsState extends State<SignInOptions> {
             accessToken: String.fromCharCodes(appleCredentials!.authorizationCode!),
           );
           UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+          Navigator.pop(context) ;
           print(userCredential.user);
           // userCredential.additionalUserInfo ?.isNewUser ?? false
           // Navigator.push(context,
           //     MaterialPageRoute(builder: (context)=> WelcomeToNutri())
           // );
           // if (userCredential.user != null )
+
           if(userCredential.additionalUserInfo ?.isNewUser ?? false)
           {
             String ? firstName;
@@ -209,9 +236,11 @@ class _SignInOptionsState extends State<SignInOptions> {
                 prefs.setString(kUniqueUserPhoneId, users['email']);
                 prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
                 prefs.setString(kUniqueIdentifier, userCredential.user!.uid);
+
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context)=> WelcomeToNutri())
                 );
+                CommonFunctions().uploadUserToken(token);
 
 
               }
@@ -267,10 +296,17 @@ class _SignInOptionsState extends State<SignInOptions> {
     }
   }
 
+  void defaultInitialization ()async {
+    final prefs = await SharedPreferences.getInstance();
+    token = prefs.getString(kToken)!;
+  }
+
   void initState() {
     // TODO: implement initState
+
     // _firebaseMessaging.getToken().then((value) => token = value!);
     super.initState();
+    defaultInitialization(); 
   }
   var token = "";
   var countryName = '';
@@ -383,7 +419,6 @@ class _SignInOptionsState extends State<SignInOptions> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-
                                 Text("Sign In with Google", style: kNormalTextStyle.copyWith(color: kBlack),),
                                 kSmallWidthSpacing,
                                 Icon(Iconsax.chrome, color: kBlack,),

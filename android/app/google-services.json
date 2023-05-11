@@ -7,42 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1036391886488:android:b78766e1b5f8d935f46aed",
-        "android_client_info": {
-          "package_name": "com.frutsexpress.blendit2"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1036391886488-r7fmdunklhp4nd90n99pfetagkh46haj.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA1TTteYi7DTUuGZwwGcehJYFdFKyDnT_w"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1036391886488-03rd0keh6vofpqeg3qsos8hhbb7lp3uh.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.nutriapp2023.com"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1036391886488:android:d64f0e62a55246fdf46aed",
         "android_client_info": {
           "package_name": "com.frutsexpress.blendit_2022"
@@ -50,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "1036391886488-93qqk35685ph3m74bu1ochb7n43rfb9k.apps.googleusercontent.com",
+          "client_id": "1036391886488-l6ubc62jujil93r5qhudtft2llcdn177.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frutsexpress.blendit_2022",
+            "certificate_hash": "4d8f8bbf6283a6ce07b9237fe57d119b1db09521"
+          }
+        },
+        {
+          "client_id": "1036391886488-palfrl8ks9f5frdnd0bt6ekmom903par.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.frutsexpress.blendit_2022",
@@ -58,49 +30,13 @@
           }
         },
         {
-          "client_id": "1036391886488-og4r475pespavgac9jnna5o0286mob6d.apps.googleusercontent.com",
+          "client_id": "1036391886488-rv2f4dq2q52f6rcn2arcvb9pmqp0h0i7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.frutsexpress.blendit_2022",
             "certificate_hash": "0e427e99ef326f4a8bbc537f8f85a736b2dfbb89"
           }
         },
-        {
-          "client_id": "1036391886488-r7fmdunklhp4nd90n99pfetagkh46haj.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA1TTteYi7DTUuGZwwGcehJYFdFKyDnT_w"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1036391886488-niskbhnml5ck1bkupifon6kalub8cjsm.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1036391886488-03rd0keh6vofpqeg3qsos8hhbb7lp3uh.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.nutriapp2023.com"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1036391886488:android:3749dc0f598915fff46aed",
-        "android_client_info": {
-          "package_name": "com.frutsexpress.blendit_kitchen2"
-        }
-      },
-      "oauth_client": [
         {
           "client_id": "1036391886488-r7fmdunklhp4nd90n99pfetagkh46haj.apps.googleusercontent.com",
           "client_type": 3

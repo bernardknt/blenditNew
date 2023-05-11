@@ -5,6 +5,7 @@ import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/nutri_mobile_money.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PaywallUgandaPage extends StatelessWidget {
   var textColor = kPureWhiteColor;
   var backgroundColor = kBlack;
+  final HttpsCallable paymentAttempt = FirebaseFunctions.instance.httpsCallable(kPaymentAttempt);
 
   int generateRandomNumber() {
     Random random = Random();
@@ -114,16 +116,21 @@ class PaywallUgandaPage extends StatelessWidget {
       child: InkWell(
         onTap: () async{
           final prefs = await SharedPreferences.getInstance();
+
+
           prefs.setString(kBillValue, price);
           prefs.setString(kOrderId, transactionId);
           prefs.setString(kOrderReason, title);
-          // String newAmount = prefs.getString(kBillValue) ?? '0';
-          // String newPhoneNumber = removeCountryCode(prefs.getString(kPhoneNumberConstant) ?? '0') ;
-          // String? newOrderId = prefs.getString(kOrderId);
-          // String? newOrderReason = prefs.getString(kOrderReason);
           Navigator.pop(context);
           Navigator.pushNamed(context,NutriMobileMoneyPage.id);
-
+          dynamic resp = await paymentAttempt.call(<String, dynamic>{
+            'price': price,
+            'title': title,
+            'customerName': prefs.getString(kFullNameConstant),
+            'uniqueId': prefs.getString(kUniqueIdentifier),
+            'token': prefs.getString(kToken)
+            // orderId
+          });
 
         },
         child: Container(

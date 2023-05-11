@@ -3,13 +3,15 @@
 import 'package:blendit_2022/utilities/icons_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:purchases_flutter/models/offering_wrapper.dart';
 
 import '../utilities/constants.dart';
 import 'challengeDays.dart';
 
 class AiProvider extends ChangeNotifier{
 
-  List buttonColourQuestions = [Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,];
+  // List buttonColourQuestions = [Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,];
+  List buttonColourQuestions = [kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor, ];
   String userSex = '';
   List<Color> preferencesColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
   List preferencesSelected = [];
@@ -32,10 +34,23 @@ class AiProvider extends ChangeNotifier{
   String ugYearly = "199000";
   String intMonthly = "5.99";
   String intYearly = "59.99";
+  int trialTime = 3;
+  bool iosUpload = false;
+  List countries = [ 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi',
+    'Cape Verde', 'Cameroon', 'Central African Republic', 'Chad', 'Comoros', 'Democratic Republic of the Congo', 'Republic of the Congo', 'Djibouti', 'Equatorial Guinea', 'Eritrea', 'Eswatini', 'Ethiopia', 'Gabon', 'Gambia', 'Ghana', 'Guinea', 'Guinea-Bissau', 'Ivory Coast', 'Kenya', 'Lesotho', 'Liberia', 'Madagascar', 'Malawi', 'Mali', 'Mauritania', 'Mauritius',  'Mozambique', 'Namibia', 'Niger', 'Nigeria', 'Rwanda', 'Sao Tome and Principe', 'Senegal', 'Seychelles', 'Sierra Leone', 'Somalia', 'South Africa', 'South Sudan', 'Sudan', 'Tanzania', 'Togo',  'Uganda', 'Zambia', 'Zimbabwe', 'Brazil', 'Haiti', 'Jamaica', 'Trinidad and Tobago','Dominican Republic', 'Bahamas', 'Barbados', 'Guyana', 'Saint Lucia', 'Grenada', 'Belize', 'Saint Kitts and Nevis', 'Antigua and Barbuda', 'Saint Vincent and the Grenadines', 'Suriname', 'Cuba', 'Puerto Rico', 'Panama', 'Colombia',
+  ];
   String ugTrial = "20k";
   String intTrial = "5.99";
   String customerCareNumber = "+256700457826";
   String userName = "";
+  bool showPaymentNotification = false;
+  List <Offering> subscriptionProducts = [];
+
+
+
+
+
+
 
 
   // Challenge Variables
@@ -52,6 +67,7 @@ class AiProvider extends ChangeNotifier{
   String challengeShoppingList = '';
   String challengeRecipeList = '';
   String tagline = 'Its time to start achieving your Goals';
+  bool subscriptionButton = true;
   int activeChallengeIndex = 0;
   Map<String, dynamic> challengeDays = {};
   List <Step> challengeSteps = [Step(title: Text("TEST"), content: Text('Infor'))];
@@ -85,6 +101,11 @@ class AiProvider extends ChangeNotifier{
  //   dayIcons[index] = image;
  //   notifyListeners();
  // }
+
+  setSubscriptionProducts(value) {
+    subscriptionProducts = value;
+    notifyListeners();
+  }
   setUseName(name){
     userName = name;
 
@@ -105,6 +126,12 @@ class AiProvider extends ChangeNotifier{
     notifyListeners();
 
   }
+
+  setShowPaymentDialogue(value) {
+    showPaymentNotification = value;
+
+    notifyListeners();
+}
 
 
   setGoToNextLevel(value){
@@ -238,7 +265,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     subscriptionType = subscription;
 
   }
-  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline){
+  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries){
     ugMonthly = ugMonth.toString();
     ugYearly = ugYear.toString();
     intMonthly = intMonth.toString();
@@ -249,6 +276,10 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     nutriTips = tipsList;
     adminsOnDuty = notify;
     tagline = welcomeTagline;
+    subscriptionButton = subscription;
+    trialTime = time;
+    iosUpload = ios;
+    countries = blackCountries;
 
     notifyListeners();
   }

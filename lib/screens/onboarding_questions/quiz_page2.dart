@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/ai_data.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/font_constants.dart';
+import '../../widgets/gliding_text.dart';
 
 
 class QuizPage2 extends StatefulWidget {
@@ -61,8 +62,17 @@ class _QuizPage2State extends State<QuizPage2> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _startTyping();
     // defaultInitialisation();
 
+  }
+
+  void _startTyping() {
+    Timer.periodic(Duration(milliseconds: 1), (timer) {
+      setState(() {
+
+      });
+    });
   }
 
   animationTimer() {
@@ -77,7 +87,7 @@ class _QuizPage2State extends State<QuizPage2> {
   Widget build(BuildContext context) {
     // Provider.of<StyleProvider>(context, listen: false).resetQuestionButtonColors();
     return Scaffold(
-        backgroundColor: kBlueDarkColorOld,
+        backgroundColor: kPureWhiteColor,
         // appBar: AppBar(
         //   backgroundColor: Colors.deepOrangeAccent,
         //
@@ -87,19 +97,37 @@ class _QuizPage2State extends State<QuizPage2> {
           child: Column(
               children :
               [
-                Container(
-                  child:  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top:20.0, right: 20, left: 20),
-                      child: Text('When is your Birthday? \n(Because everyone loves a birthday treat)',
-                        textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
-                    ),),
-                  height: 150,
-                  decoration: const BoxDecoration(
-                      color: kBlueDarkColorOld,
-                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(60), bottomLeft: Radius.circular(60))),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top:20.0, right: 20, left: 20),
+                    child:
+                    Hero(
+                      tag: "message",
+                      child: Card(
+                        color: kCustomColor,
+                        shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
+                        // shadowColor: kGreenThemeColor,
+                        // color: kBeigeColor,
+                        elevation: 1.0,
 
-                ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                              width: 260,
+                              child: Center(child:
+
+                              GlidingText(
+                                text: "When is your Birthday? (Because everyone loves a birthday treat",
+                                delay: const Duration(seconds: 0),
+                              ),
+                              )
+                          ),
+                        ),
+                      ),
+                    ),)),
+                kLargeHeightSpacing,
+                kLargeHeightSpacing,
+                kLargeHeightSpacing,
                 ElevatedButton(
                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kGreenThemeColor)),
                     onPressed: (){
@@ -113,7 +141,9 @@ class _QuizPage2State extends State<QuizPage2> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Lottie.asset('images/birthday.json', height: 150),
+                      Hero(
+                          tag: "tag",
+                          child: Lottie.asset('images/birthday.json', height: 150)),
 
                     ],),
                 )

@@ -120,7 +120,7 @@ class PaywallFirstInternationalPage extends StatelessWidget {
           // String newPhoneNumber = removeCountryCode(prefs.getString(kPhoneNumberConstant) ?? '0') ;
           // String? newOrderId = prefs.getString(kOrderId);
           // String? newOrderReason = prefs.getString(kOrderReason);
-          CommonFunctions().startTrialSubscription(context);
+          CommonFunctions().startTrialSubscription(context, Provider.of<AiProvider>(context, listen: false).trialTime);
           CommonFunctions().showNotification("Subscription Activated", "Nice, Time to get to work on achieving your goals");
           Navigator.pushNamed(context, ControlPage.id);
 

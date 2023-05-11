@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utilities/constants.dart';
 import '../../utilities/font_constants.dart';
+import '../../widgets/gliding_text.dart';
 
 
 class QuizPage1 extends StatefulWidget {
@@ -28,21 +29,36 @@ class _QuizPage1State extends State<QuizPage1> {
   var categoryName = ['Male', 'Female'];
   var categoryId = ['1','2'];
   var name = 'Kangave';
+  String _displayText = '';
+  int _characterIndex = 0;
+  double opacityValue = 0.0;
+  var inspiration = "";
 
   void defaultInitialisation()async{
     final prefs = await SharedPreferences.getInstance();
     name = prefs.getString(kFirstNameConstant)!;
-    setState((){});
+    inspiration = "Welcome to Nutri $name, My name is Lisa. Let me set you up. Start by selecting your country";
+
+    setState((){
+      _startTyping();
+    });
 
 
+  }
+  void _startTyping() {
+    Timer.periodic(Duration(milliseconds: 1), (timer) {
+      setState(() {
+
+      });
+    });
   }
   void initState() {
     // TODO: implement initState
     super.initState();
     defaultInitialisation();
-
-
   }
+
+
 
   @override
 
@@ -62,49 +78,86 @@ class _QuizPage1State extends State<QuizPage1> {
   Widget build(BuildContext context) {
     // Provider.of<StyleProvider>(context, listen: false).resetQuestionButtonColors();
     return Scaffold(
-        backgroundColor: kBlueDarkColorOld,
+        backgroundColor: kPureWhiteColor,
 
         body:
-        Stack(
-            children :
-            [
-              SafeArea(
-                child: Container(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top:20.0),
-                      child: Text('$name, are you male or female?',
-                        textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
-                    ),),
-                  height: 150,
-                  decoration: const BoxDecoration(
-                      color: kBlueDarkColorOld,
-                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(60), bottomLeft: Radius.circular(60))),
+        SafeArea(
+          child: Stack(
+              children :
+              [
+                Padding(
+                  padding: const EdgeInsets.only(top: 60.0, left: 25),
+                  child: Column(
+                    children: [
+                      // Container(
+                      //   child: Center(
+                      //     child: Padding(
+                      //       padding: EdgeInsets.only(top:20.0),
+                      //       child: Text('$name, are you male or female?',
+                      //         textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
+                      //     ),),
+                      //   height: 150,
+                      //   decoration: const BoxDecoration(
+                      //       color: kBlueDarkColorOld,
+                      //       borderRadius: BorderRadius.only(bottomRight: Radius.circular(60), bottomLeft: Radius.circular(60))),
+                      //
+                      // ),
+                      Hero(
+                        tag: "message",
+                        child: Card(
+                          color: kCustomColor,
+                          shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
+                          // shadowColor: kGreenThemeColor,
+                          // color: kBeigeColor,
+                          elevation: 1.0,
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                                width: 260,
+                                child: Center(child:
+
+                                GlidingText(
+                                  text: "$name, are you male or female?",
+                                  delay: const Duration(seconds: 0),
+                                ),
+                                )
+                            ),
+                          ),
+                        ),
+                      ),
+                      kLargeHeightSpacing,
+                      Hero(
+                          tag: "tag",
+                          child: Lottie.asset('images/white.json', height: 150, width: 150, fit: BoxFit.contain )),
+
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(top:280.0),
+                  child: ListView.builder(
+                      itemCount: categoryId.length,
+                      itemBuilder: (context, index) {
+                        return questionBlocks(categoryName[index],categoryId[index], index);
+                      }),
 
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top:150.0),
-                child: ListView.builder(
-                    itemCount: categoryId.length,
-                    itemBuilder: (context, index) {
-                      return questionBlocks(categoryName[index],categoryId[index], index);
-                    }),
+                // Positioned(
+                //   bottom: 10,
+                //   right: 10,
+                //   left: 10,
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //     Lottie.asset('images/workout4.json', height: 170),
+                //     Lottie.asset('images/workout6.json', height: 120)
+                //   ],),
+                // )
 
-              ),
-              Positioned(
-                bottom: 10,
-                right: 10,
-                left: 10,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  Lottie.asset('images/workout4.json', height: 170),
-                  Lottie.asset('images/workout6.json', height: 120)
-                ],),
-              )
-
-            ]
+              ]
+          ),
         )
     );
   }
@@ -137,7 +190,7 @@ class _QuizPage1State extends State<QuizPage1> {
           ),
           child: Center(child: Text(
             sex,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),)),
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: kPureWhiteColor),)),
         ),
       ),
     );

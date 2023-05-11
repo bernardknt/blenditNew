@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -93,23 +94,26 @@ class _QuizPage5State extends State<QuizPage5> {
 
             // Navigator.pushNamed(context, ControlPage.id);
 
-            if (prefs.getString(kUserCountryName) == "Uganda"){
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
-              );
+            if(Provider.of<AiProvider>(context, listen: false).iosUpload == false) {
+              if (prefs.getString(kUserCountryName) == "Uganda"){
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
+                );
+              } else {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> PaywallFirstInternationalPage())
+                );
+              }
             } else {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> PaywallFirstInternationalPage())
-              );
+              Navigator.pushNamed(context, ControlPage.id);
             }
-
 
             prefs.setString(kUserPersonalPreferences, aiData.preferencesSelected.join(", "));
 
             CommonFunctions().uploadUserPreferences(aiDataDisplay.preferencesSelected, aiDataDisplay.userSex, aiDataDisplay.userBirthday, aiDataDisplay.preferencesIdSelected);
 
           },
-          label: const Text("Enter Nutri", style: kNormalTextStyleWhiteButtons,),
+          label:  Text("Enter Nutri", style: kNormalTextStyleWhiteButtons.copyWith(color: kBlack),),
         ),
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -154,8 +158,8 @@ class _QuizPage5State extends State<QuizPage5> {
 
                           }
                         }
-                        return
-                          StaggeredGridView.countBuilder(
+                        return categoryName.length != 0 ?
+                        StaggeredGridView.countBuilder(
                               crossAxisCount: 3,
                               itemCount: categoryName.length,
                               crossAxisSpacing:10,
@@ -207,7 +211,7 @@ class _QuizPage5State extends State<QuizPage5> {
                                 );
                               },
                               staggeredTileBuilder: (index) =>
-                                  StaggeredTile.fit(1));
+                                  StaggeredTile.fit(1)): Lottie.asset("images/lisa.json");
 
                         // ListView.builder(
                         //   itemCount: categoryName.length,

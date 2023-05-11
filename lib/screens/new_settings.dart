@@ -226,7 +226,8 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
               //   ),
               // ),
               // kSmallHeightSpacing,
-              Row(
+              // This if statement shows the subscription button or makes it disappear inorder to bypass Apple APPSTORE compulsory in-app purchases
+              Provider.of<AiProvider>(context, listen: false).subscriptionButton == false ? Container():Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Membership', style: kNormalTextStyleSmall,),

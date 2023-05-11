@@ -40,7 +40,7 @@ class PaywallFirstUgandaPage extends StatelessWidget {
               ),
               kLargeHeightSpacing,
               Text(
-                '${Provider.of<AiProvider>(context, listen: false).userName} Enjoy free 3 Day Trial, then Ugx ${Provider.of<AiProvider>(context,listen: false).ugTrial}/month!', textAlign: TextAlign.center,
+                '${Provider.of<AiProvider>(context, listen: false).userName} Enjoy free ${ Provider.of<AiProvider>(context, listen: false).trialTime} Day Trial, then Ugx ${Provider.of<AiProvider>(context,listen: false).ugTrial}/month!', textAlign: TextAlign.center,
                 style:kHeading2TextStyleBold.copyWith(fontSize: 20, color: textColor),
               ),
               kLargeHeightSpacing,
@@ -79,7 +79,7 @@ class PaywallFirstUgandaPage extends StatelessWidget {
               SizedBox(height: 30.0),
               _buildPlanCard(
                 context,
-                'Start Free 3 Day Trial',
+                'Start Free ${ Provider.of<AiProvider>(context, listen: false).trialTime} Day Trial',
                 // '199000',
                 // 'Save 20% by subscribing annually',
                 // '34567890'
@@ -120,7 +120,7 @@ class PaywallFirstUgandaPage extends StatelessWidget {
           // String newPhoneNumber = removeCountryCode(prefs.getString(kPhoneNumberConstant) ?? '0') ;
           // String? newOrderId = prefs.getString(kOrderId);
           // String? newOrderReason = prefs.getString(kOrderReason);
-          CommonFunctions().startTrialSubscription(context);
+          CommonFunctions().startTrialSubscription(context, Provider.of<AiProvider>(context, listen: false).trialTime );
           CommonFunctions().showNotification("Subscription Activated", "Nice, Time to get to work on achieving your goals");
           Navigator.pushNamed(context, ControlPage.id);
 

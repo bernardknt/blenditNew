@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 const kBlueThemeColor = Color(0xFF18178B);
-const kGreenThemeColor = Color(0xFF0AB11B);
+const kGreenThemeColor = Color(0xFF21b55c);
+const kGreenThemeColorOld = Color(0xFF0AB11B);
 const kGreyLightThemeColor = Color(0xFFeeeeee);
 const kBiegeThemeColor = Color(0xFFF2efe4);
 const kLightPinkThemeColor = Color(0xFFFF89A8);
@@ -12,6 +13,7 @@ const kSeedColor = Color(0xFFFF89A8);
 const kProjectColor = Color(0xFFFF557C);
 const kBlueDarkColor = Color(0xff17183c);
 const kCustomColor = Color(0xffBEEFEE);
+const kRoundedContainerColor = Color(0xFF6e6e6e);
 
 const kYellowThemeColor = Color(0xFFFFB703);
 const kBackgroundCurveReveller = Color(0xFF5d5d5d);
@@ -56,6 +58,7 @@ String kOrderId = 'transactionId';
 String kOrderReason = 'orderReason';
 String kPhoneNumberConstant = 'phone';
 String kUniqueIdentifier = 'identifier';
+
 
 String kAmountConstant = 'amount';
 String kIsLoggedInConstant = 'loggedIn';
@@ -115,5 +118,10 @@ String kSetWeekGoal = 'kSetWeekGoal';
 String kGoogleMapsApiKey = 'AIzaSyAZO90xPWwT1bqCt9mTwWYh_Q7m7NngJoc';
 // String kGoogleMapsApiKey = 'AIzaSyDaz_SD_fww-7Z-qQ3T70mAVScwHIT8Z9E';
 String kBeyonicServerName = 'beyonicPayment';
+String kRevenueCatPayment = 'revenueCatPayment';
+String kPaymentAttempt = 'paymentAttempt';
 String kEmailServerName = 'sendEmail';
+String kRevenueCatPurchasesKeyIOS = "appl_BypoTqpmaTnGvWTNZktkSUcOmBZ";
+String kRevenueCatPurchasesKeyAndroid = "appl_BypoTqpmaTnGvWTNZktkSUcOmBZ";
+
 

@@ -52,12 +52,12 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
   }
   bool userLoggedIn = false;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  var urlImages = ["images/page1.png", "images/page2.png","images/page3.png"];// MHM17 trends];
+  var urlImages = ["images/nutritionist.jpg", "images/meal.png","images/consistency.jpg"];// MHM17 trends];
   var heights = double.maxFinite;
   var token = "";
 
   int newDots = 0;
-  var heading = ['Your Personal Guide & Nutritionist', 'Smash Your Goals, No Excuses', 'Goodbye Frustration, Hello Consistency'];
+  var heading = ['Your Personal Guide & Nutritionist', 'Take Photos Worth a Thousand Nutrients', 'Goodbye Frustration, Hello Consistency'];
 
   @override
   void initState() {
@@ -157,7 +157,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
 
                             kLargeHeightSpacing,
                             roundedButtons(
-                              buttonColor: const Color(0xFF019C29),
+                              buttonColor: kGreenThemeColor,
                               buttonHeight: 45,
                               title: 'Start Here',
                               onPressedFunction: () {

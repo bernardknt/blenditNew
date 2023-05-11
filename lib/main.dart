@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blendit_2022/controllers/gym_tabs_controller.dart';
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/home_controller.dart';
@@ -52,6 +54,7 @@ import 'package:blendit_2022/screens/tropical_page.dart';
 import 'package:blendit_2022/screens/upload_photo.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
+import 'package:blendit_2022/utilities/constants.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,8 +64,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
-// import 'package:purchases_flutter/models/purchases_configuration.dart';
-// import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+
 import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -72,7 +75,9 @@ import 'controllers/push_notification_service.dart';
 import 'models/blendit_data.dart';
 
 
-// final _configuration = PurchasesConfiguration("appl_BypoTqpmaTnGvWTNZktkSUcOmBZ");
+
+final _configuration = PurchasesConfiguration(Platform.isIOS ? kRevenueCatPurchasesKeyIOS : kRevenueCatPurchasesKeyAndroid);
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -81,7 +86,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future <void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
-  // await Purchases.configure(_configuration);
+  // This configures the in-app purchases
+  await Purchases.configure(_configuration);
   // await Firebase.initializeApp();
   await Firebase.initializeApp(
 

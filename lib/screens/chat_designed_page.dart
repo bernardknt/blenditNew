@@ -129,18 +129,6 @@ class _ChatDesignedPageState extends State<ChatDesignedPage> {
                 fillColor: kPureWhiteColor,
                 filled: true,
 
-
-                // icon: GestureDetector(
-                //   onTap: () {
-                //     // setState(() {
-                //     //   _isRecording = !_isRecording;
-                //     // });
-                //     print('Button Pressed');
-                //   },
-                //   child: CircleAvatar(
-                //       backgroundColor: kBlueDarkColor,
-                //       child: Icon(Icons.camera_alt_rounded, size: 24,color: kPureWhiteColor,)),
-                // ),
                 iconColor: kPureWhiteColor,
                 border:
                 //InputBorder.none,
