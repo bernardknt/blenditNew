@@ -27,8 +27,11 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../models/blendit_data.dart';
 import 'delivery_page.dart';
+import 'goals.dart';
+import 'loading_goals_page.dart';
 import 'new_settings.dart';
 
 class ChatThirdDesignedPage extends StatefulWidget {
@@ -47,7 +50,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var userIdentifier = '';
   var description = '';
   var instructions = [];
+  var nutritionPoints = [];
   var name = '';
+  var token = '';
   var question = '';
   String initialId = 'feature';
   Random random = Random();
@@ -61,7 +66,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
 
   final TextEditingController _textFieldController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+  // final FocusNode _focusNode = FocusNode();
 
   Future<void> deleteUnrepliedChats() async {
     final QuerySnapshot unrepliedChats = await FirebaseFirestore.instance
@@ -73,6 +78,22 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     unrepliedChats.docs.forEach((doc) => batch.delete(doc.reference));
     await batch.commit();
   }
+
+
+  Future progressStream()async{
+
+    var start = FirebaseFirestore.instance.collection('users').where('token', isEqualTo: token).snapshots().listen((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) async {
+        Provider.of<AiProvider>(context, listen: false).setDailyProgressPoints(doc["token"]);
+        print(doc["email"]);
+
+
+      });
+    });
+
+    return start;
+  }
+
 
 
   Future<void> _deleteUnrepliedChats() async {
@@ -115,19 +136,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
 // This code Fetches the products from the products list
 
-  Future <List<Offering>> fetchOffers() async{
-    try {
-      final offerings = await Purchases.getOfferings();
-      final current = offerings.current;
-      print(current);
 
-      return current == null ? [] : [current];
-    } on PlatformException catch (e){
-      print(e);
-      return [];
-
-    }
-  }
 
 
 // CALLABLE FUNCTIONS FOR THE NODEJS SERVER (FIREBASE)
@@ -151,25 +160,30 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   }
 
   // This Function separates the response received into a JSON object and text allowing us to use the JSON to manipulate more date
-  void separateJsonAndText(String input) {
+  void separateJsonAndText(String input, String id) async{
     int startIndex = input.indexOf('{');
     int endIndex = input.lastIndexOf('}');
 
     if (startIndex != -1 && endIndex != -1) {
       String textFull = input.substring(0, startIndex);
       String textJson = input.substring(startIndex, endIndex + 1);
-
       instructions.add(textJson);
-
       responseList.add(textFull);
 
-      // print('textFull: $textFull');
-      // print('textJson: $textJson');
+
     } else {
       // print('No JSON found in the input string.');
-      // print('Full text: $input');
-      responseList.add(input);
-      instructions.add(null);
+
+      if (input.contains('Nutriup')) {
+        String modifiedText = input.replaceAll('Nutriup', '❤️');
+        responseList.add(modifiedText);
+
+      }else {
+        responseList.add(input);
+        instructions.add(null);
+      }
+
+
     }
   }
 
@@ -236,6 +250,17 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
         .catchError((error) => print(error));
   }
 
+  double progressValue = 0.0;
+
+  void increaseProgress() {
+    setState(() {
+      progressValue += 0.1;
+      if (progressValue > 1.0) {
+        progressValue = 1.0;
+      }
+    });
+  }
+
 
   bool updateMe = true;
   bool isAfrican = true;
@@ -259,35 +284,15 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     final prefs = await SharedPreferences.getInstance();
     userIdentifier =  prefs.getString(kUniqueIdentifier)?? "";
     name = prefs.getString(kFirstNameConstant)!;
+    token = prefs.getString(kToken)!;
     isAfrican = isAfricanCountry(prefs.getString(kUserCountryName)!);
+
 
     CommonFunctions().userStream(context);
     setState(() {
       updateMe =  Provider.of<BlenditData>(context, listen: false).updateApp;
     });
 
-    // if (Provider.of<AiProvider>(context, listen: false).showPaymentNotification == true){
-    //   CoolAlert.show(
-    //       lottieAsset: 'images/thankyou.json',
-    //       context: context,
-    //       type: CoolAlertType.success,
-    //       text: "Your Payment was successfully Received and Updated",
-    //       title: "Payment Made",
-    //       confirmBtnText: 'Ok 👍',
-    //       confirmBtnColor: kGreenThemeColor,
-    //       backgroundColor: kBlueDarkColor,
-    //       onConfirmBtnTap: (){
-    //         Provider.of<AiProvider>(context, listen: false).setShowPaymentDialogue(false);
-    //         Navigator.pop(context);
-    //         // Navigator.pop(context);
-    //         // Navigator.pushNamed(context, ControlPage.id);
-    //
-    //         setState(() {
-    //
-    //         });
-    //       }
-    //   );
-    // };
   }
 
   void getLastInformation() async{
@@ -328,7 +333,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   @override
   void dispose() {
     _textFieldController.dispose();
-    _focusNode.dispose();
+    // _focusNode.dispose();
     super.dispose();
   }
 
@@ -337,6 +342,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     // TODO: implement initState
     super.initState();
     defaultInitialization();
+    progressStream();
     tutorialShow();
     final newVersion = NewVersion(
       iOSId: 'com.frutsexpress.blendit2022',
@@ -344,6 +350,12 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     );
     // advancedStatusCheck(newVersion);
 
+  }
+
+  void searchForWordNutriup(String text) {
+    if (text.toLowerCase().contains('nutriup')) {
+      print('Detected');
+    }
   }
 
   updatePersonalInformationWithGoal()async {
@@ -500,7 +512,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         if (subscriptionDate.isAfter(today)){
 
                           if (message != '') {
-                            // Focus.withExternalFocusNode(child: Text(""), focusNode: _focusNode);
+
                             increaseValueAndUploadToFirestore();
                             lastQuestion = message;
                             serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
@@ -517,7 +529,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                               aiResponseLength = 100;
                             }
                             // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
-                            _focusNode.unfocus();
+                            // _focusNode.unfocus();
                             getLastInformation();
                             _textFieldController.clear();
                           }
@@ -529,8 +541,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                             );
                           } else {
                             // This
-                            fetchOffers().then(
+                            CommonFunctions().fetchOffers().then(
                                     (value) {
+                                      // We are sending a List of Offerings to the value subscriptionProducts
                                       Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
                                       Navigator.push(context,
                                           MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
@@ -578,9 +591,17 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                               MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
                           );
                         } else {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                          CommonFunctions().fetchOffers().then(
+                                  (value) {
+                                // We are sending a List of Offerings to the value subscriptionProducts
+                                Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                                );
+
+                              }
                           );
+
                         }
                       }
                     },
@@ -618,8 +639,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
   return GestureDetector(
     onTap: () {
-      // Dismiss the keyboard when the user taps outside of the text field
-      // _focusNode.unfocus();
+
       FocusManager.instance.primaryFocus?.unfocus();
     },
     child: Scaffold(
@@ -660,6 +680,121 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
           ),
           centerTitle: true,
           actions: [
+            // Container(
+            //   height: 60,
+            //   child: GestureDetector(
+            //     onTap: () async{
+            //       final prefs = await SharedPreferences.getInstance();
+            //
+            //       if (prefs.getBool(kIsGoalSet) == false ||prefs.getBool(kIsGoalSet) == null ) {
+            //         print(prefs.getBool(kIsGoalSet));
+            //         CoolAlert.show(
+            //
+            //             lottieAsset: 'images/goal.json',
+            //             context: context,
+            //             type: CoolAlertType.success,
+            //             widget: SingleChildScrollView(
+            //
+            //                 child:
+            //                 Column(
+            //                   children: [
+            //                     Padding(
+            //                       padding: const EdgeInsets.all(8.0),
+            //                       child: TextField(
+            //                         onChanged: (enteredQuestion){
+            //                           question = enteredQuestion;
+            //                           // instructions = customerName;
+            //                           // setState(() {
+            //                           // });
+            //                         },
+            //                         decoration: InputDecoration(
+            //                             border:
+            //                             //InputBorder.none,
+            //                             OutlineInputBorder(
+            //                               borderRadius: BorderRadius.circular(10),
+            //                               borderSide: BorderSide(color: Colors.green, width: 2),
+            //                             ),
+            //                             labelText: 'Goal',
+            //                             labelStyle: kNormalTextStyleExtraSmall,
+            //                             hintText: 'This year I want to lose 10kg',
+            //                             hintStyle: kNormalTextStyle
+            //                         ),
+            //
+            //                       ),
+            //                     ),
+            //                   ],
+            //                 )
+            //             ),
+            //             text: 'What is your main goal for this year?',
+            //             title: "${prefs.getString(kFirstNameConstant)}!",
+            //             confirmBtnText: 'Set Goal',
+            //             confirmBtnColor: Colors.green,
+            //             backgroundColor: kBackgroundGreyColor,
+            //             onConfirmBtnTap: () async{
+            //               if (question != ""){
+            //                 final prefs = await SharedPreferences.getInstance();
+            //                 prefs.setString(kGoalConstant, question);
+            //                 prefs.setBool(kIsGoalSet, true);
+            //                 Navigator.pop(context);
+            //                 prefs.setString(kUserId, auth.currentUser!.uid);
+            //                 // updatePersonalInformationWithGoal();
+            //                 dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+            //                   'goal': question,
+            //                   'userId':auth.currentUser!.uid,
+            //                   // orderId
+            //                 });
+            //                 // Navigator.pushNamed(context, SuccessPageNew.id);
+            //                 Navigator.push(context,
+            //                     MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+            //                 );
+            //               } else {
+            //
+            //               }
+            //
+            //
+            //
+            //               setState(() {
+            //
+            //               });
+            //             }
+            //         );
+            //
+            //
+            //
+            //       }else{
+            //         // Navigator.pushNamed(context, HomePage.id);
+            //         Navigator.push(context,
+            //             MaterialPageRoute(builder: (context)=> GoalsPage())
+            //         );
+            //       }
+            //
+            //     },
+            //
+            //     child: SimpleCircularProgressBar(
+            //       size: 20,
+            //       progressStrokeWidth: 4,
+            //       backStrokeWidth: 10,
+            //       valueNotifier: ValueNotifier(Provider.of<AiProvider>(context, listen: false).progressPoints * 1.0),
+            //     ),
+            //   ),
+            // ),
+
+
+
+
+
+
+            // Container(
+            //   width: 80,
+            //   height: 20,
+            //
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(20.0),
+            //     child: LinearProgressIndicator(
+            //       value: progressValue,
+            //     ),
+            //   ),
+            // ),
             // IconButton(
             //   icon: Icon(Icons.info, color:kGreenThemeColor,),
             //   onPressed: () {
@@ -858,7 +993,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                             messageStatusList.add(doc['status']);
                             dateList.add(doc['time'].toDate());
                             searchForPhrase(doc['response'], doc['id']);
-                            separateJsonAndText(doc['response']);
+                            separateJsonAndText(doc['response'], doc['id']);
 
                             // messageValues.add({"role": "user", "content": doc['message']});
                             // messageValues.add({"role": "assistant", "content": doc['response']});

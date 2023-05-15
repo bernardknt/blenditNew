@@ -1,3 +1,4 @@
+import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -39,10 +40,11 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
     });
   }
 
+
   final HttpsCallable callableRevenueCatPayment = FirebaseFunctions.instance.httpsCallable(kRevenueCatPayment);
   int parseAmount(String amountString) {
     // Remove the dollar sign from the string
-    String amountWithoutDollar = amountString.replaceAll('\$', '');
+    String amountWithoutDollar = amountString.replaceAll('US\$', '');
 
     // Parse the remaining string as a double
     double amount = double.tryParse(amountWithoutDollar) ?? 0.0;
@@ -141,7 +143,7 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
               ),
               const SizedBox(height: 16.0),
               Container(
-                height: 350,
+                height: 250,
                 color: kBlack,
                 child: Image.asset("images/video.gif"),
               ),
@@ -150,26 +152,31 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
                   height: 50,
                   width: 50,
                   child: CircularProgressIndicator()),
-              _buildPlanCard(
-                context,
-                // products[0],
-                  "Monthly",
-                '\$${Provider.of<AiProvider>(context, listen: false).intMonthly}',
-                'Unlock all features for 1 month',
-                "nutri_6.99_monthly",
-                30,
-                0
+              ListView.builder(
+                  shrinkWrap: true,
+                primary: false,
+                itemCount: offerings.length,
+                itemBuilder: (context, index){
+                    Package package = offerings[index];
+                    return _buildPlanCard(context, package.storeProduct.title,
+                        package.storeProduct.priceString,
+                        package.storeProduct.description,
+
+                        package.storeProduct.identifier,
+                        package.storeProduct.subscriptionPeriod!, 0);
+                   // _buildPlanCard(context, title, price, subtitle, productStoreId, duration, opacity)
+                  //
+                  // Container(
+                    //   color: kAppPinkColor,
+                    //   height: 100,
+                    //   width: 200,
+                    //   child: Text(package.storeProduct.title)
+                    // );
+                },
+
+
               ),
-              const SizedBox(height: 16.0),
-              _buildPlanCard(
-                context,
-                'Annual',
-                '\$${Provider.of<AiProvider>(context, listen: false).intYearly}',
-                'Save 20% by subscribing annually',
-                "nutri_69.99_annual_subscription",
-                365,
-                1
-              ),
+
               const SizedBox(height: 32.0),
               Text(
                 'Features',
@@ -197,6 +204,20 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
                 'Challenges to test and help you achieve more.',
               ),
 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(onPressed: (){
+
+                    CommonFunctions().goToLink("https://bit.ly/42Y0drx");
+                  }, child: Text('Terms of Service', style: kNormalTextStyle.copyWith(color: Colors.blue, fontSize: 16),)),
+                  TextButton(onPressed: (){
+
+                    CommonFunctions().goToLink("https://bit.ly/3Bs6vUk");
+                  }, child: Text('Privacy Policy', style: kNormalTextStyle.copyWith(color: Colors.blue, fontSize: 16),)),
+                ],
+              )
+
             ],
           ),
         ),
@@ -210,115 +231,127 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
       String price,
       String subtitle,
       String productStoreId,
-      int duration,
+      String duration,
       double opacity,
       ) {
 
-    return Stack(
-      children: [
-        Card(
-          shadowColor: Colors.blue,
-          color: kGreenThemeColor,
-          elevation: 4.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: InkWell(
-            onTap: () async{
-              print(customerID);
-              String transactionId = 'revenueCatNutri${uuid.v1().split("-")[0]}';
-              final prefs = await SharedPreferences.getInstance();
-              try{
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        children: [
+          Card(
+            shadowColor: Colors.blue,
+            color: kGreenThemeColor,
+            elevation: 4.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: InkWell(
+              onTap: () async{
+                print(customerID);
+                String transactionId = 'revenueCatNutri${uuid.v1().split("-")[0]}';
+                final prefs = await SharedPreferences.getInstance();
+                try{
 
-                // _startAsyncProcess();
-                showDialog(context: context, builder:
-                    ( context) {
-                  return const Center(child: CircularProgressIndicator());
-                });
-                 await Purchases.purchaseProduct(productStoreId);
-                 var userInfo = await Purchases.getCustomerInfo();
-                 // userInfo.
-                Provider.of<AiProvider>(context, listen: false).setShowPaymentDialogue(true);
-                Navigator.pushNamed(context, MakePaymentPage.id);
-                transactionStream();
-                // Navigator.pop(context);
-                // Navigator.pop(context);
-                await callableRevenueCatPayment.call(<String, dynamic>{
-                  'id': productStoreId,
-                  'amount': parseAmount(price),
-                  'product': title,
-                  'transId': transactionId,
-                  'duration': duration,
-                  'token': prefs.getString(kToken),
-                  'uid' : prefs.getString(kUniqueIdentifier),
-                  'name': prefs.getString(kFullNameConstant),
-                  'revenueCatId': customerID,
-                  // orderId
-                }).then((value) => null);
+                  // _startAsyncProcess();
+                  showDialog(context: context, builder:
+                      ( context) {
+                    return const Center(child: CircularProgressIndicator());
+                  });
+                   await Purchases.purchaseProduct(productStoreId);
+                   var userInfo = await Purchases.getCustomerInfo();
+                   // userInfo.
+                  Provider.of<AiProvider>(context, listen: false).setShowPaymentDialogue(true);
+                  Navigator.pushNamed(context, MakePaymentPage.id);
+                  transactionStream();
+                  // Navigator.pop(context);
+                  // Navigator.pop(context);
+                  await callableRevenueCatPayment.call(<String, dynamic>{
+                    'id': productStoreId,
+                    'amount': CommonFunctions().extractNumberFromString(price),
+                    'product': title,
+                    'transId': transactionId,
+                    'duration': duration == "P1Y" ? 365: 31,
+                    'token': prefs.getString(kToken),
+                    'uid' : prefs.getString(kUniqueIdentifier),
+                    'name': prefs.getString(kFullNameConstant),
+                    'currency': CommonFunctions().extractCurrencyFromString(price),
+                    'revenueCatId': customerID,
+                    // orderId
+                  }).then((value) => null);
+                  // print("SUCCEESSSS");
+                  //
+                  // await Future.delayed(Duration(seconds: 2));
+                  // // Set loading state to false after the process is complete
+                  setState(() {
+                    isLoading = false;
+                    print("THIS has Ended");
+                  });
+                } catch(e){
+                  debugPrint("Failed to Purchase product $title, error: $e");
+                }
+              },
+              child: Container(
+                width: double.maxFinite,
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-
-
-
-
-                print("SUCCEESSSS");
-
-                await Future.delayed(Duration(seconds: 2));
-                // Set loading state to false after the process is complete
-                setState(() {
-                  isLoading = false;
-                  print("THIS has Ended");
-                });
-              } catch(e){
-                debugPrint("Failed to Purchase product $title, error: $e");
-              }
-            },
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: kNormalTextStyle.copyWith(color: textColor, fontSize: 16)
-                      ),
-                      kMediumWidthSpacing,
-                      Text(
-                        price,
-                        style: kNormalTextStyle.copyWith(color: textColor,fontSize: 16)
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    subtitle,
-                    style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),
-                  ),
-                ],
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: kNormalTextStyle.copyWith(color: textColor, fontSize: 16)
+                        ),
+                        kMediumWidthSpacing,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "$price",
+                              style: kNormalTextStyle.copyWith(color: textColor,fontSize: 18)
+                            ),
+                            // Text(
+                            //   "$duration",
+                            //   style: kNormalTextStyle.copyWith(color: textColor,fontSize: 18)
+                            // ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      subtitle,
+                      style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          top: 10,
-          right: 10,
-            child: Opacity(
-              opacity: opacity,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: kAppPinkColor, borderRadius: BorderRadius.circular(10)
+          Positioned(
+            top: 10,
+            right: 10,
+              child: Opacity(
+                opacity: duration == "P1Y" ? 1:0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: kAppPinkColor, borderRadius: BorderRadius.circular(10)
 
-                ),
+                  ),
 
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Best Value", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),),
-                  )),
-            ))
-      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Text("Best Value", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),),
+                    )),
+              ))
+        ],
+      ),
     );
   }
 

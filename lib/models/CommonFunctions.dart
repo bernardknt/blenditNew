@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/models/offering_wrapper.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -76,6 +78,64 @@ class CommonFunctions {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
+
+  // This should get the paywall values from Revenuecat
+
+  Future <List<Offering>> fetchOffers() async{
+    try {
+      final offerings = await Purchases.getOfferings();
+      final current = offerings.current;
+
+
+      return current == null ? [] : [current];
+    } on PlatformException catch (e){
+      print(e);
+      return [];
+
+    }
+  }
+  // This function extracts the $ sign or strings like KES from an amount and outputs the double value
+
+  double extractNumberFromString(String input) {
+    String numberString = '';
+
+    // Remove all non-digit and non-decimal characters from the input
+    String cleanedInput = input.replaceAll(RegExp(r'[^0-9\.]'), '');
+
+    // Check if the cleaned input is empty
+    if (cleanedInput.isEmpty) {
+      return 0.0; // Return 0 if there are no valid digits in the input
+    }
+
+    // Split the cleaned input into two parts: the whole number and the decimal part
+    List<String> parts = cleanedInput.split('.');
+
+    // Add the whole number part
+    numberString += parts[0];
+
+    // Add the decimal part if it exists
+    if (parts.length > 1) {
+      numberString += '.' + parts[1];
+    }
+
+    // Parse the number string and return the result
+    return double.parse(numberString);
+  }
+
+  // This function extracts the Currency string from the amount String
+
+  String extractCurrencyFromString(String input) {
+    String currencyString = '';
+
+    // Remove all digit and decimal characters from the input
+    String cleanedInput = input.replaceAll(RegExp(r'[0-9\.]'), '');
+
+    // Remove any leading or trailing whitespace
+    cleanedInput = cleanedInput.trim();
+
+    // Return the cleaned string
+    return cleanedInput;
+  }
 
   // This function signs out the User
 
@@ -564,124 +624,142 @@ class CommonFunctions {
 
   void showBottomSheet(BuildContext context, String serviceId, File? imageReceived) {
     showModalBottomSheet(
+
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          color: kRoundedContainerColor,
-          child: SingleChildScrollView(
-            child: Container(
+        return SafeArea(
+          child: Container(
+            color: kRoundedContainerColor,
+            child: Scaffold(
+              backgroundColor: kBackgroundGreyColor,
+              resizeToAvoidBottomInset: true,
+              body: SingleChildScrollView(
 
-              // height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(child:
+                child: Container(
 
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                  // height: 200,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Center(child:
 
-                      child:
+                    Column(
+                      children: [
+                        kLargeHeightSpacing,
+                        Text("Photo to Upload", style: kNormalTextStyle.copyWith(fontSize: 18, color: kBlack),),
 
-                      imageReceived != null ?
-                      Image.file(imageReceived!, height: 200,) :
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
 
-                      Container(
-                        width: double.infinity,
-                        height: 250,
+                          child:
 
-                        child: Text("data"),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), color: kPureWhiteColor),
+                          imageReceived != null ?
+                          Image.file(imageReceived!, height: 200,) :
 
-                      ),
-                    ),
+                          Container(
+                            width: double.infinity,
+                            height: 250,
 
+                            child: Text("data"),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), color: kPureWhiteColor),
 
-
-                    Container(
-                      height: 80,
-                      child:
-                      // InputFieldWidget(hintText: "Is this good for me?", onTypingFunction: (value){description = value;}, keyboardType: TextInputType.text, labelText: " What's your Question", inputTextColor: kPureWhiteColor,),
-                      //
-                      TextField(
-                        // obscureText: passwordType,
-                        // keyboardType: keyboardType,
-                        onChanged: (value){description = value;},
-                        textAlign: TextAlign.center,
-                        cursorColor: Colors.green,
-                        style: kNormalTextStyle.copyWith(color: kBlack),
-                        //keyboardType: TextInputType.number,
-
-                        decoration: InputDecoration(
-
-                          hintText: "Is this good for me?",
-                          fillColor: kPureWhiteColor,
-                          hintStyle: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                          labelText: " Add Question / Note ",
-
-                          labelStyle: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                          contentPadding:
-                          EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: kBlueDarkColor, width: 1.0),
-                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: kBlueDarkColor, width: 0),
-                            borderRadius: BorderRadius.all(Radius.circular(32.0)),
                           ),
                         ),
-                      ),
-                    ),
-                    RoundedLoadingButton(
-                      width: 120,
-                      color: kBlueDarkColor,
-                      child: Text('Send to Nutri', style: TextStyle(color: kPureWhiteColor)),
-                      controller: _btnController,
-                      onPressed: () async {
-                        image = imageReceived;
-                        if ( description == ''){
-                          _btnController.error();
-                          showDialog(context: context, builder: (BuildContext context){
-                            return
-                              CupertinoAlertDialog(
-                                title: Text("Oops you haven't added asked your Question"),
-                                content: Text('Make sure you have filled in this field'),
-                                actions: [CupertinoDialogAction(isDestructiveAction: true,
-                                    onPressed: (){
-                                      _btnController.reset();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Cancel'))],
-                              );
-                          });
-                        }else {
-                          // compressImage(image!, serviceId, description, context);
+                        kLargeHeightSpacing,
 
 
-                          uploadFile(image!.path, serviceId, description, context );
+
+                        Container(
+                          height: 80,
+                          child:
+                          // InputFieldWidget(hintText: "Is this good for me?", onTypingFunction: (value){description = value;}, keyboardType: TextInputType.text, labelText: " What's your Question", inputTextColor: kPureWhiteColor,),
+                          //
+                          TextField(
+                            // obscureText: passwordType,
+                            // keyboardType: keyboardType,
+                            onChanged: (value){description = value;},
+                            textAlign: TextAlign.center,
+                            cursorColor: Colors.green,
+                            style: kNormalTextStyle.copyWith(color: kBlack),
+                            //keyboardType: TextInputType.number,
+
+                            decoration: InputDecoration(
+
+                              hintText: "Is this good for me?",
+                              fillColor: kPureWhiteColor,
+                              hintStyle: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                              labelText: " Add Question / Note ",
+
+                              labelStyle: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                              contentPadding:
+                              EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: kBlueDarkColor, width: 1.0),
+                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: kBlueDarkColor, width: 0),
+                                borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        RoundedLoadingButton(
+                          width: double.maxFinite,
+                          color: kGreenThemeColor,
+                          child: Text('Send to Nutri', style: TextStyle(color: kPureWhiteColor)),
+                          controller: _btnController,
+                          onPressed: () async {
+                            image = imageReceived;
+                            if ( description == ''){
+                              _btnController.error();
+                              showDialog(context: context, builder: (BuildContext context){
+                                return
+                                  CupertinoAlertDialog(
+                                    title: Text("Oops you haven't added asked your Question"),
+                                    content: Text('Make sure you have filled in this field'),
+                                    actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                        onPressed: (){
+                                          _btnController.reset();
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Cancel'))],
+                                  );
+                              });
+                            }else {
+                              // compressImage(image!, serviceId, description, context);
 
 
-                          //Implement registration functionality.
-                        }
-                      },
-                    ),
-                    const Opacity(
-                        opacity: 0,
-                        child: Text("There was an error", style: TextStyle(color: Colors.red),)),
-                  ],
-                )),
+                              uploadFile(image!.path, serviceId, description, context );
+
+
+                              //Implement registration functionality.
+                            }
+                          },
+                        ),
+                        TextButton(onPressed: (){
+                          
+                          Navigator.pop(context);
+                        }, child: Text('Cancel', style: kNormalTextStyle.copyWith(color: Colors.red), )
+                        
+                        ), 
+                        const Opacity(
+                            opacity: 0,
+                            child: Text("There was an error", style: TextStyle(color: Colors.red),)),
+                      ],
+                    )),
+                  ),
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: kBackgroundGreyColor ,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+
+                ),
               ),
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  color: kBackgroundGreyColor ,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(25), topLeft: Radius.circular(25))),
-
             ),
           ),
         );

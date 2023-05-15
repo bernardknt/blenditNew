@@ -88,6 +88,7 @@ class AiProvider extends ChangeNotifier{
     "Get insights from Nutri on how to optimize your protein, carb, and fat intake.",
     "Ask for a local dish to have today",
   ];
+  List dailyProgressPoint = [];
   bool tipStatus = false;
   List challengeDayData = [];
   List messageContext = [];
@@ -101,6 +102,11 @@ class AiProvider extends ChangeNotifier{
  //   dayIcons[index] = image;
  //   notifyListeners();
  // }
+
+  setDailyProgressPoints (token){
+    dailyProgressPoint.add(token);
+    notifyListeners();
+  }
 
   setSubscriptionProducts(value) {
     subscriptionProducts = value;

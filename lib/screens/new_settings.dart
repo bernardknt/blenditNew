@@ -288,8 +288,18 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                                       MaterialPageRoute(builder: (context) => PaywallUgandaPage())
                                   );
                                 }else {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
-                                  );}
+                                  CommonFunctions().fetchOffers().then(
+                                          (value) {
+                                        // We are sending a List of Offerings to the value subscriptionProducts
+                                        Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
+                                        Navigator.push(context,
+                                            MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                                        );
+
+                                      }
+
+
+                              );}
                               } else {
 
                                 setState((){
