@@ -206,8 +206,20 @@ class CommonFunctions {
 
   // This function is for cancelling the notification
 
-  cancelNotification() async {
+  cancelNotification(uid) async {
     await flutterLocalNotificationsPlugin.cancelAll();
+    try {
+      // Get a reference to the user's document in the 'users' collection
+      var userRef = FirebaseFirestore.instance.collection('users').doc(uid);
+
+      // Update the 'token' field to an empty string
+      await userRef.update({'token': ''});
+
+      print('User token updated successfully');
+    } catch (e) {
+      print('Error updating user token: $e');
+    }
+
   }
 
   void showNotification(String notificationTitle, String notificationBody){
@@ -779,7 +791,7 @@ class CommonFunctions {
       "subscriptionEndDate": futureDate,
       "subscriptionStartDate": now,
       "subscribed": false,
-      "trial": "Trial",
+      "trial": "Premium",
 
     });
 

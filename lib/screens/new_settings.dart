@@ -249,26 +249,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                                   Text("You don't have a running Subscription", style: kNormalTextStyle.copyWith(fontSize: 14
                                   ), textAlign: TextAlign.center,),
                                   TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
-                                  // Text('Appointment Details', style: kNormalTextStyleSmallGrey,),
 
-                                  // ListView.builder(
-                                  //
-                                  //
-                                  //     shrinkWrap: true,
-                                  //     itemCount: productsList[index].length,
-                                  //     itemBuilder: (context, i){
-                                  //       return OrderedContentsWidget(
-                                  //           defaultFontSize: 12.0,
-                                  //
-                                  //           orderIndex: i + 1,
-                                  //           quantity: productsList[index][i]['quantity'],
-                                  //           productDescription:productsList[index][i]['product'] ,
-                                  //           productName: productsList[index][i]['description'],
-                                  //           price: productsList[index][i]['totalPrice']);
-                                  //     }),
-                                  // TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
-
-                                  // Text('${productsList[index][0]['product']} - ${productsList[index][0]['description']}', style: kNormalTextStyleSmallGrey,)
                                 ],
                               ),
                             ),
@@ -283,9 +264,10 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                             onConfirmBtnTap: () async{
                               final prefs = await SharedPreferences.getInstance();
                               if (aiData.subscriptionType!= "Premium"){
-                                if (prefs.getString(kUserCountryName) == "Uganda") {
+                                if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false) {
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) => PaywallUgandaPage())
+                                    //  MaterialPageRoute(builder: (context) => PaywallUgandaPage())
+                                      MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
                                   );
                                 }else {
                                   CommonFunctions().fetchOffers().then(
@@ -469,7 +451,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                                 await auth.signOut().then((value) {
                                   unsubscribeFromTopic(prefs.getString(kPhoneNumberConstant));
                                   Navigator.pushNamed(context, WelcomePageNew.id);
-                                  CommonFunctions().cancelNotification();
+                                  CommonFunctions().cancelNotification(prefs.getString(kUniqueIdentifier));
                                   
                                 } );
                                 
@@ -505,13 +487,6 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
 
                           onConfirmBtnTap: () async{
-                            // FirebaseUser user = await FirebaseAuth.instance.currentUser!();
-                            // user.delete();
-                            // CommonFunctions().signOut();
-                            // // Navigator.pop(context);
-                            // // Navigator.pop(context);
-                            // // Navigator.pop(context);
-                            // Navigator.pushNamed(context, WelcomePage.id)
 
 
                             final prefs = await SharedPreferences.getInstance();
@@ -521,7 +496,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                             await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).delete().then((value) async =>
                             await auth.signOut().then((value){
                               Navigator.pushNamed(context, WelcomePageNew.id);
-                              CommonFunctions().cancelNotification(); //cancel all notifications
+                              CommonFunctions().cancelNotification(prefs.getString(kUniqueIdentifier)); //cancel all notifications
 
                             }
                             )

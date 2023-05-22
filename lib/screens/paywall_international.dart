@@ -148,10 +148,7 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
                 child: Image.asset("images/video.gif"),
               ),
               kLargeHeightSpacing,
-              isLoading == false? Container(): const SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: CircularProgressIndicator()),
+
               ListView.builder(
                   shrinkWrap: true,
                 primary: false,
@@ -164,14 +161,6 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
 
                         package.storeProduct.identifier,
                         package.storeProduct.subscriptionPeriod!, 0);
-                   // _buildPlanCard(context, title, price, subtitle, productStoreId, duration, opacity)
-                  //
-                  // Container(
-                    //   color: kAppPinkColor,
-                    //   height: 100,
-                    //   width: 200,
-                    //   child: Text(package.storeProduct.title)
-                    // );
                 },
 
 

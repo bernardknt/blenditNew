@@ -69,20 +69,12 @@ class PaywallFirstInternationalPage extends StatelessWidget {
                 Icons.check_circle_sharp,
                 'Challenges to test and help you achieve more.',
               ),
-              // _buildPlanCard(
-              //   context,
-              //   'Monthly',
-              //   '19900',
-              //   'Unlock all features for 1 month',
-              //   '567890'
-              // ),
+
               SizedBox(height: 30.0),
               _buildPlanCard(
                 context,
-                'Start Free 3 Day Trial',
-                // '199000',
-                // 'Save 20% by subscribing annually',
-                // '34567890'
+                'Start Free ${ Provider.of<AiProvider>(context, listen: false).trialTime} Day Trial',
+
               ),
               // SizedBox(height: 32.0),
 
@@ -113,13 +105,6 @@ class PaywallFirstInternationalPage extends StatelessWidget {
       child: InkWell(
         onTap: () async{
           final prefs = await SharedPreferences.getInstance();
-      // prefs.setString(kBillValue, price);
-          // prefs.setString(kOrderId, transactionId);
-          // prefs.setString(kOrderReason, title);
-          // String newAmount = prefs.getString(kBillValue) ?? '0';
-          // String newPhoneNumber = removeCountryCode(prefs.getString(kPhoneNumberConstant) ?? '0') ;
-          // String? newOrderId = prefs.getString(kOrderId);
-          // String? newOrderReason = prefs.getString(kOrderReason);
           CommonFunctions().startTrialSubscription(context, Provider.of<AiProvider>(context, listen: false).trialTime);
           CommonFunctions().showNotification("Subscription Activated", "Nice, Time to get to work on achieving your goals");
           Navigator.pushNamed(context, ControlPage.id);
@@ -146,46 +131,9 @@ class PaywallFirstInternationalPage extends StatelessWidget {
                     title, textAlign: TextAlign.center,
                     style: kNormalTextStyle.copyWith(color: textColor, fontSize: 16)
                   ),
-                  // kMediumWidthSpacing,
-                  // Text(
-                  //   "Ugx ${CommonFunctions().formatter.format(int.parse(price))}",
-                  //   style: kNormalTextStyle.copyWith(color: textColor,fontSize: 16)
-                  // ),
-                  // SizedBox(height: 8.0),
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //     color: Theme.of(context).primaryColor,
-                  //     borderRadius: BorderRadius.circular(10.0),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.green.withOpacity(0.3),
-                  //         blurRadius: 8.0,
-                  //         offset: Offset(0, 4.0),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(
-                  //       horizontal: 24.0,
-                  //       vertical: 12.0,
-                  //     ),
-                  //     child: Text(
-                  //       'Subscribe',
-                  //       style: TextStyle(
-                  //         fontSize: 16.0,
-                  //         fontWeight: FontWeight.bold,
-                  //         color: Colors.white,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+
                 ],
               ),
-              // SizedBox(height: 8.0),
-              // Text(
-              //   subtitle,
-              //   style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 13),
-              // ),
             ],
           ),
         ),

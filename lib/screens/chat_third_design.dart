@@ -33,6 +33,8 @@ import 'delivery_page.dart';
 import 'goals.dart';
 import 'loading_goals_page.dart';
 import 'new_settings.dart';
+import 'package:googleapis/calendar/v3.dart' as calendar;
+import 'package:googleapis_auth/auth_io.dart' as auth;
 
 class ChatThirdDesignedPage extends StatefulWidget {
   static String id = 'three_orders_page';
@@ -94,6 +96,28 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     return start;
   }
 
+  // void createCalendarEvent() async {
+  //   // Authenticate with Google using OAuth2 credentials
+  //   var credentials = await auth.clientViaUserConsent(
+  //     clientCredentials, // Your client credentials obtained from Google Cloud Console
+  //     calendar.scopes,
+  //     prompt,
+  //   );
+  //
+  //   // Create a new Calendar API client
+  //   var calendarApi = calendar.CalendarApi(credentials);
+  //
+  //   // Define the event details
+  //   var event = calendar.Event();
+  //   event.summary = 'My Event';
+  //   event.start = calendar.EventDateTime()..dateTime = DateTime.now();
+  //   event.end = calendar.EventDateTime()
+  //     ..dateTime = DateTime.now().add(Duration(hours: 1));
+  //
+  //   // Insert the event into the user's primary calendar
+  //   var calendarId = 'primary'; // Use 'primary' for the primary calendar
+  //   await calendarApi.events.insert(event, calendarId);
+  // }
 
 
   Future<void> _deleteUnrepliedChats() async {
@@ -177,6 +201,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       if (input.contains('Nutriup')) {
         String modifiedText = input.replaceAll('Nutriup', '❤️');
         responseList.add(modifiedText);
+        print(responseList.indexOf(modifiedText));
+
 
       }else {
         responseList.add(input);
@@ -195,7 +221,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     final random = Random();
     final randomIndex = random.nextInt(possibleResponses.length);
     final randomWord = possibleResponses[randomIndex];
-    if (text.toLowerCase().contains("ai language model") || text.toLowerCase().contains("language model")) {
+    if (text.toLowerCase().contains("ai language model") || text.toLowerCase().contains("language model") || text.toLowerCase().contains("computer") ) {
       print("Error detected: $text");
       // randomly generate a value from the array possibleResponses
       await chatRef.update({'response': randomWord});
@@ -424,7 +450,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                   TextField(
                     controller: _textFieldController,  // _textFieldController is a TextEditingController object
                     maxLines: null,
-                    maxLength: 200,
+                    // maxLength: 200,
                     clipBehavior: Clip.antiAlias,
                     // keyboardType: TextInputType.multiline,
                     // minLines: 2,
@@ -474,17 +500,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                           uploadData();
                           _textFieldController.clear();
                         }
-                     // }
-                      // else{
-                      //
-                      //   showModalBottomSheet(
-                      //       context: context,
-                      //       // isScrollControlled: true,
-                      //       builder: (context) {
-                      //         return const NutriPayment();
-                      //       });
-                      //
-                      // }
+
 
                     },
                     onChanged: (value) {
@@ -535,9 +551,10 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                           }
                         } else {
 
-                          if (prefs.getString(kUserCountryName) == "Uganda"){
+                          if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){
                             Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
+                               // MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
+                                MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
                             );
                           } else {
                             // This
@@ -586,7 +603,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
 
                       } else {
-                        if (prefs.getString(kUserCountryName) == "Uganda"){
+                        if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
                           );
@@ -904,7 +921,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
             //         ),
             //   ),
             // ),
-            kSmallWidthSpacing,
+            // kSmallWidthSpacing,
             IconButton(
               icon: Icon(Icons.menu , color: kBlack,),
               onPressed: () {

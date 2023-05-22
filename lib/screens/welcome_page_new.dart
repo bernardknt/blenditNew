@@ -162,7 +162,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                               title: 'Start Here',
                               onPressedFunction: () {
                                 Navigator.pushNamed(context, SignInOptions.id);
-                                CommonFunctions().cancelNotification();
+                                // CommonFunctions().cancelNotification();
                                //  Navigator.pushNamed(context, QuizPage0.id);
                               },
                             ),
