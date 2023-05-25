@@ -1,5 +1,8 @@
 
 
+import 'dart:async';
+
+import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
@@ -12,11 +15,14 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
@@ -29,6 +35,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../models/blendit_data.dart';
+import '../models/firebase_functions.dart';
 import 'delivery_page.dart';
 import 'goals.dart';
 import 'loading_goals_page.dart';
@@ -53,11 +60,14 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   var description = '';
   var instructions = [];
   var nutritionPoints = [];
+  double circularValue = 0;
   var name = '';
   var token = '';
   var question = '';
   String initialId = 'feature';
   Random random = Random();
+  bool updateMe = true;
+  bool isAfrican = true;
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
   bool isAfricanCountry(String countryName) {
@@ -65,65 +75,10 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
     return africanCountries.contains(countryName);
   }
-
-
   final TextEditingController _textFieldController = TextEditingController();
-  // final FocusNode _focusNode = FocusNode();
-
-  Future<void> deleteUnrepliedChats() async {
-    final QuerySnapshot unrepliedChats = await FirebaseFirestore.instance
-        .collection('chat')
-        .where('replied', isEqualTo: false)
-        .get();
-
-    final batch = FirebaseFirestore.instance.batch();
-    unrepliedChats.docs.forEach((doc) => batch.delete(doc.reference));
-    await batch.commit();
-  }
 
 
-  Future progressStream()async{
 
-    var start = FirebaseFirestore.instance.collection('users').where('token', isEqualTo: token).snapshots().listen((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) async {
-        Provider.of<AiProvider>(context, listen: false).setDailyProgressPoints(doc["token"]);
-        print(doc["email"]);
-
-
-      });
-    });
-
-    return start;
-  }
-
-  // void createCalendarEvent() async {
-  //   // Authenticate with Google using OAuth2 credentials
-  //   var credentials = await auth.clientViaUserConsent(
-  //     clientCredentials, // Your client credentials obtained from Google Cloud Console
-  //     calendar.scopes,
-  //     prompt,
-  //   );
-  //
-  //   // Create a new Calendar API client
-  //   var calendarApi = calendar.CalendarApi(credentials);
-  //
-  //   // Define the event details
-  //   var event = calendar.Event();
-  //   event.summary = 'My Event';
-  //   event.start = calendar.EventDateTime()..dateTime = DateTime.now();
-  //   event.end = calendar.EventDateTime()
-  //     ..dateTime = DateTime.now().add(Duration(hours: 1));
-  //
-  //   // Insert the event into the user's primary calendar
-  //   var calendarId = 'primary'; // Use 'primary' for the primary calendar
-  //   await calendarApi.events.insert(event, calendarId);
-  // }
-
-
-  Future<void> _deleteUnrepliedChats() async {
-    await deleteUnrepliedChats();
-    print('Unreplied chats deleted successfully');
-  }
   String removeFirstCharacter(String str) {
     if (str.length > 1) {
       String result = str.substring(1);
@@ -158,30 +113,11 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     prefs.setBool(kIsTutorial1Done, true);
   }
 
-// This code Fetches the products from the products list
-
-
-
-
 // CALLABLE FUNCTIONS FOR THE NODEJS SERVER (FIREBASE)
   final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('updateUserVision');
   CollectionReference trends = FirebaseFirestore.instance.collection('photoUpLoads');
 
-  Future<void> removeBlankSpaces() async {
-    // Get a reference to the "conditions" collection
-    final CollectionReference conditionsCollection = FirebaseFirestore.instance.collection('chat');
 
-    // Get all the documents in the collection
-    final QuerySnapshot querySnapshot = await conditionsCollection.get();
-    // Loop through each document and update the fields
-    for (final QueryDocumentSnapshot document in querySnapshot.docs) {
-      // Update the "photoTwo" field to false
-      // if (document[''])
-      await document.reference.update({
-        'breathingRate': false,
-      });
-    }
-  }
 
   // This Function separates the response received into a JSON object and text allowing us to use the JSON to manipulate more date
   void separateJsonAndText(String input, String id) async{
@@ -199,18 +135,55 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       // print('No JSON found in the input string.');
 
       if (input.contains('Nutriup')) {
-        String modifiedText = input.replaceAll('Nutriup', '❤️');
+        String modifiedText = input.replaceAll('Nutriup', '✨');
         responseList.add(modifiedText);
-        print(responseList.indexOf(modifiedText));
+        // print(responseList.indexOf(modifiedText));
+        // print(id);
+
+        checkForNewMessage(id);
 
 
       }else {
         responseList.add(input);
         instructions.add(null);
       }
-
-
     }
+  }
+
+
+  // This function takes in the the id of the chat messages and sees if they have the power up
+
+  void checkForNewMessage( String id) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+   List <String>list = prefs.getStringList(kPointsList)!;
+    print(prefs.getStringList(kPointsList));
+
+    if (list.contains(id)) {
+      print("Yes");
+    }
+    else {
+
+      list.add(id);
+      prefs.setStringList(kPointsList, list);
+      Timer(const Duration(milliseconds: 1000), () {
+        Navigator.pop(context);
+        // Navigator.pop(context);
+        // Navigator.pushNamed(context, ControlPage.id);
+        FirebaseServerFunctions().increasePointsCount(prefs.getString(kUniqueIdentifier)!, context, id);
+        // Provider.of<AiProvider>(context, listen: false).setDailyProgressPoints(10.0);
+
+
+
+      });
+      showCupertinoModalPopup(context: context, builder: (context) => Container(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        //color: Color(0xFF757575),
+        child: Lottie.asset('images/rocket.json',
+            height: 200),
+      ));
+    }
+
   }
 
 
@@ -276,35 +249,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
         .catchError((error) => print(error));
   }
 
-  double progressValue = 0.0;
 
-  void increaseProgress() {
-    setState(() {
-      progressValue += 0.1;
-      if (progressValue > 1.0) {
-        progressValue = 1.0;
-      }
-    });
-  }
-
-
-  bool updateMe = true;
-  bool isAfrican = true;
-
-
-  void increaseValueAndUploadToFirestore() async {
-    final prefs = await SharedPreferences.getInstance();
-    var messageCount = prefs.getInt(kMessageCount) ?? 0;
-    print("KOKOKOKOKO $messageCount");
-
-    if (messageCount < 10) {
-      prefs.setInt(kMessageCount,messageCount+1);
-
-    } else if (prefs.getInt(kMessageCount)! == 10){
-    }else{
-      prefs.setInt(kMessageCount,messageCount+1);
-    }
-  }
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
@@ -312,6 +257,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     name = prefs.getString(kFirstNameConstant)!;
     token = prefs.getString(kToken)!;
     isAfrican = isAfricanCountry(prefs.getString(kUserCountryName)!);
+    circularValue = Provider.of<AiProvider>(context, listen: false).dailyProgressPoint;
 
 
     CommonFunctions().userStream(context);
@@ -322,13 +268,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   }
 
   void getLastInformation() async{
-    final prefs = await SharedPreferences.getInstance();
-    if (messageList.length < 4){
 
-      // List lastMessageValues = messageList.sublist(messageList.length - (messageList.length - 1));
-      // List lastResponseValues = responseList.sublist(responseList.length  - (messageList.length - 1));
+    if (messageList.length < 4){
        lastInformationList.clear();
-      // lastInformationList.add({"role": "system", "content": "Imagine you are a real nutritionist from ${prefs.getString(kUserCountryName)}, always happy, called Lisa answering "+name+" from "+ prefs.getString(kUserCountryName)! +", "+prefs.getDouble(kUserWeight).toString()!+" kilograms and "+prefs.getInt(kUserHeight).toString()+"cm tall. Be precise and brief in your answers"});
       for (int i = 0; i < messageList.length; i++) {
         var userInfo = {"role": "user" , "content": messageList[i]};
         var assistantInfo = {"role": "assistant", "content": responseList[i]};
@@ -336,10 +278,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
         lastInformationList.add(assistantInfo);
       }
     }else {
-      // List lastMessageValues = messageList.sublist(messageList.length - 3);
-      // List lastResponseValues = responseList.sublist(responseList.length  - 3);
       lastInformationList.clear();
-      // lastInformationList.add({"role": "system", "content": "Imagine you are a real nutritionist from ${prefs.getString(kUserCountryName)}, always happy, called Lisa answering "+name+" from "+ prefs.getString(kUserCountryName)! +", "+prefs.getDouble(kUserWeight).toString()!+" kilograms and "+prefs.getInt(kUserHeight).toString()+"cm tall. Be precise and brief in your answers"});
       for (int i = 0; i < 3; i++) {
         var userInfo = {"role": "user" , "content": messageList[i]};
         var assistantInfo = {"role": "assistant", "content": responseList[i]};
@@ -347,9 +286,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
         lastInformationList.add(assistantInfo);
       }
     }
-
-    print(lastInformationList);
-
     setState(() {
 
     });
@@ -359,7 +295,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   @override
   void dispose() {
     _textFieldController.dispose();
-    // _focusNode.dispose();
     super.dispose();
   }
 
@@ -368,7 +303,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     // TODO: implement initState
     super.initState();
     defaultInitialization();
-    progressStream();
     tutorialShow();
     final newVersion = NewVersion(
       iOSId: 'com.frutsexpress.blendit2022',
@@ -399,6 +333,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   }
 
   var messageList = [];
+  var pointsList = [];
   var messageStatusList = [];
   var lastInformationList = [];
   var chatBubbleVisibility = true;
@@ -483,7 +418,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       final prefs = await SharedPreferences.getInstance();
 
                         if (message != '') {
-                          increaseValueAndUploadToFirestore();
+                          // increaseValueAndUploadToFirestore();
                           lastQuestion = message;
                           serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
                           print(message.length);
@@ -529,23 +464,20 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
                           if (message != '') {
 
-                            increaseValueAndUploadToFirestore();
+                            // increaseValueAndUploadToFirestore();
                             lastQuestion = message;
                             serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-                            print(message.length);
+
                             if (message.length > 20) {
                               print(" Long Response $message : ${message.length}");
                               // print(messageValues);
-                              aiResponseLength = 200;
+                              aiResponseLength = 300;
                             } else {
                               print(" Short Response $message : ${message.length}");
                               print("$message : ${message.length}");
-                              // print(messageValues);
 
-                              aiResponseLength = 100;
+                              aiResponseLength = 200;
                             }
-                            // Provider.of<BlenditData>(context, listen: false).changeLastQuestion(lastQuestion);
-                            // _focusNode.unfocus();
                             getLastInformation();
                             _textFieldController.clear();
                           }
@@ -638,10 +570,13 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       featureId: 'feature3',
                       tapTarget:
                       const Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,),
-                      child: CircleAvatar(
-                        backgroundColor: kBlueDarkColor,
-                          child:
-                          Lottie.asset("images/snap.json", height: 20))
+                      child: Padding(
+                        padding: const EdgeInsets.only(top:20.0),
+                        child: CircleAvatar(
+                          backgroundColor: kBlueDarkColor,
+                            child:
+                            Lottie.asset("images/snap.json", height: 20)),
+                      )
                           //Icon(Icons.linked_camera_outlined, color: kPureWhiteColor,)),
                     ),
                   ),
@@ -697,108 +632,164 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
           ),
           centerTitle: true,
           actions: [
-            // Container(
-            //   height: 60,
-            //   child: GestureDetector(
-            //     onTap: () async{
-            //       final prefs = await SharedPreferences.getInstance();
-            //
-            //       if (prefs.getBool(kIsGoalSet) == false ||prefs.getBool(kIsGoalSet) == null ) {
-            //         print(prefs.getBool(kIsGoalSet));
-            //         CoolAlert.show(
-            //
-            //             lottieAsset: 'images/goal.json',
-            //             context: context,
-            //             type: CoolAlertType.success,
-            //             widget: SingleChildScrollView(
-            //
-            //                 child:
-            //                 Column(
-            //                   children: [
-            //                     Padding(
-            //                       padding: const EdgeInsets.all(8.0),
-            //                       child: TextField(
-            //                         onChanged: (enteredQuestion){
-            //                           question = enteredQuestion;
-            //                           // instructions = customerName;
-            //                           // setState(() {
-            //                           // });
-            //                         },
-            //                         decoration: InputDecoration(
-            //                             border:
-            //                             //InputBorder.none,
-            //                             OutlineInputBorder(
-            //                               borderRadius: BorderRadius.circular(10),
-            //                               borderSide: BorderSide(color: Colors.green, width: 2),
-            //                             ),
-            //                             labelText: 'Goal',
-            //                             labelStyle: kNormalTextStyleExtraSmall,
-            //                             hintText: 'This year I want to lose 10kg',
-            //                             hintStyle: kNormalTextStyle
-            //                         ),
-            //
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 )
-            //             ),
-            //             text: 'What is your main goal for this year?',
-            //             title: "${prefs.getString(kFirstNameConstant)}!",
-            //             confirmBtnText: 'Set Goal',
-            //             confirmBtnColor: Colors.green,
-            //             backgroundColor: kBackgroundGreyColor,
-            //             onConfirmBtnTap: () async{
-            //               if (question != ""){
-            //                 final prefs = await SharedPreferences.getInstance();
-            //                 prefs.setString(kGoalConstant, question);
-            //                 prefs.setBool(kIsGoalSet, true);
-            //                 Navigator.pop(context);
-            //                 prefs.setString(kUserId, auth.currentUser!.uid);
-            //                 // updatePersonalInformationWithGoal();
-            //                 dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-            //                   'goal': question,
-            //                   'userId':auth.currentUser!.uid,
-            //                   // orderId
-            //                 });
-            //                 // Navigator.pushNamed(context, SuccessPageNew.id);
-            //                 Navigator.push(context,
-            //                     MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-            //                 );
-            //               } else {
-            //
-            //               }
-            //
-            //
-            //
-            //               setState(() {
-            //
-            //               });
-            //             }
-            //         );
-            //
-            //
-            //
-            //       }else{
-            //         // Navigator.pushNamed(context, HomePage.id);
-            //         Navigator.push(context,
-            //             MaterialPageRoute(builder: (context)=> GoalsPage())
-            //         );
-            //       }
-            //
-            //     },
-            //
-            //     child: SimpleCircularProgressBar(
-            //       size: 20,
-            //       progressStrokeWidth: 4,
-            //       backStrokeWidth: 10,
-            //       valueNotifier: ValueNotifier(Provider.of<AiProvider>(context, listen: false).progressPoints * 1.0),
-            //     ),
-            //   ),
-            // ),
+
+            StreamBuilder<QuerySnapshot> (
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .where('token', isEqualTo: token)
+                    .snapshots(),
+                builder: (context, snapshot)
+                {
+                  if(!snapshot.hasData){
+                    return Container();
+                  }
+                  else{
+                    pointsList = [];
+
+                    var orders = snapshot.data?.docs;
+                    for( var doc in orders!) {
+                      pointsList.add(doc['articleCount']??0);
+                    }
+                    // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
+                    return  SizedBox(
+                      height: 60,
+                      child: GestureDetector(
+                        onTap: () async{
+                          if (pointsList[0]<= 100) {
+                            Get.snackbar(
+                                'Lets get those points',
+                                'Take a photo doing something towards your goal, or tell Nutri about your progress to increase your points💪',
+                                snackPosition: SnackPosition.TOP,
+                                backgroundColor: kCustomColor,
+                                colorText: kBlack,
+                                icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
+                          } else {
+                            Get.snackbar(
+                                'Well Done',
+                                "You have achieved Today's Goal 💪",
+                                snackPosition: SnackPosition.TOP,
+                                backgroundColor: kBlack,
+                                colorText: kPureWhiteColor,
+                                icon: Icon(Icons.check_circle, color: kCustomColor,));
+                          }
 
 
 
+                          // final prefs = await SharedPreferences.getInstance();
+                          //
+                          // if (prefs.getBool(kIsGoalSet) == false ||prefs.getBool(kIsGoalSet) == null ) {
+                          //   print(prefs.getBool(kIsGoalSet));
+                          //   CoolAlert.show(
+                          //
+                          //       lottieAsset: 'images/goal.json',
+                          //       context: context,
+                          //       type: CoolAlertType.success,
+                          //       widget: SingleChildScrollView(
+                          //
+                          //           child:
+                          //           Column(
+                          //             children: [
+                          //               Padding(
+                          //                 padding: const EdgeInsets.all(8.0),
+                          //                 child: TextField(
+                          //                   onChanged: (enteredQuestion){
+                          //                     question = enteredQuestion;
+                          //                     // instructions = customerName;
+                          //                     // setState(() {
+                          //                     // });
+                          //                   },
+                          //                   decoration: InputDecoration(
+                          //                       border:
+                          //                       //InputBorder.none,
+                          //                       OutlineInputBorder(
+                          //                         borderRadius: BorderRadius.circular(10),
+                          //                         borderSide: BorderSide(color: Colors.green, width: 2),
+                          //                       ),
+                          //                       labelText: 'Goal',
+                          //                       labelStyle: kNormalTextStyleExtraSmall,
+                          //                       hintText: 'This year I want to lose 10kg',
+                          //                       hintStyle: kNormalTextStyle
+                          //                   ),
+                          //
+                          //                 ),
+                          //               ),
+                          //             ],
+                          //           )
+                          //       ),
+                          //       text: 'What is your main goal for this year?',
+                          //       title: "${prefs.getString(kFirstNameConstant)}!",
+                          //       confirmBtnText: 'Set Goal',
+                          //       confirmBtnColor: Colors.green,
+                          //       backgroundColor: kBackgroundGreyColor,
+                          //       onConfirmBtnTap: () async{
+                          //         if (question != ""){
+                          //           final prefs = await SharedPreferences.getInstance();
+                          //           prefs.setString(kGoalConstant, question);
+                          //           prefs.setBool(kIsGoalSet, true);
+                          //           Navigator.pop(context);
+                          //           prefs.setString(kUserId, auth.currentUser!.uid);
+                          //           // updatePersonalInformationWithGoal();
+                          //           dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+                          //             'goal': question,
+                          //             'userId':auth.currentUser!.uid,
+                          //             // orderId
+                          //           });
+                          //           // Navigator.pushNamed(context, SuccessPageNew.id);
+                          //           Navigator.push(context,
+                          //               MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+                          //           );
+                          //         } else {
+                          //
+                          //         }
+                          //
+                          //
+                          //
+                          //         setState(() {
+                          //
+                          //         });
+                          //       }
+                          //   );
+                          //
+                          //
+                          //
+                          // }else{
+                          //   // Navigator.pushNamed(context, HomePage.id);
+                          //   Navigator.push(context,
+                          //       MaterialPageRoute(builder: (context)=> GoalsPage())
+                          //   );
+                          // }
 
+                        },
+
+
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 30.0),
+                          child: Row(
+                            children: [
+
+                              Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 13,),),
+                              kSmallWidthSpacing,
+                              kSmallWidthSpacing,
+                              SimpleCircularProgressBar(
+                                size: 20,
+                                progressColors: [kGreenThemeColor, kCustomColor, Colors.blue ],
+                                progressStrokeWidth: 4,
+                                backStrokeWidth: 10,
+                                // valueNotifier: ValueNotifier(Provider.of<AiProvider>(context, listen: false).progressPoints * 1.0),
+                                valueNotifier: ValueNotifier(pointsList[0].toDouble()),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                      //Text('Hi ${pointsList}', style: kNormalTextStyle.copyWith(color: kBlack),);
+
+                  }
+
+                }
+
+            ),
 
 
             // Container(
@@ -936,17 +927,10 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       //     //
       //     // prefs.setBool(kSetWeekGoal, false);
       //     // upLoadOrder();
+      //     // FirebaseServerFunctions().deleteUnrepliedChats();
+      //     FirebaseServerFunctions().updateAllUsers();
       //
       //
-      //
-      //     // _deleteUnrepliedChats();
-      //    // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
-      //    //  Navigator.push(context,
-      //    //      MaterialPageRoute(builder: (context)=>
-      //    //          QuizPage5()
-      //    //      )
-      //    //  );
-      //     // print(messageValues.first);
       //
       //     // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
       //   },
@@ -1011,11 +995,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                             dateList.add(doc['time'].toDate());
                             searchForPhrase(doc['response'], doc['id']);
                             separateJsonAndText(doc['response'], doc['id']);
-
-                            // messageValues.add({"role": "user", "content": doc['message']});
-                            // messageValues.add({"role": "assistant", "content": doc['response']});
-
-                            // print(messageValues);
 
                             if (doc['replied'] == true){
                               statusList.add(Icon(LineIcons.doubleCheck, size: 15,color: kGreenThemeColor,));
@@ -1101,8 +1080,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                           Card(
 
                                             // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                                            color: kCustomColor,
                                             shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-                                            shadowColor: kGreenThemeColor,
+                                            shadowColor: kFaintGrey,
                                             // color: kBeigeColor,
                                             elevation: 2.0,
                                             child: Container(
@@ -1182,7 +1162,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                                       Share.share('${responseList[index]}\nhttps://bit.ly/3I8sa4M', subject: 'Check this out from Nutri');
                                                      },
                                                     child: Card(
-                                                        color: manualList[index] == false ? kCustomColor: kCustomColor,
+                                                        color: manualList[index] == false ? kPureWhiteColor: kPureWhiteColor,
                                                         shadowColor: kPureWhiteColor,
 
                                                         elevation: 4,
@@ -1238,7 +1218,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                                                   )
                                                 ],
                                               ),
-                                              instructions[index]!= null? Lottie.asset("images/cook.json", height: 30, width: 30): Container()
+                                              // instructions[index]!= null? Lottie.asset("images/cook.json", height: 30, width: 30): Container()
 
                                             ],
                                           ),

@@ -78,6 +78,7 @@ class _SignInOptionsState extends State<SignInOptions> {
 
       // Check if the user is new or existing and navigate accordingly
       var names = splitName(user.displayName!);
+      // If the user doesnt exist
       if (userCredential.additionalUserInfo ?.isNewUser ?? false) {
 
         // prefs.setString(user.displayName!,kFullNameConstant);
@@ -88,6 +89,7 @@ class _SignInOptionsState extends State<SignInOptions> {
         prefs.setString(kPhoneNumberConstant, "");
         prefs.setString(kEmailConstant, user.email!);
         prefs.setBool(kIsLoggedInConstant, true);
+        prefs.setStringList(kPointsList,[]);
 
         Navigator.push(context,
             MaterialPageRoute(builder: (context)=> WelcomeToNutri())
@@ -106,6 +108,7 @@ class _SignInOptionsState extends State<SignInOptions> {
             prefs.setString(kUniqueUserPhoneId, users['email']);
             prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
             prefs.setString(kUniqueIdentifier, user.uid);
+            prefs.setStringList(kPointsList,users['chatPoints'].cast<String>());
             Navigator.push(context,
                 MaterialPageRoute(builder: (context)=> WelcomeToNutri())
             );
@@ -132,6 +135,7 @@ class _SignInOptionsState extends State<SignInOptions> {
             prefs.setInt(kUserHeight, users['height']);
             prefs.setBool(kIsGoalSet,users['goalSet'] );
             prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
+            prefs.setStringList(kPointsList,users['chatPoints'].cast<String>());
             // prefs.setString(kToken, token);
 
             // This Function uploads the user token to the server.
@@ -205,11 +209,6 @@ class _SignInOptionsState extends State<SignInOptions> {
               lastName = appleCredentials.fullName!.familyName;
               email = appleCredentials.email;
 
-            // }
-
-            // var fullNames = userCredential.user?.displayName ?? "None";
-            // var email = userCredential.user?.email ?? "None";
-            // var names  = splitName( fullNames);
 
 
             prefs.setString(kFirstNameConstant, firstName ?? "");
@@ -219,6 +218,7 @@ class _SignInOptionsState extends State<SignInOptions> {
             prefs.setString(kUniqueIdentifier, userCredential.user!.uid);
             prefs.setString(kPhoneNumberConstant, "");
             prefs.setString(kEmailConstant, appleCredentials.email!);
+            prefs.setStringList(kPointsList,[]);
             prefs.setBool(kIsLoggedInConstant, true);
 
             Navigator.push(context,
@@ -229,12 +229,13 @@ class _SignInOptionsState extends State<SignInOptions> {
             final users = await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).get();
             if (users.exists){
 
-
+              // This takes into account former Blendit users
               if (users['level'] == "Return") {
                 prefs.setString(kFullNameConstant, users['lastName']);
                 prefs.setString(kFirstNameConstant, users['firstName']);
                 prefs.setString(kUniqueUserPhoneId, users['email']);
                 prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
+                prefs.setStringList(kPointsList,[]);
                 prefs.setString(kUniqueIdentifier, userCredential.user!.uid);
 
                 Navigator.push(context,
@@ -261,6 +262,7 @@ class _SignInOptionsState extends State<SignInOptions> {
                 prefs.setDouble(kUserWeight, users['weight']/1.0);
                 prefs.setInt(kUserHeight, users['height']);
                 prefs.setBool(kIsGoalSet,users['goalSet'] );
+                prefs.setStringList(kPointsList,users['chatPoints'].cast<String>());
                 prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
                 // prefs.setString(kToken, token);
 

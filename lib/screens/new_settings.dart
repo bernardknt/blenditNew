@@ -3,6 +3,7 @@ import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_uganda.dart';
+import 'package:blendit_2022/screens/purchase_restored_page.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/widgets/designed_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,9 +11,12 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/models/customer_info_wrapper.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 
@@ -194,39 +198,9 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
               // RoundImageRing(radius: 80, outsideRingColor: kPureWhiteColor, networkImageToUse: 'https://mcusercontent.com/f78a91485e657cda2c219f659/images/e80988fd-e61d-2234-2b7e-dced6e5f3a1a.jpg',),
               //
 
-              kSmallWidthSpacing,
-              // Text(name, style: kNormalTextStyleWhiteButtons.copyWith(color: kGreenThemeColor),),
-
-              // Card(
-              //   color: kPureWhiteColor,
-              //   shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
-              //   shadowColor: kGreenThemeColor,
-              //   elevation: 5.0,
-              //   child: ListTile(
-              //     title: Text(name, style: kNormalTextStyleWhiteButtons.copyWith(color: kGreenDarkColorOld)),
-              //     leading: const CircleAvatar(
-              //       backgroundImage: AssetImage('images/medical.png'),
-              //     ),
-              //     //  trailing: const Icon(Icons.edit, color: Colors.white,),
-              //   ),
-              // ),
+              // kSmallWidthSpacing,
               kSmallHeightSpacing,
-              // const Center(child: Text('Transaction Info', style: kNormalTextStyleSmall,)),
-              // Card(
-              //   margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-              //   shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
-              //   shadowColor: kNewGreenThemeColor,
-              //   elevation: 5.0,
-              //   child:
-              //   Column(
-              //     children: [
-              //
-              //
-              //     ],
-              //   ),
-              // ),
-              // kSmallHeightSpacing,
-              // This if statement shows the subscription button or makes it disappear inorder to bypass Apple APPSTORE compulsory in-app purchases
+
               Provider.of<AiProvider>(context, listen: false).subscriptionButton == false ? Container():Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -304,6 +278,55 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                   )
                 ],
               ),
+              TextButton(onPressed: () async {
+                try {
+                  showDialog(context: context, builder:
+                      ( context) {
+                    return const Center(child: CircularProgressIndicator());
+                  });
+                  CustomerInfo customerInfo = await Purchases.restorePurchases();
+                  Navigator.pop(context);
+
+                  if(customerInfo.activeSubscriptions.toString() == "[]"  ){
+                    CoolAlert.show(
+
+                      lottieAsset: 'images/goal.json',
+                      context: context,
+                      type: CoolAlertType.warning,
+                      title: "No Subscription Found",
+                    );
+
+                  } else {
+                    CoolAlert.show(
+
+                        lottieAsset: 'images/goal.json',
+                        context: context,
+                        type: CoolAlertType.success,
+                        title: "Subscription Detected",
+                        widget: Text("${customerInfo.activeSubscriptions[0]}"),
+                        cancelBtnText: "Cancel",
+                        showCancelBtn: true,
+                        onCancelBtnTap: (){Navigator.pop(context);},
+                        onConfirmBtnTap: (){
+
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, RestorePurchasePage.id);
+                        },
+                        confirmBtnColor: kGreenThemeColor,
+                        confirmBtnText: 'Activate'
+
+                    );
+                  }
+
+                  // ... check restored purchaserInfo to see if entitlement is now active
+                } on PlatformException catch (e) {
+                  // Error restoring purchases
+                }
+
+
+              }, child: Text("Restore Purchase", style: kNormalTextStyle.copyWith(color: Colors.blue),)),
+
               kLargeHeightSpacing,
               DesignedButton(continueFunction: (){
                 Share.share('Hey, I found this application called Nutri that helps keep you accountable and on track with your Health goals. You need to try it out. Follow the link \nhttps://bit.ly/3I8sa4M', subject: 'You need to try out Nutri');
@@ -496,7 +519,8 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                             await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).delete().then((value) async =>
                             await auth.signOut().then((value){
                               Navigator.pushNamed(context, WelcomePageNew.id);
-                              CommonFunctions().cancelNotification(prefs.getString(kUniqueIdentifier)); //cancel all notifications
+                              CommonFunctions().cancelNotification(prefs.getString(kUniqueIdentifier));
+                              prefs.setStringList(kPointsList,[]);//cancel all notifications
 
                             }
                             )

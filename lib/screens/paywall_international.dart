@@ -1,4 +1,6 @@
 import 'package:blendit_2022/models/CommonFunctions.dart';
+import 'package:blendit_2022/screens/purchase_restored_page.dart';
+import 'package:blendit_2022/screens/success_challenge_done.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -128,8 +130,64 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text('Subscribe', style: kNormalTextStyle.copyWith(color: textColor),),
+        centerTitle: false,
         backgroundColor: backgroundColor,
         foregroundColor: textColor,
+        actions: [
+          TextButton(onPressed: () async {
+            try {
+              showDialog(context: context, builder:
+                  ( context) {
+                return const Center(child: CircularProgressIndicator());
+              });
+              CustomerInfo customerInfo = await Purchases.restorePurchases();
+              Navigator.pop(context);
+
+              if(customerInfo.activeSubscriptions.toString() == "[]"  ){
+                CoolAlert.show(
+
+                    lottieAsset: 'images/goal.json',
+                    context: context,
+                    type: CoolAlertType.warning,
+                    title: "No Subscription Found",
+                );
+
+              } else {
+                CoolAlert.show(
+
+                    lottieAsset: 'images/goal.json',
+                    context: context,
+                    type: CoolAlertType.success,
+                    title: "Subscription Detected",
+                    widget: Text("${customerInfo.activeSubscriptions[0]}"),
+                    cancelBtnText: "Cancel",
+                    showCancelBtn: true,
+                    onCancelBtnTap: (){Navigator.pop(context);},
+                    onConfirmBtnTap: (){
+
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, RestorePurchasePage.id);
+                    },
+                    confirmBtnColor: kGreenThemeColor,
+                    confirmBtnText: 'Activate'
+
+                );
+              }
+
+
+
+
+
+              // ... check restored purchaserInfo to see if entitlement is now active
+            } on PlatformException catch (e) {
+              // Error restoring purchases
+            }
+
+
+          }, child: Text("Restore Purchase", style: kNormalTextStyle.copyWith(color: Colors.blue),)),
+
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(

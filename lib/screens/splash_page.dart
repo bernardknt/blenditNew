@@ -30,6 +30,7 @@ class _SplashPageState extends State<SplashPage> {
     prefs.setBool(kChallengeRequirements, false);
 
 
+
     Provider.of<AiProvider>(context, listen: false).setTipStatus();
 
     setState(() {

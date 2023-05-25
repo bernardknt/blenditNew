@@ -180,6 +180,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           prefs.setDouble(kUserWeight, users['weight']/1.0);
                           prefs.setInt(kUserHeight, users['height']);
                           prefs.setBool(kIsGoalSet,users['goalSet'] );
+                          prefs.setStringList(kPointsList,users['chatPoints'].cast<String>());
                           prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
                           prefs.setString(kToken, token);
 
@@ -193,14 +194,13 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                           // prefs.setBool(kNutriAi, true);
                           // if (prefs.getString(kFullNameConstant) == '') {
                           prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
+                          prefs.setStringList(kPointsList,[]);
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context)=> QuizPageName())
                             );
-                          //   subscribeToTopic(prefs.getString(kPhoneNumberConstant));
-                          // }
-                          // else {
+
                             _btnController.reset();
-                         // }
+
                         }
 
                         prefs.setBool(kIsLoggedInConstant, true);
@@ -271,8 +271,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                 setState(() {
 
                 });
-                  // styleDataDisplay.clearLists();
-                  // Navigator.pop(context);
+
                 },
               ),
             ],

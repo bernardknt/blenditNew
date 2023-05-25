@@ -46,6 +46,11 @@ class AiProvider extends ChangeNotifier{
   bool showPaymentNotification = false;
   List <Offering> subscriptionProducts = [];
 
+  // Nutri Chat
+   List powerPoints = [];
+
+
+
 
 
 
@@ -88,7 +93,7 @@ class AiProvider extends ChangeNotifier{
     "Get insights from Nutri on how to optimize your protein, carb, and fat intake.",
     "Ask for a local dish to have today",
   ];
-  List dailyProgressPoint = [];
+  double dailyProgressPoint = 0;
   bool tipStatus = false;
   List challengeDayData = [];
   List messageContext = [];
@@ -103,8 +108,15 @@ class AiProvider extends ChangeNotifier{
  //   notifyListeners();
  // }
 
-  setDailyProgressPoints (token){
-    dailyProgressPoint.add(token);
+// This adds power points to the Nutri chat when something good is done
+  addPowerPoints (token){
+    powerPoints.add(token);
+    notifyListeners();
+  }
+
+
+  setDailyProgressPoints (amount){
+    dailyProgressPoint += amount;
     notifyListeners();
   }
 

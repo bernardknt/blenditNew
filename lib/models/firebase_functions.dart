@@ -3,6 +3,9 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import '../controllers/home_controller.dart';
 
 class FirebaseServerFunctions {
 
@@ -61,6 +64,63 @@ class FirebaseServerFunctions {
         .then((value) => print('Favourites Updated'))
         .catchError((error) => print('Failed to update')
     );// //.update({'company':'Stokes and Sons'}
+  }
+
+  // DELETE ALL UNREPLIED MESSAGES
+
+  Future<void> deleteUnrepliedChats() async {
+    final QuerySnapshot unrepliedChats = await FirebaseFirestore.instance
+        .collection('chat')
+        .where('replied', isEqualTo: false)
+        .get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    unrepliedChats.docs.forEach((doc) => batch.delete(doc.reference));
+    await batch.commit();
+  }
+
+  Future<void> increasePointsCount(String uid, context, chatId) async {
+    CollectionReference<Map<String, dynamic>> usersCollection =
+    FirebaseFirestore.instance.collection('users');
+
+    DocumentReference<Map<String, dynamic>> userDoc = usersCollection.doc(uid);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+      await transaction.get(userDoc);
+
+      if (snapshot.exists) {
+        int currentCount = snapshot.data()!['articleCount'] ?? 0;
+        int newCount = currentCount + 20;
+        transaction.update(userDoc, {
+          'articleCount': newCount,
+          'chatPoints':  FieldValue.arrayUnion([chatId])
+        }
+
+        );
+      }
+    }).whenComplete(() {
+      Navigator.pop(context);
+      Navigator.pushNamed(context, ControlPage.id);
+      print("done");
+    });
+  }
+
+  // UPDATE ALL FUNCTIONS IN DATABASE WITH THESE FIELDS
+  Future<void> updateAllUsers() async {
+    CollectionReference<Map<String, dynamic>> usersCollection =
+    FirebaseFirestore.instance.collection('users');
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await usersCollection.get();
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    querySnapshot.docs.forEach((doc) {
+      batch.update(doc.reference, {'chatPoints': [], 'progress': []});
+    });
+
+    await batch.commit();
   }
 
 

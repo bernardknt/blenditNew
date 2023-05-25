@@ -294,10 +294,8 @@ class CommonFunctions {
             icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
         uploadActiveChallengePosition(challengeId, activeChallengeIndex + 1);
 
-
-
-
       });
+
       final urlDownload = await snapshot.ref.getDownloadURL();
       print("POPOPOPOPOPOPOP $urlDownload");
      onStepContinue(activeChallengeIndex, listOfKeysLength, challengePosition, challengeDayKeysLength, customerName, challengeName, challengeId, planDay, urlDownload, currentStep, context);
@@ -560,7 +558,7 @@ class CommonFunctions {
       'replied': false,
       'status' : true,
       'time':  DateTime.now(),
-      'message': "📸 '$description' uploaded",
+      'message': "📸 $description",
       'response': '',
       'userId': prefs.getString(kUniqueIdentifier),
       'weight': prefs.getDouble(kUserWeight),

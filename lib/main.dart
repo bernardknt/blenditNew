@@ -42,6 +42,7 @@ import 'package:blendit_2022/screens/onboarding_questions/quiz_page_name.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paymentMode_page.dart';
 import 'package:blendit_2022/screens/phone_details_page.dart';
+import 'package:blendit_2022/screens/purchase_restored_page.dart';
 import 'package:blendit_2022/screens/rating_page.dart';
 import 'package:blendit_2022/screens/register_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
@@ -109,9 +110,7 @@ Future <void> main() async{
 
 // Install the Play Integrity provider factory
   firebaseAppCheck.activate();
-  // installAppCheckProviderFactory(
-  //     PlayIntegrityAppCheckProviderFactory()
-  // );
+
   await PushNotificationService().setupInteractedMessage();
   runApp(MyApp());
   RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
@@ -204,6 +203,7 @@ class MyApp extends StatelessWidget {
             AppointmentsTabController.id: (context)=> AppointmentsTabController(),
             AboutChallengePage.id: (context)=> AboutChallengePage(),
             NutriMobileMoneyPage.id: (context)=> NutriMobileMoneyPage(),
+            RestorePurchasePage.id: (context)=> RestorePurchasePage(),
 
 
 
