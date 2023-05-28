@@ -303,12 +303,27 @@ class _SignInOptionsState extends State<SignInOptions> {
     token = prefs.getString(kToken)!;
   }
 
+  Future deliveryStream()async{
+
+    var start = FirebaseFirestore.instance.collection('variables').snapshots().listen((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((users) async {
+        setState(() {
+          Provider.of<AiProvider>(context, listen: false).
+          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'] );
+        });
+      });
+    });
+
+    return start;
+  }
+
   void initState() {
     // TODO: implement initState
 
     // _firebaseMessaging.getToken().then((value) => token = value!);
     super.initState();
-    defaultInitialization(); 
+    defaultInitialization();
+    deliveryStream();
   }
   var token = "";
   var countryName = '';

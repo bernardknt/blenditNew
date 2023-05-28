@@ -7,6 +7,7 @@ import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_uganda.dart';
+import 'package:blendit_2022/screens/qualityBot.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -89,12 +90,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     }
   }
 
-  void subscribeToTopic(topicNumber)async{
-    var topic = removeFirstCharacter(topicNumber);
-    await FirebaseMessaging.instance.subscribeToTopic(topic).then((value) =>
-    print('Succefully Subscribed to $topic')
-    );
-  }
+
   // THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
@@ -151,13 +147,14 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   }
 
 
+
   // This function takes in the the id of the chat messages and sees if they have the power up
 
   void checkForNewMessage( String id) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
    List <String>list = prefs.getStringList(kPointsList)!;
-    print(prefs.getStringList(kPointsList));
+
 
     if (list.contains(id)) {
       print("Yes");
@@ -185,6 +182,22 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     }
 
   }
+
+  // Function to check the prompt to use for a particular country
+  bool checkArrayForString(List<String> array, String searchString) {
+    return array.contains(searchString);
+  }
+
+  bool checkMapKeysContainString(map, String searchString) {
+
+    var myMap = map;
+    print(map);
+    print(myMap.keys.toList());
+
+    return checkArrayForString(myMap.keys.toList(), searchString);
+      // myMap.keys.any((key) => key.contains(searchString));
+  }
+
 
 
 
@@ -234,16 +247,11 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       'visible': true,
       'replyTime': DateTime.now(),
       "agentName": "",
-      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty
+      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty,
+      "prompt": prompt
     })
         .then((value){
       Provider.of<BlenditData>(context, listen: false).changeLastQuestion(finalQuestion);
-      prefs.setInt(kNutriCount, (previousNutriCount! + 1));
-      users.doc(auth.currentUser!.uid).update({
-
-        "articleCount": messageCount,
-
-      });
 
     } )
         .catchError((error) => print(error));
@@ -353,6 +361,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   // String serviceId = '';
   String serviceId = 'pic${uuid.v1().split("-")[0]}';
   var lastQuestion = '';
+  var prompt = '';
   List<double> opacityList = [];
   double textSize = 12.0;
   String fontFamilyMont = 'Montserrat-Medium';
@@ -449,7 +458,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                     right: 2,
                     // bottom: 2,
                     top: 5,
-                    child: IconButton(
+                    child:
+                    IconButton(
 
                       onPressed: () async {
 
@@ -457,6 +467,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         final prefs = await SharedPreferences.getInstance();
                         DateTime subscriptionDate = Provider.of<AiProvider>(context, listen: false).subscriptionDate;
                         DateTime today = DateTime.now();
+                        String country = prefs.getString(kUserCountryName)!;
 
 
 
@@ -467,6 +478,17 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                             // increaseValueAndUploadToFirestore();
                             lastQuestion = message;
                             serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
+                            prompt = "";
+                            print(Provider.of<AiProvider>(context, listen: false).prompt);
+
+                               if(checkMapKeysContainString(Provider.of<AiProvider>(context, listen: false).prompt, country )) {
+                                 prompt = Provider.of<AiProvider>(context, listen: false).prompt[country];
+                                 print("TATATATATATA: $prompt");
+                               } else {
+                                 prompt = "";
+                                 print("TATATATATATA: $prompt");
+                               }
+                            // print(Provider.of<AiProvider>(context, listen: false).prompt);
 
                             if (message.length > 20) {
                               print(" Long Response $message : ${message.length}");
@@ -484,12 +506,14 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         } else {
 
                           if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){
+                           print("MAMAMAMAMAMMIA this run");
                             Navigator.push(context,
-                               // MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
-                                MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                               MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
+                               //  MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
                             );
                           } else {
                             // This
+                            print("tatatatatattamia this run");
                             CommonFunctions().fetchOffers().then(
                                     (value) {
                                       // We are sending a List of Offerings to the value subscriptionProducts
@@ -596,7 +620,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     },
     child: Scaffold(
         backgroundColor: kGreyLightThemeColor,
-        appBar: AppBar(
+        appBar:
+        AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: kGreyLightThemeColor,
 
@@ -605,15 +630,23 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               Container(
                   height: 35,
                   child: InkWell(
+                    onLongPress: (){
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=>
+                             PaywallInternationalPage()
+                            // QualityBot()
+                            // PhotoOnboarding()
+                          )
+                      );
+
+                    },
                     onDoubleTap: () async {
                       final prefs = await SharedPreferences.getInstance();
-                      // subscribeToTopic(prefs.getString(kPhoneNumberConstant));
-                      // setState(() {
+
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context)=>
-                                // WelcomeToNutri()
-                               PaywallInternationalPage()
-                            // PhotoOnboarding()
+                                PaywallUgandaPage()
+
                             )
                         );
                     },
@@ -636,7 +669,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
             StreamBuilder<QuerySnapshot> (
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    .where('token', isEqualTo: token)
+                    .where('docId', isEqualTo: userIdentifier)
                     .snapshots(),
                 builder: (context, snapshot)
                 {

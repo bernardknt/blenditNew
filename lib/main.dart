@@ -43,6 +43,7 @@ import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paymentMode_page.dart';
 import 'package:blendit_2022/screens/phone_details_page.dart';
 import 'package:blendit_2022/screens/purchase_restored_page.dart';
+import 'package:blendit_2022/screens/qualityBot.dart';
 import 'package:blendit_2022/screens/rating_page.dart';
 import 'package:blendit_2022/screens/register_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
@@ -204,6 +205,7 @@ class MyApp extends StatelessWidget {
             AboutChallengePage.id: (context)=> AboutChallengePage(),
             NutriMobileMoneyPage.id: (context)=> NutriMobileMoneyPage(),
             RestorePurchasePage.id: (context)=> RestorePurchasePage(),
+            QualityBot.id: (context)=> QualityBot(),
 
 
 

@@ -97,8 +97,8 @@ class _QuizPage5State extends State<QuizPage5> {
             if(Provider.of<AiProvider>(context, listen: false).iosUpload == false) {
               if (prefs.getString(kUserCountryName) == "Uganda"){
                 Navigator.push(context,
-                  //  MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
-                    MaterialPageRoute(builder: (context)=> PaywallFirstInternationalPage())
+                   MaterialPageRoute(builder: (context)=> PaywallFirstUgandaPage())
+                    // MaterialPageRoute(builder: (context)=> PaywallFirstInternationalPage())
 
                 );
               } else {

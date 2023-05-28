@@ -29,11 +29,13 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 import '../screens/ios_onboarding.dart';
+import '../screens/make_payment_page.dart';
 import '../screens/success_challenge_done.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../widgets/InputFieldWidget.dart';
 import 'ai_data.dart';
+import 'firebase_functions.dart';
 
 
 
@@ -54,6 +56,7 @@ class CommonFunctions {
   CollectionReference challengeCollection = FirebaseFirestore.instance.collection('challenges');
   CollectionReference trends = FirebaseFirestore.instance.collection('photoUpLoads');
   CollectionReference chat = FirebaseFirestore.instance.collection('chat');
+  CollectionReference quality = FirebaseFirestore.instance.collection('qualityControl');
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
 
@@ -553,6 +556,36 @@ class CommonFunctions {
   Future<void> addPhotoToDB(trendsId, image, name, description, context) async {
     // Call the user's CollectionReference to add a new user
     final prefs = await SharedPreferences.getInstance();
+    quality.doc(trendsId)
+        .set({
+      'replied': false,
+      'status' : true,
+      'time':  DateTime.now(),
+      'message': "📸 $description",
+      'response': '',
+      'userId': prefs.getString(kUniqueIdentifier),
+      'weight': prefs.getDouble(kUserWeight),
+      'height': prefs.getInt(kUserHeight),
+      'name': prefs.getString(kFullNameConstant),
+      'token': prefs.getString(kToken),
+      'id':trendsId,
+      'history': [],
+      'length': 200,
+      'lastQuestion': "None",
+      'manual': false,
+      'photo': true,
+      'country': prefs.getString(kUserCountryName),
+      'birthday': prefs.getString(kUserBirthday),
+      'preferences': prefs.getString(kUserPersonalPreferences),
+      'image': image,
+      'agent': false,
+      'visible': true,
+      'replyTime': DateTime.now(),
+      "agentName": "",
+      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty,
+      "tag": trendsId
+    });
+
     return chat.doc(trendsId)
         .set({
       'replied': false,
@@ -833,6 +866,41 @@ class CommonFunctions {
       userData['subscriptionEndDate'].toDate(),
       userData['trial']
     );
+
+  }
+
+  makeRevenueCatPayment(context, customerID,productStoreId, price, title, duration, transactionId) async{
+
+    final prefs = await SharedPreferences.getInstance();
+    try{
+
+
+      showDialog(context: context, builder:
+          ( context) {
+        return const Center(child: CircularProgressIndicator());
+      });
+      await Purchases.purchaseProduct(productStoreId);
+
+      Provider.of<AiProvider>(context, listen: false).setShowPaymentDialogue(true);
+      Navigator.pushNamed(context, MakePaymentPage.id);
+      // transactionStream();
+      await FirebaseServerFunctions().callableRevenueCatPayment.call(<String, dynamic>{
+        'id': productStoreId,
+        'amount': CommonFunctions().extractNumberFromString(price),
+        'product': title,
+        'transId': transactionId,
+        'duration': productStoreId == "nutri_69.99_annual_subscription" ? 365: 31,
+        'token': prefs.getString(kToken),
+        'uid' : prefs.getString(kUniqueIdentifier),
+        'name': prefs.getString(kFullNameConstant),
+        'currency': CommonFunctions().extractCurrencyFromString(price),
+        'revenueCatId': customerID,
+        // orderId
+      }).then((value) => null);
+
+    } catch(e){
+      debugPrint("Failed to Purchase product $title, error: $e");
+    }
 
   }
 

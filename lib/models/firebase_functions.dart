@@ -3,13 +3,17 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/home_controller.dart';
+import '../utilities/constants.dart';
 
 class FirebaseServerFunctions {
 
   // Removing Appointment from the server
+  final HttpsCallable callableRevenueCatPayment = FirebaseFunctions.instance.httpsCallable(kRevenueCatPayment);
+
   Future <dynamic> removeAppointment(docId ){
 
     return FirebaseFirestore.instance
@@ -70,8 +74,8 @@ class FirebaseServerFunctions {
 
   Future<void> deleteUnrepliedChats() async {
     final QuerySnapshot unrepliedChats = await FirebaseFirestore.instance
-        .collection('chat')
-        .where('replied', isEqualTo: false)
+        .collection('qualityControl')
+        // .where('replied', isEqualTo: false)
         .get();
 
     final batch = FirebaseFirestore.instance.batch();

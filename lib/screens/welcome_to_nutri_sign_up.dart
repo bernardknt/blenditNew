@@ -166,8 +166,8 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
 
                         },
                         // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                        initialSelection: 'Uganda',
-                        favorite: const ['+256','+254','+255',"US"],
+                        initialSelection: 'Kenya',
+                        favorite: const ['+256','+250','+255',"US"],
                         // optional. Shows only country name and flag
                         showCountryOnly: true,
 

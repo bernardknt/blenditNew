@@ -34,20 +34,28 @@ class AiProvider extends ChangeNotifier{
   String ugYearly = "199000";
   String intMonthly = "5.99";
   String intYearly = "59.99";
-  int trialTime = 3;
+  int trialTime = 7;
   bool iosUpload = false;
   List countries = [ 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi',
     'Cape Verde', 'Cameroon', 'Central African Republic', 'Chad', 'Comoros', 'Democratic Republic of the Congo', 'Republic of the Congo', 'Djibouti', 'Equatorial Guinea', 'Eritrea', 'Eswatini', 'Ethiopia', 'Gabon', 'Gambia', 'Ghana', 'Guinea', 'Guinea-Bissau', 'Ivory Coast', 'Kenya', 'Lesotho', 'Liberia', 'Madagascar', 'Malawi', 'Mali', 'Mauritania', 'Mauritius',  'Mozambique', 'Namibia', 'Niger', 'Nigeria', 'Rwanda', 'Sao Tome and Principe', 'Senegal', 'Seychelles', 'Sierra Leone', 'Somalia', 'South Africa', 'South Sudan', 'Sudan', 'Tanzania', 'Togo',  'Uganda', 'Zambia', 'Zimbabwe', 'Brazil', 'Haiti', 'Jamaica', 'Trinidad and Tobago','Dominican Republic', 'Bahamas', 'Barbados', 'Guyana', 'Saint Lucia', 'Grenada', 'Belize', 'Saint Kitts and Nevis', 'Antigua and Barbuda', 'Saint Vincent and the Grenadines', 'Suriname', 'Cuba', 'Puerto Rico', 'Panama', 'Colombia',
   ];
+  Map prompt = {};
   String ugTrial = "20k";
+  String qualityControl = "";
   String intTrial = "5.99";
   String customerCareNumber = "+256700457826";
   String userName = "";
   bool showPaymentNotification = false;
   List <Offering> subscriptionProducts = [];
+  List powerPoints = [];
 
-  // Nutri Chat
-   List powerPoints = [];
+
+  String revCustomerId = "";
+  String revProductStoreId = "";
+  String revPrice = '';
+  String revTitle = '';
+  String revDuration = '';
+  String revTransId = '';
 
 
 
@@ -109,6 +117,18 @@ class AiProvider extends ChangeNotifier{
  // }
 
 // This adds power points to the Nutri chat when something good is done
+  setRevenueCatValue( customerID,productStoreId, revenuecatPrice, title, duration, rcTransactionId){
+    revCustomerId = customerID;
+    revProductStoreId = productStoreId;
+    revPrice = revenuecatPrice;
+    revTitle = title;
+    revDuration = duration;
+    revTransId = rcTransactionId;
+
+    notifyListeners();
+
+  }
+
   addPowerPoints (token){
     powerPoints.add(token);
     notifyListeners();
@@ -283,7 +303,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     subscriptionType = subscription;
 
   }
-  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries){
+  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries, countryPrompt, control){
     ugMonthly = ugMonth.toString();
     ugYearly = ugYear.toString();
     intMonthly = intMonth.toString();
@@ -298,6 +318,8 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     trialTime = time;
     iosUpload = ios;
     countries = blackCountries;
+    prompt = countryPrompt;
+    qualityControl = control;
 
     notifyListeners();
   }

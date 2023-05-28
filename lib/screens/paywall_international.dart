@@ -44,16 +44,6 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
 
 
   final HttpsCallable callableRevenueCatPayment = FirebaseFunctions.instance.httpsCallable(kRevenueCatPayment);
-  int parseAmount(String amountString) {
-    // Remove the dollar sign from the string
-    String amountWithoutDollar = amountString.replaceAll('US\$', '');
-
-    // Parse the remaining string as a double
-    double amount = double.tryParse(amountWithoutDollar) ?? 0.0;
-
-    // Return the integer value of the amount
-    return amount.toInt();
-  }
 
   void defaultInitialization () async {
     products = Provider.of<AiProvider>(context, listen: false).subscriptionProducts;
@@ -295,7 +285,7 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
             ),
             child: InkWell(
               onTap: () async{
-                print(customerID);
+
                 String transactionId = 'revenueCatNutri${uuid.v1().split("-")[0]}';
                 final prefs = await SharedPreferences.getInstance();
                 try{
@@ -306,8 +296,8 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
                     return const Center(child: CircularProgressIndicator());
                   });
                    await Purchases.purchaseProduct(productStoreId);
-                   var userInfo = await Purchases.getCustomerInfo();
-                   // userInfo.
+                   // var userInfo = await Purchases.getCustomerInfo();
+                   // // userInfo.
                   Provider.of<AiProvider>(context, listen: false).setShowPaymentDialogue(true);
                   Navigator.pushNamed(context, MakePaymentPage.id);
                   transactionStream();
@@ -318,7 +308,7 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
                     'amount': CommonFunctions().extractNumberFromString(price),
                     'product': title,
                     'transId': transactionId,
-                    'duration': duration == "P1Y" ? 365: 31,
+                    'duration': productStoreId == "nutri_69.99_annual_subscription" ? 365: 31,
                     'token': prefs.getString(kToken),
                     'uid' : prefs.getString(kUniqueIdentifier),
                     'name': prefs.getString(kFullNameConstant),
@@ -385,7 +375,7 @@ class _PaywallInternationalPageState extends State<PaywallInternationalPage> {
             top: 10,
             right: 10,
               child: Opacity(
-                opacity: duration == "P1Y" ? 1:0,
+                opacity:  productStoreId == "nutri_69.99_annual_subscription" ? 1:0,
                 child: Container(
                   decoration: BoxDecoration(
                     color: kAppPinkColor, borderRadius: BorderRadius.circular(10)

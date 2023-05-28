@@ -1,6 +1,8 @@
 
 
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/models/CommonFunctions.dart';
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:intl/intl.dart';
@@ -273,6 +276,21 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
 
                       // Create a document in the Transactions Db
                     }, firstButtonText: 'Make Payment'),
+                kSmallHeightSpacing,
+                TextButton( child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Or Pay with Credit Card", style: kNormalTextStyle.copyWith(color: kBlueThemeColor, fontSize: 16),),
+                    kSmallWidthSpacing, 
+                    Icon(Icons.credit_card, color: kBlueThemeColor,)
+                  ],
+                ),
+                  onPressed: (){
+                  var data = Provider.of<AiProvider>(context, listen: false);
+                  CommonFunctions().makeRevenueCatPayment(context, data.revCustomerId, data.revProductStoreId , data.revPrice,data.revTitle, data.revDuration, data.revTransId );
+                  },
+
+                ),
                 kLargeHeightSpacing,
                 TextButton(onPressed: (){
                   Navigator.pop(context);

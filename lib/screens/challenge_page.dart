@@ -515,7 +515,8 @@ class _ChallengePageState extends State<ChallengePage> {
           key: recipeIndicator,
           titleTextStyle: kNormalTextStyle,
           description: 'Click here to see your Shopping list',
-          child: IconButton(
+          child:
+          IconButton(
             icon: Icon(Iconsax.menu_board, color:Colors.red,),
             onPressed: () {
               // var shoppingList = Provider.of<AiProvider>(context, listen: false).challengeRules.split('.');

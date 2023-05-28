@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const kBlueThemeColor = Color(0xFF18178B);
+const kBlueThemeColor = Colors.blue;
 const kGreenThemeColor = Color(0xFF21b55c);
 const kGreenThemeColorOld = Color(0xFF0AB11B);
 const kGreyLightThemeColor = Color(0xFFeeeeee);
@@ -123,6 +123,6 @@ String kRevenueCatPayment = 'revenueCatPayment';
 String kPaymentAttempt = 'paymentAttempt';
 String kEmailServerName = 'sendEmail';
 String kRevenueCatPurchasesKeyIOS = "appl_BypoTqpmaTnGvWTNZktkSUcOmBZ";
-String kRevenueCatPurchasesKeyAndroid = "appl_BypoTqpmaTnGvWTNZktkSUcOmBZ";
+String kRevenueCatPurchasesKeyAndroid = "goog_EtSxZopAXzvZbJnxIMvOqQYifpz";
 
 
