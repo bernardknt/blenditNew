@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-
 import 'package:flutter/material.dart';
-
+// import 'package:googleapis/connectors/v1.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utilities/font_constants.dart';
 import '../widgets/gliding_text.dart';
 import 'onboarding_questions/quiz_page1.dart';
+import 'package:provider/provider.dart';
 
 
 class WelcomeToNutri extends StatefulWidget {
@@ -27,6 +28,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
   late Timer _timer;
   var countryName = '';
   var countrySelected = false;
+  var initialCountry = "";
   var countryFlag = '';
   var countryCode = "+256";
   var name = "";
@@ -37,6 +39,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
 
   void defaultInitialization() async {
     final prefs = await SharedPreferences.getInstance();
+    initialCountry = Provider.of<AiProvider>(context,listen: false).favouriteCountry;
     name = prefs.getString(kFirstNameConstant) ?? "";
     inspiration = "Welcome to Nutri $name, My name is Lisa. Let me set you up. Start by selecting your country";
 
@@ -52,18 +55,9 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
     _startTyping();
     animationTimer();
   }
-  String _displayText = '';
-  int _characterIndex = 0;
   double opacityValue = 0.0;
   final String _text = 'Hello World';
 
-  // void locationDeterminant() async {
-  //   final position = await Geolocator.getCurrentPosition();
-  //   final placemarks = await Geolocator.placemarkFromCoordinates(position.latitude, position.longitude);
-  //
-  //   final country = position.latitude;
-  //   print('Your country: $country');
-  // }
 
   void _startTyping() {
     Timer.periodic(Duration(milliseconds: 10), (timer) {
@@ -76,8 +70,6 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
   final _random = new Random();
   animationTimer() async{
     final prefs = await SharedPreferences.getInstance();
-    // final player = AudioCache();
-    // player.play("transition.wav");
     _timer = Timer(const Duration(milliseconds: 3000), () {
       prefs.setBool(kChallengeActivated, true);
 
@@ -166,8 +158,8 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
 
                         },
                         // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                        initialSelection: 'Kenya',
-                        favorite: const ['+256','+250','+255',"US"],
+                        initialSelection: Provider.of<AiProvider>(context,listen: false).favouriteCountry,
+                        favorite: const ["US",'+256','+250','+254',],
                         // optional. Shows only country name and flag
                         showCountryOnly: true,
 
