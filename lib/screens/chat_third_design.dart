@@ -8,6 +8,7 @@ import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_uganda.dart';
 import 'package:blendit_2022/screens/qualityBot.dart';
+import 'package:blendit_2022/screens/welcome_to_nutri_sign_up.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -630,26 +631,26 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               Container(
                   height: 35,
                   child: InkWell(
-                    onLongPress: (){
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>
-                             PaywallInternationalPage()
-                            // QualityBot()
-                            // PhotoOnboarding()
-                          )
-                      );
-
-                    },
-                    onDoubleTap: () async {
-                      final prefs = await SharedPreferences.getInstance();
-
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=>
-                                PaywallUgandaPage()
-
-                            )
-                        );
-                    },
+                    // onLongPress: (){
+                    //   Navigator.push(context,
+                    //       MaterialPageRoute(builder: (context)=>
+                    //          WelcomeToNutri()
+                    //         // QualityBot()
+                    //         // PhotoOnboarding()
+                    //       )
+                    //   );
+                    //
+                    // },
+                    // onDoubleTap: () async {
+                    //   final prefs = await SharedPreferences.getInstance();
+                    //
+                    //     Navigator.push(context,
+                    //         MaterialPageRoute(builder: (context)=>
+                    //             PaywallUgandaPage()
+                    //
+                    //         )
+                    //     );
+                    // },
                     child: ClipOval(
 
                         child:
