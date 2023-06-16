@@ -40,7 +40,7 @@ class PaywallFirstInternationalPage extends StatelessWidget {
               ),
               kLargeHeightSpacing,
               Text(
-                '${Provider.of<AiProvider>(context, listen: false).userName} Enjoy free 3 Day Trial, then USD ${Provider.of<AiProvider>(context,listen: false).intTrial} /month!', textAlign: TextAlign.center,
+                '${Provider.of<AiProvider>(context, listen: false).userName} Enjoy free ${ Provider.of<AiProvider>(context, listen: false).trialTime} Day Trial, then USD ${Provider.of<AiProvider>(context,listen: false).intTrial} /month!', textAlign: TextAlign.center,
                 style:kHeading2TextStyleBold.copyWith(fontSize: 20, color: textColor),
               ),
               kLargeHeightSpacing,

@@ -149,12 +149,12 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
   Widget build(BuildContext context) {
     var aiData = Provider.of<AiProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: kGreenThemeColor,
-        title: Text('Settings Page', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: true,
+      //   backgroundColor: kGreenThemeColor,
+      //   title: Text('Settings Page', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+      //   centerTitle: true,
+      // ),
       floatingActionButton:
       FloatingActionButton(
         onPressed: () async {
@@ -191,7 +191,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
       body: SingleChildScrollView(
 
         child: Padding(
-          padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
+          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -199,11 +199,13 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
               //
 
               // kSmallWidthSpacing,
+              email == null?Text(phoneNumber, style: kNormalTextStyle) :Text(email, style: kNormalTextStyle.copyWith(fontSize: 10)),
               kSmallHeightSpacing,
 
               Provider.of<AiProvider>(context, listen: false).subscriptionButton == false ? Container():Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+
                   Text('Membership', style: kNormalTextStyleSmall,),
                   kMediumWidthSpacing,
                   GestureDetector(
@@ -344,11 +346,11 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                     child:
                     Column(
                       children: [
-                        ListTile(
-                          leading: Icon(Iconsax.people, color: kGreenDarkColorOld,),
-                          title:Text(sex, style: kNormalTextStyle),
-                          // trailing: Icon(Icons.keyboard_arrow_right),
-                        ),
+                        // ListTile(
+                        //   leading: Icon(Iconsax.people, color: kGreenDarkColorOld,),
+                        //   title:Text(sex, style: kNormalTextStyle),
+                        //   // trailing: Icon(Icons.keyboard_arrow_right),
+                        // ),
                         _buildDivider(),
                         ListTile(
                           leading: Icon(Iconsax.ruler, color: kGreenDarkColorOld,),
@@ -374,11 +376,11 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                           // trailing: Icon(Icons.keyboard_arrow_right),
                         ),
                         _buildDivider(),
-                        ListTile(
-                          leading: Icon(Iconsax.cake, color: kGreenDarkColorOld,),
-                          title:Text('DOB: $birthday', style:kNormalTextStyle),
-                          // trailing: Icon(Icons.keyboard_arrow_right),
-                        ),
+                        // ListTile(
+                        //   leading: Icon(Iconsax.cake, color: kGreenDarkColorOld,),
+                        //   title:Text('DOB: $birthday', style:kNormalTextStyle),
+                        //   // trailing: Icon(Icons.keyboard_arrow_right),
+                        // ),
 
                       ],
                     ),

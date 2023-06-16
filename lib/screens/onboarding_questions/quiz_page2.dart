@@ -26,8 +26,7 @@ class QuizPage2 extends StatefulWidget {
 }
 
 class _QuizPage2State extends State<QuizPage2> {
-  var categoryName = ['Male', 'Female'];
-  var categoryId = ['1','2'];
+
 
   void defaultInitialisation(){
     DatePicker.showDatePicker(context,

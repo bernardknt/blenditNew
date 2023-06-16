@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page1.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page2.dart';
+import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,17 +42,7 @@ class _QuizPageNameState extends State<QuizPageName> {
 
   @override
 
-  animationTimer() {
-    Timer(const Duration(milliseconds: 500), () {
-     // Provider.of<StyleProvider>(context, listen: false).resetQuestionButtonColors();
-      // Navigator.pop(context);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context)=> QuizPage2())
-      );
 
-      // Navigator.pop(context);
-    });
-  }
 
   Widget build(BuildContext context) {
     // Provider.of<StyleProvider>(context, listen: false).resetQuestionButtonColors();
@@ -108,10 +99,10 @@ class _QuizPageNameState extends State<QuizPageName> {
 
                             prefs.setString(kFirstNameConstant, firstName);
                             Provider.of<AiProvider>(context, listen: false).setUseName(firstName);
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context)=> QuizPage1())
-                            // );
-                            Navigator.pushNamed(context, QuizPage1.id);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context)=> QuizPage5())
+                            );
+                            // Navigator.pushNamed(context, QuizPage1.id);
                           }
 
 

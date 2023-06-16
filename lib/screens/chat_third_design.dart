@@ -1,22 +1,16 @@
 
 
 import 'dart:async';
-
-import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_uganda.dart';
-import 'package:blendit_2022/screens/qualityBot.dart';
-import 'package:blendit_2022/screens/welcome_to_nutri_sign_up.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:cool_alert/cool_alert.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -31,19 +25,16 @@ import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
+import '../controllers/settings_tab_controller.dart';
 import '../models/blendit_data.dart';
 import '../models/firebase_functions.dart';
 import 'delivery_page.dart';
 import 'goals.dart';
-import 'loading_goals_page.dart';
-import 'new_settings.dart';
-import 'package:googleapis/calendar/v3.dart' as calendar;
-import 'package:googleapis_auth/auth_io.dart' as auth;
+
 
 class ChatThirdDesignedPage extends StatefulWidget {
   static String id = 'three_orders_page';
@@ -70,7 +61,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   Random random = Random();
   bool updateMe = true;
   bool isAfrican = true;
-  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
   bool isAfricanCountry(String countryName) {
     List africanCountries = Provider.of<AiProvider>(context, listen: false).countries;
@@ -88,6 +78,56 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     } else {
       print('Error: String is too short to remove first character.');
       return "";
+    }
+  }
+
+  void createDocument() async {
+    final userId = 'OYPETtqEedch29E51tikMPbZUKD2';
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .set({
+        "email": "adm3006@gmail.com",
+        "firstName": "",
+        "lastName": "",
+        "loyalty": 1500,
+        "loyaltyBefore": 0,
+       " challengesActive": [],
+        "challenge": false,
+        "goal": "",
+        "goalSet": false,
+       "subscriptionEndDate": DateTime.now(),
+        "subscriptionStartDate": DateTime.now(),
+        "vision": "",
+        "articleCount": 0,
+        "articleCountValues": [],
+       "aiActive": true,
+        "height": 180,
+        "weight": 70,
+        "sex": "Female",
+        "dateOfBirth": DateTime.now(),
+        "preferencesId": [],
+        "preferences": [],
+        "phoneNumber": "",
+        "country": "Uganda",
+        "countryCode": "",
+        "level": "Beginner",
+        "token": "userTokenGoesHere",
+        "creed": "",
+        "trial": "Premium",
+        "weekGoal": false,
+        "chatPoints": [],
+        "progress": [],
+        "docId": userId,
+
+
+          });
+
+      print('Document created successfully!');
+    } catch (e) {
+      print('Error creating document: $e');
     }
   }
 
@@ -134,12 +174,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       if (input.contains('Nutriup')) {
         String modifiedText = input.replaceAll('Nutriup', '✨');
         responseList.add(modifiedText);
-        // print(responseList.indexOf(modifiedText));
-        // print(id);
-
         checkForNewMessage(id);
-
-
       }else {
         responseList.add(input);
         instructions.add(null);
@@ -176,7 +211,6 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       });
       showCupertinoModalPopup(context: context, builder: (context) => Container(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        //color: Color(0xFF757575),
         child: Lottie.asset('images/rocket.json',
             height: 200),
       ));
@@ -508,10 +542,14 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
                           if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){
                            print("MAMAMAMAMAMMIA this run");
-                            Navigator.push(context,
-                               MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
-                               //  MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
-                            );
+
+                           CommonFunctions().fetchOffers().then((value) {
+                             // We are sending a List of Offerings to the value subscriptionProducts
+                             Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
+                             Navigator.push(context,
+                                 MaterialPageRoute(builder: (context)=> PaywallUgandaPage()));
+
+                           });
                           } else {
                             // This
                             print("tatatatatattamia this run");
@@ -561,12 +599,19 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
                       } else {
                         if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context)=> PaywallUgandaPage())
-                          );
+
+                          CommonFunctions().fetchOffers().then((value) {
+                            // We are sending a List of Offerings to the value subscriptionProducts
+                            Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context)=> PaywallUgandaPage()));
+
+                          });
+
+
+
                         } else {
-                          CommonFunctions().fetchOffers().then(
-                                  (value) {
+                          CommonFunctions().fetchOffers().then((value) {
                                 // We are sending a List of Offerings to the value subscriptionProducts
                                 Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
                                 Navigator.push(context,
@@ -667,290 +712,171 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
           centerTitle: true,
           actions: [
 
-            StreamBuilder<QuerySnapshot> (
-                stream: FirebaseFirestore.instance
-                    .collection('users')
-                    .where('docId', isEqualTo: userIdentifier)
-                    .snapshots(),
-                builder: (context, snapshot)
-                {
-                  if(!snapshot.hasData){
-                    return Container();
-                  }
-                  else{
-                    pointsList = [];
-
-                    var orders = snapshot.data?.docs;
-                    for( var doc in orders!) {
-                      pointsList.add(doc['articleCount']??0);
-                    }
-                    // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
-                    return  SizedBox(
-                      height: 60,
-                      child: GestureDetector(
-                        onTap: () async{
-                          if (pointsList[0]<= 100) {
-                            Get.snackbar(
-                                'Lets get those points',
-                                'Take a photo doing something towards your goal, or tell Nutri about your progress to increase your points💪',
-                                snackPosition: SnackPosition.TOP,
-                                backgroundColor: kCustomColor,
-                                colorText: kBlack,
-                                icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
-                          } else {
-                            Get.snackbar(
-                                'Well Done',
-                                "You have achieved Today's Goal 💪",
-                                snackPosition: SnackPosition.TOP,
-                                backgroundColor: kBlack,
-                                colorText: kPureWhiteColor,
-                                icon: Icon(Icons.check_circle, color: kCustomColor,));
-                          }
-
-
-
-                          // final prefs = await SharedPreferences.getInstance();
-                          //
-                          // if (prefs.getBool(kIsGoalSet) == false ||prefs.getBool(kIsGoalSet) == null ) {
-                          //   print(prefs.getBool(kIsGoalSet));
-                          //   CoolAlert.show(
-                          //
-                          //       lottieAsset: 'images/goal.json',
-                          //       context: context,
-                          //       type: CoolAlertType.success,
-                          //       widget: SingleChildScrollView(
-                          //
-                          //           child:
-                          //           Column(
-                          //             children: [
-                          //               Padding(
-                          //                 padding: const EdgeInsets.all(8.0),
-                          //                 child: TextField(
-                          //                   onChanged: (enteredQuestion){
-                          //                     question = enteredQuestion;
-                          //                     // instructions = customerName;
-                          //                     // setState(() {
-                          //                     // });
-                          //                   },
-                          //                   decoration: InputDecoration(
-                          //                       border:
-                          //                       //InputBorder.none,
-                          //                       OutlineInputBorder(
-                          //                         borderRadius: BorderRadius.circular(10),
-                          //                         borderSide: BorderSide(color: Colors.green, width: 2),
-                          //                       ),
-                          //                       labelText: 'Goal',
-                          //                       labelStyle: kNormalTextStyleExtraSmall,
-                          //                       hintText: 'This year I want to lose 10kg',
-                          //                       hintStyle: kNormalTextStyle
-                          //                   ),
-                          //
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           )
-                          //       ),
-                          //       text: 'What is your main goal for this year?',
-                          //       title: "${prefs.getString(kFirstNameConstant)}!",
-                          //       confirmBtnText: 'Set Goal',
-                          //       confirmBtnColor: Colors.green,
-                          //       backgroundColor: kBackgroundGreyColor,
-                          //       onConfirmBtnTap: () async{
-                          //         if (question != ""){
-                          //           final prefs = await SharedPreferences.getInstance();
-                          //           prefs.setString(kGoalConstant, question);
-                          //           prefs.setBool(kIsGoalSet, true);
-                          //           Navigator.pop(context);
-                          //           prefs.setString(kUserId, auth.currentUser!.uid);
-                          //           // updatePersonalInformationWithGoal();
-                          //           dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-                          //             'goal': question,
-                          //             'userId':auth.currentUser!.uid,
-                          //             // orderId
-                          //           });
-                          //           // Navigator.pushNamed(context, SuccessPageNew.id);
-                          //           Navigator.push(context,
-                          //               MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-                          //           );
-                          //         } else {
-                          //
-                          //         }
-                          //
-                          //
-                          //
-                          //         setState(() {
-                          //
-                          //         });
-                          //       }
-                          //   );
-                          //
-                          //
-                          //
-                          // }else{
-                          //   // Navigator.pushNamed(context, HomePage.id);
-                          //   Navigator.push(context,
-                          //       MaterialPageRoute(builder: (context)=> GoalsPage())
-                          //   );
-                          // }
-
-                        },
-
-
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 30.0),
-                          child: Row(
-                            children: [
-
-                              Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 13,),),
-                              kSmallWidthSpacing,
-                              kSmallWidthSpacing,
-                              SimpleCircularProgressBar(
-                                size: 20,
-                                progressColors: [kGreenThemeColor, kCustomColor, Colors.blue ],
-                                progressStrokeWidth: 4,
-                                backStrokeWidth: 10,
-                                // valueNotifier: ValueNotifier(Provider.of<AiProvider>(context, listen: false).progressPoints * 1.0),
-                                valueNotifier: ValueNotifier(pointsList[0].toDouble()),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                      //Text('Hi ${pointsList}', style: kNormalTextStyle.copyWith(color: kBlack),);
-
-                  }
-
-                }
-
-            ),
-
-
-            // Container(
-            //   width: 80,
-            //   height: 20,
+            // StreamBuilder<QuerySnapshot> (
+            //     stream: FirebaseFirestore.instance
+            //         .collection('users')
+            //         .where('docId', isEqualTo: userIdentifier)
+            //         .snapshots(),
+            //     builder: (context, snapshot)
+            //     {
+            //       if(!snapshot.hasData){
+            //         return Container();
+            //       }
+            //       else{
+            //         pointsList = [];
             //
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(20.0),
-            //     child: LinearProgressIndicator(
-            //       value: progressValue,
-            //     ),
-            //   ),
-            // ),
-            // IconButton(
-            //   icon: Icon(Icons.info, color:kGreenThemeColor,),
-            //   onPressed: () {
-            //
-            //   },
-            // ),
-
-            // HERE IS WHERE THE CODE FOR YOUR GOAL STARTS
-            // Padding(
-            //   padding: const EdgeInsets.all(12.0),
-            //   child: GestureDetector(
-            //     onTap: () async{
-            //       final prefs = await SharedPreferences.getInstance();
-            //
-            //       if (prefs.getBool(kIsGoalSet) == false ||prefs.getBool(kIsGoalSet) == null ) {
-            //         print(prefs.getBool(kIsGoalSet));
-            //         CoolAlert.show(
-            //
-            //             lottieAsset: 'images/goal.json',
-            //             context: context,
-            //             type: CoolAlertType.success,
-            //             widget: SingleChildScrollView(
-            //
-            //                 child:
-            //                 Column(
-            //                   children: [
-            //                     Padding(
-            //                       padding: const EdgeInsets.all(8.0),
-            //                       child: TextField(
-            //                         onChanged: (enteredQuestion){
-            //                           question = enteredQuestion;
-            //                           // instructions = customerName;
-            //                           // setState(() {
-            //                           // });
-            //                         },
-            //                         decoration: InputDecoration(
-            //                             border:
-            //                             //InputBorder.none,
-            //                             OutlineInputBorder(
-            //                               borderRadius: BorderRadius.circular(10),
-            //                               borderSide: BorderSide(color: Colors.green, width: 2),
-            //                             ),
-            //                             labelText: 'Goal',
-            //                             labelStyle: kNormalTextStyleExtraSmall,
-            //                             hintText: 'This year I want to lose 10kg',
-            //                             hintStyle: kNormalTextStyle
-            //                         ),
-            //
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 )
-            //             ),
-            //             text: 'What is your main goal for this year?',
-            //             title: "${prefs.getString(kFirstNameConstant)}!",
-            //             confirmBtnText: 'Set Goal',
-            //             confirmBtnColor: Colors.green,
-            //             backgroundColor: kBackgroundGreyColor,
-            //             onConfirmBtnTap: () async{
-            //               if (question != ""){
-            //                 final prefs = await SharedPreferences.getInstance();
-            //                 prefs.setString(kGoalConstant, question);
-            //                 prefs.setBool(kIsGoalSet, true);
-            //                 Navigator.pop(context);
-            //                 prefs.setString(kUserId, auth.currentUser!.uid);
-            //                 // updatePersonalInformationWithGoal();
-            //                 dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-            //                   'goal': question,
-            //                   'userId':auth.currentUser!.uid,
-            //                   // orderId
-            //                 });
-            //                 // Navigator.pushNamed(context, SuccessPageNew.id);
-            //                 Navigator.push(context,
-            //                     MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-            //                 );
+            //         var orders = snapshot.data?.docs;
+            //         for( var doc in orders!) {
+            //           pointsList.add(doc['articleCount']??0);
+            //         }
+            //         // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
+            //         return  SizedBox(
+            //           height: 60,
+            //           child: GestureDetector(
+            //             onTap: () async{
+            //               if (pointsList[0]<= 100) {
+            //                 // Get.snackbar(
+            //                 //     'Lets get those points',
+            //                 //     'Take a photo doing something towards your goal, or tell Nutri about your progress to increase your points💪',
+            //                 //     snackPosition: SnackPosition.TOP,
+            //                 //     backgroundColor: kCustomColor,
+            //                 //     colorText: kBlack,
+            //                 //     icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
+            //                   Navigator.push(context,
+            //                       MaterialPageRoute(builder: (context)=> GoalsPage())
+            //                   );
             //               } else {
-            //
+            //                 Get.snackbar(
+            //                     'Well Done',
+            //                     "You have achieved Today's Goal 💪",
+            //                     snackPosition: SnackPosition.TOP,
+            //                     backgroundColor: kBlack,
+            //                     colorText: kPureWhiteColor,
+            //                     icon: Icon(Icons.check_circle, color: kCustomColor,));
             //               }
             //
             //
             //
-            //               setState(() {
+            //               // final prefs = await SharedPreferences.getInstance();
+            //               //
+            //               // if (prefs.getBool(kIsGoalSet) == false ||prefs.getBool(kIsGoalSet) == null ) {
+            //               //   print(prefs.getBool(kIsGoalSet));
+            //               //   CoolAlert.show(
+            //               //
+            //               //       lottieAsset: 'images/goal.json',
+            //               //       context: context,
+            //               //       type: CoolAlertType.success,
+            //               //       widget: SingleChildScrollView(
+            //               //
+            //               //           child:
+            //               //           Column(
+            //               //             children: [
+            //               //               Padding(
+            //               //                 padding: const EdgeInsets.all(8.0),
+            //               //                 child: TextField(
+            //               //                   onChanged: (enteredQuestion){
+            //               //                     question = enteredQuestion;
+            //               //                     // instructions = customerName;
+            //               //                     // setState(() {
+            //               //                     // });
+            //               //                   },
+            //               //                   decoration: InputDecoration(
+            //               //                       border:
+            //               //                       //InputBorder.none,
+            //               //                       OutlineInputBorder(
+            //               //                         borderRadius: BorderRadius.circular(10),
+            //               //                         borderSide: BorderSide(color: Colors.green, width: 2),
+            //               //                       ),
+            //               //                       labelText: 'Goal',
+            //               //                       labelStyle: kNormalTextStyleExtraSmall,
+            //               //                       hintText: 'This year I want to lose 10kg',
+            //               //                       hintStyle: kNormalTextStyle
+            //               //                   ),
+            //               //
+            //               //                 ),
+            //               //               ),
+            //               //             ],
+            //               //           )
+            //               //       ),
+            //               //       text: 'What is your main goal for this year?',
+            //               //       title: "${prefs.getString(kFirstNameConstant)}!",
+            //               //       confirmBtnText: 'Set Goal',
+            //               //       confirmBtnColor: Colors.green,
+            //               //       backgroundColor: kBackgroundGreyColor,
+            //               //       onConfirmBtnTap: () async{
+            //               //         if (question != ""){
+            //               //           final prefs = await SharedPreferences.getInstance();
+            //               //           prefs.setString(kGoalConstant, question);
+            //               //           prefs.setBool(kIsGoalSet, true);
+            //               //           Navigator.pop(context);
+            //               //           prefs.setString(kUserId, auth.currentUser!.uid);
+            //               //           // updatePersonalInformationWithGoal();
+            //               //           dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+            //               //             'goal': question,
+            //               //             'userId':auth.currentUser!.uid,
+            //               //             // orderId
+            //               //           });
+            //               //           // Navigator.pushNamed(context, SuccessPageNew.id);
+            //               //           Navigator.push(context,
+            //               //               MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+            //               //           );
+            //               //         } else {
+            //               //
+            //               //         }
+            //               //
+            //               //
+            //               //
+            //               //         setState(() {
+            //               //
+            //               //         });
+            //               //       }
+            //               //   );
+            //               //
+            //               //
+            //               //
+            //               // }else{
+            //               //   // Navigator.pushNamed(context, HomePage.id);
+            //               //   Navigator.push(context,
+            //               //       MaterialPageRoute(builder: (context)=> GoalsPage())
+            //               //   );
+            //               // }
             //
-            //               });
-            //             }
+            //             },
+            //
+            //
+            //             child: Padding(
+            //               padding: const EdgeInsets.only(right: 30.0),
+            //               child: Row(
+            //                 children: [
+            //
+            //                   Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 13,),),
+            //                   kSmallWidthSpacing,
+            //                   kSmallWidthSpacing,
+            //                   SimpleCircularProgressBar(
+            //                     size: 20,
+            //                     progressColors: [kGreenThemeColor, kCustomColor, Colors.blue ],
+            //                     progressStrokeWidth: 4,
+            //                     backStrokeWidth: 10,
+            //                     // valueNotifier: ValueNotifier(Provider.of<AiProvider>(context, listen: false).progressPoints * 1.0),
+            //                     valueNotifier: ValueNotifier(pointsList[0].toDouble()),
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //           ),
             //         );
+            //           //Text('Hi ${pointsList}', style: kNormalTextStyle.copyWith(color: kBlack),);
             //
-            //
-            //
-            //       }else{
-            //         // Navigator.pushNamed(context, HomePage.id);
-            //         Navigator.push(context,
-            //             MaterialPageRoute(builder: (context)=> GoalsPage())
-            //         );
             //       }
             //
-            //     },
-            //     child: Container(
-            //         // height: 10,
-            //       width: 100,
-            //       decoration: BoxDecoration(
-            //         color: kGreenThemeColor,
-            //         borderRadius: BorderRadius.circular(10),
-            //       ),
-            //       child: Center(child: Text("Your Goal", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
-            //       // color: kAirPink,
-            //         ),
-            //   ),
+            //     }
+            //
             // ),
-            // kSmallWidthSpacing,
+
             IconButton(
               icon: Icon(Icons.menu , color: kBlack,),
               onPressed: () {
-                Navigator.pushNamed(context, NewSettingsPage.id);
+                Navigator.pushNamed(context, SettingsTabController.id);
               },
             ),
             kSmallWidthSpacing,
@@ -962,15 +888,15 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
       //     // prefs.setBool(kSetWeekGoal, false);
       //     // upLoadOrder();
       //     // FirebaseServerFunctions().deleteUnrepliedChats();
-      //     FirebaseServerFunctions().updateAllUsers();
+      //     // FirebaseServerFunctions().updateAllUsers();
+      //     // createDocument();
       //
       //
       //
       //     // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
       //   },
-      //
       // ),
-      //
+
 
         body:
 
@@ -1300,12 +1226,12 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         });
 
                       },
-                        child:  Provider.of<AiProvider>(context, listen: false).tipStatus != true? Container(): Card(
+                        child:  Provider.of<AiProvider>(context, listen: false).tipStatus == true? Container(): Card(
 
                           // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
                           shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                          shadowColor: kGreenThemeColor,
-                           color: kBlueDarkColorOld,
+                          // shadowColor: kGreenThemeColor,
+                           color: kCustomColor,
                           elevation: 2.0,
                           child: Container(
                             width: 260,
@@ -1314,9 +1240,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
                                 children: [
-                                  Text("Tip of the Day 💡", style: kHeading2TextStyle.copyWith(color: kPureWhiteColor),),
+                                  Text("Tip of the Day 💡", style: kHeading2TextStyle.copyWith(color: kBlack),),
                                   kLargeHeightSpacing,
-                                  Text( aiData.nutriTips[random.nextInt(aiData.nutriTips.length)],textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(fontSize: 14, color: kPureWhiteColor)),
+                                  Text( aiData.nutriTips[random.nextInt(aiData.nutriTips.length)],textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(fontSize: 14, color: kBlack)),
                                 ],
                               ),
                             ),

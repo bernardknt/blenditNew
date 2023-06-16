@@ -94,7 +94,7 @@ class _SignInOptionsState extends State<SignInOptions> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context)=> WelcomeToNutri())
         );
-        CommonFunctions().uploadUserToken(token);
+
 
         // Navigate to the new user account page
 
@@ -309,7 +309,7 @@ class _SignInOptionsState extends State<SignInOptions> {
       querySnapshot.docs.forEach((users) async {
         setState(() {
           Provider.of<AiProvider>(context, listen: false).
-          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'] );
+          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'], users['videos'] );
         });
       });
     });

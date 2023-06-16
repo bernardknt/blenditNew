@@ -98,8 +98,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     fullName = prefs.getString(kFullNameConstant)!;
     email = prefs.getString(kEmailConstant)?? "";
     phoneNumber = prefs.getString(kPhoneNumberConstant)!;
-    weight = prefs.getDouble(kUserWeight)!;
-    height = prefs.getInt(kUserHeight)!;
+    weight = prefs.getDouble(kUserWeight) ?? 70.0;
+    height = prefs.getInt(kUserHeight) ?? 150;
     birth = prefs.getString(kUserBirthday)??" ";
     country = prefs.getString(kUserCountryName)!;
     uniqueIdentifier = prefs.getString(kUniqueIdentifier)!;
@@ -173,7 +173,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
 
                     isEmail(uniqueIdentifier) == false ?
-                    InputFieldWidgetEditInfo(labelText: ' Mobile Number (+2567xxxxxx)',readOnlyVariable: true,  controller: phoneNumber,hintText: '+25677100100', keyboardType: TextInputType.text,
+                    InputFieldWidgetEditInfo(labelText: ' Mobile Number (+2567xxxxxx)',readOnlyVariable: false,  controller: phoneNumber,hintText: '+25677100100', keyboardType: TextInputType.text,
 
                       onTypingFunction: (value){
                         // setState(() {
@@ -324,7 +324,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                             prefs.setString(kUserBirthday, birth);
                             prefs.setString(kFirstNameConstant, fullName.split(" ")[0]);
-                            prefs.setString(kPhoneNumberConstant, countryCode +  phoneNumber);
+                            prefs.setString(kPhoneNumberConstant,  phoneNumber);
                             prefs.setString(kFullNameConstant, fullName);
                             prefs.setString(kEmailConstant, email);
                             prefs.setInt(kUserHeight, height);

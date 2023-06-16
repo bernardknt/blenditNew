@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/qualityBot.dart';
+import 'package:blendit_2022/models/firebase_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/utilities/constants.dart';
-import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,9 +39,15 @@ class _SplashPageState extends State<SplashPage> {
       print('The login status is $isLoggedIn');
       if(userLoggedIn == true){
         _timer = Timer(const Duration(milliseconds: 1500), () {
-           // Navigator.pushNamed(context, QualityBot.id);
-          Navigator.pushNamed(context, ControlPage.id);
+          showDialog(context: context, builder:
+              ( context) {
+            return const Center(child: CircularProgressIndicator());
+          });
           deliveryStream();
+          Navigator.pop(context);
+          FirebaseServerFunctions().lastLoggedIn(auth.currentUser?.uid);
+          Navigator.pushNamed(context, ControlPage.id);
+
 
         });
 
@@ -53,6 +59,7 @@ class _SplashPageState extends State<SplashPage> {
 
         });
 
+
       }
     });
   }
@@ -63,10 +70,11 @@ class _SplashPageState extends State<SplashPage> {
       querySnapshot.docs.forEach((users) async {
         setState(() {
           Provider.of<AiProvider>(context, listen: false).
-          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'] );
+          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'], users['videos'] );
         });
       });
     });
+    // Navigator.pop(context);
 
     return start;
   }
@@ -101,6 +109,7 @@ class _SplashPageState extends State<SplashPage> {
             child: Column(
               children: [
                 Spacer(),
+
                 Image.asset('images/nutri.png', fit: BoxFit.fitWidth,),
               ],
             ),

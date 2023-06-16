@@ -52,7 +52,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
   }
   bool userLoggedIn = false;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  var urlImages = ["images/nutritionist.jpg", "images/meal.png","images/consistency.jpg"];// MHM17 trends];
+  var urlImages = ["images/9.jpg", "images/7.png","images/consistency.jpg"];// MHM17 trends];
   var heights = double.maxFinite;
   var token = "";
 

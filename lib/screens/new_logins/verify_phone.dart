@@ -160,9 +160,26 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                       final prefs = await SharedPreferences.getInstance();
                       try {
                         PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: Provider.of<BlenditData>(context, listen: false).phoneVerificationId, smsCode: code);
-                        await auth.signInWithCredential(credential);
-                        final users = await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).get();
-                        if (users.exists){
+                        var user = await auth.signInWithCredential(credential);
+
+                        if (user.additionalUserInfo ?.isNewUser ?? false){
+                          print("HUuuuuUUUUUMUUUU user doesbt exist");
+                          // prefs.setBool(kNutriAi, true);
+                          // if (prefs.getString(kFullNameConstant) == '') {
+                          prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
+                          prefs.setStringList(kPointsList,[]);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context)=> QuizPageName())
+                          );
+
+                          _btnController.reset();
+
+                        }
+                        else {
+
+
+                          print("YESSSSSSUUUUU user exists");
+                          final users = await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).get();
 
                           prefs.setBool(kNutriAi, true);
                           prefs.setString(kUserPersonalPreferences, users['preferences'].join(", "));
@@ -186,20 +203,9 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
 
                           // This Function uploads the user token to the server.
                           CommonFunctions().uploadUserToken(token);
-                         //  MaterialPageRoute(builder: (context)=> QuizPageName());
-                         //  subscribeToTopic(users['phoneNumber']);
+                          //  MaterialPageRoute(builder: (context)=> QuizPageName());
+                          //  subscribeToTopic(users['phoneNumber']);
                           Navigator.pushNamed(context, ControlPage.id);
-                        }
-                        else {
-                          // prefs.setBool(kNutriAi, true);
-                          // if (prefs.getString(kFullNameConstant) == '') {
-                          prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
-                          prefs.setStringList(kPointsList,[]);
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=> QuizPageName())
-                            );
-
-                            _btnController.reset();
 
                         }
 

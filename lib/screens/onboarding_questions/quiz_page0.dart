@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page1.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,13 +26,13 @@ class QuizPage0 extends StatefulWidget {
 }
 
 class _QuizPage0State extends State<QuizPage0> {
-  var categoryName = ['Male', 'Female'];
-  var categoryId = ['1','2'];
+
   var name = 'Kangave';
 
   void defaultInitialisation()async{
     final prefs = await SharedPreferences.getInstance();
     name = prefs.getString(kFirstNameConstant)!;
+    Provider.of<AiProvider>(context, listen: false).setUseName(name);
     setState((){});
 
 

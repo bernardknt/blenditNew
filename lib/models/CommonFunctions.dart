@@ -372,6 +372,18 @@ class CommonFunctions {
         }).then((value) => print("Its finished",
     ));
   }
+
+  Future<void> uploadUserTokenWithName(token, firstName, fullNames) async {
+    await FirebaseFirestore.instance
+        .collection('users').doc(auth.currentUser!.uid)
+        .update(
+        {
+          'token': token,
+          'firstName': firstName,
+          'lastName': fullNames
+        }).then((value) => print("Its finished",
+    ));
+  }
   Future<void> uploadCompleteChallenge(id, context) async {
     await FirebaseFirestore.instance
         .collection('challenges').doc(id)
@@ -511,9 +523,9 @@ class CommonFunctions {
           'email': prefs.getString(kEmailConstant) ?? "",
           'preferences': preferences,
           'preferencesId': preferenceId,
-          'sex': sex,
-          'dateOfBirth': dateOfBirth,
-          'level': "Beginner"
+          // 'sex': sex,
+          // 'dateOfBirth': dateOfBirth,
+          // 'level': "Beginner"
         }).then((value) =>
        print("KOKOKOKOKOKOKOKOKOKO preferences: $preferences , sex: $sex , date of Birth: $dateOfBirth uploaded"
     )

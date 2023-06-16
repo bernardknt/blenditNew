@@ -25,6 +25,17 @@ class FirebaseServerFunctions {
         .then((value) => print("Done"));
   }
 
+  Future <dynamic> lastLoggedIn(docId ){
+
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(docId)
+        .update({
+      'lastSeen':  DateTime.now()
+    })
+        .then((value) => print("Done"));
+  }
+
   // This removes post favourites
   Future <dynamic> removePostFavourites(docId,postId, email ){
     print(docId);
@@ -121,7 +132,7 @@ class FirebaseServerFunctions {
     WriteBatch batch = FirebaseFirestore.instance.batch();
 
     querySnapshot.docs.forEach((doc) {
-      batch.update(doc.reference, {'chatPoints': [], 'progress': []});
+      batch.update(doc.reference, {'articleCountValues': []});
     });
 
     await batch.commit();

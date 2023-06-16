@@ -89,19 +89,7 @@ class _QuizPage1State extends State<QuizPage1> {
                   padding: const EdgeInsets.only(top: 60.0, left: 25),
                   child: Column(
                     children: [
-                      // Container(
-                      //   child: Center(
-                      //     child: Padding(
-                      //       padding: EdgeInsets.only(top:20.0),
-                      //       child: Text('$name, are you male or female?',
-                      //         textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor)),
-                      //     ),),
-                      //   height: 150,
-                      //   decoration: const BoxDecoration(
-                      //       color: kBlueDarkColorOld,
-                      //       borderRadius: BorderRadius.only(bottomRight: Radius.circular(60), bottomLeft: Radius.circular(60))),
-                      //
-                      // ),
+
                       Hero(
                         tag: "message",
                         child: Card(

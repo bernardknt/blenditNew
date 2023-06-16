@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 // import 'package:googleapis/connectors/v1.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/CommonFunctions.dart';
 import '../utilities/font_constants.dart';
 import '../widgets/gliding_text.dart';
 import 'onboarding_questions/quiz_page1.dart';
@@ -41,7 +43,10 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
     final prefs = await SharedPreferences.getInstance();
     initialCountry = Provider.of<AiProvider>(context,listen: false).favouriteCountry;
     name = prefs.getString(kFirstNameConstant) ?? "";
+    Provider.of<AiProvider>(context, listen: false).setUseName(name);
     inspiration = "Welcome to Nutri $name, My name is Lisa. Let me set you up. Start by selecting your country";
+    CommonFunctions().uploadUserTokenWithName(prefs.getString(kToken)!,prefs.getString(kFirstNameConstant), prefs.getString(kFullNameConstant) );
+
 
 
   }
@@ -182,7 +187,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
                       prefs.setString(kUserCountryFlag, countryFlag);
 
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=> QuizPage1())
+                          MaterialPageRoute(builder: (context)=> QuizPage5())
                       );
                     },
                     child:
@@ -191,13 +196,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
                   )
                 ],
               ),
-            // kSmallHeightSpacing,
-            // Lottie.asset('images/challenge.json', height: 50, width: 150,),
 
-            // SizedBox(height: 10,),
-            // Center(child: Text('You have Earned',textAlign: TextAlign.center, style: GoogleFonts.lato( fontSize: 30),)),
-            //SizedBox(height: 10,),
-            // Center(child: Text('${points.toString()} points',textAlign: TextAlign.center, style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 30, color: Colors.green),)),
             )
           ],
         ),

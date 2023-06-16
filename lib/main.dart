@@ -74,6 +74,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 
 import 'controllers/push_notification_service.dart';
+import 'controllers/settings_tab_controller.dart';
 import 'models/blendit_data.dart';
 
 
@@ -179,6 +180,7 @@ class MyApp extends StatelessWidget {
             AboutUsPage.id: (context)=>AboutUsPage(),
             ReadComments.id: (context)=>ReadComments(comments: [],),
             CustomizeController.id: (context)=>CustomizeController(),
+            SettingsTabController.id: (context)=>SettingsTabController(),
             SaladBlenderPage.id: (context)=>SaladBlenderPage(),
             QuizQuestions.id: (context)=>QuizQuestions(),
             ChooseJuicePage.id: (context)=>ChooseJuicePage(),
