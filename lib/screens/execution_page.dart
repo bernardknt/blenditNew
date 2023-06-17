@@ -267,7 +267,13 @@ class _ExecutionPageState extends State<ExecutionPage> {
                   //   Lottie.asset('images/workout4.json', height: 60, width: 70, fit: BoxFit.cover,),
                   // ),
                   kLargeHeightSpacing,
-                  Text("Focus",style: kNormalTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Focus",style: kNormalTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16, color: kBlack),),
+                        Lottie.asset('images/workout4.json', height: 40, width: 50, fit: BoxFit.cover,),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child:
@@ -277,7 +283,7 @@ class _ExecutionPageState extends State<ExecutionPage> {
                         Container(
                           height: 200,
                           decoration: BoxDecoration(
-                            color: kBlueThemeColor,
+                            color: kCustomColor,
                             borderRadius: BorderRadius.circular(10),
 
                           ),
@@ -297,7 +303,7 @@ class _ExecutionPageState extends State<ExecutionPage> {
 
                                 title: Text(
                                   _getCheckboxText[index],
-                                  style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),
+                                  style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 12),
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
@@ -332,6 +338,13 @@ class _ExecutionPageState extends State<ExecutionPage> {
                               if(!snapshot.hasData){
                                 return Container();
                               }
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+
+                                  ),
+                                );
+                              }
                               else{
                                 pointsList = [];
 
@@ -347,13 +360,14 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                     child: Row(
                                       children: [
 
-                                        Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 11,),),
+                                        pointsList[0] < 50 ? Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: Colors.red, fontSize: 12,fontWeight: FontWeight.bold),):
+                                        Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 12,fontWeight: FontWeight.bold),),
                                         kSmallWidthSpacing,
                                         kSmallWidthSpacing,
                                         SimpleCircularProgressBar(
                                           backColor: kBlueDarkColor,
                                           size: 20,
-                                          progressColors: [kGreenThemeColor, kCustomColor, Colors.blue ],
+                                          progressColors: [kGreenThemeColor, Colors.red, Colors.blue ],
                                           progressStrokeWidth: 4,
                                           backStrokeWidth: 10,
                                           // valueNotifier: ValueNotifier(Provider.of<AiProvider>(context, listen: false).progressPoints * 1.0),

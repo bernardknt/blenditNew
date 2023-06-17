@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/models/firebase_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,6 +27,7 @@ class _SplashPageState extends State<SplashPage> {
 
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
+
 
     bool isLoggedIn = prefs.getBool(kIsLoggedInConstant) ?? false;
     prefs.setBool(kChallengeRequirements, false);

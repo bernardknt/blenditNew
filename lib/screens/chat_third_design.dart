@@ -706,7 +706,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               kSmallWidthSpacing,
 
 
-              Text('Nutri Lisa', style: kNormalTextStyle.copyWith(color: kBlack),),
+              Text('Lisa', style: kNormalTextStyle.copyWith(color: kBlack),),
             ],
           ),
           centerTitle: true,
@@ -873,13 +873,13 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
             //
             // ),
 
-            IconButton(
-              icon: Icon(Icons.menu , color: kBlack,),
-              onPressed: () {
-                Navigator.pushNamed(context, SettingsTabController.id);
-              },
-            ),
-            kSmallWidthSpacing,
+            // IconButton(
+            //   icon: Icon(Icons.menu , color: kBlack,),
+            //   onPressed: () {
+            //     Navigator.pushNamed(context, SettingsTabController.id);
+            //   },
+            // ),
+            // kSmallWidthSpacing,
           ],
         ),
       //   floatingActionButton: FloatingActionButton(onPressed: ()async {

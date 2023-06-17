@@ -208,7 +208,9 @@ class CommonFunctions {
   }
 
   // This function is for cancelling the notification
-
+  cancelLocalNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
   cancelNotification(uid) async {
     await flutterLocalNotificationsPlugin.cancelAll();
     try {
