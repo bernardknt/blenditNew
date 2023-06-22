@@ -3,6 +3,8 @@ import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/models/firebase_functions.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
+import 'package:blendit_2022/widgets/looping_video.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,7 +42,7 @@ class _SplashPageState extends State<SplashPage> {
       userLoggedIn = isLoggedIn ;
       print('The login status is $isLoggedIn');
       if(userLoggedIn == true){
-        _timer = Timer(const Duration(milliseconds: 1500), () {
+        _timer = Timer(const Duration(milliseconds: 2000), () {
           showDialog(context: context, builder:
               ( context) {
             return const Center(child: CircularProgressIndicator());
@@ -48,6 +50,7 @@ class _SplashPageState extends State<SplashPage> {
           deliveryStream();
           Navigator.pop(context);
           FirebaseServerFunctions().lastLoggedIn(auth.currentUser?.uid);
+          Navigator.pop(context);
           Navigator.pushNamed(context, ControlPage.id);
 
 
@@ -56,7 +59,8 @@ class _SplashPageState extends State<SplashPage> {
       }
 
       else{
-        _timer = Timer(const Duration(milliseconds: 1000), () {
+        _timer = Timer(const Duration(milliseconds: 2000), () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, WelcomePageNew.id);
 
         });
@@ -72,23 +76,14 @@ class _SplashPageState extends State<SplashPage> {
       querySnapshot.docs.forEach((users) async {
         setState(() {
           Provider.of<AiProvider>(context, listen: false).
-          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'], users['videos'] );
+          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'], users['videos'], users["goal"] );
         });
       });
     });
-    // Navigator.pop(context);
+
 
     return start;
   }
-  // Future deliveryStream() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final users = await FirebaseFirestore.instance
-  //       .collection('variables').doc("7hkqndmv9b0arEWy4vc9")
-  //       .get();
-  //
-  //   Provider.of<AiProvider>(context, listen: false).setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'] );
-  //
-  // }
 
   bool userLoggedIn = false;
   @override
@@ -103,26 +98,60 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            // padding: EdgeInsets.all(40),
-            color: kGreenThemeColor,
-            child: Column(
-              children: [
-                Spacer(),
-
-                Image.asset('images/nutri.png', fit: BoxFit.fitWidth,),
-              ],
+      backgroundColor: kPureWhiteColor,
+      body:
+        SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              kLargeHeightSpacing,
+            Center(
+              child:
+                Container(
+                    height: 100,
+                    child: LoopingVideoContainer(videoPath: 'images/logo.webm',))
+              // Container(
+              //               height: 100,
+              //               color: kBlack,
+              //               child: Image.asset("images/logo.webm"),
+              //             ),
             ),
+
+              // Text("Achieve your Goals", style: kNormalTextStyle,),
+              Spacer(), 
+              Image.asset('images/nutri.png', fit: BoxFit.fitWidth,),
+            ],
           ),
-          // Positioned(
-          //   top:150,
-          //   left: 50,
-          //   right: 50,
-          //     child: Center(child: Text('Transformation\nTogether',textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 25),))),
-        ],
-      ),
+        )
+      // Stack(
+      //   children: [
+      //     Container(
+      //       // padding: EdgeInsets.all(40),
+      //       color: kPureWhiteColor,
+      //       child: Column(
+      //
+      //         children: [
+      //           // Spacer(),
+      //           Center(
+      //             child: Container(
+      //               height: 100,
+      //               color: kBlack,
+      //               child: Image.asset("images/nutri_logo.gif"),
+      //             ),
+      //           ),
+      //
+      //           // Image.asset('images/nutri.png', fit: BoxFit.fitWidth,),
+      //         ],
+      //       ),
+      //     ),
+      //     // Positioned(
+      //     //   top:150,
+      //     //   left: 50,
+      //     //   right: 50,
+      //     //     child: Center(child: Text('Transformation\nTogether',textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 25),))),
+      //   ],
+      // ),
     );
   }
 }

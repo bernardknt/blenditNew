@@ -181,6 +181,10 @@ class CommonFunctions {
     tz.setLocalLocation(tz.getLocation(timeZone));
   }
 
+  String changeTheDate (date){
+    return DateFormat('EE dd MMMM yyyy - HH:mm').format(date);
+  }
+
   /// Scheduled Notification
   scheduledNotification({required String heading,required String body,required int year,required int month,required int day, required int hour, required int minutes, required int id}) async {
 
@@ -597,7 +601,9 @@ class CommonFunctions {
       'replyTime': DateTime.now(),
       "agentName": "",
       "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty,
-      "tag": trendsId
+      "tag": trendsId,
+      "winning":false,
+      "pointApplication": true
     });
 
     return chat.doc(trendsId)

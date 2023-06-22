@@ -10,7 +10,11 @@ class LineTitles {
 
     ),
     topTitles: AxisTitles(
-      axisNameWidget: Text("Beat the Red Line", style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 12),)
+      axisNameWidget: Column(
+        children: [
+          Text("Beat the Red Line", style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 12),),
+        ],
+      )
 
     ),
     leftTitles: AxisTitles(

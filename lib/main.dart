@@ -17,6 +17,7 @@ import 'package:blendit_2022/screens/chat_page.dart';
 import 'package:blendit_2022/screens/chat_third_design.dart';
 import 'package:blendit_2022/screens/checkout_page.dart';
 import 'package:blendit_2022/screens/choose_juice_page.dart';
+import 'package:blendit_2022/screens/customer_care.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
 import 'package:blendit_2022/screens/delivery_page.dart';
 import 'package:blendit_2022/screens/detox_juice.dart';
@@ -57,6 +58,7 @@ import 'package:blendit_2022/screens/upload_photo.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/widgets/memories_page.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -182,6 +184,7 @@ class MyApp extends StatelessWidget {
             CustomizeController.id: (context)=>CustomizeController(),
             SettingsTabController.id: (context)=>SettingsTabController(),
             SaladBlenderPage.id: (context)=>SaladBlenderPage(),
+            CustomerCareChatMessaging.id: (context)=>CustomerCareChatMessaging(),
             QuizQuestions.id: (context)=>QuizQuestions(),
             ChooseJuicePage.id: (context)=>ChooseJuicePage(),
             BrowseStorePage.id: (context)=>BrowseStorePage(),
@@ -208,6 +211,7 @@ class MyApp extends StatelessWidget {
             NutriMobileMoneyPage.id: (context)=> NutriMobileMoneyPage(),
             RestorePurchasePage.id: (context)=> RestorePurchasePage(),
             QualityBot.id: (context)=> QualityBot(),
+            MemoriesPage.id: (context)=> MemoriesPage(),
 
 
 

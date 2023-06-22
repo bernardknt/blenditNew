@@ -12,12 +12,14 @@ const kPinkBlenderColor = Color(0xFFe8d3d3);
 const kSeedColor = Color(0xFFFF89A8);
 const kProjectColor = Color(0xFFFF557C);
 const kBlueDarkColor = Color(0xff17183c);
+
 const kCustomColor = Color(0xffBEEFEE);
 const kRoundedContainerColor = Color(0xFF6e6e6e);
+const kMessageColor = Color(0xFFd2ffc8);
 
 const kYellowThemeColor = Color(0xFFFFB703);
 const kBackgroundCurveReveller = Color(0xFF5d5d5d);
-const kThemeColor = Color(0xFFda0041);
+const kRedThemeColor = Color(0xFFda0041);
 const kNewGreenThemeColor = Color(0xFF0AB11B);
 const kBrightGreenThemeColor = Color(0xFF53EF00);
 

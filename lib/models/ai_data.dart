@@ -45,6 +45,7 @@ class AiProvider extends ChangeNotifier{
   String favouriteCountry = "Uganda";
   Map youtubeVideos = {};
   String intTrial = "5.99";
+  String annualGoal = "";
   String customerCareNumber = "+256700457826";
   String userName = "";
   bool showPaymentNotification = false;
@@ -56,6 +57,7 @@ class AiProvider extends ChangeNotifier{
   String revTitle = '';
   String revDuration = '';
   String revTransId = '';
+  List dailyTarget = [];
 
 
 
@@ -146,9 +148,15 @@ class AiProvider extends ChangeNotifier{
   }
   setUseName(name){
     userName = name;
-
     notifyListeners();
   }
+
+  setDailyTargets(targets){
+    dailyTarget = targets;
+    notifyListeners();
+  }
+
+
   setChallengePosition (){
     challengePosition += 1;
     activeChallengeIndex = 0;
@@ -303,7 +311,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     subscriptionType = subscription;
 
   }
-  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries, countryPrompt, control, favCountry, videos){
+  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries, countryPrompt, control, favCountry, videos, goal){
     ugMonthly = ugMonth.toString();
     ugYearly = ugYear.toString();
     intMonthly = intMonth.toString();
@@ -322,6 +330,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     qualityControl = control;
     favouriteCountry = favCountry;
     youtubeVideos = videos;
+    annualGoal = goal;
 
     notifyListeners();
   }

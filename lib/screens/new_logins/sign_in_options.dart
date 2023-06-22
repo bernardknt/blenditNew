@@ -309,7 +309,7 @@ class _SignInOptionsState extends State<SignInOptions> {
       querySnapshot.docs.forEach((users) async {
         setState(() {
           Provider.of<AiProvider>(context, listen: false).
-          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'], users['videos'] );
+          setSubscriptionVariables(users["ugandaOneMonth"], users["ugandaOneYear"],users["internationalOneMonth"], users["internationalOneYear"], users["ugFirstAmount"], users["intFirstAmount"], users["customerCare"], users["tips"], users['notify'], users['tagline'], users['subscriptionButton'], users['trialTime'], users['iosUpload'], users['blackCountries'], users['prompt'],  users['control'], users['favCountry'], users['videos'], users['goal'] );
         });
       });
     });
@@ -505,43 +505,6 @@ class _SignInOptionsState extends State<SignInOptions> {
                               handleAppleSignIn();
 
 
-                              // final credential = await SignInWithApple.getAppleIDCredential(
-                              //   scopes: [
-                              //     AppleIDAuthorizationScopes.email,
-                              //     AppleIDAuthorizationScopes.fullName,
-                              //   ],
-                              // );
-                              //
-                              //
-                              // print("KYKYKYKKYKYKYKYKY ${credential.authorizationCode}");
-                              // print("KYKYKYKKYKYKYKYKY ${credential.email}");
-                              // print("KYKYKYKKYKYKYKYKY ${credential.givenName}");
-                              //
-                              // final signInWithAppleEndpoint = Uri(
-                              //   scheme: 'https',
-                              //   host:
-                              //   // 'blend-it-8a622.firebaseapp.com'
-                              //   'flutter-sign-in-with-apple-example.glitch.me',
-                              //   // 'blend-it-8a622.firebaseapp.com',
-                              //   path: '/sign_in_with_apple',
-                              //   // '/__/auth/handler',
-                              //   queryParameters: <String, String>{
-                              //     'code': credential.authorizationCode,
-                              //     if (credential.givenName != null)
-                              //       'firstName': credential.givenName!,
-                              //     if (credential.familyName != null)
-                              //       'lastName': credential.familyName!,
-                              //     'useBundleId': !kIsWeb && (Platform.isIOS || Platform.isMacOS) ? 'true' : 'false',
-                              //     if (credential.state != null) 'state': credential.state!,
-                              //   },
-                              // );
-                              //
-                              // final session = await http.Client().post(
-                              //   signInWithAppleEndpoint,
-                              // );
-
-                              // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
-                              // after they have been validated with Apple (see `Integration` section for more information on how to do this)
                             },
 
 

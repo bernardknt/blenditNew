@@ -27,6 +27,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../widgets/TicketDots.dart';
+import 'customer_care.dart';
 import 'edit_page.dart';
 import 'login_page.dart';
 
@@ -157,28 +158,26 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
       // ),
       floatingActionButton:
       FloatingActionButton(
+        backgroundColor: kGreenThemeColor,
         onPressed: () async {
 
           var prefs = await SharedPreferences.getInstance();
 
            // launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
            //
-
-          if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
-             CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-          }else {
-            CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-
-          }
+          Navigator.pushNamed(context, CustomerCareChatMessaging.id);
 
 
+          // if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
+          //    CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+          // }else {
+          //   CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+          //
+          // }
 
 
 
-         // print('${prefs.getString(kWhatsappNumber)}');
 
-
-          // launch('${prefs.getString(kWhatsappNumber)}');
 
 
         },

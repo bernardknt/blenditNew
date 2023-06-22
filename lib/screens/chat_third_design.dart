@@ -81,6 +81,21 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     }
   }
 
+  void updateArticleCountValues() async {
+    final CollectionReference usersCollection = FirebaseFirestore.instance.collection('chat');
+
+    QuerySnapshot querySnapshot = await usersCollection.get();
+
+    // Get current date
+    DateTime now = DateTime.now();
+    String dateString = '0?' + now.toIso8601String();
+
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      // Update the articleCountValues field in each document
+      await documentSnapshot.reference.update({'winning': false,'pointApplication': false});
+    }
+  }
+
   void createDocument() async {
     final userId = 'OYPETtqEedch29E51tikMPbZUKD2';
 
@@ -121,6 +136,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
         "chatPoints": [],
         "progress": [],
         "docId": userId,
+        "winning":false,
+        "pointApplication": false,
+        "tag" :""
 
 
           });
@@ -882,21 +900,21 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
             // kSmallWidthSpacing,
           ],
         ),
-      //   floatingActionButton: FloatingActionButton(onPressed: ()async {
-      //     // final prefs = await SharedPreferences.getInstance();
-      //     //
-      //     // prefs.setBool(kSetWeekGoal, false);
-      //     // upLoadOrder();
-      //     // FirebaseServerFunctions().deleteUnrepliedChats();
-      //     // FirebaseServerFunctions().updateAllUsers();
-      //     // createDocument();
-      //
-      //
-      //
-      //     // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
-      //   },
-      // ),
-
+     //    floatingActionButton: FloatingActionButton(onPressed: ()async {
+     //      // final prefs = await SharedPreferences.getInstance();
+     //      //
+     //      // prefs.setBool(kSetWeekGoal, false);
+     //      // upLoadOrder();
+     //
+     //      // FirebaseServerFunctions().updateAllUsers();
+     //      updateArticleCountValues();
+     //
+     //
+     //
+     //      // CommonFunctions().scheduledNotification(heading: "Nice", body: "Test", year: 2023, month: 1, day: 24, hour: 23, minutes: 56, id: 10);
+     //    },
+     // ),
+     //
 
         body:
 

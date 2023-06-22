@@ -1,22 +1,33 @@
 
-
+import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/customer_care.dart';
 
 import 'package:blendit_2022/screens/your_vision.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
+import 'package:blendit_2022/widgets/memories_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar.dart';
+import 'package:iconsax/iconsax.dart';
+
 import 'package:image_picker/image_picker.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../models/CommonFunctions.dart';
 import '../widgets/chart_widget.dart';
+import 'coach_page.dart';
 import 'delivery_page.dart';
+import 'execution_pages/wildly_important_goal.dart';
 import 'loading_goals_page.dart';
 
 
@@ -36,18 +47,22 @@ class _ExecutionPageState extends State<ExecutionPage> {
   String uniqueIdentifier = "";
   List pointsNumbers = [];
   List targetNumbers = [];
+  List rawDailyTasks = [];
+  List dailyTasks = [];
+  List dailyTasksBooleans = [];
   List pointsDates = [];
   Color appInterfaceColor = kBackgroundGreyColor;
   Color appFontColor = kBlack;
   String question = "";
+  String goal = "";
   var pointsList = [];
   final auth = FirebaseAuth.instance;
-  List _getCheckboxText = ["Take 2 Liters of Water", "Take 5 minutes walking", "Take 2 Healthy meals today"];
-
 
   defaultInitialization() async{
     final prefs = await SharedPreferences.getInstance();
     vision = prefs.getString(kUserVision)!;
+    goal = prefs.getString(kGoalConstant)!;
+
     uniqueIdentifier = prefs.getString(kUniqueIdentifier)!;
 
     setState(() {
@@ -59,7 +74,26 @@ class _ExecutionPageState extends State<ExecutionPage> {
   // bool isDateToday = false;
   final CollectionReference dataCollection = FirebaseFirestore.instance.collection('users');
 
+  void splitArrayElements(List data) {
+    List<bool> booleanArray = [];
+    List<String> stringArray = [];
+
+    for (String element in data) {
+      List<String> splitValues = element.split("?");
+      if (splitValues.length == 2) {
+        bool booleanValue = splitValues[0].toLowerCase() == "true";
+        booleanArray.add(booleanValue);
+        stringArray.add(splitValues[1]);
+      }
+    }
+    dailyTasks = stringArray;
+    dailyTasksBooleans = booleanArray;
+    print("Boolean Array: $booleanArray");
+    print("String Array: $stringArray");
+  }
+
   void separateChartData(List<dynamic> chartData) {
+
     List<int> numbersArray = [];
     List<DateTime> datesArray = [];
 
@@ -112,79 +146,82 @@ class _ExecutionPageState extends State<ExecutionPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Lose 30kgs by 30th, August, 2023", style: kNormalTextStyle.copyWith(color: appFontColor, fontSize: 14, fontWeight: FontWeight.bold),),
+            Text(goal, style: kNormalTextStyle.copyWith(color: kRedThemeColor,  fontSize: 14, fontWeight: FontWeight.bold),),
             kSmallWidthSpacing,
             GestureDetector(
                 onTap: ()async {
                   final prefs = await SharedPreferences.getInstance();
-                  CoolAlert.show(
-
-                      lottieAsset: 'images/goal.json',
-                      context: context,
-                      type: CoolAlertType.success,
-                      widget: SingleChildScrollView(
-
-                          child:
-                          Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextField(
-                                  onChanged: (enteredQuestion){
-                                    question = enteredQuestion;
-                                    // instructions = customerName;
-                                    // setState(() {
-                                    // });
-                                  },
-                                  decoration: InputDecoration(
-                                      border:
-                                      //InputBorder.none,
-                                      OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(color: Colors.green, width: 2),
-                                      ),
-                                      labelText: 'Goal',
-                                      labelStyle: kNormalTextStyleExtraSmall,
-                                      hintText: 'This year I want to lose 10kg',
-                                      hintStyle: kNormalTextStyle
-                                  ),
-
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                      text: 'Set a goal you want to achieve',
-                      title: "${prefs.getString(kFirstNameConstant)}!",
-                      confirmBtnText: 'Set Goal',
-                      confirmBtnColor: Colors.green,
-                      backgroundColor: kBackgroundGreyColor,
-                      onConfirmBtnTap: () async{
-                        if (question != ""){
-                          final prefs = await SharedPreferences.getInstance();
-                          prefs.setString(kGoalConstant, question);
-                          prefs.setBool(kIsGoalSet, true);
-                          Navigator.pop(context);
-                          prefs.setString(kUserId, auth.currentUser!.uid);
-                          // updatePersonalInformationWithGoal();
-                          dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-                            'goal': question,
-                            'userId':auth.currentUser!.uid,
-                            // orderId
-                          });
-                          // Navigator.pushNamed(context, SuccessPageNew.id);
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-                          );
-                        } else {
-
-                        }
-                      }
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=> WildlyImportantGoal())
                   );
+                  // CoolAlert.show(
+                  //
+                  //     lottieAsset: 'images/goal.json',
+                  //     context: context,
+                  //     type: CoolAlertType.success,
+                  //     widget: SingleChildScrollView(
+                  //
+                  //         child:
+                  //         Column(
+                  //           children: [
+                  //             Padding(
+                  //               padding: const EdgeInsets.all(8.0),
+                  //               child: TextField(
+                  //                 onChanged: (enteredQuestion){
+                  //                   question = enteredQuestion;
+                  //                   // instructions = customerName;
+                  //                   // setState(() {
+                  //                   // });
+                  //                 },
+                  //                 decoration: InputDecoration(
+                  //                     border:
+                  //                     //InputBorder.none,
+                  //                     OutlineInputBorder(
+                  //                       borderRadius: BorderRadius.circular(10),
+                  //                       borderSide: BorderSide(color: Colors.green, width: 2),
+                  //                     ),
+                  //                     labelText: 'Goal',
+                  //                     labelStyle: kNormalTextStyleExtraSmall,
+                  //                     hintText: 'This year I want to lose 10kg',
+                  //                     hintStyle: kNormalTextStyle
+                  //                 ),
+                  //
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         )
+                  //     ),
+                  //     text: 'Set a goal you want to achieve',
+                  //     title: "${prefs.getString(kFirstNameConstant)}!",
+                  //     confirmBtnText: 'Set Goal',
+                  //     confirmBtnColor: Colors.green,
+                  //     backgroundColor: kBackgroundGreyColor,
+                  //     onConfirmBtnTap: () async{
+                  //       if (question != ""){
+                  //         final prefs = await SharedPreferences.getInstance();
+                  //         prefs.setString(kGoalConstant, question);
+                  //         prefs.setBool(kIsGoalSet, true);
+                  //         Navigator.pop(context);
+                  //         prefs.setString(kUserId, auth.currentUser!.uid);
+                  //         // updatePersonalInformationWithGoal();
+                  //         dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+                  //           'goal': question,
+                  //           'userId':auth.currentUser!.uid,
+                  //           // orderId
+                  //         });
+                  //         // Navigator.pushNamed(context, SuccessPageNew.id);
+                  //         Navigator.push(context,
+                  //             MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+                  //         );
+                  //       } else {
+                  //
+                  //       }
+                  //     }
+                  // );
                 },
                 child:
 
-            Icon(Icons.edit, color: kGreenThemeColor,size: 20,))
+                Icon(Icons.edit, color: kGreenThemeColor,size: 20,))
           ],
         ),
         centerTitle: true,
@@ -220,23 +257,27 @@ class _ExecutionPageState extends State<ExecutionPage> {
                       }
 
                       List chartData = snapshot.data!.docs.map((doc) {
+                        rawDailyTasks = doc["dailyTasks"];
                         targetNumbers = doc['targetNumbers'];
+
+
                         return doc['articleCountValues'] ;
                       }).toList();
 
                       separateChartData(chartData[0]);
+
 
                       return Container(
                           height: 200,
                           child:
                           // Text(chartData[0].toString(), style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)
                           LineChartWidget(
-                              graphValues: List.generate(pointsNumbers.length, (index) {
-                                return
+                            graphValues: List.generate(pointsNumbers.length, (index) {
+                              return
 
-                                  FlSpot(index.toDouble(), pointsNumbers[index].toDouble());
-                              },
-                              ),
+                                FlSpot(index.toDouble(), pointsNumbers[index].toDouble());
+                            },
+                            ),
                             targetValues:
                             List.generate(targetNumbers.length, (index) {
                               return
@@ -244,127 +285,64 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                 FlSpot(index.toDouble(), targetNumbers[index].toDouble());
                             },
                             ),
-
-                            // [
-                            //
-                            //   FlSpot(0, 10),
-                            //   FlSpot(1, 30),
-                            //   FlSpot(2, 20),
-                            //   FlSpot(3, 40),
-                            //   FlSpot(4, 50),
-                            //   FlSpot(5, 60),
-                            //   FlSpot(6, 90),
-                            //
-                            // ],
                           )
                       );
 
 
                     },
                   ),
-                  // Center(
-                  //   child:
-                  //   Lottie.asset('images/workout4.json', height: 60, width: 70, fit: BoxFit.cover,),
-                  // ),
                   kLargeHeightSpacing,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Focus",style: kNormalTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16, color: kBlack),),
-                        Lottie.asset('images/workout4.json', height: 40, width: 50, fit: BoxFit.cover,),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:
-                    Stack(
-                      children: [
+                      StreamBuilder<QuerySnapshot> (
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .where('docId', isEqualTo: uniqueIdentifier)
+                              .snapshots(),
+                          builder: (context, snapshot)
+                          {
+                            if(!snapshot.hasData){
+                              return Container();
+                            }
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(
 
-                        Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: kCustomColor,
-                            borderRadius: BorderRadius.circular(10),
-
-                          ),
-                          child: ListView.builder(
-                            itemCount: 3,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return CheckboxListTile(
-
-                                // dense: true,
-                                tileColor: kPureWhiteColor,
-                                enabled: true,
-
-
-
-
-
-                                title: Text(
-                                  _getCheckboxText[index],
-                                  style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 12),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                value: false,
-                                onChanged: (bool? value) {
-                                  CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
-
-                                  // setState(() {
-                                  //   value = value!;
-                                  // });
-                                },
-                                controlAffinity: ListTileControlAffinity.leading,
-                                activeColor: kCustomColor,
-
-                                checkColor: kBlack,
                               );
-                            },
-                          ),
-                        ),
-                        Positioned(
-                          right: 5,
-                          top: 2,
-                          child:
-                        StreamBuilder<QuerySnapshot> (
-                            stream: FirebaseFirestore.instance
-                                .collection('users')
-                                .where('docId', isEqualTo: uniqueIdentifier)
-                                .snapshots(),
-                            builder: (context, snapshot)
-                            {
-                              if(!snapshot.hasData){
-                                return Container();
+                            }
+                            else{
+                              pointsList = [];
+
+                              var orders = snapshot.data?.docs;
+                              for( var doc in orders!) {
+                                pointsList.add(doc['articleCount']??0);
                               }
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(
+                              // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
+                              return  SizedBox(
+                                height: 60,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 30.0),
+                                  child: Row(
+                                    children: [
 
-                                  ),
-                                );
-                              }
-                              else{
-                                pointsList = [];
-
-                                var orders = snapshot.data?.docs;
-                                for( var doc in orders!) {
-                                  pointsList.add(doc['articleCount']??0);
-                                }
-                                // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
-                                return  SizedBox(
-                                  height: 60,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 30.0),
-                                    child: Row(
-                                      children: [
-
-                                        pointsList[0] < 50 ? Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: Colors.red, fontSize: 12,fontWeight: FontWeight.bold),):
-                                        Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 12,fontWeight: FontWeight.bold),),
-                                        kSmallWidthSpacing,
-                                        kSmallWidthSpacing,
-                                        SimpleCircularProgressBar(
+                                      pointsList[0] < 50 ? Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: Colors.red, fontSize: 12,fontWeight: FontWeight.bold),):
+                                      Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 12,fontWeight: FontWeight.bold),),
+                                      kSmallWidthSpacing,
+                                      kSmallWidthSpacing,
+                                      GestureDetector(
+                                        onTap: (){
+                                          Navigator.pushNamed(context, MemoriesPage.id);
+                                          Get.snackbar(
+                                              'Daily Points Count',
+                                              'You have ${pointsList[0]} Goal points today. Keep Going💪',
+                                              snackPosition: SnackPosition.TOP,
+                                              backgroundColor: kCustomColor,
+                                              colorText: kBlack,
+                                              icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
+                                        },
+                                        child: SimpleCircularProgressBar(
                                           backColor: kBlueDarkColor,
                                           size: 20,
                                           progressColors: [kGreenThemeColor, Colors.red, Colors.blue ],
@@ -373,22 +351,155 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                           // valueNotifier: ValueNotifier(Provider.of<AiProvider>(context, listen: false).progressPoints * 1.0),
                                           valueNotifier: ValueNotifier(pointsList[0].toDouble()),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                );
-                                //Text('Hi ${pointsList}', style: kNormalTextStyle.copyWith(color: kBlack),);
-
-                              }
+                                ),
+                              );
+                              //Text('Hi ${pointsList}', style: kNormalTextStyle.copyWith(color: kBlack),);
 
                             }
 
+                          }
+
+                      ),
+                      Text("Weeks Focus",style: kNormalTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16, color: kBlack),),
+                      Lottie.asset('images/workout4.json', height: 40, width: 50, fit: BoxFit.cover,),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child:
+                    Stack(
+                      children: [
+                        FutureBuilder<QuerySnapshot>(
+                          future: dataCollection.where('docId', isEqualTo: uniqueIdentifier).limit(7).get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return const Center(
+                                child: Text('Error fetching data'),
+                              );
+                            }
+
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Container();
+                              //   const
+                              // Center(
+                              //   child: CircularProgressIndicator(
+                              //
+                              //   ),
+                              // );
+                            }
+
+                            // List chartData = snapshot.data!.docs.map((doc) {
+                            // var info = snapshot.data?.docs;
+                            // for(var doc in info ){
+                            //   dailyTasks = doc["dailyTasks"];
+                            // }
+                            var orders = snapshot.data?.docs;
+                            for( var doc in orders!) {
+                              rawDailyTasks = doc["dailyTasks"];
+                              // pointsList.add(doc['articleCount']??0);
+                            }
+
+                            splitArrayElements(rawDailyTasks);
+
+
+                            return Container(
+                              height: 200,
+                              decoration: BoxDecoration(
+                                color: kCustomColor,
+                                borderRadius: BorderRadius.circular(10),
+
+                              ),
+                              child: ListView.builder(
+                                itemCount:  rawDailyTasks.length,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return CheckboxListTile(
+
+                                    // dense: true,
+                                    // tileColor: kGreenThemeColor,
+                                    // enabled: false,
+
+                                    title: Text(
+
+                                      dailyTasks[index],
+                                      style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 12),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    value: dailyTasksBooleans[index],
+                                    onChanged: (bool? value) {
+                                      CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+
+                                      // setState(() {
+                                      //   value = value!;
+                                      // });
+                                    },
+                                    controlAffinity: ListTileControlAffinity.leading,
+                                    activeColor: kBlueThemeColor,
+
+                                    checkColor: kPureWhiteColor,
+                                  );
+                                },
+                              ),
+                            );
+
+
+
+                          },
                         ),
-                        )
+
+
+                        Positioned(
+                            right: 10,
+                            bottom: 20,
+
+                            child: GestureDetector(
+                                onTap: (){
+                                  Navigator.pushNamed(context, MemoriesPage.id);
+
+                                },
+
+                                child:  CircleAvatar(
+                                    backgroundColor: kBlueDarkColor,
+                                    child: Icon(Iconsax.magic_star , size: 20, color: kPureWhiteColor,))))
                       ],
                     ),
                   ),
 
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: kBlueDarkColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                      onPressed: () async{
+                        // Navigator.pushNamed(context, CustomerCareChatMessaging.id);
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+
+                            builder: (context) {
+                              return Container(color: kBackgroundGreyColor,
+                                child: CoachMessaging(),
+                                // InputPage()
+                              );
+                            });
+
+                      },
+
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Contact Coach", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                          kSmallWidthSpacing,
+                          // Lottie.asset('images/workout4.json', height: 20, width: 30, fit: BoxFit.cover,),
+                          // Icon(Iconsax.chrome, color: kBlack,),
+                        ],
+                      )),
 
 
                   kLargeHeightSpacing,
