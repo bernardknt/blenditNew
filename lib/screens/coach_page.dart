@@ -40,6 +40,7 @@ class _CoachMessagingState extends State<CoachMessaging> {
   var documentId = '';
   String initialId = 'feature';
   Random random = Random();
+  List<String> coachNames = ['John', 'Emily', 'David', 'Sarah', 'Michael', 'Jessica', 'Matthew', 'Olivia', 'Daniel', 'Sophia', 'Christopher', 'Ava', 'Andrew', 'Emma', 'James', 'Isabella', 'William', 'Mia', 'Benjamin', 'Charlotte',];
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
 
@@ -148,6 +149,8 @@ class _CoachMessagingState extends State<CoachMessaging> {
 
   @override
   Widget build(BuildContext context) {
+    final random = Random();
+    final randomCoach = coachNames[random.nextInt(coachNames.length)];
 
 
     Positioned LowerTextForm() {
@@ -428,12 +431,29 @@ class _CoachMessagingState extends State<CoachMessaging> {
                         },
                         child: Row(
                           children: [
-                            Icon(Icons.cancel, color: kPureWhiteColor,),
+                            Icon(Icons.cancel, color: kAppPinkColor,),
+                            // kMediumWidthSpacing,
+                            // kMediumWidthSpacing,
+                            // kMediumWidthSpacing,
                             kMediumWidthSpacing,
-                            kMediumWidthSpacing,
-                            kMediumWidthSpacing,
-                            kMediumWidthSpacing,
-                            Text("Coach Sharon", style: kNormalTextStyle.copyWith(color: kCustomColor, fontWeight: FontWeight.bold),)
+                            Container(
+                              width: 200,
+                                decoration: BoxDecoration(
+
+                                  color: kAppPinkColor.withOpacity(0.5),
+                                  borderRadius: BorderRadius.all( Radius.circular(20))
+
+                                ),
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Text("Coach $randomCoach",  style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold, shadows: [Shadow(color: kBlack, blurRadius: 2 )]),),
+                                  kSmallWidthSpacing,
+                                  Icon(Icons.online_prediction, color: kPureWhiteColor,)
+                                ],
+                              ),
+                            ))
                           ],
                         )))
 

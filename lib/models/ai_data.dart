@@ -20,6 +20,7 @@ class AiProvider extends ChangeNotifier{
   DateTime appointmentDate = DateTime.now();
   DateTime appointmentTime = DateTime.now();
   Color preferencesContinueColor = kCustomColor;
+  Color targetsContinueColor = kFontGreyColor;
   List <Color> welcomeButtons = [kPureWhiteColor, kPureWhiteColor, kPureWhiteColor];
   List <Color> welcomeFontColors = [kFontGreyColor, kFontGreyColor, kFontGreyColor];
   List <IconData> welcomeIcons = [Icons.cancel_outlined, Icons.cancel_outlined, Icons.cancel_outlined];
@@ -57,6 +58,7 @@ class AiProvider extends ChangeNotifier{
   String revTitle = '';
   String revDuration = '';
   String revTransId = '';
+
   List dailyTarget = [];
 
 
@@ -69,7 +71,7 @@ class AiProvider extends ChangeNotifier{
 
 
   // Challenge Variables
-
+  String goal = '';
   String challengeName = '';
   String challengeDescription = '';
   String challengeWelcomeMessage = '';
@@ -119,6 +121,11 @@ class AiProvider extends ChangeNotifier{
  // }
 
 // This adds power points to the Nutri chat when something good is done
+
+  setGoalValue(goalValue){
+    goal = goalValue;
+    notifyListeners();
+  }
   setRevenueCatValue( customerID,productStoreId, revenuecatPrice, title, duration, rcTransactionId){
     revCustomerId = customerID;
     revProductStoreId = productStoreId;
@@ -271,8 +278,18 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     }
     if (preferencesIdSelected.isNotEmpty){
       preferencesContinueColor = kGreenThemeColor;
+      if(preferencesIdSelected.length == 2){
+        targetsContinueColor = kGreenThemeColor;
+      } else {
+        targetsContinueColor = kFaintGrey;
+      }
+
     }else{
       preferencesContinueColor = kCustomColor;
+
+        targetsContinueColor = kFaintGrey;
+
+
     }
 
     notifyListeners();

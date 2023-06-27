@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/targets_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utilities/font_constants.dart';
 import 'goals.dart';
@@ -107,20 +110,15 @@ class _LoadingGoalsPageState extends State<LoadingGoalsPage> {
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kAppPinkColor)),
                   onPressed: ()async {
                     final prefs = await SharedPreferences.getInstance();
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context)=> QuizPage1())
-                    // );
-                    getUserAge(prefs.getString(kUserId)!);
-                    // users.doc(auth.currentUser!.uid).update({
-                    //   // "aiActive": false,
-                    //   "articleCount": messageCount,
-                    // });
-                    Navigator.pop(context);
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context)=> GoalsPage())
-                    // );
+                    setState(() {
 
-                  }, child: Text("I am Ready", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
+                    });
+                    Provider.of<AiProvider>(context, listen: false).resetQuestionButtonColors();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context)=> TargetsPage())
+                    );
+
+                  }, child: Text("Select Daily Targets", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
             ),
             // kSmallHeightSpacing,
             // Lottie.asset('images/challenge.json', height: 50, width: 150,),

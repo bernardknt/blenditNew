@@ -1,20 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
-// import 'package:audioplayers/audioplayers.dart';
 import 'package:blendit_2022/utilities/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../utilities/font_constants.dart';
-import 'home_page.dart';
-import 'mobileMoney.dart';
-import 'onboarding_questions/quiz_page1.dart';
 
 
 class YourVision extends StatefulWidget {
@@ -37,7 +29,8 @@ class _YourVisionState extends State<YourVision> {
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
-    inspiration = prefs.getString(kUserVision)!;
+    Map<String, dynamic> jsonMap = json.decode(prefs.getString(kUserVision)!);
+    inspiration = jsonMap['vision'];
     name = prefs.getString(kFullNameConstant)!;
     firstName = prefs.getString(kFirstNameConstant)!;
 

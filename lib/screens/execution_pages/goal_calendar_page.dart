@@ -26,9 +26,7 @@ class _GoalCalendarPageState extends State<GoalCalendarPage> {
   final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('updateUserVision');
 
   Widget build(BuildContext context) {
-    var aiDataDisplay = Provider.of<AiProvider>(context);
-    var styleData = Provider.of<AiProvider>(context, listen: false);
-    // var styleData = Provider.of<StyleProvider>(context,listen:false);
+
     return Scaffold(
         appBar: AppBar(backgroundColor: kPureWhiteColor ,
           title: const Text('Achieve Goal By Which Date?',style: kHeadingTextStyle,),
@@ -39,16 +37,7 @@ class _GoalCalendarPageState extends State<GoalCalendarPage> {
         ),
 
         body: SfCalendar(
-          // monthCellBuilder: (BuildContext buildContext, MonthCellDetails details) {
-          //   return Container(
-          //     color: Colors.black45.withOpacity(0.2),
-          //     child: Text(
-          //       details.date.day.toString(),
-          //     ),
-          //   );
-          // },
-          // allowDragAndDrop: true,
-          // showCurrentTimeIndicator: true,
+
           showDatePickerButton: true,
           minDate: DateTime.now(),
           todayHighlightColor: kBlueDarkColorOld,
@@ -73,35 +62,49 @@ class _GoalCalendarPageState extends State<GoalCalendarPage> {
 
 
             } else {
+              showDialog(context: context, builder:
+                  ( context) {
+                return const Center(child: CircularProgressIndicator());
+              });
               CoolAlert.show(
 
                   lottieAsset: 'images/goal.json',
                   context: context,
                   type: CoolAlertType.success,
 
-                  text: '${DateFormat('EEEE dd-MMM yyyy').format(selectedDateTime)}',
+                  text: DateFormat('EEEE dd-MMMM yyyy').format(selectedDateTime),
                   title: "Set Goal Date As",
                   confirmBtnText: 'Yes',
                   confirmBtnColor: Colors.green,
                   cancelBtnText: "Cancel",
                   showCancelBtn: true,
-                  onCancelBtnTap: (){Navigator.pop(context); },
+                  onCancelBtnTap: (){Navigator.pop(context);
+
+                    },
                   backgroundColor: kBackgroundGreyColor,
+
                   onConfirmBtnTap: () async{
+                    Navigator.pop(context);
+                    showDialog(context: context, builder:
+                        ( context) {
+                      return const Center(child: CircularProgressIndicator());
+                    });
                     dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-                      'goal': "I want to Gain Weight 30kgs By 20th December 2023",
+                      'goal': "${Provider.of<AiProvider>(context, listen: false).goal} by ${DateFormat('MMM yyyy').format(selectedDateTime)}",
                       'userId':auth.currentUser!.uid,
+                      'today': "${DateFormat('EEEE dd-MMMM yyyy').format(DateTime.now())}",
+
                       // orderId
                     }).catchError((error){
                       print('Request failed with status code ${error.response.statusCode}');
                       print('Response body: ${error.response.data}');
                     });
                     Navigator.pop(context);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-                            );
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
+                    );
+
+
 
                   }
               );

@@ -27,6 +27,7 @@ import '../screens/execution_page.dart';
 import '../screens/new_settings.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
+import '../widgets/memories_page.dart';
 
 
 class ControlPage extends StatefulWidget {
@@ -52,6 +53,7 @@ class _ControlPageState extends State<ControlPage> {
     // ChatDesignedPage(),
     ExecutionPage(),
     ChatThirdDesignedPage(),
+    MemoriesPage(),
 
     // HomePage(),
     // CustomizeController(),
@@ -63,7 +65,7 @@ class _ControlPageState extends State<ControlPage> {
 
     // OrdersPage(),
     // BlogPage()
-    SettingsTabController()
+    // SettingsTabController()
   ];
   void defaultInitialization(){
     // This initialization gets the default value of the tab you set when a notification comes in and changes it
@@ -138,18 +140,30 @@ class _ControlPageState extends State<ControlPage> {
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     gap: 4,
                   ),
-                GButton(
-                  icon: Icons.settings,
-                  // text: 'Active Workouts',
-                  text: 'Settings',
-                  iconColor: kGreenThemeColor,
-                  iconActiveColor: Colors.white,
-                  textColor: Colors.white,
-                  backgroundColor: kBlueDarkColorOld,
-                  iconSize: 24,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  gap: 4,
-                ),
+                  GButton(
+                    icon: Iconsax.magic_star ,
+                    // text: 'Active Workouts',
+                    text: 'Memories',
+                    iconColor: kGreenThemeColor,
+                    iconActiveColor: Colors.white,
+                    textColor: Colors.white,
+                    backgroundColor: kBlueDarkColorOld,
+                    iconSize: 24,
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    gap: 4,
+                  ),
+                // GButton(
+                //   icon: Icons.settings,
+                //   // text: 'Active Workouts',
+                //   text: 'Settings',
+                //   iconColor: kGreenThemeColor,
+                //   iconActiveColor: Colors.white,
+                //   textColor: Colors.white,
+                //   backgroundColor: kBlueDarkColorOld,
+                //   iconSize: 24,
+                //   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                //   gap: 4,
+                // ),
               ],
                 selectedIndex: selectedPage,
                 onTabChange: (index) {

@@ -33,7 +33,7 @@ class _WildlyImportantGoalState extends State<WildlyImportantGoal> {
 
 
   late Timer _timer;
-  var fullName= "";
+  var goalSet= "";
   var countryName = '';
   var countrySelected = false;
   var initialCountry = "";
@@ -47,6 +47,7 @@ class _WildlyImportantGoalState extends State<WildlyImportantGoal> {
 
   void defaultInitialization() async {
     final prefs = await SharedPreferences.getInstance();
+
     initialCountry = Provider.of<AiProvider>(context,listen: false).favouriteCountry;
     name = prefs.getString(kFirstNameConstant) ?? "";
     Provider.of<AiProvider>(context, listen: false).setUseName(name);
@@ -71,34 +72,39 @@ class _WildlyImportantGoalState extends State<WildlyImportantGoal> {
 
 
   void _startTyping() {
-    Timer.periodic(Duration(milliseconds: 10), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+      if(!mounted){
+        timer.cancel();
+        return;
+      }
       setState(() {
 
       });
     });
   }
 
-  final _random = new Random();
+
   animationTimer() async{
     final prefs = await SharedPreferences.getInstance();
     _timer = Timer(const Duration(milliseconds: 3000), () {
       prefs.setBool(kChallengeActivated, true);
-
-
       // Navigator.pop(context);
       opacityValue = 1.0;
       setState(() {
 
-
-
       });
-
 
     });
   }
 
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel the timer to prevent calling setState() after dispose()
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
-    // var points = Provider.of<BlenditData>(context, listen: false).rewardPoints ;
+
 
     return Scaffold(
       backgroundColor: kPureWhiteColor,
@@ -135,10 +141,6 @@ class _WildlyImportantGoalState extends State<WildlyImportantGoal> {
                             delay: const Duration(seconds: 1),
                           ),
 
-
-                            // Text(_displayText ,textAlign: TextAlign.right, style: kNormalTextStyle2.copyWith(fontSize: 17, color: kBlack, fontWeight: FontWeight.normal),
-                            //
-                            // )
                           )
                       ),
                     ),
@@ -161,26 +163,37 @@ class _WildlyImportantGoalState extends State<WildlyImportantGoal> {
 
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: InputFieldWidget2(fontColor: kPureWhiteColor, boxRadius: 10,  leftPadding: 0,  labelText:' I want to ...' ,hintText: '', keyboardType: TextInputType.text, onTypingFunction: (value){
-                            fullName = value;
+                          child:
 
-                          }, onTapFunction: () {
-                            setState(() {
+                          TextField(
+                            onChanged: (enteredQuestion){
+                              goalSet = enteredQuestion;
+                            },
+                            decoration: InputDecoration(
+                                border:
+                                //InputBorder.none,
+                                OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.green, width: 2),
+                                ),
+                                labelText: 'Goal',
+                                labelStyle: kNormalTextStyleExtraSmall,
+                                hintText: 'I want to lose 10kg',
+                                hintStyle: kNormalTextStyle
+                            ),
 
-                            });
+                          ),
 
-
-                          },),
                         ),
                         ElevatedButton(
                             style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kGreenThemeColor)),
                             onPressed: () async{
                               final prefs = await SharedPreferences.getInstance();
-                              if (fullName == ''){
+                              if (goalSet == ''){
                                 showDialog(context: context, builder: (BuildContext context){
                                   return CupertinoAlertDialog(
                                     title: const Text('Goal Empty'),
-                                    content: Text('No Goal has been entered. Please your goal', style: kNormalTextStyle.copyWith(color: kBlack),),
+                                    content: Text('No Goal has been entered. Please enter your goal', style: kNormalTextStyle.copyWith(color: kBlack),),
                                     actions: [CupertinoDialogAction(isDestructiveAction: true,
                                         onPressed: (){
                                           // _btnController.reset();
@@ -191,6 +204,8 @@ class _WildlyImportantGoalState extends State<WildlyImportantGoal> {
                                 });
 
                               } else {
+                                Provider.of<AiProvider>(context, listen: false).setGoalValue(goalSet); 
+                                Navigator.pop(context);
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (context)=> GoalCalendarPage())
                                 );

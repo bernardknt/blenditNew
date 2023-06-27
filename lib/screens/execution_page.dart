@@ -1,7 +1,7 @@
 
+import 'dart:convert';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/customer_care.dart';
-
+import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/screens/your_vision.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
@@ -11,14 +11,11 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:iconsax/iconsax.dart';
-
 import 'package:image_picker/image_picker.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,9 +23,10 @@ import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import '../models/CommonFunctions.dart';
 import '../widgets/chart_widget.dart';
 import 'coach_page.dart';
-import 'delivery_page.dart';
+// import 'delivery_page.dart';
 import 'execution_pages/wildly_important_goal.dart';
 import 'loading_goals_page.dart';
+import 'nutri_mobile_money.dart';
 
 
 final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('updateUserVision');
@@ -58,25 +56,62 @@ class _ExecutionPageState extends State<ExecutionPage> {
   var pointsList = [];
   final auth = FirebaseAuth.instance;
 
-  defaultInitialization() async{
-    final prefs = await SharedPreferences.getInstance();
-    vision = prefs.getString(kUserVision)!;
-    goal = prefs.getString(kGoalConstant)!;
+ coachCalling(){
 
+   var start = FirebaseFirestore.instance.collection('users').where('docId', isEqualTo: uniqueIdentifier)
+       .where('coach', isEqualTo: true)
+       .snapshots().listen((QuerySnapshot querySnapshot) {
+     querySnapshot.docs.forEach((doc) async {
+       // setState(() {
+       //
+       // });
+       showModalBottomSheet(
+           isScrollControlled: true,
+           context: context,
+
+           builder: (context) {
+             return Container(color: kBackgroundGreyColor,
+               child: CoachMessaging(),
+               // InputPage()
+             );
+           });
+
+
+
+     });
+   });
+   return start;
+ }
+
+  defaultInitialization() async{
+
+
+    final prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonMap = json.decode(prefs.getString(kUserVision)!);
+
+    //
+    vision = jsonMap['vision'];
+    goal = jsonMap['goal'];
+    // goal = prefs.getString(kGoalConstant)!;
     uniqueIdentifier = prefs.getString(kUniqueIdentifier)!;
+    // if(Provider.of<AiProvider>(context, listen: false).iosUpload == false){
+    //
+    // }
+
+
 
     setState(() {
-
+      coachCalling();
     });
 
   }
 
-  // bool isDateToday = false;
   final CollectionReference dataCollection = FirebaseFirestore.instance.collection('users');
 
   void splitArrayElements(List data) {
     List<bool> booleanArray = [];
     List<String> stringArray = [];
+
 
     for (String element in data) {
       List<String> splitValues = element.split("?");
@@ -136,6 +171,7 @@ class _ExecutionPageState extends State<ExecutionPage> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: appInterfaceColor, // Set background color to navy blue
       appBar: AppBar(
@@ -146,7 +182,27 @@ class _ExecutionPageState extends State<ExecutionPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(goal, style: kNormalTextStyle.copyWith(color: kRedThemeColor,  fontSize: 14, fontWeight: FontWeight.bold),),
+            Container(
+                width: 250,
+                child: GestureDetector(
+
+                    onTap: (){
+                      showDialog(context: context, builder: (BuildContext context){
+                        return
+                          CupertinoAlertDialog(
+                          title: const Text('YOUR GOAL'),
+                          content: Text(goal, style: kNormalTextStyle.copyWith(color: kBlack),),
+                          actions: [CupertinoDialogAction(isDestructiveAction: true,
+                              onPressed: (){
+                                // _btnController.reset();
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel'))],
+                        );
+                      });
+                    },
+
+                    child: Center(child: Text(goal,overflow: TextOverflow.fade, style: kNormalTextStyle.copyWith(color: kBlack,  fontSize: 14, fontWeight: FontWeight.bold),)))),
             kSmallWidthSpacing,
             GestureDetector(
                 onTap: ()async {
@@ -166,7 +222,8 @@ class _ExecutionPageState extends State<ExecutionPage> {
                   //           children: [
                   //             Padding(
                   //               padding: const EdgeInsets.all(8.0),
-                  //               child: TextField(
+                  //               child:
+                  //               TextField(
                   //                 onChanged: (enteredQuestion){
                   //                   question = enteredQuestion;
                   //                   // instructions = customerName;
@@ -328,7 +385,7 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                     children: [
 
                                       pointsList[0] < 50 ? Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: Colors.red, fontSize: 12,fontWeight: FontWeight.bold),):
-                                      Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 12,fontWeight: FontWeight.bold),),
+                                       Text("${pointsList[0]}/100", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontSize: 12,fontWeight: FontWeight.bold),),
                                       kSmallWidthSpacing,
                                       kSmallWidthSpacing,
                                       GestureDetector(
@@ -391,11 +448,6 @@ class _ExecutionPageState extends State<ExecutionPage> {
                               // );
                             }
 
-                            // List chartData = snapshot.data!.docs.map((doc) {
-                            // var info = snapshot.data?.docs;
-                            // for(var doc in info ){
-                            //   dailyTasks = doc["dailyTasks"];
-                            // }
                             var orders = snapshot.data?.docs;
                             for( var doc in orders!) {
                               rawDailyTasks = doc["dailyTasks"];
@@ -487,6 +539,10 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                 // InputPage()
                               );
                             });
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context)=> LoadingChallengePage())
+                        );
+                        // Navigator.pushNamed(context, LoadingChallengePage.id);
 
                       },
 
@@ -496,8 +552,7 @@ class _ExecutionPageState extends State<ExecutionPage> {
                         children: [
                           Text("Contact Coach", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
                           kSmallWidthSpacing,
-                          // Lottie.asset('images/workout4.json', height: 20, width: 30, fit: BoxFit.cover,),
-                          // Icon(Iconsax.chrome, color: kBlack,),
+
                         ],
                       )),
 
