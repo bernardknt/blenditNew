@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/execution_pages/get_a_number_page.dart';
 import 'package:blendit_2022/screens/execution_pages/goal_calendar_page.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:blendit_2022/utilities/constants.dart';
@@ -15,11 +16,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:provider/provider.dart';
 
-import '../../models/CommonFunctions.dart';
-import '../../utilities/font_constants.dart';
-import '../../widgets/InputFieldWidget2.dart';
-import '../../widgets/gliding_text.dart';
-import '../controllers/home_controller.dart';
+import '../../../models/CommonFunctions.dart';
+import '../../../utilities/font_constants.dart';
+import '../../../widgets/InputFieldWidget2.dart';
+import '../../../widgets/gliding_text.dart';
+import '../../controllers/home_controller.dart';
 
 
 
@@ -135,7 +136,12 @@ class _TargetsPageState extends State<TargetsPage> {
         'articleCount': 0,
         'targetNumbers': createArray(),
         'articleCountValues':['0?${DateTime.now().toIso8601String()}']
-      }).then((value){Navigator.pushNamed(context, ControlPage.id);});
+      }).then((value){
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context)=> GetANumberPage())
+        );
+        // Navigator.pushNamed(context, ControlPage.id);
+      });
   }
 
   @override
@@ -287,38 +293,18 @@ class _TargetsPageState extends State<TargetsPage> {
                   ),
                 ),
 
-                // Display the action list in rounded rectangular containers
-                // for (String actionSentence in visionData['action'])
-                //   Padding(
-                //     padding: const EdgeInsets.only(left: 20.0, right: 20),
-                //     child: Container(
-                //       decoration: BoxDecoration(
-                //         color: Provider.of<AiProvider>(context, listen: false).preferencesColorOfBoxes[],
-                //         borderRadius: BorderRadius.circular(10.0),
-                //       ),
-                //       padding: EdgeInsets.all(10.0),
-                //       margin: EdgeInsets.only(bottom: 10.0),
-                //       child: Text(
-                //         actionSentence,
-                //         style: TextStyle(
-                //           color: Colors.white,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
                 Padding(
                   padding: const EdgeInsets.only(left: 50.0, right: 50),
                   child: ElevatedButton(
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(aiDataDisplay.targetsContinueColor)),
                       onPressed: ()async {
-                        if(aiDataDisplay.targetsContinueColor != kFaintGrey) {
+                        if(aiDataDisplay.targetsContinueColor == kGreenThemeColor) {
                           final prefs = await SharedPreferences.getInstance();
                          print(aiDataDisplay.preferencesSelected);
                          updateTasks();
                           prefs.setString(kUserVision, vision);
-                          // CircularProgressIndicator(
-                          // );
-                          // createModifiedValues(visionData['action']);
+
+
 
                         } else {
                           showDialog(context: context, builder: (BuildContext context){

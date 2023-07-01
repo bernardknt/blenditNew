@@ -47,6 +47,7 @@ class AiProvider extends ChangeNotifier{
   Map youtubeVideos = {};
   String intTrial = "5.99";
   String annualGoal = "";
+  String coach = "Philip";
   String customerCareNumber = "+256700457826";
   String userName = "";
   bool showPaymentNotification = false;
@@ -328,7 +329,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     subscriptionType = subscription;
 
   }
-  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries, countryPrompt, control, favCountry, videos, goal){
+  void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries, countryPrompt, control, favCountry, videos, goal, onlineCoach){
     ugMonthly = ugMonth.toString();
     ugYearly = ugYear.toString();
     intMonthly = intMonth.toString();
@@ -348,7 +349,13 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     favouriteCountry = favCountry;
     youtubeVideos = videos;
     annualGoal = goal;
+    coach = onlineCoach;
 
     notifyListeners();
   }
+  setCoach(name){
+    coach = name;
+    notifyListeners();
+  }
 }
+

@@ -87,6 +87,7 @@ String kUserSex = 'userSex';
 String kUserBirthday = 'userBirthday';
 String kNutriCount = 'nutriCount';
 String kPointsList = 'kPointsList';
+String kGoalProgress = 'kGoalProgress';
 
 // THIS IS THE KEY FOR THE USER'S PHONE NUMBER
 String kSearchRadius = 'distance_radius';

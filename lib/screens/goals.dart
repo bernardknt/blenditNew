@@ -237,7 +237,7 @@ class PhotoWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Handle icon click here
-        CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+        CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
 
         print('Icon clicked!');
       },

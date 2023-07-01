@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/targets_page.dart';
+import 'package:blendit_2022/screens/execution_pages/targets_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

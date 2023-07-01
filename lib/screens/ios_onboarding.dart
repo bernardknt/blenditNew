@@ -27,7 +27,7 @@ class IosOnboarding extends StatelessWidget {
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool(kFirstTimePhoto, false);
         Navigator.pop(context);
-        CommonFunctions().pickImage(ImageSource.camera, 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+        CommonFunctions().pickImage(ImageSource.camera, 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
 
 
       },

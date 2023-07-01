@@ -1,6 +1,8 @@
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/execution_pages/get_a_number_page.dart';
 import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/screens/your_vision.dart';
 import 'package:blendit_2022/utilities/constants.dart';
@@ -13,20 +15,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
-import '../models/CommonFunctions.dart';
-import '../widgets/chart_widget.dart';
-import 'coach_page.dart';
+import '../../models/CommonFunctions.dart';
+import '../../widgets/chart_widget.dart';
+import '../coach_page.dart';
 // import 'delivery_page.dart';
-import 'execution_pages/wildly_important_goal.dart';
-import 'loading_goals_page.dart';
-import 'nutri_mobile_money.dart';
+import '../paywall_international.dart';
+import '../paywall_uganda.dart';
+import 'wildly_important_goal.dart';
+import '../loading_goals_page.dart';
+import '../nutri_mobile_money.dart';
 
 
 final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('updateUserVision');
@@ -42,6 +45,12 @@ class _ExecutionPageState extends State<ExecutionPage> {
 
   List photos = ["","", ""];
   String vision = "";
+  String difficulty = "";
+  String category = "";
+  String unit = "";
+  var motivation = [];
+  String target = "";
+  double currentLevel = 0.0;
   String uniqueIdentifier = "";
   List pointsNumbers = [];
   List targetNumbers = [];
@@ -55,8 +64,10 @@ class _ExecutionPageState extends State<ExecutionPage> {
   String goal = "";
   var pointsList = [];
   final auth = FirebaseAuth.instance;
+  List<String> coachNames = ['John', 'Emily', 'David', 'Sarah', 'Michael', 'Jessica', 'Matthew', 'Olivia', 'Daniel', 'Sophia', 'Christopher', 'Ava', 'Andrew', 'Emma', 'James', 'Isabella', 'William', 'Mia', 'Benjamin', 'Charlotte',];
 
- coachCalling(){
+
+  coachCalling(){
 
    var start = FirebaseFirestore.instance.collection('users').where('docId', isEqualTo: uniqueIdentifier)
        .where('coach', isEqualTo: true)
@@ -88,8 +99,16 @@ class _ExecutionPageState extends State<ExecutionPage> {
 
     final prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> jsonMap = json.decode(prefs.getString(kUserVision)!);
+    difficulty = jsonMap['difficulty'];
+    // difficulty = jsonMap['question'];
+    category = jsonMap['category'];
+    motivation = jsonMap['motivation'];
+    unit = jsonMap['unit'];
+    // category = jsonMap['category'];
+    target = jsonMap['target'];
+    currentLevel = prefs.getDouble(kGoalProgress)?? 0.0;
 
-    //
+
     vision = jsonMap['vision'];
     goal = jsonMap['goal'];
     // goal = prefs.getString(kGoalConstant)!;
@@ -155,10 +174,34 @@ class _ExecutionPageState extends State<ExecutionPage> {
     // Print the separated arrays
     print('Numbers Array: $numbersArray');
     print('Dates Array: $datesArray');
-    // setState(() {
-    //
-    // });
+
   }
+
+  void postCoachDocument() async {
+    final prefs = await SharedPreferences.getInstance();
+    final firestore = FirebaseFirestore.instance;
+    final coachContactCollection = firestore.collection('coachContact');
+    final currentTime = DateTime.now();
+
+    final documentData = {
+      // 'docId': 'coach${DateTime.now().toString()}${uuid.v1().split("-")[0]}',
+      'name': prefs.getString(kFullNameConstant)!,
+      'time': currentTime,
+      'country': prefs.getString(kUserCountryName)!,
+      'uid': prefs.getString(kUniqueIdentifier)!,
+      'token': prefs.getString(kToken)!,
+    };
+
+    try {
+      // Post the document in the coachContact collection
+      await coachContactCollection.add(documentData);
+      print('Document posted successfully');
+    } catch (e) {
+      print('Error posting document: $e');
+    }
+  }
+
+
 
 
 
@@ -171,6 +214,8 @@ class _ExecutionPageState extends State<ExecutionPage> {
   }
   @override
   Widget build(BuildContext context) {
+    final random = Random();
+    final randomCoach = coachNames[random.nextInt(coachNames.length)];
 
     return Scaffold(
       backgroundColor: appInterfaceColor, // Set background color to navy blue
@@ -179,112 +224,129 @@ class _ExecutionPageState extends State<ExecutionPage> {
         automaticallyImplyLeading: false,
         foregroundColor:kPureWhiteColor,
         elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-                width: 250,
-                child: GestureDetector(
-
-                    onTap: (){
-                      showDialog(context: context, builder: (BuildContext context){
-                        return
-                          CupertinoAlertDialog(
-                          title: const Text('YOUR GOAL'),
-                          content: Text(goal, style: kNormalTextStyle.copyWith(color: kBlack),),
-                          actions: [CupertinoDialogAction(isDestructiveAction: true,
-                              onPressed: (){
-                                // _btnController.reset();
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Cancel'))],
-                        );
-                      });
-                    },
-
-                    child: Center(child: Text(goal,overflow: TextOverflow.fade, style: kNormalTextStyle.copyWith(color: kBlack,  fontSize: 14, fontWeight: FontWeight.bold),)))),
-            kSmallWidthSpacing,
-            GestureDetector(
-                onTap: ()async {
-                  final prefs = await SharedPreferences.getInstance();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=> WildlyImportantGoal())
-                  );
-                  // CoolAlert.show(
-                  //
-                  //     lottieAsset: 'images/goal.json',
-                  //     context: context,
-                  //     type: CoolAlertType.success,
-                  //     widget: SingleChildScrollView(
-                  //
-                  //         child:
-                  //         Column(
-                  //           children: [
-                  //             Padding(
-                  //               padding: const EdgeInsets.all(8.0),
-                  //               child:
-                  //               TextField(
-                  //                 onChanged: (enteredQuestion){
-                  //                   question = enteredQuestion;
-                  //                   // instructions = customerName;
-                  //                   // setState(() {
-                  //                   // });
-                  //                 },
-                  //                 decoration: InputDecoration(
-                  //                     border:
-                  //                     //InputBorder.none,
-                  //                     OutlineInputBorder(
-                  //                       borderRadius: BorderRadius.circular(10),
-                  //                       borderSide: BorderSide(color: Colors.green, width: 2),
-                  //                     ),
-                  //                     labelText: 'Goal',
-                  //                     labelStyle: kNormalTextStyleExtraSmall,
-                  //                     hintText: 'This year I want to lose 10kg',
-                  //                     hintStyle: kNormalTextStyle
-                  //                 ),
-                  //
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         )
-                  //     ),
-                  //     text: 'Set a goal you want to achieve',
-                  //     title: "${prefs.getString(kFirstNameConstant)}!",
-                  //     confirmBtnText: 'Set Goal',
-                  //     confirmBtnColor: Colors.green,
-                  //     backgroundColor: kBackgroundGreyColor,
-                  //     onConfirmBtnTap: () async{
-                  //       if (question != ""){
-                  //         final prefs = await SharedPreferences.getInstance();
-                  //         prefs.setString(kGoalConstant, question);
-                  //         prefs.setBool(kIsGoalSet, true);
-                  //         Navigator.pop(context);
-                  //         prefs.setString(kUserId, auth.currentUser!.uid);
-                  //         // updatePersonalInformationWithGoal();
-                  //         dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-                  //           'goal': question,
-                  //           'userId':auth.currentUser!.uid,
-                  //           // orderId
-                  //         });
-                  //         // Navigator.pushNamed(context, SuccessPageNew.id);
-                  //         Navigator.push(context,
-                  //             MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-                  //         );
-                  //       } else {
-                  //
-                  //       }
-                  //     }
-                  // );
-                },
-                child:
-
-                Icon(Icons.edit, color: kGreenThemeColor,size: 20,))
-          ],
-        ),
+        // title: Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     Container(
+        //         width: 250,
+        //         child: GestureDetector(
+        //
+        //             onTap: (){
+        //               showDialog(context: context, builder: (BuildContext context){
+        //                 return
+        //                   CupertinoAlertDialog(
+        //                   title: const Text('YOUR GOAL'),
+        //                   content: Text("$goal\nTarget: $target\nDifficulty: $difficulty", style: kNormalTextStyle.copyWith(color: kBlack),),
+        //                   actions: [CupertinoDialogAction(isDestructiveAction: true,
+        //                       onPressed: (){
+        //                         // _btnController.reset();
+        //                         Navigator.pop(context);
+        //                       },
+        //                       child: const Text('Cancel'))],
+        //                 );
+        //               });
+        //             },
+        //
+        //             child: Center(child: Text(goal,overflow: TextOverflow.fade, style: kNormalTextStyle.copyWith(color: kBlack,  fontSize: 14, fontWeight: FontWeight.bold),)))),
+        //     kSmallWidthSpacing,
+        //     GestureDetector(
+        //         onTap: ()async {
+        //           final prefs = await SharedPreferences.getInstance();
+        //           Navigator.push(context,
+        //               MaterialPageRoute(builder: (context)=> WildlyImportantGoal())
+        //           );
+        //
+        //         },
+        //         child:
+        //
+        //         Icon(Icons.edit, color: kGreenThemeColor,size: 20,))
+        //   ],
+        // ),
         centerTitle: true,
 
 
       ),
+      floatingActionButton: FloatingActionButton.extended(
+
+          // child: Center(child: Text(target, style: kNormalTextStyle,)),
+
+          onPressed: (){
+
+                      showDialog(context: context, builder: (BuildContext context){
+                        return
+                          Stack(
+                            children: [
+
+                              CupertinoAlertDialog(
+                              title: const Text('YOUR GOAL'),
+                              content: Text("Target: $target\nCurrently: $currentLevel $unit\nDifficulty: $difficulty", style: kNormalTextStyle.copyWith(color: kBlack),),
+                              actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                  onPressed: (){
+                                    // _btnController.reset();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Cancel'))],
+                        ),
+                              Positioned(
+                                right: 100,
+                                  left: 100,
+                                  top: 100,
+                                  child: Center(child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+
+                                      Column(
+                                        children: [
+                                          GestureDetector(
+                                                    onTap: (){
+                                                      Navigator.pop(context);
+                                                      Navigator.push(context,
+                                                          MaterialPageRoute(builder: (context)=> GetANumberPage())
+                                                      );
+
+                                                    },
+                                            child: CircleAvatar(
+                                                radius: 30,
+                                                child: const Icon(Iconsax.flag, color: kPureWhiteColor,size: 20,)),
+                                          ),
+                                          Text("${currentLevel.toString()} $unit", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),)
+                                        ],
+                                      ),
+                                      kMediumWidthSpacing,
+                                      kMediumWidthSpacing,
+                                      kMediumWidthSpacing,
+                                      Column(
+                                        children: [
+                                          GestureDetector(
+                                                    onTap: (){
+                                                      Navigator.pop(context);
+                                                      Navigator.push(context,
+                                                          MaterialPageRoute(builder: (context)=> WildlyImportantGoal())
+                                                      );
+
+                                                    },
+                                            child: CircleAvatar(
+                                              backgroundColor: kFontGreyColor,
+
+                                                radius: 30,
+                                                child: const Icon(Iconsax.cup4, color: kPureWhiteColor,size: 20,)),
+                                          ),
+                                          Text("New Goal", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),)
+                                        ],
+                                      ),
+                                    ],
+                                  ))),
+                            ],
+                          );
+                      });
+
+
+
+
+          }, label: Text(goal),),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
+
+
       body: SafeArea(
           child:
 
@@ -295,6 +357,8 @@ class _ExecutionPageState extends State<ExecutionPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
 
+                  kLargeHeightSpacing,
+                  kLargeHeightSpacing,
 
                   FutureBuilder<QuerySnapshot>(
                     future: dataCollection.where('docId', isEqualTo: uniqueIdentifier).limit(7).get(),
@@ -344,11 +408,10 @@ class _ExecutionPageState extends State<ExecutionPage> {
                             ),
                           )
                       );
-
-
                     },
                   ),
                   kLargeHeightSpacing,
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -390,14 +453,19 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                       kSmallWidthSpacing,
                                       GestureDetector(
                                         onTap: (){
-                                          Navigator.pushNamed(context, MemoriesPage.id);
-                                          Get.snackbar(
-                                              'Daily Points Count',
-                                              'You have ${pointsList[0]} Goal points today. Keep Going💪',
-                                              snackPosition: SnackPosition.TOP,
-                                              backgroundColor: kCustomColor,
-                                              colorText: kBlack,
-                                              icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
+                                          showDialog(context: context, builder: (BuildContext context){
+                                            return
+                                              CupertinoAlertDialog(
+                                                title: const Text("TODAY'S PROGRESS"),
+                                                content: Text("${pointsList[0]} points", style: kNormalTextStyle.copyWith(color: kBlack),),
+                                                actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                                    onPressed: (){
+                                                      // _btnController.reset();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('Cancel'))],
+                                              );
+                                          });
                                         },
                                         child: SimpleCircularProgressBar(
                                           backColor: kBlueDarkColor,
@@ -484,11 +552,61 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                     ),
                                     value: dailyTasksBooleans[index],
                                     onChanged: (bool? value) {
-                                      CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons.check_circle_outline, color: kGreenThemeColor,),
+                                                    kMediumWidthSpacing,
+                                                    Container(
+                                                        width: 250,
+                                                        child: Text("${dailyTasks[index]}",overflow: TextOverflow.fade, style: kNormalTextStyle.copyWith(color: kBlack),)),
+                                                  ],
+                                                ),
+                                                kLargeHeightSpacing,
 
-                                      // setState(() {
-                                      //   value = value!;
-                                      // });
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+
+                                                  children: [
+
+                                                    PhotoWidget(iconColor: kAppPinkColor, iconToUse: Iconsax.camera, footer: "Camera",
+                                                      onTapFunction: (){
+                                                        CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
+                                                        Navigator.pop(context);
+                                                      },),
+                                                    kMediumWidthSpacing,
+                                                    kMediumWidthSpacing,
+
+                                                    // ListTile(
+                                                    //   leading: Icon(Icons.camera),
+                                                    //   title: Text('Camera'),
+                                                    //   onTap: () {
+                                                    //     CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
+                                                    //
+                                                    //
+                                                    //   },
+                                                    // ),
+                                                PhotoWidget(iconColor: kGreenThemeColor, iconToUse: Iconsax.gallery, footer: "Gallery", onTapFunction: () {
+                                                  CommonFunctions().pickImage(ImageSource.gallery,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
+                                                  Navigator.pop(context);
+
+                                                },),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+
                                     },
                                     controlAffinity: ListTileControlAffinity.leading,
                                     activeColor: kBlueThemeColor,
@@ -517,7 +635,11 @@ class _ExecutionPageState extends State<ExecutionPage> {
 
                                 child:  CircleAvatar(
                                     backgroundColor: kBlueDarkColor,
-                                    child: Icon(Iconsax.magic_star , size: 20, color: kPureWhiteColor,))))
+                                    child: Icon(Iconsax.magic_star , size: 20, color: kPureWhiteColor,)))),
+                        Positioned(
+                          left: 10,
+                          bottom: 10,
+                          child: Text(category, style: kNormalTextStyle.copyWith(),),)
                       ],
                     ),
                   ),
@@ -528,21 +650,54 @@ class _ExecutionPageState extends State<ExecutionPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       onPressed: () async{
-                        // Navigator.pushNamed(context, CustomerCareChatMessaging.id);
-                        showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
+                        // LET US FIRST CHECK IF THE USER HAS SUBSCRIBED
+                        final prefs = await SharedPreferences.getInstance();
+                        DateTime subscriptionDate = Provider.of<AiProvider>(context, listen: false).subscriptionDate;
+                        DateTime today = DateTime.now();
+                        String country = prefs.getString(kUserCountryName)!;
+                        Provider.of<AiProvider>(context, listen: false).setCoach(randomCoach);
+                        if (subscriptionDate.isAfter(today)){
+                          postCoachDocument();
+                          showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
 
-                            builder: (context) {
-                              return Container(color: kBackgroundGreyColor,
-                                child: CoachMessaging(),
-                                // InputPage()
-                              );
+                              builder: (context) {
+                                return Container(color: kBackgroundGreyColor,
+                                  child: CoachMessaging(),
+                                  // InputPage()
+                                );
+                              });
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context)=> LoadingChallengePage())
+                          );
+                        } else {
+                          if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){
+                            print("MAMAMAMAMAMMIA this run");
+
+                            CommonFunctions().fetchOffers().then((value) {
+                              // We are sending a List of Offerings to the value subscriptionProducts
+                              Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context)=> PaywallUgandaPage()));
+
                             });
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=> LoadingChallengePage())
-                        );
-                        // Navigator.pushNamed(context, LoadingChallengePage.id);
+                          } else {
+                            // This
+                            print("tatatatatattamia this run");
+                            CommonFunctions().fetchOffers().then(
+                                    (value) {
+                                  // We are sending a List of Offerings to the value subscriptionProducts
+                                  Provider.of<AiProvider>(context, listen: false).setSubscriptionProducts(value);
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context)=> PaywallInternationalPage())
+                                  );
+
+                                }
+                            );
+
+                          }
+                        }
 
                       },
 
@@ -566,7 +721,10 @@ class _ExecutionPageState extends State<ExecutionPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
-                      photos[0] == ""? PhotoWidget(): Container(height: 100, width: 100,color: kBabyPinkThemeColor,),
+                      photos[0] == ""? PhotoWidget(onTapFunction: () {
+                        CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
+
+                      },): Container(height: 100, width: 100,color: kBabyPinkThemeColor,),
                       kMediumWidthSpacing,
                       photos[1] == ""? GoalsWidget(vision: vision,): Container(height: 100, width: 100,color: kBabyPinkThemeColor,),
                       // kMediumWidthSpacing,
@@ -586,35 +744,45 @@ class _ExecutionPageState extends State<ExecutionPage> {
 }
 
 class PhotoWidget extends StatelessWidget {
-  const PhotoWidget({
-    Key? key,
-  }) : super(key: key);
+
+  final IconData iconToUse;
+  final Color iconColor;
+  final String footer;
+  final Function onTapFunction;
+
+  const PhotoWidget({Key? key, this.iconToUse = Icons.photo_camera, this.iconColor = kBlack,  this.footer = "", required this.onTapFunction}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         // Handle icon click here
-        CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+        onTapFunction();
 
         print('Icon clicked!');
       },
-      child: Container(
-        width: 100,
-        height: 150,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: kBlack,
-            width: 1,
+      child: Column(
+        children: [
+          Container(
+            width: 100,
+            height: 150,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: iconColor,
+                width: 1,
+              ),
+            ),
+            child: Icon(
+              iconToUse,
+              size: 38,
+              color: iconColor,
+            ),
           ),
-        ),
-        child: Icon(
-          Icons.photo_camera,
-          size: 48,
-          color: kBlack,
-        ),
+          Text(footer)
+        ],
       ),
     );
   }
@@ -709,21 +877,26 @@ class GoalsWidget extends StatelessWidget {
         }
 
       },
-      child: Container(
-          width: 100,
-          height: 150,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: kBlack,
-              width: 1,
-            ),
+      child: Column(
+        children: [
+          Container(
+              width: 100,
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: kBlack,
+                  width: 1,
+                ),
+              ),
+              child: Center(child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: vision == null? Text("Set Your Goal", style: kNormalTextStyle.copyWith(color: kBlack),) : Text(vision, textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 10),),
+              ))
           ),
-          child: Center(child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: vision == null? Text("Set Your Goal", style: kNormalTextStyle.copyWith(color: kBlack),) : Text(vision, textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 10),),
-          ))
+          Text("")
+        ],
       ),
     );
   }

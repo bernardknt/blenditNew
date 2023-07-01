@@ -62,10 +62,10 @@ class _GoalCalendarPageState extends State<GoalCalendarPage> {
 
 
             } else {
-              showDialog(context: context, builder:
-                  ( context) {
-                return const Center(child: CircularProgressIndicator());
-              });
+              // showDialog(context: context, builder:
+              //     ( context) {
+              //   return const Center(child: CircularProgressIndicator());
+              // });
               CoolAlert.show(
 
                   lottieAsset: 'images/goal.json',
@@ -87,7 +87,17 @@ class _GoalCalendarPageState extends State<GoalCalendarPage> {
                     Navigator.pop(context);
                     showDialog(context: context, builder:
                         ( context) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: Container(
+                        height: 100,
+                        child: Stack(
+                          children: [
+                            CircularProgressIndicator(
+                              semanticsLabel: "Creating Goal Profile...",
+                            ),
+                            Text("Creating Goal Profile...", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)
+                          ],
+                        ),
+                      ));
                     });
                     dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
                       'goal': "${Provider.of<AiProvider>(context, listen: false).goal} by ${DateFormat('MMM yyyy').format(selectedDateTime)}",
@@ -111,7 +121,7 @@ class _GoalCalendarPageState extends State<GoalCalendarPage> {
             }
           },
           view: CalendarView.month,
-          initialSelectedDate: DateTime.now(),
+          initialSelectedDate: DateTime.now().add(Duration(days: 30)),
           cellBorderColor: kBackgroundGreyColor,
           backgroundColor: kBackgroundGreyColor,
           selectionDecoration: BoxDecoration(

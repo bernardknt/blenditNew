@@ -45,7 +45,8 @@ class _MemoriesPageState extends State<MemoriesPage> {
     final transactions = await FirebaseFirestore.instance
         .collection('chat')
         .where('userId', isEqualTo: userIdentifier)
-        .where('photo', isEqualTo: true)
+        // .where('photo', isEqualTo: true)
+        .where('winning', isEqualTo: true)
         // .where('winning', isEqualTo: true)
         .orderBy("time", descending: true)
         .get()

@@ -1,6 +1,7 @@
 
 
 import 'dart:async';
+import 'dart:convert';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
@@ -17,23 +18,19 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'package:new_version/new_version.dart';
 import 'package:provider/provider.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
-import '../controllers/settings_tab_controller.dart';
 import '../models/blendit_data.dart';
 import '../models/firebase_functions.dart';
-import 'delivery_page.dart';
-import 'goals.dart';
+import 'nutri_mobile_money.dart';
+// import 'delivery_page.dart';
+
 
 
 class ChatThirdDesignedPage extends StatefulWidget {
@@ -241,15 +238,15 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
     return array.contains(searchString);
   }
 
-  bool checkMapKeysContainString(map, String searchString) {
-
-    var myMap = map;
-    print(map);
-    print(myMap.keys.toList());
-
-    return checkArrayForString(myMap.keys.toList(), searchString);
-      // myMap.keys.any((key) => key.contains(searchString));
-  }
+  // bool checkMapKeysContainString(map, String searchString) {
+  //
+  //   var myMap = map;
+  //   print(map);
+  //   print(myMap.keys.toList());
+  //
+  //   return checkArrayForString(myMap.keys.toList(), searchString);
+  //     // myMap.keys.any((key) => key.contains(searchString));
+  // }
 
 
 
@@ -271,9 +268,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
   Future<void> uploadData() async {
     var finalQuestion = lastQuestion;
     final prefs = await SharedPreferences.getInstance();
-    int? previousNutriCount = prefs.getInt(kNutriCount);
-    var messageCount = prefs.getInt(kMessageCount);
-
+    print(prompt);
     return chat.doc(serviceId)
         .set({
       'replied': false,
@@ -314,6 +309,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
 
   void defaultInitialization()async{
     final prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonMap = json.decode(prefs.getString(kUserVision)!);
+    prompt = jsonMap['category'];
     userIdentifier =  prefs.getString(kUniqueIdentifier)?? "";
     name = prefs.getString(kFirstNameConstant)!;
     token = prefs.getString(kToken)!;
@@ -531,17 +528,9 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                             // increaseValueAndUploadToFirestore();
                             lastQuestion = message;
                             serviceId = '${DateTime.now().toString()}${uuid.v1().split("-")[0]}';
-                            prompt = "";
+                            // prompt = "";
                             print(Provider.of<AiProvider>(context, listen: false).prompt);
 
-                               if(checkMapKeysContainString(Provider.of<AiProvider>(context, listen: false).prompt, country )) {
-                                 prompt = Provider.of<AiProvider>(context, listen: false).prompt[country];
-                                 print("TATATATATATA: $prompt");
-                               } else {
-                                 prompt = "";
-                                 print("TATATATATATA: $prompt");
-                               }
-                            // print(Provider.of<AiProvider>(context, listen: false).prompt);
 
                             if (message.length > 20) {
                               print(" Long Response $message : ${message.length}");
@@ -613,7 +602,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       DateTime today = DateTime.now();
 
                       if (subscriptionDate.isAfter(today)){
-                        CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+                        CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
 
                       } else {
                         if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){

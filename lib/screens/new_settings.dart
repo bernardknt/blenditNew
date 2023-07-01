@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/paywall_international.dart';
@@ -57,6 +59,20 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
     int newHeight = prefs.getInt(kUserHeight)?? 180;
 
 
+    Map<String, dynamic> jsonMap = json.decode(prefs.getString(kUserVision)!);
+    difficulty = jsonMap['difficulty'];
+    // difficulty = jsonMap['question'];
+    category = jsonMap['category'];
+
+    unit = jsonMap['unit'];
+    // category = jsonMap['category'];
+    target = jsonMap['target'];
+    currentLevel = prefs.getDouble(kGoalProgress)?? 0.0;
+
+
+    goal = jsonMap['goal'];
+
+
     setState(() {
       country = newCountry;
       birthday = newBirthday;
@@ -100,6 +116,12 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
   double textSize = 15;
   String preferences = '';
   String country = '';
+  String difficulty = '';
+  String category = '';
+  String unit = '';
+  String goal = '';
+  String target = '';
+  double currentLevel = 0.0;
   String phone = '';
   String name = '';
   String sex = 'Female';
@@ -353,25 +375,25 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                         _buildDivider(),
                         ListTile(
                           leading: Icon(Iconsax.ruler, color: kGreenDarkColorOld,),
-                          title:Text( '$height cm', style: kNormalTextStyle),
+                          title:Text( '$goal', style: kNormalTextStyle),
                           // trailing: Icon(Icons.keyboard_arrow_right),
                         ),
                         _buildDivider(),
                         ListTile(
                           leading: Icon(Iconsax.weight, color:kGreenDarkColorOld,),
-                          title:Text('$weight kg', style: kNormalTextStyle),
+                          title:Text('Target: $target', style: kNormalTextStyle),
                           // trailing: Icon(Icons.keyboard_arrow_right),
                         ),
                         _buildDivider(),
                         ListTile(
                           leading: Icon(Iconsax.health, color: kGreenDarkColorOld,),
-                          title:Text('BMI: $bmi', style:kNormalTextStyle),
+                          title:Text('Now: $currentLevel $unit', style:kNormalTextStyle),
                           // trailing: Icon(Icons.keyboard_arrow_right),
                         ),
                         _buildDivider(),
                         ListTile(
                           leading: Icon(Iconsax.tag, color: kGreenDarkColorOld,),
-                          title:Text('Focus: $preferences', style:kNormalTextStyle),
+                          title:Text('Category: $category', style:kNormalTextStyle),
                           // trailing: Icon(Icons.keyboard_arrow_right),
                         ),
                         _buildDivider(),

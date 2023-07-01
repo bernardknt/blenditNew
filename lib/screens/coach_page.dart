@@ -1,11 +1,14 @@
 
+import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -42,11 +45,16 @@ class _CoachMessagingState extends State<CoachMessaging> {
   Random random = Random();
   List<String> coachNames = ['John', 'Emily', 'David', 'Sarah', 'Michael', 'Jessica', 'Matthew', 'Olivia', 'Daniel', 'Sophia', 'Christopher', 'Ava', 'Andrew', 'Emma', 'James', 'Isabella', 'William', 'Mia', 'Benjamin', 'Charlotte',];
   final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
-
-
-
   final TextEditingController _textFieldController = TextEditingController();
-  // final FocusNode _focusNode = FocusNode();
+
+
+  Future<void> vibrateDevice() async {
+    // Check if the device can vibrate
+    if (await Vibrate.canVibrate) {
+      // Vibrate the device for a certain duration
+      Vibrate.vibrate();
+    }
+  }
 
 
 
@@ -89,6 +97,7 @@ class _CoachMessagingState extends State<CoachMessaging> {
     name = prefs.getString(kFirstNameConstant)!;
     token = prefs.getString(kToken)!;
     email = prefs.getString(kEmailConstant)!;
+    print(Provider.of<AiProvider>(context, listen: false).coach);
 
 
     setState(() {
@@ -228,8 +237,7 @@ class _CoachMessagingState extends State<CoachMessaging> {
                       child: IconButton(
 
                           onPressed: () async {
-
-
+                            vibrateDevice();
                             final prefs = await SharedPreferences.getInstance();
 
 
@@ -263,6 +271,7 @@ class _CoachMessagingState extends State<CoachMessaging> {
       },
       child: Scaffold(
           backgroundColor:
+          // kBlack
           kBlueDarkColor
           // kGreyLightThemeColor
           ,
@@ -278,189 +287,193 @@ class _CoachMessagingState extends State<CoachMessaging> {
 
           body:
 
-          Stack(
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 20, left: 10, right: 10),
+            child: Stack(
 
-              children: [
+                children: [
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                  StreamBuilder<QuerySnapshot> (
-                      stream: FirebaseFirestore.instance
-                          .collection('customerCare')
-                      // .where('sender', isEqualTo: userIdentifier)
-                          .where('documentId', isEqualTo: userIdentifier)
-                          .orderBy('date',descending: true)
-                          .snapshots(),
-                      builder: (context, snapshot)
-                      {
-                        if(!snapshot.hasData){
-                          return Container();
-                        }
-                        else{
-                          // THIS CODE EMPTIES ALL ARRAYS AND PICKS NEW DATA
-                          print("MY GOODNESS THE senderId is : $userIdentifier");
-                          messageList = [];
-                          messageStatusList = [];
-                          responseList = [];
-                          idList = [];
-                          dateList = [];
-                          statusList = [];
-                          paidStatusListColor = [];
-                          opacityList = [];
-
-
-
-                          // PICKING NEW DATA
-                          var messagesFromChat = snapshot.data?.docs;
-                          for( var doc in messagesFromChat!){
-                            messageList.add(doc['message']);
-                            dateList.add(doc['date'].toDate());
-                            responseList.add(doc['sender']);
-
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child:
+                    StreamBuilder<QuerySnapshot> (
+                        stream: FirebaseFirestore.instance
+                            .collection('customerCare')
+                        // .where('sender', isEqualTo: userIdentifier)
+                            .where('documentId', isEqualTo: userIdentifier)
+                            .orderBy('date',descending: true)
+                            .snapshots(),
+                        builder: (context, snapshot)
+                        {
+                          if(!snapshot.hasData){
+                            return Container();
                           }
-                          // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
-                          return  messageList.length == 0 ? Padding(padding: const EdgeInsets.all(20),
-                            child:
-                            Center(child: Text("No Messages")),) :
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 110.0),
-                            child:  ListView.builder(
-                                itemCount: messageList.length,
-                                reverse: true,
-                                itemBuilder: (context, index){
-                                  return Column(
-                                      children: [
-                                        responseList[index]== userIdentifier? Align(
-                                          alignment: Alignment.centerRight,
-                                          child:
-                                          Card(
-
-                                            // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                                            shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-                                            shadowColor: kFontGreyColor,
-                                            color: kMessageColor,
-                                            elevation: 2.0,
-                                            child: Container(
-                                              width: 260,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
-                                                            style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
-                                                        ),
-                                                        kSmallWidthSpacing,
-                                                        // statusList[index]
-                                                      ],
-                                                    ),
-                                                    Text( "${messageList[index]}",textAlign: TextAlign.left,
-                                                        style: kNormalTextStyle.copyWith(fontSize: 15, color: kBlueDarkColor)
-                                                    ),
-                                                    kSmallHeightSpacing,
+                          else{
+                            // THIS CODE EMPTIES ALL ARRAYS AND PICKS NEW DATA
+                            print("MY GOODNESS THE senderId is : $userIdentifier");
+                            messageList = [];
+                            messageStatusList = [];
+                            responseList = [];
+                            idList = [];
+                            dateList = [];
+                            statusList = [];
+                            paidStatusListColor = [];
+                            opacityList = [];
 
 
-                                                  ],
+
+                            // PICKING NEW DATA
+                            var messagesFromChat = snapshot.data?.docs;
+                            for( var doc in messagesFromChat!){
+                              messageList.add(doc['message']);
+                              dateList.add(doc['date'].toDate());
+                              responseList.add(doc['sender']);
+
+                            }
+                            // return Text('Let us understand this ${deliveryTime[3]} ', style: TextStyle(color: Colors.white, fontSize: 25),);
+                            return  messageList.length == 0 ? Padding(padding: const EdgeInsets.all(20),
+                              child:
+                              Center(child: Text("No Messages")),) :
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 110.0),
+                              child:  ListView.builder(
+                                  itemCount: messageList.length,
+                                  reverse: true,
+                                  itemBuilder: (context, index){
+                                    return Column(
+                                        children: [
+                                          responseList[index]== userIdentifier? Align(
+                                            alignment: Alignment.centerRight,
+                                            child:
+                                            Card(
+
+                                              // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                                              shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                                              shadowColor: kFontGreyColor,
+                                              color: kMessageColor,
+                                              elevation: 2.0,
+                                              child: Container(
+                                                width: 260,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
+                                                              style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
+                                                          ),
+                                                          kSmallWidthSpacing,
+                                                          // statusList[index]
+                                                        ],
+                                                      ),
+                                                      Text( "${messageList[index]}",textAlign: TextAlign.left,
+                                                          style: kNormalTextStyle.copyWith(fontSize: 15, color: kBlueDarkColor)
+                                                      ),
+                                                      kSmallHeightSpacing,
+
+
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ): Align(
+                                            alignment: Alignment.centerLeft,
+                                            child:
+                                            Card(
+
+                                              // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
+                                              shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
+                                              shadowColor: kGreenThemeColor,
+                                              // color: kBeigeColor,
+                                              elevation: 2.0,
+                                              child: Container(
+                                                width: 260,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
+                                                              style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
+                                                          ),
+                                                          kSmallWidthSpacing,
+                                                          // statusList[index]
+                                                        ],
+                                                      ),
+                                                      Text( "${messageList[index]}",textAlign: TextAlign.left,
+                                                          style: kNormalTextStyle.copyWith(fontSize: 15, color: kBlueDarkColor)
+                                                      ),
+                                                      kSmallHeightSpacing,
+
+
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ): Align(
-                                          alignment: Alignment.centerLeft,
-                                          child:
-                                          Card(
-
-                                            // margin: const EdgeInsets.fromLTRB(35.0, 10.0, 35.0, 10.0),
-                                            shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-                                            shadowColor: kGreenThemeColor,
-                                            // color: kBeigeColor,
-                                            elevation: 2.0,
-                                            child: Container(
-                                              width: 260,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Text( '${DateFormat('EE, dd - HH:mm').format(dateList[index])}',textAlign: TextAlign.left,
-                                                            style: kNormalTextStyle.copyWith(fontSize: 10, color: kFaintGrey)
-                                                        ),
-                                                        kSmallWidthSpacing,
-                                                        // statusList[index]
-                                                      ],
-                                                    ),
-                                                    Text( "${messageList[index]}",textAlign: TextAlign.left,
-                                                        style: kNormalTextStyle.copyWith(fontSize: 15, color: kBlueDarkColor)
-                                                    ),
-                                                    kSmallHeightSpacing,
+                                          kSmallHeightSpacing,
+                                        ]);
 
 
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        kSmallHeightSpacing,
-                                      ]);
+                                  }
+                              ),
+                            );
+                          }
 
-
-                                }
-                            ),
-                          );
                         }
 
-                      }
-
+                    ),
                   ),
-                ),
 
-                LowerTextForm(),
-                Positioned(
-                  top: 50,
-                    left: 30,
-                    child: GestureDetector(
-                        
-                        onTap: (){
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.cancel, color: kAppPinkColor,),
-                            // kMediumWidthSpacing,
-                            // kMediumWidthSpacing,
-                            // kMediumWidthSpacing,
-                            kMediumWidthSpacing,
-                            Container(
-                              width: 200,
-                                decoration: BoxDecoration(
+                  LowerTextForm(),
+                  Positioned(
+                    top: 50,
+                      left: 30,
+                      child: GestureDetector(
 
-                                  color: kAppPinkColor.withOpacity(0.5),
-                                  borderRadius: BorderRadius.all( Radius.circular(20))
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.cancel, color: kAppPinkColor,),
+                              // kMediumWidthSpacing,
+                              // kMediumWidthSpacing,
+                              // kMediumWidthSpacing,
+                              kMediumWidthSpacing,
+                              Container(
+                                // width: 200,
+                                  decoration: BoxDecoration(
 
+                                    color: kAppPinkColor.withOpacity(0.5),
+                                    borderRadius: BorderRadius.all( Radius.circular(20))
+
+                                  ),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Text("${Provider.of<AiProvider>(context, listen: false).coach}",  style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold, shadows: [Shadow(color: kBlack, blurRadius: 2 )]),),
+                                    kSmallWidthSpacing,
+                                    Lottie.asset('images/live.json', height: 20,  fit: BoxFit.contain ),
+                                    // Icon(Icons.online_prediction, color: kPureWhiteColor,)
+                                  ],
                                 ),
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Text("Coach $randomCoach",  style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold, shadows: [Shadow(color: kBlack, blurRadius: 2 )]),),
-                                  kSmallWidthSpacing,
-                                  Icon(Icons.online_prediction, color: kPureWhiteColor,)
-                                ],
-                              ),
-                            ))
-                          ],
-                        )))
+                              ))
+                            ],
+                          )))
 
 
 
 
-              ])
+                ]),
+          )
       ),
     );
   }

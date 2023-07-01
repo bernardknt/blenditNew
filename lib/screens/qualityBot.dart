@@ -529,7 +529,7 @@ class _QualityBotState extends State<QualityBot> {
                     DateTime today = DateTime.now();
 
                     if (subscriptionDate.isAfter(today)){
-                      CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context);
+                      CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
 
                     } else {
                       if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){

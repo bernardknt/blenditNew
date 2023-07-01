@@ -551,7 +551,7 @@ class CommonFunctions {
   }
 
   // HERE ARE FUNCTIONS FOR PHOTO UPLOAD
-  Future<void> uploadFile(String filePath, String fileName, String description, context)async {
+  Future<void> uploadFile(String filePath, String fileName, String description, context, bool goalBool, String goalText, List goalArray )async {
     File file = File(filePath);
     try {
       uploadTask  = storage.ref('chatImages/$fileName').putFile(file);
@@ -562,7 +562,7 @@ class CommonFunctions {
       final urlDownload = await snapshot.ref.getDownloadURL();
       final imageName = await snapshot.ref.name;
       print("KIWEEEEEEDDDEEEEEEEEEEEEEE: $urlDownload");
-      addPhotoToDB(fileName, urlDownload, imageName, description, context);
+      addPhotoToDB(fileName, urlDownload, imageName, description, context, goalBool, goalText, goalArray);
 
       // Navigator.pushNamed(context, ControlPage.id);
     }  catch(e){
@@ -571,40 +571,86 @@ class CommonFunctions {
   }
 
 
-  Future<void> addPhotoToDB(trendsId, image, name, description, context) async {
-    // Call the user's CollectionReference to add a new user
+  // THIS FUNCTION CHANGES THE VALUE OF THE FALSE IN THE DAILY TASKS TO A TRUE VALUE
+  String transformString(String inputString) {
+    // Check if the inputString starts with "false?"
+    if (inputString.startsWith('false?')) {
+      // Extract the value after "false?"
+      final value = inputString.substring(6);
+      return 'true?$value';
+    }
+    // Return the original string if it doesn't match the expected format
+    return inputString;
+  }
+
+
+  // THIS FUNCTION UPDATES THE DAILY TASKS VALUES AND GIVES THE USER NEW POINTS IN THE DB
+  Future<void> updateDailyTargetValues(List rawTargetArray, String wordToReplace, chatId, context) async {
     final prefs = await SharedPreferences.getInstance();
-    quality.doc(trendsId)
-        .set({
-      'replied': false,
-      'status' : true,
-      'time':  DateTime.now(),
-      'message': "📸 $description",
-      'response': '',
-      'userId': prefs.getString(kUniqueIdentifier),
-      'weight': prefs.getDouble(kUserWeight),
-      'height': prefs.getInt(kUserHeight),
-      'name': prefs.getString(kFullNameConstant),
-      'token': prefs.getString(kToken),
-      'id':trendsId,
-      'history': [],
-      'length': 200,
-      'lastQuestion': "None",
-      'manual': false,
-      'photo': true,
-      'country': prefs.getString(kUserCountryName),
-      'birthday': prefs.getString(kUserBirthday),
-      'preferences': prefs.getString(kUserPersonalPreferences),
-      'image': image,
-      'agent': false,
-      'visible': true,
-      'replyTime': DateTime.now(),
-      "agentName": "",
-      "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty,
-      "tag": trendsId,
-      "winning":false,
-      "pointApplication": true
-    });
+    // This should be a transformation of the string to a true value
+    final String replacementWord = transformString(wordToReplace);
+
+    final List<String> updatedArray = List<String>.from(rawTargetArray);
+    final int index = updatedArray.indexOf(wordToReplace);
+
+    if (index != -1) {
+      updatedArray[index] = replacementWord;
+
+      try {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(prefs.getString(kUniqueIdentifier))
+            .update({'dailyTasks': updatedArray});
+        FirebaseServerFunctions().increasePointsCount(prefs.getString(kUniqueIdentifier)!, context, chatId);
+
+      } catch (error) {
+        print('Error updating array field: $error');
+      }
+    } else {
+
+    }
+  }
+
+
+  Future<void> addPhotoToDB(trendsId, image, name, description, context, goalBool, goalText, goalArray) async {
+    // Call the user's CollectionReference to add a new user
+    bool winning = false;
+    if (goalBool == true){
+      winning = true;
+      updateDailyTargetValues(goalArray, goalText, trendsId, context);
+    }
+    final prefs = await SharedPreferences.getInstance();
+    // quality.doc(trendsId)
+    //     .set({
+    //   'replied': false,
+    //   'status' : true,
+    //   'time':  DateTime.now(),
+    //   'message': "📸 $description",
+    //   'response': '',
+    //   'userId': prefs.getString(kUniqueIdentifier),
+    //   'weight': prefs.getDouble(kUserWeight),
+    //   'height': prefs.getInt(kUserHeight),
+    //   'name': prefs.getString(kFullNameConstant),
+    //   'token': prefs.getString(kToken),
+    //   'id':trendsId,
+    //   'history': [],
+    //   'length': 200,
+    //   'lastQuestion': "None",
+    //   'manual': false,
+    //   'photo': true,
+    //   'country': prefs.getString(kUserCountryName),
+    //   'birthday': prefs.getString(kUserBirthday),
+    //   'preferences': prefs.getString(kUserPersonalPreferences),
+    //   'image': image,
+    //   'agent': false,
+    //   'visible': true,
+    //   'replyTime': DateTime.now(),
+    //   "agentName": "",
+    //   "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty,
+    //   "tag": trendsId,
+    //   "winning":false,
+    //   "pointApplication": true
+    // });
 
     return chat.doc(trendsId)
         .set({
@@ -633,7 +679,11 @@ class CommonFunctions {
       'replyTime': DateTime.now(),
       "agentName": "",
       "admins":  Provider.of<AiProvider>(context, listen: false).adminsOnDuty,
-      "tag": trendsId
+      "tag": trendsId,
+      "goalBool": goalBool,
+      "goalText": goalText,
+      "winning": winning,
+
     })
 
         .then((value) {
@@ -685,7 +735,7 @@ class CommonFunctions {
     return compressedImage;
   }
 
-  void showBottomSheet(BuildContext context, String serviceId, File? imageReceived) {
+  void showBottomSheet(BuildContext context, String serviceId, File? imageReceived, goalBool, goalText, goalArray) {
     showModalBottomSheet(
 
       isScrollControlled: true,
@@ -796,7 +846,7 @@ class CommonFunctions {
                               // compressImage(image!, serviceId, description, context);
 
 
-                              uploadFile(image!.path, serviceId, description, context );
+                              uploadFile(image!.path, serviceId, description, context, goalBool, goalText, goalArray );
 
 
                               //Implement registration functionality.
@@ -848,7 +898,7 @@ class CommonFunctions {
 
   }
 
-  Future pickImage(ImageSource source, serviceId, context) async {
+  Future pickImage(ImageSource source, serviceId, context, goal, goalText, goalArray) async {
     final prefs = await SharedPreferences.getInstance();
 
     if (prefs.getBool(kFirstTimePhoto)== false){
@@ -862,7 +912,7 @@ class CommonFunctions {
           final compressedImage = await compressImage(File(image.path));
 
           var file = File(image.path);
-          showBottomSheet(context, serviceId, compressedImage);
+          showBottomSheet(context, serviceId, compressedImage, goal, goalText, goalArray);
         }
       } on PlatformException catch (e) {
         print('Failed to pick image $e');
