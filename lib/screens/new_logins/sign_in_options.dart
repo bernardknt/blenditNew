@@ -142,15 +142,15 @@ class _SignInOptionsState extends State<SignInOptions> {
             CommonFunctions().uploadUserToken(token);
             //  MaterialPageRoute(builder: (context)=> QuizPageName());
 
-            Navigator.pushNamed(context, ControlPage.id);
+            Navigator.pushNamed(context, ControlPage.id);Get.snackbar('Welcome Back ${names[0]}', '🙂',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: kCustomColor,
+                colorText: kBlack,
+                icon: Icon(Iconsax.smileys, color: kGreenThemeColor,));
           }
         }
         // Navigate to the home page
-        Get.snackbar('Welcome Back ${names[0]}', '🙂',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: kCustomColor,
-            colorText: kBlack,
-            icon: Icon(Iconsax.smileys, color: kGreenThemeColor,));
+
       }
     } catch (e) {
       // Handle sign-in errors
@@ -387,7 +387,7 @@ class _SignInOptionsState extends State<SignInOptions> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("NUTRI",
+                        Text("BLENDIT",
 
                           // style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 40)
                           style: GoogleFonts.sourceSansPro(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white,

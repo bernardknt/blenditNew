@@ -59,13 +59,6 @@ class _PhotoOnboardingState extends State<PhotoOnboarding> {
               ),
               kLargeHeightSpacing,
 
-              // Text(
-              //   'Features',
-              //   style: TextStyle(
-              //       fontSize: 18.0,
-              //       fontWeight: FontWeight.bold,
-              //       color: textColor
-              //   ),
               // ),
               const SizedBox(height: 8.0),
               _buildFeatureList(

@@ -4,6 +4,8 @@ import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
+import 'package:blendit_2022/screens/goals.dart';
+import 'package:blendit_2022/screens/special_blend.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -23,6 +25,9 @@ import 'package:rating_dialog/rating_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
+import 'choose_juice_page.dart';
+import 'execution_pages/wildly_important_goal.dart';
+import 'loading_goals_page.dart';
 import 'onboarding_page.dart';
 
 
@@ -50,7 +55,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       firstBlend = isFirstTimeBlending;
     });
     if (isFirstTime == true){
-      Navigator.pushNamed(context, BlenderOnboardingPage.id);
+      // Navigator.pushNamed(context, BlenderOnboardingPage.id);
     }
   }
 
@@ -293,7 +298,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     var extraProvider = Provider.of<BlenditData>(context).boxColourJuiceListExtra;
     return Scaffold(
 
-      backgroundColor: kBiegeThemeColor ,
+      backgroundColor: kPureWhiteColor,
+      // kBiegeThemeColor ,
       floatingActionButton: DescribedFeatureOverlay(
         openDuration: const Duration(seconds: 1),
         overflowMode: OverflowMode.extendBackground,
@@ -307,7 +313,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         targetColor: Colors.yellow,
         featureId: 'feature4',
         tapTarget: const Icon(LineIcons.blender),
-        child:
+        child:Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0? Container():
         FloatingActionButton.extended(
 
           backgroundColor: blendedData.blendButtonColourJuice,
@@ -327,7 +333,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
             }
           },
           icon: const Icon(LineIcons.blender),
-          label: const Text('Start Blending'),
+          label: Provider.of<BlenditData>(context, listen: false).ingredientsNumber != 0?const Text('Start Blending'): Text('Add Ingredients To Blender'),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
@@ -343,7 +349,9 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('${greeting()} $firstName ${greetingEmoji()},\n${blenderMessage()}', textAlign:TextAlign.center , style: TextStyle(
+                  Text('${greeting()} $firstName ${greetingEmoji()},'
+                     // '\n${blenderMessage()}'
+                    , textAlign:TextAlign.center , style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.grey.shade600, fontSize: 18
                   ),),
                   const SizedBox(height: 10,),
@@ -429,38 +437,38 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                           tapTarget: const Icon(LineIcons.fruitApple, color: Colors.white,),
                           child: Image.asset(blendedData.blenderImage))),
                 ),
-                Positioned(
-                  right: 30,
-                  top: 15,
-                  child: GestureDetector(
-                    child:
-                    Row(
-                        children:[
-
-                          CircleAvatar(
-                              radius: 13,
-                              backgroundColor: Colors.orange,
-                              child: Text('${blendedData.ingredientsNumber}',style: TextStyle(color: Colors.white, fontSize: 15),)),
-                          //SizedBox(width: 5,),
-                          Icon(LineIcons.blender, color: Colors.black,size: 25,),
-
-                        ] ),
-                    onTap: (){
-                      if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0) {
-                         AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
-
-                      }
-                      else {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return SelectedJuiceIngredientsListView();
-                            });
-                      }
-                    },
-
-                  ),
-                ),
+                // Positioned(
+                //   right: 30,
+                //   top: 15,
+                //   child: GestureDetector(
+                //     child:
+                //     Row(
+                //         children:[
+                //
+                //           CircleAvatar(
+                //               radius: 13,
+                //               backgroundColor: Colors.orange,
+                //               child: Text('${blendedData.ingredientsNumber}',style: TextStyle(color: Colors.white, fontSize: 15),)),
+                //           //SizedBox(width: 5,),
+                //           Icon(LineIcons.blender, color: Colors.black,size: 25,),
+                //
+                //         ] ),
+                //     onTap: (){
+                //       if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0) {
+                //          AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
+                //
+                //       }
+                //       else {
+                //         showModalBottomSheet(
+                //             context: context,
+                //             builder: (context) {
+                //               return SelectedJuiceIngredientsListView();
+                //             });
+                //       }
+                //     },
+                //
+                //   ),
+                // ),
                 Positioned(
                   top: 10,
                   left: 0,
@@ -487,7 +495,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                       ),
                       const SizedBox(height: 10,) ,
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
@@ -507,13 +515,18 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                             tapTarget: Lottie.asset('images/juiceBlender.json', width: 50),
                             child: GestureDetector
                               (onTap: (){
-                              Navigator.pushNamed(context, QuizQuestions.id);
+                              // Navigator.pushNamed(context, QuizQuestions.id);
+                              // Navigator.pushNamed(context, ChooseJuicePage.id);
+                              // Navigator.pushNamed(context, GoalsPage.id);
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context)=> SpecialBlendAi())
+                              );
                             },
                               child: Lottie.asset('images/juiceBlender.json', width: 50),
 
                             ),
                           ),
-                          const Text('Surprise \n Me',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
+                          const Text('My Special\nBlend',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
 
                         ],
                       ),

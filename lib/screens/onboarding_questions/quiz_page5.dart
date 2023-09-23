@@ -1,8 +1,8 @@
 
 import 'dart:async';
 
-import 'package:blendit_2022/screens/paywall_first_international.dart';
-import 'package:blendit_2022/screens/paywall_first_uganda.dart';
+import 'package:blendit_2022/screens/paywall_pages/paywall_first_international.dart';
+import 'package:blendit_2022/screens/paywall_pages/paywall_first_uganda.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

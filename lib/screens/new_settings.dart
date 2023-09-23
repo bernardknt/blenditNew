@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/paywall_international.dart';
-import 'package:blendit_2022/screens/paywall_uganda.dart';
+import 'package:blendit_2022/screens/paywall_pages/paywall_international.dart';
+import 'package:blendit_2022/screens/paywall_pages/paywall_uganda.dart';
 import 'package:blendit_2022/screens/purchase_restored_page.dart';
 import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/widgets/designed_button.dart';
@@ -352,74 +352,74 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
               kLargeHeightSpacing,
               DesignedButton(continueFunction: (){
-                Share.share('Hey, I found this application called Nutri that helps keep you accountable and on track with your Health goals. You need to try it out. Follow the link \nhttps://bit.ly/3I8sa4M', subject: 'You need to try out Nutri');
-              }, title: "Recommend Nutri", backgroundColor: kCustomColor,textColor: kBlack,),
+                Share.share('Hey, I found this application called Blendit that helps keep you stay on track with your Health goals. You need to try it out. Follow the link \nhttps://bit.ly/3I8sa4M', subject: 'You need to try out Blendit');
+              }, title: "Recommend Blendit", backgroundColor: kCustomColor,textColor: kBlack,),
               kLargeHeightSpacing,
 
 
-              Stack(
-                children: [
-                  Card(
-                    margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-                    shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
-                    shadowColor: kGreenDarkColorOld,
-                    elevation: 5.0,
-                    child:
-                    Column(
-                      children: [
-                        // ListTile(
-                        //   leading: Icon(Iconsax.people, color: kGreenDarkColorOld,),
-                        //   title:Text(sex, style: kNormalTextStyle),
-                        //   // trailing: Icon(Icons.keyboard_arrow_right),
-                        // ),
-                        _buildDivider(),
-                        ListTile(
-                          leading: Icon(Iconsax.ruler, color: kGreenDarkColorOld,),
-                          title:Text( '$goal', style: kNormalTextStyle),
-                          // trailing: Icon(Icons.keyboard_arrow_right),
-                        ),
-                        _buildDivider(),
-                        ListTile(
-                          leading: Icon(Iconsax.weight, color:kGreenDarkColorOld,),
-                          title:Text('Target: $target', style: kNormalTextStyle),
-                          // trailing: Icon(Icons.keyboard_arrow_right),
-                        ),
-                        _buildDivider(),
-                        ListTile(
-                          leading: Icon(Iconsax.health, color: kGreenDarkColorOld,),
-                          title:Text('Now: $currentLevel $unit', style:kNormalTextStyle),
-                          // trailing: Icon(Icons.keyboard_arrow_right),
-                        ),
-                        _buildDivider(),
-                        ListTile(
-                          leading: Icon(Iconsax.tag, color: kGreenDarkColorOld,),
-                          title:Text('Category: $category', style:kNormalTextStyle),
-                          // trailing: Icon(Icons.keyboard_arrow_right),
-                        ),
-                        _buildDivider(),
-                        // ListTile(
-                        //   leading: Icon(Iconsax.cake, color: kGreenDarkColorOld,),
-                        //   title:Text('DOB: $birthday', style:kNormalTextStyle),
-                        //   // trailing: Icon(Icons.keyboard_arrow_right),
-                        // ),
-
-                      ],
-                    ),
-                  ),
-                  Positioned(
-
-                    child:
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfilePage()));
-                      },
-                      child: CircleAvatar(
-                          backgroundColor: kGreenThemeColor,
-                          child: Icon(Icons.edit, color: kPureWhiteColor,)),
-                    ),
-                    top: 0, right: 10,),
-                ],
-              ),
+              // Stack(
+              //   children: [
+              //     Card(
+              //       margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+              //       shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+              //       shadowColor: kGreenDarkColorOld,
+              //       elevation: 5.0,
+              //       child:
+              //       Column(
+              //         children: [
+              //           // ListTile(
+              //           //   leading: Icon(Iconsax.people, color: kGreenDarkColorOld,),
+              //           //   title:Text(sex, style: kNormalTextStyle),
+              //           //   // trailing: Icon(Icons.keyboard_arrow_right),
+              //           // ),
+              //           _buildDivider(),
+              //           ListTile(
+              //             leading: Icon(Iconsax.ruler, color: kGreenDarkColorOld,),
+              //             title:Text( '$goal', style: kNormalTextStyle),
+              //             // trailing: Icon(Icons.keyboard_arrow_right),
+              //           ),
+              //           _buildDivider(),
+              //           ListTile(
+              //             leading: Icon(Iconsax.weight, color:kGreenDarkColorOld,),
+              //             title:Text('Target: $target', style: kNormalTextStyle),
+              //             // trailing: Icon(Icons.keyboard_arrow_right),
+              //           ),
+              //           _buildDivider(),
+              //           ListTile(
+              //             leading: Icon(Iconsax.health, color: kGreenDarkColorOld,),
+              //             title:Text('Now: $currentLevel $unit', style:kNormalTextStyle),
+              //             // trailing: Icon(Icons.keyboard_arrow_right),
+              //           ),
+              //           _buildDivider(),
+              //           ListTile(
+              //             leading: Icon(Iconsax.tag, color: kGreenDarkColorOld,),
+              //             title:Text('Category: $category', style:kNormalTextStyle),
+              //             // trailing: Icon(Icons.keyboard_arrow_right),
+              //           ),
+              //           _buildDivider(),
+              //           // ListTile(
+              //           //   leading: Icon(Iconsax.cake, color: kGreenDarkColorOld,),
+              //           //   title:Text('DOB: $birthday', style:kNormalTextStyle),
+              //           //   // trailing: Icon(Icons.keyboard_arrow_right),
+              //           // ),
+              //
+              //         ],
+              //       ),
+              //     ),
+              //     Positioned(
+              //
+              //       child:
+              //       GestureDetector(
+              //         onTap: (){
+              //           Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfilePage()));
+              //         },
+              //         child: CircleAvatar(
+              //             backgroundColor: kGreenThemeColor,
+              //             child: Icon(Icons.edit, color: kPureWhiteColor,)),
+              //       ),
+              //       top: 0, right: 10,),
+              //   ],
+              // ),
               Center(child: Text('Personal Info', style: kNormalTextStyleSmall,)),
 
 
@@ -567,7 +567,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                           Icon(LineIcons.copyright, color: Colors.black,size: 15,),
                           SizedBox(width: 5,),
                           Opacity (opacity: 0.7,
-                              child: Text('Nutri 2023', style: kHeadingTextStyle,)),
+                              child: Text('Frutsexpress 2023', style: kHeadingTextStyle,)),
                         ],
                       ),
                     )

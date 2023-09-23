@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/paywall_international.dart';
-import 'package:blendit_2022/screens/paywall_uganda.dart';
+import 'package:blendit_2022/screens/paywall_pages/paywall_international.dart';
+import 'package:blendit_2022/screens/paywall_pages/paywall_uganda.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -519,9 +519,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         DateTime today = DateTime.now();
                         String country = prefs.getString(kUserCountryName)!;
 
-
-
-                        if (subscriptionDate.isAfter(today)){
+                        print(subscriptionDate);
+                        if (subscriptionDate.isBefore(today)){
 
                           if (message != '') {
 
@@ -579,8 +578,8 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         enablePulsingAnimation: true,
                         barrierDismissible: false,
                         pulseDuration: const Duration(seconds: 1),
-                        title: const Text('Have a Question? Ask Lisa'),
-                        description: Text('Whether you want a recipe to your favourite salad or the nutritional value of what you are having for lunch. Talk to Nutri Lisa', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                        title: const Text('Have a Question? Ask Nutri'),
+                        description: Text('Whether you want a recipe to your favourite salad or the nutritional value of what you are having for lunch. Talk to Nutri', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
                         contentLocation: ContentLocation.above,
                         backgroundColor: Colors.black,
                         targetColor: Colors.green,
@@ -601,7 +600,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       DateTime subscriptionDate = Provider.of<AiProvider>(context, listen: false).subscriptionDate;
                       DateTime today = DateTime.now();
 
-                      if (subscriptionDate.isAfter(today)){
+                      if (subscriptionDate.isBefore(today)){
                         CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
 
                       } else {
@@ -713,7 +712,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
               kSmallWidthSpacing,
 
 
-              Text('Lisa', style: kNormalTextStyle.copyWith(color: kBlack),),
+              Text('Nutri', style: kNormalTextStyle.copyWith(color: kBlack),),
             ],
           ),
           centerTitle: true,

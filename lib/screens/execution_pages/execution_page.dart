@@ -25,8 +25,8 @@ import '../../models/CommonFunctions.dart';
 import '../../widgets/chart_widget.dart';
 import '../coach_page.dart';
 // import 'delivery_page.dart';
-import '../paywall_international.dart';
-import '../paywall_uganda.dart';
+import '../paywall_pages/paywall_international.dart';
+import '../paywall_pages/paywall_uganda.dart';
 import 'wildly_important_goal.dart';
 import '../loading_goals_page.dart';
 import '../nutri_mobile_money.dart';
@@ -467,7 +467,8 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                               );
                                           });
                                         },
-                                        child: SimpleCircularProgressBar(
+                                        child:
+                                        SimpleCircularProgressBar(
                                           backColor: kBlueDarkColor,
                                           size: 20,
                                           progressColors: [kGreenThemeColor, Colors.red, Colors.blue ],
@@ -508,12 +509,6 @@ class _ExecutionPageState extends State<ExecutionPage> {
 
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return Container();
-                              //   const
-                              // Center(
-                              //   child: CircularProgressIndicator(
-                              //
-                              //   ),
-                              // );
                             }
 
                             var orders = snapshot.data?.docs;
@@ -550,75 +545,82 @@ class _ExecutionPageState extends State<ExecutionPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
+
                                     value: dailyTasksBooleans[index],
                                     onChanged: (bool? value) {
                                       showModalBottomSheet(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Row(
+                                          return Container(
+                                            color: Color(0xFF5d5d5d).withOpacity(0.9),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: kPureWhiteColor,
+                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30) )
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                                child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    Icon(Icons.check_circle_outline, color: kGreenThemeColor,),
-                                                    kMediumWidthSpacing,
-                                                    Container(
-                                                        width: 250,
-                                                        child: Text("${dailyTasks[index]}",overflow: TextOverflow.fade, style: kNormalTextStyle.copyWith(color: kBlack),)),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        // const Icon(Icons.check_circle_outline, color: kGreenThemeColor,),
+                                                        Text("Capture Progress on..", style: kNormalTextStyle.copyWith(), )
+                                                      ],
+                                                    ),
+                                                    kSmallHeightSpacing,
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+
+                                                        // kMediumWidthSpacing,
+                                                        Container(
+                                                            width: 250,
+                                                            child: Text("${dailyTasks[index]}",textAlign: TextAlign.center, overflow: TextOverflow.fade, style: kNormalTextStyle.copyWith(color: kBlack),)),
+                                                      ],
+                                                    ),
+                                                    kLargeHeightSpacing,
+
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+
+                                                      children: [
+
+                                                        PhotoWidget(widgetColor: kBlueDarkColor.withOpacity(0.5), iconColor: kBlueDarkColor, iconToUse: Icons.edit_note_sharp, footer: "Note", onTapFunction: () {
+
+                                                          // CommonFunctions().pickImage(ImageSource.gallery,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
+                                                        },),
+                                                        kMediumWidthSpacing,
+                                                        PhotoWidget(iconColor: kAppPinkColor, iconToUse: Iconsax.camera, footer: "Camera",
+                                                          widgetColor: kAppPinkColor.withOpacity(0.5),
+                                                          onTapFunction: (){
+                                                            CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
+                                                            // Navigator.pop(context);
+                                                          },),
+                                                        kMediumWidthSpacing,
+                                                        // kMediumWidthSpacing,
+                                                    PhotoWidget(widgetColor: kGreenThemeColor.withOpacity(0.5), iconColor: kGreenThemeColor, iconToUse: Iconsax.gallery, footer: "Gallery", onTapFunction: () {
+                                                      CommonFunctions().pickImage(ImageSource.gallery,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
+                                                    },),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
-                                                kLargeHeightSpacing,
-
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-
-                                                  children: [
-
-                                                    PhotoWidget(iconColor: kAppPinkColor, iconToUse: Iconsax.camera, footer: "Camera",
-                                                      onTapFunction: (){
-                                                        CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
-                                                        Navigator.pop(context);
-                                                      },),
-                                                    kMediumWidthSpacing,
-                                                    kMediumWidthSpacing,
-
-                                                    // ListTile(
-                                                    //   leading: Icon(Icons.camera),
-                                                    //   title: Text('Camera'),
-                                                    //   onTap: () {
-                                                    //     CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
-                                                    //
-                                                    //
-                                                    //   },
-                                                    // ),
-                                                PhotoWidget(iconColor: kGreenThemeColor, iconToUse: Iconsax.gallery, footer: "Gallery", onTapFunction: () {
-                                                  CommonFunctions().pickImage(ImageSource.gallery,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, true, rawDailyTasks[index] , rawDailyTasks);
-                                                  Navigator.pop(context);
-
-                                                },),
-                                                  ],
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           );
                                         },
                                       );
-
                                     },
                                     controlAffinity: ListTileControlAffinity.leading,
                                     activeColor: kBlueThemeColor,
-
                                     checkColor: kPureWhiteColor,
                                   );
                                 },
                               ),
                             );
-
-
-
                           },
                         ),
 
@@ -629,13 +631,18 @@ class _ExecutionPageState extends State<ExecutionPage> {
 
                             child: GestureDetector(
                                 onTap: (){
-                                  Navigator.pushNamed(context, MemoriesPage.id);
+                                  // Navigator.pushNamed(context, MemoriesPage.id);
 
                                 },
 
                                 child:  CircleAvatar(
+                                  radius: 30,
                                     backgroundColor: kBlueDarkColor,
-                                    child: Icon(Iconsax.magic_star , size: 20, color: kPureWhiteColor,)))),
+                                    child:
+                                    Text("${currentLevel.toString()} $unit",textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)
+
+                                
+                                ))),
                         Positioned(
                           left: 10,
                           bottom: 10,
@@ -665,7 +672,7 @@ class _ExecutionPageState extends State<ExecutionPage> {
                               builder: (context) {
                                 return Container(color: kBackgroundGreyColor,
                                   child: CoachMessaging(),
-                                  // InputPage()
+
                                 );
                               });
                           Navigator.push(context,
@@ -673,7 +680,7 @@ class _ExecutionPageState extends State<ExecutionPage> {
                           );
                         } else {
                           if (prefs.getString(kUserCountryName) == "Uganda" && Provider.of<AiProvider>(context, listen: false).iosUpload == false){
-                            print("MAMAMAMAMAMMIA this run");
+
 
                             CommonFunctions().fetchOffers().then((value) {
                               // We are sending a List of Offerings to the value subscriptionProducts
@@ -705,8 +712,9 @@ class _ExecutionPageState extends State<ExecutionPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Contact Coach", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                          Text("Talk to Coach", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
                           kSmallWidthSpacing,
+                          Icon(Iconsax.messages4)
 
                         ],
                       )),
@@ -721,8 +729,11 @@ class _ExecutionPageState extends State<ExecutionPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
-                      photos[0] == ""? PhotoWidget(onTapFunction: () {
-                        CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
+                      photos[0] == ""? PhotoWidget(
+                        iconToUse: Iconsax.magic_star ,
+                        onTapFunction: () {
+                          Navigator.pushNamed(context, MemoriesPage.id);
+                        // CommonFunctions().pickImage(ImageSource.camera,   'goal${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
 
                       },): Container(height: 100, width: 100,color: kBabyPinkThemeColor,),
                       kMediumWidthSpacing,
@@ -747,10 +758,11 @@ class PhotoWidget extends StatelessWidget {
 
   final IconData iconToUse;
   final Color iconColor;
+  final Color widgetColor;
   final String footer;
   final Function onTapFunction;
 
-  const PhotoWidget({Key? key, this.iconToUse = Icons.photo_camera, this.iconColor = kBlack,  this.footer = "", required this.onTapFunction}) : super(key: key);
+  const PhotoWidget({Key? key, this.iconToUse = Icons.photo_camera, this.iconColor = kBlack,  this.footer = "", required this.onTapFunction,  this.widgetColor = Colors.transparent}) : super(key: key);
 
 
   @override
@@ -768,7 +780,7 @@ class PhotoWidget extends StatelessWidget {
             width: 100,
             height: 150,
             decoration: BoxDecoration(
-              color: Colors.transparent,
+              color: widgetColor,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: iconColor,

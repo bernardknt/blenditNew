@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		066C68215D32CC94AC8281E0 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E811CF57B349EC343884BD2 /* Pods_Runner.framework */; };
 		111ECD3029828F5800919B33 /* tiktok.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 111ECD2F29828F5800919B33 /* tiktok.mp3 */; };
-		112831C32975E3EE00502221 /* notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 112831C22975E3EE00502221 /* notification.mp3 */; };
 		1161879629E2079500566812 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1161879529E2079500566812 /* StoreKit.framework */; };
 		117CB47429DB766300D29F22 /* nutri.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 117CB47329DB766300D29F22 /* nutri.mp3 */; };
 		11C0DEC127876BFD00116F98 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11C0DEC027876BFD00116F98 /* GoogleService-Info.plist */; };
@@ -36,7 +35,6 @@
 
 /* Begin PBXFileReference section */
 		111ECD2F29828F5800919B33 /* tiktok.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = tiktok.mp3; path = ../../../../tiktok.mp3; sourceTree = "<group>"; };
-		112831C22975E3EE00502221 /* notification.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = notification.mp3; path = ../../../../notification.mp3; sourceTree = "<group>"; };
 		115CC0C527C8E34D008E58B4 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		1161879529E2079500566812 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		117CB47329DB766300D29F22 /* nutri.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = nutri.mp3; path = ../../../../../Downloads/nutri.mp3; sourceTree = "<group>"; };
@@ -88,7 +86,6 @@
 			children = (
 				117CB47329DB766300D29F22 /* nutri.mp3 */,
 				111ECD2F29828F5800919B33 /* tiktok.mp3 */,
-				112831C22975E3EE00502221 /* notification.mp3 */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -221,7 +218,6 @@
 				11C0DEC127876BFD00116F98 /* GoogleService-Info.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
-				112831C32975E3EE00502221 /* notification.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

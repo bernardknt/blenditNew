@@ -68,11 +68,11 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
         //Color(0xFF0c1206),
         appBar: AppBar(
 
-          backgroundColor: Colors.transparent,
+          backgroundColor: kBlueDarkColor,
           // foregroundColor: Colors.blue,
-
-          brightness: Brightness.light,
-          elevation:8 ,
+          //
+          // brightness: Brightness.light,
+          elevation:0 ,
           actions: [
             Stack(children: [
               Positioned(

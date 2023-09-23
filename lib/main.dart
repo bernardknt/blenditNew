@@ -96,16 +96,7 @@ Future <void> main() async{
   // await Firebase.initializeApp();
   await Firebase.initializeApp(
 
-    // Replace with actual values
-    // name: 'Secondary App',
 
-    // options: const FirebaseOptions(
-
-    //   apiKey: "AIzaSyCwEb8qLqVUVgx6ZVHq49eu2BIRdGms2h4",
-    //   appId: "1:1036391886488:web:ebbbb16f292e260af46aed",
-    //   messagingSenderId: "1036391886488",
-    //   projectId: "blend-it-8a622",
-    // ),
   );
   // Get an instance of FirebaseAppCheck
   FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.instance;

@@ -57,7 +57,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
   var token = "";
 
   int newDots = 0;
-  var heading = ['Your Personal Guide & Nutritionist', 'Take Photos Worth a Thousand Nutrients', 'Goodbye Frustration, Hello Consistency'];
+  var heading = ['Nutritious Meals Tailored 4 You', 'Take Photos Worth a Thousand Nutrients', 'Goodbye Frustration, Hello Consistency'];
 
   @override
   void initState() {

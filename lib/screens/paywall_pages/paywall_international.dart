@@ -13,10 +13,10 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:purchases_flutter/purchases_flutter.dart';
 
-import '../controllers/home_controller.dart';
-import '../models/ai_data.dart';
-import 'delivery_page.dart';
-import 'make_payment_page.dart';
+import '../../controllers/home_controller.dart';
+import '../../models/ai_data.dart';
+import '../delivery_page.dart';
+import '../make_payment_page.dart';
 
 class PaywallInternationalPage extends StatefulWidget {
   @override

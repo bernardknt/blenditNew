@@ -14,15 +14,17 @@ class LineChartWidget extends StatelessWidget {
     final List<FlSpot> targetValues;
 
   final List<Color> gradientColors = [
-    // kCustomColor,
-    Colors.lightBlueAccent,
-    kBlueDarkColor,
+    kCustomColor.withOpacity(0.3),
+    kCustomColor.withOpacity(0.3),
+    // Colors.lightBlueAccent.shade200,
+    // kBlueDarkColor,
     // Colors.red
   ];
   final List<Color> gradientColors2 = [
     // kCustomColor,
-    Colors.red,
-    kBlueDarkColor,
+    kAppPinkColor.withOpacity(0.1),
+    kAppPinkColor.withOpacity(0.1),
+    // kBlueDarkColor.withOpacity(0.3),
     // Colors.red
   ];
   @override
@@ -33,7 +35,7 @@ class LineChartWidget extends StatelessWidget {
         maxX: 6,
         minY: 0,
         maxY: 140,
-        titlesData: LineTitles.getTitleData(),
+        titlesData: LineTitles("Beat the Red Line").getTitleData(),
         borderData: FlBorderData(
           show: false
         ),
@@ -49,7 +51,7 @@ class LineChartWidget extends StatelessWidget {
               belowBarData: BarAreaData(
 
                 show: false,
-                // color: kCustomColor
+                color: kCustomColor, 
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

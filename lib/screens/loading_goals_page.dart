@@ -31,16 +31,16 @@ class _LoadingGoalsPageState extends State<LoadingGoalsPage> {
   var message  = ['Well done', 'Keep Going', 'Your doing Great', 'You are killing this Challenge', 'Keep Going', 'Your a Champion', 'Standing Ovation👏', 'Keep going', 'You are winning'];
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-  Future<Object?> getUserAge(String uid) async {
-
-    final prefs = await SharedPreferences.getInstance();
-
-    final DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    prefs.setString(kUserVision, userDoc["vision"]);
-    final userData = userDoc.data();
-
-    return userData;
-  }
+  // Future<Object?> getUserAge(String uid) async {
+  //
+  //   final prefs = await SharedPreferences.getInstance();
+  //
+  //   final DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+  //   prefs.setString(kUserVision, userDoc["vision"]);
+  //   final userData = userDoc.data();
+  //
+  //   return userData;
+  // }
   @override
 
   void initState() {

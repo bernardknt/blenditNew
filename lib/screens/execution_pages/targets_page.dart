@@ -3,24 +3,16 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/execution_pages/get_a_number_page.dart';
-import 'package:blendit_2022/screens/execution_pages/goal_calendar_page.dart';
-import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:provider/provider.dart';
-
 import '../../../models/CommonFunctions.dart';
 import '../../../utilities/font_constants.dart';
-import '../../../widgets/InputFieldWidget2.dart';
 import '../../../widgets/gliding_text.dart';
-import '../../controllers/home_controller.dart';
 
 
 
@@ -45,7 +37,7 @@ class _TargetsPageState extends State<TargetsPage> {
   var name = "";
   var random = Random();
   var inspiration = "Welcome to Nutri, Our goal is to help you achieve your nutrition and health goals, Anywhere you go. Let me set you up";
-  var message  = ['Well done', 'Keep Going', 'Your doing Great', 'You are killing this Challenge', 'Keep Going', 'Your a Champion', 'Standing Ovation👏', 'Keep going', 'You are winning'];
+ // var message  = ['Well done', 'Keep Going', 'Your doing Great', 'You are killing this Challenge', 'Keep Going', 'Your a Champion', 'Standing Ovation👏', 'Keep going', 'You are winning'];
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   var userId = "";
   var modifiedValues = [];
@@ -78,27 +70,7 @@ class _TargetsPageState extends State<TargetsPage> {
 
     return array;
   }
-  //
-  // void createModifiedValues(values) {
-  //   final random = Random();
-  //   modifiedValues.clear();
-  //
-  //   if (values.length >= 2) {
-  //     // Randomly select two values
-  //     final index1 = random.nextInt(values.length);
-  //     final index2 = random.nextInt(values.length - 1);
-  //     final selectedValue1 = values[index1];
-  //     final selectedValue2 = values[index2 < index1 ? index2 : index2 + 1];
-  //
-  //     // Create modified strings
-  //     final modifiedString1 = 'false?$selectedValue1';
-  //     final modifiedString2 = 'false?$selectedValue2';
-  //
-  //     // Add modified strings to the new array
-  //     modifiedValues.addAll([modifiedString1, modifiedString2]);
-  //   }
-  //   updateTasks();
-  // }
+
 
   List<int> generateRandomArray() {
     final List<int> numbers = [];
@@ -159,9 +131,9 @@ class _TargetsPageState extends State<TargetsPage> {
 
   void _startTyping() {
     Timer.periodic(Duration(milliseconds: 10), (timer) {
-      setState(() {
-
-      });
+      // setState(() {
+      //
+      // });
     });
   }
 
@@ -191,24 +163,25 @@ class _TargetsPageState extends State<TargetsPage> {
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(userId)
+            .doc("dcgn64RlJ0QtBw1Qk2gagh2KMLv1")
+            //.doc(userId)
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            print("EEEEERRRRRRRROOOOOORRR");
           }
+          // return Container(child: Text("Nice",style: kHeading2TextStyleBold,),);
+          String jsonString = '{"goal": "","vision": "","difficulty": "","target": "","action": [],"category": "","question": "","motivation": "","unit": ""}';
 
           // Access the vision field from the snapshot
-          final vision = snapshot.data!['vision'];
+          final vision = snapshot.data?['vision'] ?? jsonString;
 
           // Parse the vision JSON string
           final visionData = jsonDecode(vision);
 
           return SafeArea(
             child: ListView(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               children: [
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -216,7 +189,7 @@ class _TargetsPageState extends State<TargetsPage> {
                   children: [
                     Card(
                       color: kCustomColor,
-                      shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
+                      shape: const RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
                       // shadowColor: kGreenThemeColor,
                       // color: kBeigeColor,
                       elevation: 1.0,
@@ -244,7 +217,7 @@ class _TargetsPageState extends State<TargetsPage> {
                             right: 0,
                             child: Container(
                                 decoration: BoxDecoration(
-                                  color: kAppPinkColor, 
+                                  color: kAppPinkColor,
                                   borderRadius: BorderRadius.circular(20)
                                 ),
                                 child: Padding(
@@ -253,9 +226,9 @@ class _TargetsPageState extends State<TargetsPage> {
                             )))
                       ],
                     ),
-                    Text("Select Any 2 Activities to Focus\nOn This Week",textAlign: TextAlign.center, style: kHeading2TextStyleBold,),
+                    const Text("Select Any 2 Activities to Focus\nOn This Week",textAlign: TextAlign.center, style: kHeading2TextStyleBold,),
                     kLargeHeightSpacing
-                    
+
                   ],
                 ),
                 Container(

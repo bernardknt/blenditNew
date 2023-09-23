@@ -115,7 +115,7 @@ class FirebaseServerFunctions {
         );
       }
     }).whenComplete(() {
-      Navigator.pop(context);
+      // Navigator.pop(context);
       Navigator.pushNamed(context, ControlPage.id);
       print("done");
     });

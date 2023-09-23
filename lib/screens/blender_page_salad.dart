@@ -39,7 +39,7 @@ class _SaladBlenderPageState extends State<SaladBlenderPage> {
     });
 
     if (isFirstTime == true){
-      Navigator.pushNamed(context, BlenderOnboardingPage.id);
+      // Navigator.pushNamed(context, BlenderOnboardingPage.id);
     }
   }
 
@@ -118,7 +118,8 @@ var formatter = NumberFormat('#,###,000');
     var vegProvider = Provider.of<BlenditData>(context).boxColourSaladListLeaves;
     var extraProvider = Provider.of<BlenditData>(context).boxColourSaladListExtra;
     return Scaffold(
-      backgroundColor: kBiegeThemeColor,
+      backgroundColor: kPureWhiteColor,
+      //kBiegeThemeColor,
       floatingActionButton: FloatingActionButton.extended(
 
         splashColor: Colors.green,

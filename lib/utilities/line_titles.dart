@@ -3,7 +3,9 @@ import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 class LineTitles {
-  static getTitleData () => FlTitlesData(
+  LineTitles(this.heading,);
+  final String heading;
+   getTitleData () => FlTitlesData(
     show: true,
     rightTitles: AxisTitles(
         axisNameWidget: Text("", style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 14),)
@@ -12,7 +14,7 @@ class LineTitles {
     topTitles: AxisTitles(
       axisNameWidget: Column(
         children: [
-          Text("Beat the Red Line", style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 12),),
+          Text(heading, style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 12),),
         ],
       )
 

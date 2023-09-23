@@ -4,6 +4,7 @@ import 'package:blendit_2022/controllers/gym_tabs_controller.dart';
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/settings_tab_controller.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
+import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
 import 'package:blendit_2022/screens/chat_designed_page.dart';
 import 'package:blendit_2022/screens/chat_third_design.dart';
@@ -24,10 +25,13 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../screens/chat_page.dart';
 import '../screens/execution_pages/execution_page.dart';
+import '../screens/home_page_achieved.dart';
+import '../screens/home_page_origina.dart';
 import '../screens/new_settings.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../widgets/memories_page.dart';
+import 'customizationNewController.dart';
 
 
 class ControlPage extends StatefulWidget {
@@ -51,10 +55,20 @@ class _ControlPageState extends State<ControlPage> {
   int amount = 0;
   final tabs = [
     // ChatDesignedPage(),
-    ExecutionPage(),
+    // ExecutionPage(),
+    Scaffold(
+        // appBar: AppBar(
+        //   backgroundColor: kGreenThemeColor,
+        //   automaticallyImplyLeading: false,
+        //   elevation: 0,
+        //
+        // ),
+        body: BlendingController()),
+    // CustomizeController(),
     ChatThirdDesignedPage(),
     // MemoriesPage(),
-
+    HomePageOriginal(),
+    // HomePageAchieved(),
     // HomePage(),
     // CustomizeController(),
 
@@ -91,8 +105,8 @@ class _ControlPageState extends State<ControlPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    defaultInitialization();
-    tutorialShow();
+    // defaultInitialization();
+    // tutorialShow();
 
   }
   @override
@@ -118,8 +132,8 @@ class _ControlPageState extends State<ControlPage> {
 
                 GButton(
                   // icon: Iconsax.airpod,
-                  icon: LineIcons.dumbbell,
-                  text: 'Goal',
+                  icon: LineIcons.mix,
+                  text: 'Blendit',
                   iconColor: kGreenThemeColor,
                   iconActiveColor: Colors.white,
                   textColor: Colors.white,
@@ -140,18 +154,18 @@ class _ControlPageState extends State<ControlPage> {
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     gap: 4,
                   ),
-                  // GButton(
-                  //   icon: Iconsax.magic_star ,
-                  //   // text: 'Active Workouts',
-                  //   text: 'Memories',
-                  //   iconColor: kGreenThemeColor,
-                  //   iconActiveColor: Colors.white,
-                  //   textColor: Colors.white,
-                  //   backgroundColor: kBlueDarkColorOld,
-                  //   iconSize: 24,
-                  //   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  //   gap: 4,
-                  // ),
+                  GButton(
+                    icon: Iconsax.shop ,
+                    // text: 'Active Workouts',
+                    text: 'Store',
+                    iconColor: kGreenThemeColor,
+                    iconActiveColor: Colors.white,
+                    textColor: Colors.white,
+                    backgroundColor: kBlueDarkColorOld,
+                    iconSize: 24,
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    gap: 4,
+                  ),
                 GButton(
                   icon: Icons.settings,
                   // text: 'Active Workouts',
@@ -159,7 +173,7 @@ class _ControlPageState extends State<ControlPage> {
                   iconColor: kGreenThemeColor,
                   iconActiveColor: Colors.white,
                   textColor: Colors.white,
-                  backgroundColor: kBlueDarkColorOld,
+                  backgroundColor: kAppPinkColor,
                   iconSize: 24,
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   gap: 4,

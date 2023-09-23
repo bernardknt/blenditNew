@@ -186,7 +186,8 @@ class CommonFunctions {
   }
 
   /// Scheduled Notification
-  scheduledNotification({required String heading,required String body,required int year,required int month,required int day, required int hour, required int minutes, required int id}) async {
+  scheduledNotification({required String heading,required String body,required int year,required int month,required int day, required int hour, required int minutes, required int id})
+  async {
 
     initializeNotification();
     await flutterLocalNotificationsPlugin.zonedSchedule(id, heading, body,

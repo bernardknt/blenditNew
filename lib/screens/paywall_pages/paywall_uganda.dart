@@ -15,11 +15,11 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:purchases_flutter/purchases_flutter.dart';
 
-import '../controllers/home_controller.dart';
-import '../models/ai_data.dart';
+import '../../controllers/home_controller.dart';
+import '../../models/ai_data.dart';
 
-import 'make_payment_page.dart';
-import 'nutri_mobile_money.dart';
+import '../make_payment_page.dart';
+import '../nutri_mobile_money.dart';
 
 class PaywallUgandaPage extends StatefulWidget {
   @override

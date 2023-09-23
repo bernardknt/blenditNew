@@ -17,17 +17,17 @@
         </dict>
     </array>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Nutri would like to allow access to your microphone to use the app properly</string>
+	<string>Blendit would like to allow access to your microphone to use the app properly</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Nutri would like to use your photos to help you complete the challenges</string>
+	<string>Blendit would like to use your photos to help you complete the challenges</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Nutri would like to use your camera to help you complete the challenges</string>
+	<string>Blendit would like to use your camera to help you complete the challenges</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Nutri</string>
+	<string>Blendit</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -35,7 +35,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Nutri</string>
+	<string>Blendit</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
