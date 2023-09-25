@@ -19,7 +19,7 @@ class SelectedJuiceIngredientsListView extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    var blendedData = Provider.of<BlenditData>(context);
+    var blendedData = Provider.of<BlenditData>(context, listen: false);
     return Container(
       color: Color(0xFF737373),
       child: Container(

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paywall_pages/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_pages/paywall_uganda.dart';
 import 'package:blendit_2022/screens/purchase_restored_page.dart';
@@ -187,15 +188,15 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
            // launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
            //
-          Navigator.pushNamed(context, CustomerCareChatMessaging.id);
+          // Navigator.pushNamed(context, CustomerCareChatMessaging.id);
 
 
-          // if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
-          //    CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-          // }else {
-          //   CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-          //
-          // }
+          if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
+             CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+          }else {
+            CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+
+          }
 
 
 
@@ -465,6 +466,27 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                   ],
                 ),
               ),
+        Card(
+          margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+          shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+          shadowColor: kGreenDarkColorOld,
+          elevation: 5.0,
+          child:
+          Column(
+            children: [
+              GestureDetector(
+                onTap: (){
+
+                  Navigator.pushNamed(context, OrdersPage.id);
+
+
+                },
+                child:  ListTile(
+                  leading: Icon(LineIcons.moneyBill, color: kGreenThemeColor,),
+                  title:Text("View Transaction History", style:kNormalTextStyle),
+                  // trailing: Icon(Icons.keyboard_arrow_right),
+                ),
+              ),]),),
 
 
               const SizedBox(height: 10,),

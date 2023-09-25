@@ -5,10 +5,12 @@ import 'package:blendit_2022/screens/execution_pages/goal_calendar_page.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +20,7 @@ import '../../models/CommonFunctions.dart';
 import '../../utilities/font_constants.dart';
 import '../../widgets/InputFieldWidget2.dart';
 import '../../widgets/gliding_text.dart';
+import 'loading_goals_page.dart';
 
 
 
@@ -33,7 +36,7 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
 
   late Timer _timer;
-  var goalSet= "";
+  var customJuice= "";
   var countryName = '';
   var countrySelected = false;
   var initialCountry = "";
@@ -44,7 +47,8 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
   var inspiration = "Welcome to Nutri, Our goal is to help you achieve your nutrition and health goals, Anywhere you go. Let me set you up";
   var message  = ['Well done', 'Keep Going', 'Your doing Great', 'You are killing this Challenge', 'Keep Going', 'Your a Champion', 'Standing Ovation👏', 'Keep going', 'You are winning'];
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-
+  final auth = FirebaseAuth.instance;
+  final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('requestAiJuice');
   void defaultInitialization() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -167,7 +171,7 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
                           TextField(
                             onChanged: (enteredQuestion){
-                              goalSet = enteredQuestion;
+                              customJuice = enteredQuestion;
                             },
                             maxLines: null,
                             decoration: InputDecoration(
@@ -187,10 +191,10 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
                         ),
                         ElevatedButton(
-                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(goalSet== ""?kFontGreyColor:kGreenThemeColor)),
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(customJuice== ""?kFontGreyColor:kGreenThemeColor)),
                             onPressed: () async{
                               final prefs = await SharedPreferences.getInstance();
-                              if (goalSet == ''){
+                              if (customJuice == ''){
                                 showDialog(context: context, builder: (BuildContext context){
                                   return CupertinoAlertDialog(
                                     title: const Text('Goal Empty'),
@@ -205,12 +209,46 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                 });
 
                               } else {
-                                Provider.of<AiProvider>(context, listen: false).setGoalValue(goalSet);
+                                Provider.of<AiProvider>(context, listen: false).setGoalValue(customJuice);
+                                // Navigator.pop(context);
+                                // Navigator.push(context,
+                                //     MaterialPageRoute(builder: (context)=> GoalCalendarPage())
+                                // );
+                                // Navigator.pop(context);
+                                showDialog(context: context, builder:
+                                    ( context) {
+                                  return Material(
+                                    color: Colors.transparent,
+                                    child: Center(child: Container(
+                                      height: 200,
+                                      child: Column(
+                                        children: [
+                                          CircularProgressIndicator(
+                                            // semanticsLabel: "Creating Goal Profile...",
+                                          ),
+                                          kLargeHeightSpacing,
+                                          Text("Getting the right ingredients ready", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),), 
+                                          Lottie.asset("images/bilungo.json", height: 80)
+                                        ],
+                                      ),
+                                    )),
+                                  );
+                                });
+                                dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+                                  'juice': customJuice,
+                                  'userId':auth.currentUser!.uid,
+
+                                  // orderId
+                                }).catchError((error){
+                                  print('Request failed with status code ${error.response.statusCode}');
+                                  print('Response body: ${error.response.data}');
+                                });
                                 Navigator.pop(context);
                                 Navigator.push(context,
-                                    MaterialPageRoute(builder: (context)=> GoalCalendarPage())
+                                    MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
                                 );
-                                // Navigator.pushNamed(context, QuizPage1.id);
+
+
                               }
 
 

@@ -115,7 +115,7 @@ class _OrdersPageState extends State<OrdersPage> {
   return Scaffold(
     appBar:
     AppBar(
-      automaticallyImplyLeading: false,
+      // automaticallyImplyLeading: false,
 
       backgroundColor: kBlueDarkColor
       ,

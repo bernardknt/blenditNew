@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utilities/font_constants.dart';
+import 'ai_juice.dart';
 import 'goals.dart';
 import 'home_page.dart';
 
@@ -27,7 +28,8 @@ class _LoadingGoalsPageState extends State<LoadingGoalsPage> {
 
   late Timer _timer;
   var random = Random();
-  var inspiration = "Success is a journey shared with those who lift you HIGHER. With Support, Accountability and the right Challenge, every step is a VICTORY in the making.";
+ // var inspiration = "Success is a journey shared with those who lift you HIGHER. With Support, Accountability and the right Challenge, every step is a VICTORY in the making.";
+  var inspiration = "Consistency is the key to unlocking the door to a healthy lifestyle. It's not about being perfect; it's about making small, positive choices day in and day out, because it's the consistent drops of water that eventually fill the ocean of well-being.";
   var message  = ['Well done', 'Keep Going', 'Your doing Great', 'You are killing this Challenge', 'Keep Going', 'Your a Champion', 'Standing Ovation👏', 'Keep going', 'You are winning'];
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
@@ -100,25 +102,23 @@ class _LoadingGoalsPageState extends State<LoadingGoalsPage> {
           mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
-            Lottie.asset('images/rocket.json', height: 200, width: 200, fit: BoxFit.contain ),
+            Lottie.asset('images/stir.json', height: 200, width: 200, fit: BoxFit.contain ),
             kSmallHeightSpacing,
             Center(child: Text(_displayText ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 15, color: kPureWhiteColor),)),
             kLargeHeightSpacing,
             Opacity(
               opacity: opacityValue,
               child: ElevatedButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kAppPinkColor)),
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kGreenThemeColor)),
                   onPressed: ()async {
-                    final prefs = await SharedPreferences.getInstance();
-                    setState(() {
-
-                    });
+                    Navigator.pop(context);
                     Provider.of<AiProvider>(context, listen: false).resetQuestionButtonColors();
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> TargetsPage())
+                       // MaterialPageRoute(builder: (context)=> TargetsPage())
+                        MaterialPageRoute(builder: (context)=> AiJuice())
                     );
 
-                  }, child: Text("Select Daily Targets", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
+                  }, child: Text("Continue", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
             ),
             // kSmallHeightSpacing,
             // Lottie.asset('images/challenge.json', height: 50, width: 150,),

@@ -485,6 +485,13 @@ class BlenditData extends ChangeNotifier{
     }
   }
 
+  void setSelectedJuiceIngredients(arrayOfIngredients){
+    selectedJuiceIngredients = arrayOfIngredients;
+    if (arrayOfIngredients.length > 5){
+      refJuicePrice = refJuicePrice + 2000;
+    }
+    notifyListeners();
+  }
   // Add and remove Ingredients
   void addIngredients(String addedIngredient){
     if(ingredientsNumber< 5){
