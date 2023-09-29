@@ -25,6 +25,8 @@ import 'package:rating_dialog/rating_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
+import '../utilities/font_constants.dart';
+import 'checkout_page.dart';
 import 'choose_juice_page.dart';
 import 'execution_pages/wildly_important_goal.dart';
 import 'loading_goals_page.dart';
@@ -349,7 +351,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('${greeting()} $firstName ${greetingEmoji()},'
+                  Text('${greeting()} $firstName ${greetingEmoji()}'
                      // '\n${blenderMessage()}'
                     , textAlign:TextAlign.center , style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.grey.shade600, fontSize: 18
@@ -374,12 +376,111 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                       buttonTextColor: Colors.white,
                       buttonColor: blendedData.ingredientsButtonColour,
                         firstButtonFunction: (){
-                          bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
-                          if (firstBlend == true){
-                           firstBlendDone();
-                            AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
-                            AlertPopUpDialogue(context, imagePath: 'images/swipe.json', text: 'To view all ingredients Swipe left and Right on each Category', title: 'Tip 1: Swipe to View');
+                          if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
+
+                            showDialog(context: context,
+
+                                builder: (context) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Center(child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+
+                                              Column(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                      Navigator.push(context,
+                                                          MaterialPageRoute(builder: (context)=> SpecialBlendAi())
+                                                      );
+                                                      // Navigator.pushNamed(
+                                                      //     context, SpecialBlendAi.id);
+                                                    },
+                                                    child: CircleAvatar(
+                                                        radius: 40,
+                                                        backgroundColor: kPureWhiteColor
+                                                            .withOpacity(1),
+                                                        child:
+                                                        Lottie.asset("images/wiggle_chat.json", height: 60)
+                                                      // const Icon(
+                                                      //   Iconsax.box, color: kBlack,
+                                                      //   size: 20,)
+                                                    ),
+                                                  ),
+                                                  Text("Blend For Me",
+                                                    textAlign: TextAlign.center,
+                                                    style: kNormalTextStyle.copyWith(
+                                                        color: kPureWhiteColor,
+                                                        fontSize: 12),)
+                                                ],
+                                              ),
+                                              kMediumWidthSpacing,
+                                              kMediumWidthSpacing,
+                                              kMediumWidthSpacing,
+                                              Column(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                      bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
+                                                      if (firstBlend == true){
+                                                        firstBlendDone();
+                                                        AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
+                                                        AlertPopUpDialogue(context, imagePath: 'images/swipe.json', text: 'To view all ingredients Swipe left and Right on each Category', title: 'Tip 1: Swipe to View');
+                                                      }
+                                                      // Navigator.pushNamed(
+                                                      //     context, ReStockPage.id);
+                                                    },
+                                                    child: CircleAvatar(
+                                                        backgroundColor: kBlack
+                                                            .withOpacity(1),
+
+                                                        radius: 40,
+                                                        child:
+                                                        Lottie.asset("images/juiceBlender.json",)
+                                                    ),
+                                                  ),
+                                                  Text("Select Your Blend",
+                                                    textAlign: TextAlign.center,
+                                                    style: kNormalTextStyle.copyWith(
+                                                        color: kPureWhiteColor,
+                                                        fontSize: 12),)
+                                                ],
+                                              ),
+
+                                            ],
+                                          )),
+                                          kLargeHeightSpacing,
+                                          kLargeHeightSpacing,
+                                          kLargeHeightSpacing,
+                                          kLargeHeightSpacing,
+                                          kLargeHeightSpacing,
+                                          kLargeHeightSpacing,
+                                          kLargeHeightSpacing,
+                                          Text("Cancel",
+                                            style: kNormalTextStyle.copyWith(
+                                                color: kPureWhiteColor),)
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+                            );
                           }
+                          else {
+                            bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
+                          }
+
+
                         }, firstButtonText: 'Add Ingredients',
                     ),
                   ),
@@ -407,9 +508,105 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                       onTap: (){
 
                         if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0){
-                         AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
+                        // AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
 
+                          showDialog(context: context,
+                              // barrierLabel: 'Appointment',
+                              builder: (context) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Center(child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
 
+                                            Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                        Navigator.push(context,
+                                                            MaterialPageRoute(builder: (context)=> SpecialBlendAi())
+                                                        );
+                                                    // Navigator.pushNamed(
+                                                    //     context, SpecialBlendAi.id);
+                                                  },
+                                                  child: CircleAvatar(
+                                                      radius: 40,
+                                                      backgroundColor: kPureWhiteColor
+                                                          .withOpacity(1),
+                                                      child:
+                                                      Lottie.asset("images/wiggle_chat.json", height: 60)
+                                                      // const Icon(
+                                                      //   Iconsax.box, color: kBlack,
+                                                      //   size: 20,)
+                                                  ),
+                                                ),
+                                                Text("Blend For Me",
+                                                  textAlign: TextAlign.center,
+                                                  style: kNormalTextStyle.copyWith(
+                                                      color: kPureWhiteColor,
+                                                      fontSize: 12),)
+                                              ],
+                                            ),
+                                            kMediumWidthSpacing,
+                                            kMediumWidthSpacing,
+                                            kMediumWidthSpacing,
+                                            Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                    bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
+                                                    if (firstBlend == true){
+                                                      firstBlendDone();
+                                                      AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
+                                                      AlertPopUpDialogue(context, imagePath: 'images/swipe.json', text: 'To view all ingredients Swipe left and Right on each Category', title: 'Tip 1: Swipe to View');
+                                                    }
+                                                    // Navigator.pushNamed(
+                                                    //     context, ReStockPage.id);
+                                                  },
+                                                  child: CircleAvatar(
+                                                      backgroundColor: kBlack
+                                                          .withOpacity(1),
+
+                                                      radius: 40,
+                                                      child:
+                                                      Lottie.asset("images/juiceBlender.json",)
+                                                  ),
+                                                ),
+                                                Text("Select Your Blend",
+                                                  textAlign: TextAlign.center,
+                                                  style: kNormalTextStyle.copyWith(
+                                                      color: kPureWhiteColor,
+                                                      fontSize: 12),)
+                                              ],
+                                            ),
+
+                                          ],
+                                        )),
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        Text("Cancel",
+                                          style: kNormalTextStyle.copyWith(
+                                              color: kPureWhiteColor),)
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+                          );
                         }
                         else {
                           // Vibration.vibrate(pattern: [200, 500, 200]);
@@ -435,7 +632,17 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                           targetColor: Colors.black,
                           featureId: 'feature3',
                           tapTarget: const Icon(LineIcons.fruitApple, color: Colors.white,),
-                          child: Image.asset(blendedData.blenderImage))),
+                          child: Stack(
+                            children: [
+                              Container(height: 200,),
+                              Positioned(
+                                  bottom: 30,
+                                  right: 5,
+                                  left: 5,
+                                  child: Lottie.asset('images/newform.json', height: 300)),
+                              Image.asset(blendedData.blenderImage),
+                            ],
+                          ))),
                 ),
                 // Positioned(
                 //   right: 30,
@@ -499,34 +706,55 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                         children: [
                           Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
-                          const SizedBox(height: 50,),
-                          DescribedFeatureOverlay(
-                            openDuration: const Duration(seconds: 1),
-                            overflowMode: OverflowMode.extendBackground,
-                            enablePulsingAnimation: true,
-                            barrierDismissible: false,
-                            pulseDuration: const Duration(seconds: 1),
-                            title: const Text('And Finally'),
-                            description: Text('$firstName If you want something specialized. Click the SURPRISE ME button to see our Categories of unique juices for different things.\n'),
-                            contentLocation: ContentLocation.trivial,
-                            backgroundColor: kBlueDarkColor,
-                            targetColor: kBiegeThemeColor,
-                            featureId: 'feature5',
-                            tapTarget: Lottie.asset('images/juiceBlender.json', width: 50),
-                            child: GestureDetector
-                              (onTap: (){
-                              // Navigator.pushNamed(context, QuizQuestions.id);
-                              // Navigator.pushNamed(context, ChooseJuicePage.id);
-                              // Navigator.pushNamed(context, GoalsPage.id);
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context)=> SpecialBlendAi())
-                              );
-                            },
-                              child: Lottie.asset('images/juiceBlender.json', width: 50),
+                          const SizedBox(height: 100,),
+                          // DescribedFeatureOverlay(
+                          //   openDuration: const Duration(seconds: 1),
+                          //   overflowMode: OverflowMode.extendBackground,
+                          //   enablePulsingAnimation: true,
+                          //   barrierDismissible: false,
+                          //   pulseDuration: const Duration(seconds: 1),
+                          //   title: const Text('And Finally'),
+                          //   description: Text('$firstName If you want something specialized. Click the SURPRISE ME button to see our Categories of unique juices for different things.\n'),
+                          //   contentLocation: ContentLocation.trivial,
+                          //   backgroundColor: kBlueDarkColor,
+                          //   targetColor: kBiegeThemeColor,
+                          //   featureId: 'feature5',
+                          //   tapTarget: Lottie.asset('images/juiceBlender.json', width: 50),
+                          //   child: GestureDetector
+                          //     (onTap: (){
+                          //     // Navigator.pushNamed(context, QuizQuestions.id);
+                          //     // Navigator.pushNamed(context, ChooseJuicePage.id);
+                          //     // Navigator.pushNamed(context, GoalsPage.id);
+                          //     Navigator.push(context,
+                          //         MaterialPageRoute(builder: (context)=> SpecialBlendAi())
+                          //     );
+                          //   },
+                          //     child:
+                              //Lottie.asset('images/juiceBlender.json', width: 50),
+                              blendedData.basketNumber == 0? Container():
+                              Stack(children: [
+                                  Positioned(
+                                    top: 4,
+                                    right: 2,
+                                    child: CircleAvatar(radius: 10,
+                                        child: Text(
+                                          '${blendedData.basketNumber}', style: TextStyle(fontSize: 10),)),
+                                  ) ,
+                                  IconButton
+                                    (onPressed: (){
+                                    if (blendedData.basketNumber == 0) {
 
-                            ),
-                          ),
-                          const Text('My Special\nBlend',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
+                                    }else {
+                                      Navigator.pushNamed(context, CheckoutPage.id);
+                                    }
+                                  },
+                                    icon: Icon(LineIcons.shoppingBasket),),
+                                ]
+                                ),
+
+                           // ),
+                          //),
+                          blendedData.basketNumber == 0? Container():const Text('Your Basket',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
 
                         ],
                       ),

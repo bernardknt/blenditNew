@@ -140,7 +140,9 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                       child: Container(
                           width: 260,
                           child:
-                          Center(child: GlidingText(
+                          Center(child:
+                         // Text(inspiration,  style: kNormalTextStyle2.copyWith(fontSize: 16, color: kBlack, fontWeight: FontWeight.w400),)
+                          GlidingText(
                             text: inspiration,
                             delay: const Duration(seconds: 1),
                           ),

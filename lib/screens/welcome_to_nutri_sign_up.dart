@@ -44,7 +44,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
     initialCountry = Provider.of<AiProvider>(context,listen: false).favouriteCountry;
     name = prefs.getString(kFirstNameConstant) ?? "";
     Provider.of<AiProvider>(context, listen: false).setUseName(name);
-    inspiration = "Welcome to Nutri $name, My name is Lisa. Let me set you up. Start by selecting your country";
+    inspiration = "Welcome to Blendit $name, My name is Lisa. Let me set you up. Start by selecting your country";
     CommonFunctions().uploadUserTokenWithName(prefs.getString(kToken)!,prefs.getString(kFirstNameConstant), prefs.getString(kFullNameConstant) );
 
 

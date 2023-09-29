@@ -5,12 +5,7 @@ import 'package:blendit_2022/screens/onboarding_questions/quiz_page3.dart';
 
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../models/ai_data.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/font_constants.dart';
 import '../../widgets/gliding_text.dart';
@@ -29,30 +24,28 @@ class _QuizPage2State extends State<QuizPage2> {
 
 
   void defaultInitialisation(){
-    DatePicker.showDatePicker(context,
-        currentTime: DateTime(1990,06,10,10,00),
-
-
-        theme: DatePickerTheme(headerColor: kCustomColor, itemHeight: 50, itemStyle: kHeadingTextStyle.copyWith(color: kPureWhiteColor), backgroundColor: kBlueDarkColorOld),
-
-        //showTitleActions: t,
-
-        onConfirm: (time) async {
-          // DateTime opening = DateTime(2022,1,1,Provider.of<StyleProvider>(context, listen: false).openingTime,0);
-          // DateTime closing = DateTime(2022,1,1,Provider.of<StyleProvider>(context, listen: false).closingTime,0);
-          // DateTime selectedDateTime = DateTime(value.date!.year,value.date!.month,value.date!.day,time.hour, time.minute);
-          // var referenceTime = DateTime(2022,1,1,0,0);
-
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(time));
-
-          Provider.of<AiProvider>(context, listen: false).setUserBirthday(time);
-          Provider.of<AiProvider>(context, listen: false).resetQuestionButtonColors();
-
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context)=> QuizPage3())
-          );
-          });
+    // DatePicker.showDatePicker(context,
+    //     currentTime: DateTime(1990,06,10,10,00),
+    //
+    //
+    //
+    //
+    //     onConfirm: (time) async {
+    //       // DateTime opening = DateTime(2022,1,1,Provider.of<StyleProvider>(context, listen: false).openingTime,0);
+    //       // DateTime closing = DateTime(2022,1,1,Provider.of<StyleProvider>(context, listen: false).closingTime,0);
+    //       // DateTime selectedDateTime = DateTime(value.date!.year,value.date!.month,value.date!.day,time.hour, time.minute);
+    //       // var referenceTime = DateTime(2022,1,1,0,0);
+    //
+    //       final prefs = await SharedPreferences.getInstance();
+    //       prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(time));
+    //
+    //       Provider.of<AiProvider>(context, listen: false).setUserBirthday(time);
+    //       Provider.of<AiProvider>(context, listen: false).resetQuestionButtonColors();
+    //
+    //       Navigator.push(context,
+    //           MaterialPageRoute(builder: (context)=> QuizPage3())
+    //       );
+    //       });
 
 
   }

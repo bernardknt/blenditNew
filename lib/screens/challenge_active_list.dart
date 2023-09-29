@@ -196,7 +196,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
 
                             print('WALALALLA ${daysList[index]}');
                             if (challengeStatus[index] == false){
-                              Navigator.pushNamed(context, BlenderOnboardingPage.id);
+                              // Navigator.pushNamed(context, BlenderOnboardingPage.id);
 
                             }else{
                               Navigator.pushNamed(context, ChallengePage.id);

@@ -1,7 +1,10 @@
 
 import 'package:blendit_2022/screens/onboarding_page.dart';
+import 'package:blendit_2022/screens/welcome_to_nutri_sign_up.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/widgets/InputFieldWidget.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,14 +45,16 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('Sign Up'),
-        backgroundColor: Colors.black,),
+      appBar: AppBar(
+        elevation: 0,
+        title: Text('Create Account', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+        backgroundColor: kGreenThemeColor,),
       body: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, top: 0),
 
         child: SingleChildScrollView(
           child: Container(
-            height: 550,
+            height: 450,
 
             child:
             Column(
@@ -58,9 +63,9 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 200,
+                  height: 100,
                   child:
-                      Center(child: Image.asset('images/fruits.png',)),
+                      Center(child: Lottie.asset('images/vip.json',)),
                   ),
 
                 //Text('SIGN UP', style: TextStyle(color: Colors.black54, fontSize: 30),),
@@ -89,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       // optional. aligns the flag and the Text left
                       alignLeft: false,
                     ),
-                    InputFieldWidget(labelText: 'Mobile Number', hintText: '77100100', keyboardType: TextInputType.number,  onTypingFunction: (value){
+                    InputFieldWidget(labelText: ' Mobile Number', hintText: '77100100', keyboardType: TextInputType.number,  onTypingFunction: (value){
                       setState(() {
                         if (value.split('')[0] == '7'){
                           invalidMessageDisplay = 'Incomplete Number';
@@ -168,9 +173,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                 prefs.setBool(kIsFirstBlending, true);
 
                                 //Navigator.pushNamed(context, ControlPage.id);
-                                Navigator.pushNamed(context, BlenderOnboardingPage.id);
+                                // Navigator.pushNamed(context, BlenderOnboardingPage.id);
 
-
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context)=> WelcomeToNutri())
+                                );
                                 // SAVE THE VALUES TO THE USER DEFAULTS AND DATABASE
                               }else{
                                 setState(() {

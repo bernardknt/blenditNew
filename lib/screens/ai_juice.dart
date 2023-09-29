@@ -49,19 +49,6 @@ class _AiJuiceState extends State<AiJuice> {
   var userId = "";
   var modifiedValues = [];
 
-  void defaultInitialization() async {
-    final prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString(kUniqueIdentifier)!;
-
-    initialCountry = Provider.of<AiProvider>(context,listen: false).favouriteCountry;
-    name = prefs.getString(kFirstNameConstant) ?? "";
-    Provider.of<AiProvider>(context, listen: false).setUseName(name);
-    inspiration = "$name, What Important Goal would you like to achieve?";
-    CommonFunctions().uploadUserTokenWithName(prefs.getString(kToken)!,prefs.getString(kFirstNameConstant), prefs.getString(kFullNameConstant) );
-    setState(() {
-
-    });
-  }
 
   List<String> addPrefixToElements(List inputArray) {
     return inputArray.map((element) => 'false?$element').toList();
@@ -131,7 +118,7 @@ class _AiJuiceState extends State<AiJuice> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    defaultInitialization();
+
     _startTyping();
     animationTimer();
   }
@@ -148,18 +135,24 @@ class _AiJuiceState extends State<AiJuice> {
   }
 
   final _random = new Random();
-  animationTimer() async{
+  animationTimer() async {
     final prefs = await SharedPreferences.getInstance();
     _timer = Timer(const Duration(milliseconds: 3000), () {
       prefs.setBool(kChallengeActivated, true);
       opacityValue = 1.0;
-      setState(() {
-
-
-      });
-
-
+      if (mounted) {
+        // Check if the widget is still mounted before calling setState
+        setState(() {});
+      }
     });
+  }
+
+
+  // Override the dispose method to cancel the timer when the widget is disposed
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   Widget build(BuildContext context) {
@@ -170,11 +163,16 @@ class _AiJuiceState extends State<AiJuice> {
 
     return Scaffold(
       backgroundColor: kPureWhiteColor,
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: (){},
+        backgroundColor: kCustomColor,
+        child: Icon(Iconsax.share, color: kBlack,),
+      ),
 
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(userId)
+            .doc(aiDataDisplay.userId)
         //.doc(userId)
             .snapshots(),
         builder: (context, snapshot) {
@@ -199,7 +197,7 @@ class _AiJuiceState extends State<AiJuice> {
 
                   children: [
                     Card(
-                      color: kCustomColor,
+                      color: kBlueDarkColor,
                       shape: const RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
                       // shadowColor: kGreenThemeColor,
                       // color: kBeigeColor,
@@ -212,6 +210,7 @@ class _AiJuiceState extends State<AiJuice> {
                             child:
                             Center(child: GlidingText(
                               text: visionData['purpose'],
+                              fontColor: kPureWhiteColor,
                               delay: const Duration(seconds: 1),
                             ),
 
@@ -255,12 +254,75 @@ class _AiJuiceState extends State<AiJuice> {
                         onTap: (){
                           // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
                           // print(visionData['ingredients'][index]);
+                          showDialog(context: context, builder: (BuildContext context){
+                            return GestureDetector(
+                                onTap: (){
+                                  Navigator.pop(context);
+                                },
+                                child: Material(
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+
+                                        Text("RECIPE", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold, fontSize: 30),),
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        Text("${visionData['type']} Instructions for ${visionData['purpose']}", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold),),
+                                        Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Container(
+
+                                              height: visionData['instructions'].length < 6? 270:380,
+                                              decoration: BoxDecoration(
+                                                  color:  kBiegeThemeColor,
+                                                  borderRadius: BorderRadius.all(Radius.circular(10))
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child:
+                                                ListView.builder(
+                                                  itemCount: visionData['instructions'].length,
+                                                  itemBuilder: (
+                                                      BuildContext context, int index)
+                                                  {
+                                                    return GestureDetector(
+                                                      onTap: (){
+                                                        // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
+                                                        // print(visionData['ingredients'][index]);
+                                                      },
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                                        child: Text(
+                                                          "${index+1}. ${visionData['instructions'][index]}",
+                                                          style: TextStyle( fontSize: visionData['instructions'].length < 6? 20 : 16,
+                                                            color: kBlueDarkColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+
+                                                //Text('${taskList[index]}',textAlign: TextAlign.center, style: kNormalTextStyleDark.copyWith(color: kBlack, fontSize: 20),),
+                                              )),
+                                        ),
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+                                        kLargeHeightSpacing,
+
+
+                                      ],
+                                    )));
+                          });
+
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0, right: 20),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Provider.of<AiProvider>(context, listen: false).preferencesColorOfBoxes[index],
+                              color: kBeigeThemeColor,
+                              // Provider.of<AiProvider>(context, listen: false).preferencesColorOfBoxes[index],
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             padding: EdgeInsets.all(10.0),
@@ -301,71 +363,71 @@ class _AiJuiceState extends State<AiJuice> {
                           onPressed: (){
                             CommonFunctions().goToLink(visionData['youtube']);
                           }, child: Icon(FontAwesomeIcons.youtube, color: kPureWhiteColor,)),
-                      kSmallWidthSpacing,
-                      ElevatedButton(
-                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kBlack)),
-                          onPressed: (){
-
-                            showDialog(context: context, builder: (BuildContext context){
-                              return GestureDetector(
-                                  onTap: (){
-                                    Navigator.pop(context);
-                                  },
-                                  child: Material(
-                                      color: Colors.transparent,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text("${visionData['type']} Instructions for ${visionData['purpose']}", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold),),
-                                          Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Container(
-
-                                                height: visionData['instructions'].length < 6? 270:380,
-                                                decoration: BoxDecoration(
-                                                    color:  kBiegeThemeColor,
-                                                    borderRadius: BorderRadius.all(Radius.circular(10))
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child:
-                                                  ListView.builder(
-                                                    itemCount: visionData['instructions'].length,
-                                                    itemBuilder: (
-                                                        BuildContext context, int index)
-                                                    {
-                                                      return GestureDetector(
-                                                        onTap: (){
-                                                          // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
-                                                          // print(visionData['ingredients'][index]);
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(left: 20.0, right: 20),
-                                                          child: Text(
-                                                            "${index+1}. ${visionData['instructions'][index]}",
-                                                            style: TextStyle( fontSize: visionData['instructions'].length < 6? 20 : 16,
-                                                              color: kBlueDarkColor,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-
-                                                  //Text('${taskList[index]}',textAlign: TextAlign.center, style: kNormalTextStyleDark.copyWith(color: kBlack, fontSize: 20),),
-                                                )),
-                                          ),
-                                          kLargeHeightSpacing,
-                                          kLargeHeightSpacing,
-                                          kLargeHeightSpacing,
-
-
-                                        ],
-                                      )));
-                            });
-
-
-                          }, child: Text("Recipe", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
+                      // kSmallWidthSpacing,
+                      // ElevatedButton(
+                      //     style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kBlack)),
+                      //     onPressed: (){
+                      //
+                      //       showDialog(context: context, builder: (BuildContext context){
+                      //         return GestureDetector(
+                      //             onTap: (){
+                      //               Navigator.pop(context);
+                      //             },
+                      //             child: Material(
+                      //                 color: Colors.transparent,
+                      //                 child: Column(
+                      //                   mainAxisAlignment: MainAxisAlignment.center,
+                      //                   children: [
+                      //                     Text("${visionData['type']} Instructions for ${visionData['purpose']}", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold),),
+                      //                     Padding(
+                      //                       padding: const EdgeInsets.all(15.0),
+                      //                       child: Container(
+                      //
+                      //                           height: visionData['instructions'].length < 6? 270:380,
+                      //                           decoration: BoxDecoration(
+                      //                               color:  kBiegeThemeColor,
+                      //                               borderRadius: BorderRadius.all(Radius.circular(10))
+                      //                           ),
+                      //                           child: Padding(
+                      //                             padding: const EdgeInsets.all(8.0),
+                      //                             child:
+                      //                             ListView.builder(
+                      //                               itemCount: visionData['instructions'].length,
+                      //                               itemBuilder: (
+                      //                                   BuildContext context, int index)
+                      //                               {
+                      //                                 return GestureDetector(
+                      //                                   onTap: (){
+                      //                                     // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
+                      //                                     // print(visionData['ingredients'][index]);
+                      //                                   },
+                      //                                   child: Padding(
+                      //                                     padding: const EdgeInsets.only(left: 20.0, right: 20),
+                      //                                     child: Text(
+                      //                                       "${index+1}. ${visionData['instructions'][index]}",
+                      //                                       style: TextStyle( fontSize: visionData['instructions'].length < 6? 20 : 16,
+                      //                                         color: kBlueDarkColor,
+                      //                                       ),
+                      //                                     ),
+                      //                                   ),
+                      //                                 );
+                      //                               },
+                      //                             ),
+                      //
+                      //                             //Text('${taskList[index]}',textAlign: TextAlign.center, style: kNormalTextStyleDark.copyWith(color: kBlack, fontSize: 20),),
+                      //                           )),
+                      //                     ),
+                      //                     kLargeHeightSpacing,
+                      //                     kLargeHeightSpacing,
+                      //                     kLargeHeightSpacing,
+                      //
+                      //
+                      //                   ],
+                      //                 )));
+                      //       });
+                      //
+                      //
+                      //     }, child: Text("Recipe", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
                       kSmallWidthSpacing,
                       ElevatedButton(
                           style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kGreenThemeColor)),
@@ -394,6 +456,12 @@ class _AiJuiceState extends State<AiJuice> {
                     ],
                   ),
                 ),
+                kLargeHeightSpacing,
+                TextButton(onPressed: (){
+
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }, child: Text("Go Back Home", style: TextStyle(color: Colors.blue),))
               ],
             ),
           );

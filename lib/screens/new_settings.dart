@@ -179,34 +179,34 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
       //   title: Text('Settings Page', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
       //   centerTitle: true,
       // ),
-      floatingActionButton:
-      FloatingActionButton(
-        backgroundColor: kGreenThemeColor,
-        onPressed: () async {
-
-          var prefs = await SharedPreferences.getInstance();
-
-           // launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
-           //
-          // Navigator.pushNamed(context, CustomerCareChatMessaging.id);
-
-
-          if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
-             CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-          }else {
-            CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-
-          }
-
-
-
-
-
-
-        },
-        child: Icon(Icons.support_agent),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton:
+      // FloatingActionButton(
+      //   backgroundColor: kGreenThemeColor,
+      //   onPressed: () async {
+      //
+      //     var prefs = await SharedPreferences.getInstance();
+      //
+      //      // launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
+      //      //
+      //     // Navigator.pushNamed(context, CustomerCareChatMessaging.id);
+      //
+      //
+      //     if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
+      //        CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+      //     }else {
+      //       CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+      //
+      //     }
+      //
+      //
+      //
+      //
+      //
+      //
+      //   },
+      //   child: Icon(Icons.support_agent),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
 
       backgroundColor: kBackgroundGreyColor,
@@ -469,6 +469,8 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
         Card(
           margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
           shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+          color: kAppPinkColor,
+
           shadowColor: kGreenDarkColorOld,
           elevation: 5.0,
           child:
@@ -482,8 +484,8 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
                 },
                 child:  ListTile(
-                  leading: Icon(LineIcons.moneyBill, color: kGreenThemeColor,),
-                  title:Text("View Transaction History", style:kNormalTextStyle),
+                  leading: Icon(LineIcons.moneyBill, color: kPureWhiteColor,),
+                  title:Text("View Transaction History", style:kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 18)),
                   // trailing: Icon(Icons.keyboard_arrow_right),
                 ),
               ),]),),

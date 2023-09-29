@@ -37,7 +37,6 @@ import 'package:blendit_2022/screens/new_logins/sign_in_phone.dart';
 import 'package:blendit_2022/screens/new_logins/verify_phone.dart';
 import 'package:blendit_2022/screens/new_settings.dart';
 import 'package:blendit_2022/screens/nutri_mobile_money.dart';
-import 'package:blendit_2022/screens/onboarding_page.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page1.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page_name.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
@@ -60,7 +59,7 @@ import 'package:blendit_2022/screens/welcome_page_new.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/widgets/memories_page.dart';
 import 'package:feature_discovery/feature_discovery.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
+// import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -99,12 +98,12 @@ Future <void> main() async{
 
   );
   // Get an instance of FirebaseAppCheck
-  FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.instance;
+  // FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.instance;
   // Disable App Check temporarily
   // await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(false);
 
 // Install the Play Integrity provider factory
-  firebaseAppCheck.activate();
+//   firebaseAppCheck.activate();
 
   await PushNotificationService().setupInteractedMessage();
   runApp(MyApp());
@@ -158,7 +157,7 @@ class MyApp extends StatelessWidget {
             WelcomePage.id: (context)=> WelcomePage(),
             WelcomePageNew.id: (context)=> WelcomePageNew(),
             RegisterPage.id: (context)=> RegisterPage(),
-            BlenderOnboardingPage.id: (context)=>BlenderOnboardingPage(),
+            // BlenderOnboardingPage.id: (context)=>BlenderOnboardingPage(),
             NewBlenderPage.id: (context)=>  NewBlenderPage(),
             InputPage.id: (context)=>InputPage(),
             SuccessPage.id: (context)=>SuccessPage(),

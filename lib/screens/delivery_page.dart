@@ -1,6 +1,8 @@
 
+import 'dart:math';
 import 'dart:ui';
 
+import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/screens/phone_details_page.dart';
 import 'package:blendit_2022/screens/rating_page.dart';
@@ -63,7 +65,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
     super.initState();
     getPoints();
   }
-
 
 
   @override
@@ -380,9 +381,10 @@ class _MapState extends State<Map> {
           final lng = detail.result.geometry!.location.lng;
           final prefs = await SharedPreferences.getInstance();
 
-          double distanceInMeters = 6.5;
+           double distanceInMeters = CommonFunctions().calculateDistanceBetweenTwoPlacesOnEarth(0.3173, 32.5927, lat, lng);
+         print("WOLOLOLOLOLOLO distance is $distanceInMeters");
 
-          // Geolocator.distanceBetween(0.3173, 32.5927, lat, lng);
+           //Geolocator.distanceBetween(0.3173, 32.5927, lat, lng);
           blendedDataModify.setDeliveryDistance(distanceInMeters);
           if (distanceInMeters < 2000.0){
 

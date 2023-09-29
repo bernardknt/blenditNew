@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class GlidingText extends StatefulWidget {
   final String text;
   final Duration delay;
+  final Color fontColor;
 
-  const GlidingText({Key? key, required this.text, required this.delay}) : super(key: key);
+  const GlidingText({Key? key, required this.text, required this.delay,this.fontColor = kBlack}) : super(key: key);
 
   @override
   _GlidingTextState createState() => _GlidingTextState();
@@ -39,7 +40,7 @@ class _GlidingTextState extends State<GlidingText> with SingleTickerProviderStat
       duration: const Duration(milliseconds: 500),
       child: Text(
         widget.text,
-        style: kNormalTextStyle2.copyWith(fontSize: 16, color: kBlack, fontWeight: FontWeight.w400),
+        style: kNormalTextStyle2.copyWith(fontSize: 16, color: widget.fontColor, fontWeight: FontWeight.w400),
       ),
     );
   }

@@ -3,6 +3,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:blendit_2022/screens/calendar_page.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
 import 'package:blendit_2022/screens/photo_onboarding.dart';
@@ -360,10 +361,41 @@ class CommonFunctions {
 
     launchUrl(Uri.parse(googleUrl));
   }
+
+  // Get distance between two points on the earth
+
+  double calculateDistanceBetweenTwoPlacesOnEarth(double lat1, double lng1, double lat2, double lng2) {
+    const double earthRadius = 6371000; // Earth's radius in meters
+
+    // Convert latitude and longitude from degrees to radians
+    final double lat1Rad = degreesToRadians(lat1);
+    final double lng1Rad = degreesToRadians(lng1);
+    final double lat2Rad = degreesToRadians(lat2);
+    final double lng2Rad = degreesToRadians(lng2);
+
+    // Calculate the differences between the coordinates
+    final double dLat = lat2Rad - lat1Rad;
+    final double dLng = lng2Rad - lng1Rad;
+
+    // Calculate the Haversine distance
+    final double a = pow(sin(dLat / 2), 2) +
+        cos(lat1Rad) * cos(lat2Rad) * pow(sin(dLng / 2), 2);
+    final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    final double distance = earthRadius * c;
+
+    return distance; // Distance in meters
+  }
+
+  double degreesToRadians(double degrees) {
+    return degrees * pi / 180.0;
+  }
+
+
 // call number
   void callPhoneNumber (String phoneNumber){
     launchUrl(Uri.parse('tel://$phoneNumber'));
   }
+
 
   // Visit Link
   void goToLink (String link){

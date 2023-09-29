@@ -56,11 +56,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
     appBar:
     AppBar(
 
-      backgroundColor: Colors.black,
-      // foregroundColor: Colors.blue,
+      backgroundColor: kPureWhiteColor,
+      foregroundColor: kBlack,
 
-      brightness: Brightness.light,
-      elevation:8 ,
+      // brightness: Brightness.light,
+      elevation:0 ,
       actions: [
         Stack(children: [
           Positioned(
@@ -227,11 +227,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       flex: 3,
                       child: TextButton.icon(onPressed: ()async{
                         var prefs = await SharedPreferences.getInstance();
+                        prefs.setString(kOrderReason, "Ordered Items");
                         if (blendedData.storeOpen == false){
 
                           AlertPopUpDialogue(context, imagePath: 'images/closed.json', text: 'We cannot make deliveries right now because our Stores are closed', title: "Store Closed 😔"
                               "");
                         }else{
+
                           showModalBottomSheet(
                               context: context,
                               builder: (context) {

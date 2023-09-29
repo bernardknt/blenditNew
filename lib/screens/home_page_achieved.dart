@@ -69,6 +69,7 @@ class _HomePageAchievedState extends State<HomePageAchieved> {
   }
   @override
   Widget build(BuildContext context) {
+    // var blendedData = Provider.of<BlenditData>(context);
     var blendedData = Provider.of<BlenditData>(context);
     return
       Scaffold(

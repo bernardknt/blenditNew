@@ -1,7 +1,7 @@
 
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:flutter/material.dart';
-import 'package:height_slider/height_slider.dart';
+
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,27 +69,27 @@ class _QuizPage4State extends State<QuizPage4> {
       body: SafeArea(
         child: Stack(
           children: [
-            Center(
-            child: HeightSlider(
-              maxHeight: 220,
-              minHeight: 130,
-              accentColor: kBlack,
-              // personImagePath: "images/doc_checking_tab.png",
-
-              numberLineColor: kGreenThemeColor,
-              sliderCircleColor: kGreenThemeColor,
-              primaryColor: kGreenThemeColor,
-              height: height,
-              onChange: (val) {
-                setState(() {
-                  height = val;
-                  heightString = convertCmToFeet(height.toDouble());
-                });
-              },
-              unit: 'cm',
-              // optional
-            ),
-          ),
+          //   Center(
+          //   child: HeightSlider(
+          //     maxHeight: 220,
+          //     minHeight: 130,
+          //     accentColor: kBlack,
+          //     // personImagePath: "images/doc_checking_tab.png",
+          //
+          //     numberLineColor: kGreenThemeColor,
+          //     sliderCircleColor: kGreenThemeColor,
+          //     primaryColor: kGreenThemeColor,
+          //     height: height,
+          //     onChange: (val) {
+          //       setState(() {
+          //         height = val;
+          //         heightString = convertCmToFeet(height.toDouble());
+          //       });
+          //     },
+          //     unit: 'cm',
+          //     // optional
+          //   ),
+          // ),
             Positioned(
                 left: 20,
                 right: 20,

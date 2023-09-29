@@ -113,7 +113,7 @@ class _QuizPage5State extends State<QuizPage5> {
             CommonFunctions().uploadUserPreferences(aiDataDisplay.preferencesSelected, aiDataDisplay.userSex, aiDataDisplay.userBirthday, aiDataDisplay.preferencesIdSelected);
 
           },
-          label:  Text("Enter Nutri", style: kNormalTextStyleWhiteButtons.copyWith(color: kBlack),),
+          label:  Text("Enter Blendit", style: kNormalTextStyleWhiteButtons.copyWith(color: kBlack),),
         ),
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

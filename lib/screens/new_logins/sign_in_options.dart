@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/screens/login_page.dart';
 import 'package:blendit_2022/screens/new_logins/sign_in_phone.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +20,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
@@ -26,6 +28,7 @@ import '../../controllers/home_controller.dart';
 import '../../models/CommonFunctions.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/font_constants.dart';
+import '../register_page.dart';
 
 
 
@@ -329,7 +332,12 @@ class _SignInOptionsState extends State<SignInOptions> {
   var countryName = '';
   var countryFlag = '';
   var countryCode = "+256";
+  var email = "";
+  var password = "";
   var backgroundColor = kGreenThemeColor;
+  final auth = FirebaseAuth.instance;
+  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+  bool ownerLogin = false;
   // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   var phoneNumber = '';
@@ -446,48 +454,239 @@ class _SignInOptionsState extends State<SignInOptions> {
                     ),
 
                     kLargeHeightSpacing,
-                    kLargeHeightSpacing,
-                    kLargeHeightSpacing,
-                    kLargeHeightSpacing,
-                    kLargeHeightSpacing,
-                    kLargeHeightSpacing,
 
-                    SizedBox(
-                      height: 20,
+                    ownerLogin!= false?Container(): Padding(
+                      padding: const EdgeInsets.only(right: 20.0, left: 20),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: kCustomColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10))),
+                          onPressed: () async{
+                            //  Navigator.pushNamed(context, SignInPhone.id);
+                            //   Navigator.pushNamed(context, LoginPage.id);
+                            setState(() {
+                              ownerLogin = !ownerLogin;
+                            });
+
+                          },
+
+
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+
+                              // Text("Continue with Mobile", style: kNormalTextStyle.copyWith(color: kBlack),),
+                              Text("Continue with Email", style: kNormalTextStyle.copyWith(color: kBlack),),
+
+                              kSmallWidthSpacing,
+                              Icon(Icons.mail_outline    , color: kBlack,),
+                              // Icon(Iconsax.mobile, color: kBlack,),
+                            ],
+                          )),
                     ),
-                    Text("Or Continue with", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
-
                     kLargeHeightSpacing,
-                    SizedBox(
-                      width: double.infinity,
-                      height: 43,
-                      child:
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20.0, left: 20),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: kCustomColor,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                            onPressed: () async{
-                              Navigator.pushNamed(context, SignInPhone.id);
+                    ownerLogin== false?Container():Container(
+                      height: 340,
+                      decoration: BoxDecoration(color: kPureWhiteColor,borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            TextButton(onPressed: (){
 
-                            },
+                              Navigator.pushNamed(context, RegisterPage.id);
+                            }, child: Text("CREATE NEW ACCOUNT", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontWeight: FontWeight.bold, fontSize: 18),)),
+                            Text("Or Login Below", style: kNormalTextStyle.copyWith(color: kBlack),),
+                            kSmallHeightSpacing,
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: kBlueDarkColorOld,
+                                      blurRadius: 3,
+                                      offset: Offset(0,2),
+                                    )
+                                  ]
+                              ),
+                              child: Column(
+                                children: [
+
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        border: Border(bottom: BorderSide(
+                                            color: kBlueDarkColorOld
+                                        ))
+                                    ),
+                                    child: TextField(
+
+                                      onChanged: (value){
+                                        email = value;
+                                      },
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText:  'Email Address',
+                                          hintStyle: TextStyle(color: Colors.grey)
+                                      ) ,
+                                    )
+                                    ,),
+                                  // SizedBox(height: 10),
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+
+                                    child: TextField(
+                                      obscureText: true,
+                                      onChanged: (value){
+                                        password = value;
+                                      },
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText:  'Password',
+                                        hintStyle: TextStyle(color: Colors.grey),
+                                      ) ,
+                                    )
+                                    ,),
+                                ],
+                              ) ,
+                            ),
+                            TextButton(onPressed: (){
+                              if(email != ''){
+                                auth.sendPasswordResetEmail(email: email);
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return CupertinoAlertDialog(
+                                    title: Text('Reset Email Sent'),
+                                    content: Text('Check email $email for the reset link'),
+                                    actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                        onPressed: (){
+                                          _btnController.reset();
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Cancel'))],
+                                  );
+                                });
+                              }else{
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return CupertinoAlertDialog(
+                                    title: Text('Type Email'),
+                                    content: Text('Please type your email Address and Click on the forgot password!'),
+                                    actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                        onPressed: (){
+                                          //_btnController.reset();
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Cancel'))],
+                                  );
+                                });
+                              }
+
+                            }, child: Text('Forgot Password', style: kHeading2TextStyle.copyWith(color: Colors.blue),)),
+                            RoundedLoadingButton(
+                              color: kAppPinkColor,
+                              child: Text('Login', style: TextStyle(color: Colors.white)),
+                              controller: _btnController,
+                              onPressed: () async {
+                                final prefs = await SharedPreferences.getInstance();
+                                try{
+                                  await auth.signInWithEmailAndPassword(email: email, password: password);
+                                  final users = await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).get();
+                                  if(users.exists){
+                                    prefs.setBool(kNutriAi, true);
+                                    prefs.setString(kUserPersonalPreferences, users['preferences'].join(", "));
+                                    prefs.setString(kFullNameConstant, users['lastName']);
+                                    prefs.setString(kFirstNameConstant, users['firstName']);
+                                    prefs.setString(kUniqueUserPhoneId, users['email']);
+                                    prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
+                                    prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
+                                    prefs.setString(kUserCountryName, users['country']);
+                                    prefs.setBool(kIsLoggedInConstant, true);
+                                    prefs.setString(kUserSex, users['sex']);
+                                    prefs.setString(kEmailConstant, users['email']);
+                                    prefs.setString(kUserVision, users['vision']);
+                                    prefs.setString(kGoalConstant, users['goal']);
+                                    prefs.setDouble(kUserWeight, users['weight']/1.0);
+                                    prefs.setInt(kUserHeight, users['height']);
+                                    prefs.setBool(kIsGoalSet,users['goalSet'] );
+                                    prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
+                                    prefs.setStringList(kPointsList,users['chatPoints'].cast<String>());
+                                    // prefs.setString(kToken, token);
+
+                                    // This Function uploads the user token to the server.
+                                    CommonFunctions().uploadUserToken(token);
+                                    //  MaterialPageRoute(builder: (context)=> QuizPageName());
+
+                                    Navigator.pushNamed(context, ControlPage.id);Get.snackbar('Welcome Back ${users['firstName']}', '🙂',
+                                        snackPosition: SnackPosition.TOP,
+                                        backgroundColor: kCustomColor,
+                                        colorText: kBlack,
+                                        icon: Icon(Iconsax.smileys, color: kGreenThemeColor,));
+                                  } else if (!users.exists){
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return CupertinoAlertDialog(
+                                        title: Text('Looks like this is a new Account!'),
+                                        content: Text('Would you like to create a new Account'),
+                                        actions: [
+                                          CupertinoDialogAction(isDestructiveAction: true,
+                                            onPressed: (){
+                                              _btnController.reset();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Cancel')),
+                                          CupertinoDialogAction(isDefaultAction: true,
+                                              onPressed: (){
+                                                _btnController.reset();
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Create')),
+
+                                        ],
+                                      );
+                                    });
 
 
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
+                                  }else{
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return CupertinoAlertDialog(
+                                        title: Text('This account is not Registered for Beautician'),
+                                        content: Text('The credentials you have entered are incorrect'),
+                                        actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                            onPressed: (){
+                                              _btnController.reset();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Cancel'))],
+                                      );
+                                    });
+                                  }
 
-                                Text("Continue with Mobile", style: kNormalTextStyle.copyWith(color: kBlack),),
-                                kSmallWidthSpacing,
-                                Icon(Iconsax.mobile, color: kBlack,),
-                              ],
-                            )),
+                                  //showSpinner = false;
+                                }catch(e) {
+                                  _btnController.error();
+                                  showDialog(context: context, builder: (BuildContext context){
+                                    return CupertinoAlertDialog(
+                                      title: Text('Oops Login Failed'),
+                                      content: Text("$e"),
+                                      actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                          onPressed: (){
+                                            _btnController.reset();
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('Cancel'))],
+                                    );
+                                  });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-
                     ),
                     kLargeHeightSpacing,
+                    Platform.isIOS ?Text("Or Continue with", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),):Container(),
+                    kLargeHeightSpacing,
+
                     Platform.isIOS ?
                     SizedBox(
                       width: double.infinity,

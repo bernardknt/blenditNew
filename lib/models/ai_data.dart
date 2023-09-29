@@ -13,6 +13,7 @@ class AiProvider extends ChangeNotifier{
   // List buttonColourQuestions = [Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,Colors.white12,];
   List buttonColourQuestions = [kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor,kBlueDarkColor, kBlueDarkColor, ];
   String userSex = '';
+  String userId = '';
   List<Color> preferencesColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
   List preferencesSelected = [];
   List <String>preferencesIdSelected = [];
@@ -143,7 +144,10 @@ class AiProvider extends ChangeNotifier{
     powerPoints.add(token);
     notifyListeners();
   }
-
+  void setUserId(id){
+    userId= id;
+    notifyListeners();
+  }
 
   setDailyProgressPoints (amount){
     dailyProgressPoint += amount;

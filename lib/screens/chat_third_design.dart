@@ -520,7 +520,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                         String country = prefs.getString(kUserCountryName)!;
 
                         print(subscriptionDate);
-                        if (subscriptionDate.isBefore(today)){
+                        if (subscriptionDate.isAfter(today)){
 
                           if (message != '') {
 
@@ -600,7 +600,7 @@ class _ChatThirdDesignedPageState extends State<ChatThirdDesignedPage> {
                       DateTime subscriptionDate = Provider.of<AiProvider>(context, listen: false).subscriptionDate;
                       DateTime today = DateTime.now();
 
-                      if (subscriptionDate.isBefore(today)){
+                      if (subscriptionDate.isAfter(today)){
                         CommonFunctions().pickImage(ImageSource.camera,   serviceId = 'pic${DateTime.now().toString()}${uuid.v1().split("-")[0]}', context, false, "", []);
 
                       } else {

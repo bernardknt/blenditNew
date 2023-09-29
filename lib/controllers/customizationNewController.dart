@@ -3,8 +3,12 @@ import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 
+
+import '../models/blendit_data.dart';
+import '../screens/checkout_page.dart';
 import '../utilities/constants.dart';
 
 
@@ -23,6 +27,7 @@ class _BlendingControllerState extends State<BlendingController> {
 
   @override
   Widget build(BuildContext context) {
+    var blendedData = Provider.of<BlenditData>(context);
     return
       DefaultTabController(
         length: 2,
@@ -34,6 +39,27 @@ class _BlendingControllerState extends State<BlendingController> {
               automaticallyImplyLeading: false,
               toolbarHeight: 5,
               backgroundColor: kGreenThemeColor.withOpacity(1),
+              // actions: [
+              //   Stack(children: [
+              //     Positioned(
+              //       top: 4,
+              //       right: 2,
+              //       child: CircleAvatar(radius: 10,
+              //           child: Text(
+              //             '${blendedData.basketNumber}', style: TextStyle(fontSize: 10),)),
+              //     ) ,
+              //     IconButton
+              //       (onPressed: (){
+              //       if (blendedData.basketNumber == 0) {
+              //
+              //       }else {
+              //         Navigator.pushNamed(context, CheckoutPage.id);
+              //       }
+              //     },
+              //       icon: Icon(LineIcons.shoppingBasket),),
+              //   ]
+              //   )
+              // ],
               // shape: ShapeBorder.lerp(, b, t),
               elevation: 0,
               //title: Center(child: Text("Stock Page", style: TextStyle(color: kBiegeThemeColor, fontSize: 13, fontWeight: FontWeight.bold),),),
