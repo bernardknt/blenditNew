@@ -102,9 +102,9 @@ class DeliveryOptionsDialog extends StatelessWidget {
                           borderRadius: BorderRadius.circular(18)
                       ),
                       backgroundColor: Colors.green),icon: Icon(LineIcons.thumbsUp, color: Colors.white,),
-                  label: Text('Now', style: TextStyle(fontWeight: FontWeight.bold,
+                  label: const Text('Now', style: TextStyle(fontWeight: FontWeight.bold,
                       color: Colors.white), ), ),
-                  SizedBox(width: 10,),
+                  const SizedBox(width: 10,),
                   TextButton.icon(
                     onPressed: () async {
                       final selectedDate = await showDatePicker(

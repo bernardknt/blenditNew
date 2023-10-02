@@ -10,6 +10,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,8 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
 
   late Timer _timer;
+  var titleName=[];
+  var promoList = [];
   var customJuice= "";
   var countryName = '';
   var countrySelected = false;
@@ -49,6 +52,7 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final auth = FirebaseAuth.instance;
   final HttpsCallable callableGoalUpdate = FirebaseFunctions.instance.httpsCallable('requestAiJuice');
+  TextEditingController _controller = TextEditingController()..text = "";
   void defaultInitialization() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -166,12 +170,76 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children :
                       [
+                        titleName.isEmpty?Container():Text("Suggestions"),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child:
+                          StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance.collection('suggestions')
+                              .where('active', isEqualTo: true).orderBy('time', descending: true)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Container(
+                                    color: Colors.teal,
+                                  );
+                                } else {
+                                  titleName=[];
+                                  promoList = [];
+                                  var data = snapshot.data!.docs;
+                                  for (var item in data) {
+                                    // promoList.add(challenge.get('promo'));
+                                    titleName.add(item.get('title'));
+                                  }
+                                }
+                                return StaggeredGridView.countBuilder(
+                                    crossAxisCount: 2,
+                                    itemCount: titleName.length,
+                                    crossAxisSpacing: 10,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          _controller = TextEditingController()..text = titleName[index];
+                                          customJuice = titleName[index];
 
+                                          setState(() {
+
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.only(top: 3,
+                                              right: 0,
+                                              left: 0,
+                                              bottom: 3),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: kFontGreyColor, width: 1),
+                                            borderRadius: BorderRadius.circular(10),
+                                            // color: kBiegeThemeColor,
+                                          ),
+                                          child:
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              titleName[index],
+                                              style: kNormalTextStyle.copyWith(color: kFontGreyColor),
+                                            ),
+                                          ),
+                                        ),
+
+                                      );
+                                    },
+                                    staggeredTileBuilder: (index) =>
+                                    const StaggeredTile.fit(1));
+                              }),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child:
 
                           TextField(
+                            controller: _controller,
                             onChanged: (enteredQuestion){
                               customJuice = enteredQuestion;
                             },
@@ -180,18 +248,23 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                 border:
                                 //InputBorder.none,
                                 OutlineInputBorder(
+
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(color: Colors.green, width: 2),
+
                                 ),
-                                labelText: 'Blend',
-                                labelStyle: kNormalTextStyleExtraSmall,
-                                hintText: 'I want something for my flu and cough',
+                                focusColor: kRedThemeColor,
+                                labelText: 'Write what you want here',
+
+                                labelStyle: kNormalTextStyleExtraSmall.copyWith(fontSize: 14),
+                                // hintText: 'I want something for my flu and cough',
                                 hintStyle: kNormalTextStyle,
                             ),
 
                           ),
 
                         ),
+
                         ElevatedButton(
                             style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(customJuice== ""?kFontGreyColor:kGreenThemeColor)),
                             onPressed: () async{
@@ -199,8 +272,8 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                               if (customJuice == ''){
                                 showDialog(context: context, builder: (BuildContext context){
                                   return CupertinoAlertDialog(
-                                    title: const Text('Goal Empty'),
-                                    content: Text('No Goal has been entered. Please enter your goal', style: kNormalTextStyle.copyWith(color: kBlack),),
+                                    title: const Text('Empty Choice'),
+                                    content: Text('No entered. Please enter your choice', style: kNormalTextStyle.copyWith(color: kBlack),),
                                     actions: [CupertinoDialogAction(isDestructiveAction: true,
                                         onPressed: (){
                                           // _btnController.reset();

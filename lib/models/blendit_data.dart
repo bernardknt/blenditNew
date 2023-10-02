@@ -1,4 +1,5 @@
 
+import 'package:blendit_2022/models/location_model.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 
 import 'basketItem.dart';
@@ -11,7 +12,7 @@ class BlenditData extends ChangeNotifier{
   // -----------------GENERAL VARIABLES-------------------------
   String lastQuestion = '';
   String phoneVerificationId = '';
-
+  List<LocationModal> locationValues = [];
 
 
 
@@ -422,6 +423,11 @@ class BlenditData extends ChangeNotifier{
       }
 
     }
+  }
+
+  void setLocationValues(LocationModal location){
+    locationValues.add(location);
+    notifyListeners();
   }
 
 

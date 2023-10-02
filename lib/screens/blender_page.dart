@@ -1,10 +1,12 @@
 
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
 import 'package:blendit_2022/screens/goals.dart';
+import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/special_blend.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:blendit_2022/utilities/constants.dart';
@@ -87,6 +89,12 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     prefs.setBool(kIsFirstBlending, false);
     firstBlend = false;
   }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+  }
+
+
 // THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
@@ -230,9 +238,12 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
 // VARIABLE DECLARATIONS
   bool firstBlend = true;
+  bool activeOrder = false;
   bool tutorialDone = true;
   String firstName = 'Blender';
   String initialId = 'feature';
+  var dateList = [];
+  var statusList = [];
   bool updateMe = true;
   String updateInfo = "There is a new update..";
   var formatter = NumberFormat('#,###,000');
@@ -243,6 +254,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   var vegInfo = [''];
   var fruitInfo = [''];
   var extraInfo = [''];
+
 
 
 
@@ -702,7 +714,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                       ),
                       const SizedBox(height: 10,) ,
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
@@ -749,11 +761,68 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                     }
                                   },
                                     icon: Icon(LineIcons.shoppingBasket),),
-                                ]
+                                ]),
+                          kSmallHeightSpacing,
+
+
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance.collection('orders')
+                                        .where('sender_id', isEqualTo: "kangavebnt@gmail.com")
+                                        .orderBy('deliveryTime', descending: false)
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Container(
+                                          color: Colors.teal,
+                                        );
+                                      } else {
+                                        dateList = [];
+                                        statusList = [];
+                                        var data = snapshot.data!.docs;
+                                        for (var item in data) {
+                                          Timestamp deliveryTimestamp = item.get('deliveryTime');
+                                          var status = item.get('status');
+                                          DateTime deliveryDateTime = deliveryTimestamp.toDate();
+                                          // Check if deliveryDateTime is today
+                                          if (isSameDay(deliveryDateTime, DateTime.now())&& status!= 'delivered') {
+                                            print(status);
+                                            activeOrder = true;
+                                            dateList.add(item.get('deliveryTime').toDate());
+                                            statusList.add(item.get('status'));
+                                          }else{
+                                            activeOrder = false;
+                                          }
+                                          // You can add other logic related to processing data here
+                                        }
+                                      }
+                                      return
+                                        activeOrder!=true?Container():GestureDetector(
+                                          onTap: (){
+                                            Navigator.pushNamed(context, OrdersPage.id);
+                                          },
+                                          child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                            children:[
+                                              statusList[0]=="submitted"?Lottie.asset("images/freeChat.json", height: 20):
+                                              statusList[0]=="delivering"?Lottie.asset("images/deliver.json", height: 80):
+                                              Lottie.asset("images/bilungo.json", height: 80),
+                                              Text('${dateList.length} Active Order\n${ DateFormat('EE, dd MMM\nkk:mm').format(dateList[0])}', style: kNormalTextStyle.copyWith(color: kBlack),),
+                                              Text('${statusList[0]}', style: kNormalTextStyle.copyWith(color: kGreenThemeColor),),
+                                            ]
+                                      ),
+                                        );
+                                    }
                                 ),
 
-                           // ),
-                          //),
+
+
+                              ]),
+
+
                           blendedData.basketNumber == 0? Container():const Text('Your Basket',textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),),
 
                         ],

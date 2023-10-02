@@ -4,10 +4,12 @@ import 'dart:ui';
 
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
+import 'package:blendit_2022/models/location_model.dart';
 import 'package:blendit_2022/screens/phone_details_page.dart';
 import 'package:blendit_2022/screens/rating_page.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +25,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +57,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
     final users = await FirebaseFirestore.instance
         .collection('users').doc(auth.currentUser!.uid)
         .get();
-      prefs.setInt(kLoyaltyPoints, users['loyalty']);
+    prefs.setInt(kLoyaltyPoints, users['loyalty']);
 
   }
 
@@ -94,41 +97,41 @@ class _MapState extends State<Map> {
   String location = '';
   String instructions = '';
 
-  final _dialog = RatingDialog(
-    initialRating: 3.0,
-    // your app's name?
-    title: const Text(
-      'Rate Your Order',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    // encourage your user to leave a high rating?
-    message: const Text(
-      'Tap a star to set your rating.',
-      textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 15),
-    ),
-    // your app's logo?
-    image: Image.asset('images/black_logo.png',width: 150, height: 150, ),
-    submitButtonText: 'Submit',
-    commentHint: 'You can Add an extra Comment',
-    onCancelled: () => print('cancelled'),
-    onSubmitted: (response) async{
-      var prefs = await SharedPreferences.getInstance();
-      await FirebaseFirestore.instance
-          .collection('orders').doc(prefs.getString(kOrderId))
-          .update({
-        'rating': response.rating,
-        'rating_comment': response.comment,
-        'hasRated': true
-      }
-      );
-      return 0;
-    },
-  );
+  // final _dialog = RatingDialog(
+  //   initialRating: 3.0,
+  //   // your app's name?
+  //   title: const Text(
+  //     'Rate Your Order',
+  //     textAlign: TextAlign.center,
+  //     style: TextStyle(
+  //       fontSize: 25,
+  //       fontWeight: FontWeight.bold,
+  //     ),
+  //   ),
+  //   // encourage your user to leave a high rating?
+  //   message: const Text(
+  //     'Tap a star to set your rating.',
+  //     textAlign: TextAlign.center,
+  //     style: TextStyle(fontSize: 15),
+  //   ),
+  //   // your app's logo?
+  //   image: Image.asset('images/black_logo.png',width: 150, height: 150, ),
+  //   submitButtonText: 'Submit',
+  //   commentHint: 'You can Add an extra Comment',
+  //   onCancelled: () => print('cancelled'),
+  //   onSubmitted: (response) async{
+  //     var prefs = await SharedPreferences.getInstance();
+  //     await FirebaseFirestore.instance
+  //         .collection('orders').doc(prefs.getString(kOrderId))
+  //         .update({
+  //       'rating': response.rating,
+  //       'rating_comment': response.comment,
+  //       'hasRated': true
+  //     }
+  //     );
+  //     return 0;
+  //   },
+  // );
 
   AndroidNotificationChannel channel = const AndroidNotificationChannel(
       'high_importance_channel',
@@ -162,23 +165,26 @@ class _MapState extends State<Map> {
 
   }
   void showRatingsDialogue(){
+    setState(() {
+
+    });
     showDialog(
       context: context,
-      barrierDismissible: false, // set to false if you want to force a rating
+      barrierDismissible: true, // set to false if you want to force a rating
       builder: (context) => RatingPage(),
     );
   }
   void showDialogue(imageString, body, heading, backgroundColor){
-      CoolAlert.show(
-          lottieAsset: imageString,
-          context: context,
-          type: CoolAlertType.success,
-          text: body,
-          title: heading,
-          confirmBtnText: 'Ok 👍',
-          confirmBtnColor: Colors.green,
-          backgroundColor: backgroundColor
-      );
+    CoolAlert.show(
+        lottieAsset: imageString,
+        context: context,
+        type: CoolAlertType.success,
+        text: body,
+        title: heading,
+        confirmBtnText: 'Ok 👍',
+        confirmBtnColor: Colors.green,
+        backgroundColor: backgroundColor
+    );
   }
   final dateNow = new DateTime.now();
   Future transactionStream()async{
@@ -258,11 +264,11 @@ class _MapState extends State<Map> {
       'loyalty': FieldValue.increment( value),
     }
     ).then((val){
-          Get.snackbar("Points Successfully Applied", "You have used ${-value} points");
-          Provider.of<BlenditData>(context, listen: false).setRemoveLoyaltyPoints(value);
-          Provider.of<BlenditData>(context, listen: false).setLoyaltyApplied(true, 0.0);
-          // Provider.of<BlenditData>(context, listen: false).setLoyaltyInitialValue("0", kGreenThemeColor, 0.0, kGreenThemeColor, 0.0);
-        }).catchError((error) => Get.snackbar("Error Occured", "Points not removed! Check your internet"));
+      Get.snackbar("Points Successfully Applied", "You have used ${-value} points");
+      Provider.of<BlenditData>(context, listen: false).setRemoveLoyaltyPoints(value);
+      Provider.of<BlenditData>(context, listen: false).setLoyaltyApplied(true, 0.0);
+      // Provider.of<BlenditData>(context, listen: false).setLoyaltyInitialValue("0", kGreenThemeColor, 0.0, kGreenThemeColor, 0.0);
+    }).catchError((error) => Get.snackbar("Error Occurred", "Points not removed! Check your internet"));
 
   }
   late TextEditingController initialController = TextEditingController()..text = '';
@@ -311,11 +317,11 @@ class _MapState extends State<Map> {
       ]
     })
         .then((value) {
-          Navigator.pushNamed(context, SuccessPage.id);
-          updatePoints();
-          Provider.of<BlenditData>(context, listen: false).setLoyaltyApplied(false, 1.0);
-          showNotification('Order Received', '${prefs.getString(kFirstNameConstant)} we have received your order! We shall have it ready for Delivery');
-        } )
+      Navigator.pushNamed(context, SuccessPage.id);
+      updatePoints();
+      Provider.of<BlenditData>(context, listen: false).setLoyaltyApplied(false, 1.0);
+      showNotification('Order Received', '${prefs.getString(kFirstNameConstant)} we have received your order! We shall have it ready for Delivery');
+    } )
         .catchError((error) => Get.snackbar("Error Placing Order", "Ooops something seems to have gone wrong. Check your internet"));
   }
 
@@ -325,7 +331,7 @@ class _MapState extends State<Map> {
     if (prefs.getBool(kIsPhoneNumberSaved)  == false){
       phoneNumber = prefs.getString(kPhoneNumberAlternative) ?? '0700123123';
 
-       } else {
+    } else {
 
       phoneNumber = prefs.getString(kPhoneNumberConstant)!;
 
@@ -364,11 +370,11 @@ class _MapState extends State<Map> {
         var blendedDataModify = Provider.of<BlenditData>(context, listen: false);
         Prediction? p = await PlacesAutocomplete.show(context: context,
             apiKey: kGoogleMapsApiKey, types: [],
-        strictbounds: true,
-        mode: Mode.overlay,
-        location: Location(lat: 0.3173, lng: 32.5927), // 0.3172959363980288, 32.59267831534121
-        radius: 10000,
-        language: 'en', components: [Component(Component.country, 'UG')]);
+            strictbounds: true,
+            mode: Mode.overlay,
+            location: Location(lat: 0.3173, lng: 32.5927), // 0.3172959363980288, 32.59267831534121
+            radius: 10000,
+            language: 'en', components: [Component(Component.country, 'UG')]);
 
         if (p != null){
           Provider.of<BlenditData>(context, listen: false).setLocation(p.description!);
@@ -381,18 +387,16 @@ class _MapState extends State<Map> {
           final lng = detail.result.geometry!.location.lng;
           final prefs = await SharedPreferences.getInstance();
 
-           double distanceInMeters = CommonFunctions().calculateDistanceBetweenTwoPlacesOnEarth(0.3173, 32.5927, lat, lng);
-         print("WOLOLOLOLOLOLO distance is $distanceInMeters");
+          double distanceInMeters = CommonFunctions().calculateDistanceBetweenTwoPlacesOnEarth(0.3173, 32.5927, lat, lng);
+          print("WOLOLOLOLOLOLO distance is $distanceInMeters");
 
-           //Geolocator.distanceBetween(0.3173, 32.5927, lat, lng);
+          blendedDataModify.setLocationValues(LocationModal(location: location, distance: distanceInMeters, longitude: lng, latitude: lat));
+
+          //Geolocator.distanceBetween(0.3173, 32.5927, lat, lng);
           blendedDataModify.setDeliveryDistance(distanceInMeters);
           if (distanceInMeters < 2000.0){
-
             blendedDataModify.setDeliveryFee(prefs.getInt(kTwoKmDistance));
-
-
           }else if ( 2000 < distanceInMeters && distanceInMeters < 4500){
-
             blendedDataModify.setDeliveryFee(prefs.getInt(kFourKmDistance));
           }else if ( 4500 < distanceInMeters && distanceInMeters < 6000){
 
@@ -403,7 +407,7 @@ class _MapState extends State<Map> {
           }
           else {
 
-           blendedDataModify.setDeliveryFee(prefs.getInt(kLongKmDistance));
+            blendedDataModify.setDeliveryFee(prefs.getInt(kLongKmDistance));
           }
 
           setState(() {
@@ -412,29 +416,29 @@ class _MapState extends State<Map> {
           });
           return
             CoolAlert.show(
-              lottieAsset: 'images/deliver.json',
-              context: context,
-              type: CoolAlertType.success,
-              widget: TextField(
-                onChanged: (description){
-                  instructions = description;
-                  setState(() {
+                lottieAsset: 'images/deliver.json',
+                context: context,
+                type: CoolAlertType.success,
+                widget: TextField(
+                  onChanged: (description){
+                    instructions = description;
+                    setState(() {
 
-                  });
+                    });
 
 
-                },
-              ),
-              text: 'Give us extra instructions to make sure your package reaches you',
-              title: 'Extra Instructions',
-              confirmBtnText: 'Ok',
-              confirmBtnColor: Colors.green,
-              backgroundColor: kBiegeThemeColor,
-              onConfirmBtnTap: (){
-                Provider.of<BlenditData>(context, listen:false).setDeliverInstructions(instructions);
-                Navigator.pop(context);
-          }
-          );
+                  },
+                ),
+                text: 'Give us extra instructions to make sure your package reaches you',
+                title: 'Extra Instructions',
+                confirmBtnText: 'Ok',
+                confirmBtnColor: Colors.green,
+                backgroundColor: kBiegeThemeColor,
+                onConfirmBtnTap: (){
+                  Provider.of<BlenditData>(context, listen:false).setDeliverInstructions(instructions);
+                  Navigator.pop(context);
+                }
+            );
         }
       },
     );
@@ -491,321 +495,349 @@ class _MapState extends State<Map> {
     var numbersColor = Colors.green;
     var loyaltyValue = 0;
     return Stack(
-      children: [
-        GoogleMap(initialCameraPosition: const CameraPosition(target: _initialPosition,zoom: 10),
-          onMapCreated: onCreated,
-          myLocationEnabled: true,
-          mapType: MapType.normal,
-          compassEnabled: true,
-          onCameraMove: onCameraMove,
+        children: [
+          GoogleMap(initialCameraPosition: const CameraPosition(target: _initialPosition,zoom: 10),
+            onMapCreated: onCreated,
+            myLocationEnabled: true,
+            mapType: MapType.normal,
+            compassEnabled: true,
+            onCameraMove: onCameraMove,
 
-        ),
-        Positioned(
-          top: 20,
-          right: 20,
-          left: 20,
-          child: Container(
-            padding: EdgeInsets.only(right: 20, left: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                searchBar(),
-                SizedBox(height: 20,),
-                Opacity(
-                  opacity: blendedData.locationOpacity,
-                  child:
+          ),
+          Positioned(
+            top: 20,
+            right: 20,
+            left: 20,
+            child: Container(
+              padding: EdgeInsets.only(right: 20, left: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  searchBar(),
+                  SizedBox(height: 20,),
+
+                  blendedData.locationOpacity == 0?
+                  Container(
+                    // color: kPureWhiteColor,
+                    height: 200,
+                    child: ListView.builder(
+                        itemCount: blendedData.locationValues.length,
+                        itemBuilder: (BuildContext context, int index) {return Container(
+                            width: double.maxFinite,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              color: kPureWhiteColor.withOpacity(0.7),
+                            ),
+                            child:
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children:[
+
+                                    Row(
+                                      children: [
+                                        Icon(Iconsax.location),
+                                        kSmallWidthSpacing,
+                                        Text(blendedData.locationValues[index].location,overflow: TextOverflow.ellipsis, textAlign: TextAlign.start, style: kNormalTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                      ],
+                                    ),
+
+                                  ]),)); }),
+                  ) :
+
                   Stack(
-                    children: [
+                      children: [
 
-                    Container( padding: const EdgeInsets.all(10),
-                      width: double.infinity,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(const Radius.circular(20)),color: kBlueDarkColor ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.location_on, color: Colors.white,),
-                          Text(blendedData.location, style: TextStyle(fontSize: 18, color: Colors.white),),
-                          SizedBox(height: 10,),
-                          Text('Instructions:  ${blendedData.deliveryInstructions}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
-                          SizedBox(height: 10,),
-                          Text('Note: ${blendedData.chefInstructions}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, color: Colors.white),),
-                          SizedBox(height: 10,),
-                          Text('Delivery Dist(km):  ${(blendedData.distance / 1000).toStringAsFixed(1)} km',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
-                          SizedBox(height: 10,),
-                          Text('Delivery Time(Est):  ${DateFormat('EEE-kk:mm aaa').format(blendedData.deliveryTime)}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
-                          SizedBox(height: 10,),
-                          Text('Items Fee: ${blendedData.totalPrice}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
-                          SizedBox(height: 10,),
-                          Text('Delivery Fee: ${blendedData.deliveryFee}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
-                          SizedBox(height: 4,),
-                          Text('_________________',textAlign: TextAlign.start, style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
-                          SizedBox(height: 2,),
-                          Row(
-
+                        Container( padding: const EdgeInsets.all(10),
+                          width: double.infinity,
+                          decoration: BoxDecoration(borderRadius: BorderRadius.all(const Radius.circular(20)),color: kBlueDarkColor ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Total: UGX ${formatter.format(blendedData.totalPrice + blendedData.deliveryFee)}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
-                              SizedBox(width: 40,),
-                              GestureDetector(
-                                  onTap: () async {
-                                    if(blendedData.loyaltyAccessButton != 0){
-                                      var prefs = await SharedPreferences.getInstance();
-                                      int? loyaltyPoints = prefs.getInt(kLoyaltyPoints);
-                                      loyaltyValue = 0;
-                                      blendedData.setLoyaltyInitialValue("0", kGreenThemeColor, 0.0, Colors.grey, 1.0);
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return
-                                              Container(
-                                                color: const Color(0xFF5e5b5b),
+                              Icon(Icons.location_on, color: Colors.white,),
+                              Text(blendedData.location, style: TextStyle(fontSize: 18, color: Colors.white),),
+                              SizedBox(height: 10,),
+                              Text('Instructions:  ${blendedData.deliveryInstructions}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
+                              SizedBox(height: 10,),
+                              Text('Note: ${blendedData.chefInstructions}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, color: Colors.white),),
+                              SizedBox(height: 10,),
+                              Text('Delivery Dist(km):  ${(blendedData.distance / 1000).toStringAsFixed(1)} km',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
+                              SizedBox(height: 10,),
+                              Text('Delivery Time(Est):  ${DateFormat('EEE-kk:mm aaa').format(blendedData.deliveryTime)}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
+                              SizedBox(height: 10,),
+                              Text('Items Fee: ${blendedData.totalPrice}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
+                              SizedBox(height: 10,),
+                              Text('Delivery Fee: ${blendedData.deliveryFee}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white),),
+                              SizedBox(height: 4,),
+                              Text('_________________',textAlign: TextAlign.start, style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
+                              SizedBox(height: 2,),
+                              Row(
 
-                                                child:
+                                children: [
+                                  Text('Total: UGX ${formatter.format(blendedData.totalPrice + blendedData.deliveryFee)}',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
+                                  SizedBox(width: 40,),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      if(blendedData.loyaltyAccessButton != 0){
+                                        var prefs = await SharedPreferences.getInstance();
+                                        int? loyaltyPoints = prefs.getInt(kLoyaltyPoints);
+                                        loyaltyValue = 0;
+                                        blendedData.setLoyaltyInitialValue("0", kGreenThemeColor, 0.0, Colors.grey, 1.0);
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return
                                                 Container(
-                                                  decoration: const BoxDecoration(
-                                                      gradient: LinearGradient(
-                                                          begin: Alignment.topCenter,
-                                                          end: Alignment.bottomCenter,
-                                                          colors: [kBlueDarkColor, Colors.black] ),
-                                                      borderRadius: BorderRadius.only(topRight: Radius.circular(20),  topLeft: Radius.circular(20)),
-                                                      color: Colors.green
-                                                  ),
+                                                  color: const Color(0xFF5e5b5b),
 
-                                                  child: Padding(padding: EdgeInsets.all(20),
-                                                    child: Column(
-                                                      children: [
-                                                        Text('YOU HAVE ${loyaltyPoints.toString()} LOYALTY POINTS ',
-                                                          style:
-                                                          const TextStyle(fontWeight: FontWeight.bold, color: kPinkBlenderColor, fontSize: 18),),
-                                                        const SizedBox(height: 10,),
-                                                        Text('${loyaltyPoints.toString()} points = ${formatter.format(loyaltyPoints)} Ugx',
-                                                          //'${loyaltyPoints.toString()} Points',
-                                                          style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
-                                                        ),
-
-
-                                                        const SizedBox(height: 10,),
-                                                        Row(
-
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            TextButton(
-                                                              onPressed: (){
-
-
-                                                              },
-                                                              child: const Text('Apply', style: TextStyle(color: Colors.white, fontSize: 15),),),
-                                                            // Icon(LineIcons.moneyBill, color: Colors.white,size: 15,),
-
-                                                            const SizedBox(width: 10,),
-                                                            Expanded(
-                                                                child: TextField(
-                                                                  onChanged: (value){
-
-                                                                    // blendedDataSet.setLoyaltyInitialValue(value);
-                                                                    var trueValue = int.parse(value); // This
-                                                                    // var trueLoyalty = loyaltyPoints; // The Loyalty Points
-                                                                    if (trueValue <= loyaltyPoints! && trueValue <= (blendedData.totalPrice + blendedData.deliveryFee)) { // The entered value
-
-
-                                                                      blendedData.setLoyaltyInitialValue(value, kGreenThemeColor, 0.0, kGreenThemeColor, 1.0);
-                                                                      loyaltyValue = int.parse(value);
-                                                                      print(blendedData.loyaltyValueInitial);
-
-
-                                                                    } else {
-                                                                      blendedData.setLoyaltyInitialValue("0", Colors.red, 1.0, Colors.grey, 1.0);
-
-
-                                                                    }
-
-                                                                  },
-                                                                  // controller: amountController,
-                                                                  textAlign: TextAlign.center,
-                                                                  decoration: const InputDecoration(
-                                                                    suffixIcon: Icon(LineIcons.moneyBill, size: 15,color: kBiegeThemeColor,),
-                                                                    labelText: 'amount',
-                                                                    labelStyle: TextStyle(fontSize: 15, color: Colors.white),
-                                                                    hintText: '0.00',
-                                                                    hintStyle: TextStyle(color: Colors.white),
-                                                                    enabledBorder: UnderlineInputBorder(
-                                                                      borderSide: BorderSide(color: kBiegeThemeColor),
-                                                                    ),
-                                                                    focusedBorder: UnderlineInputBorder(
-                                                                      borderSide: BorderSide(color:  kBiegeThemeColor),
-                                                                    ),
-                                                                    border: UnderlineInputBorder(
-                                                                      borderSide: BorderSide(color:  kBiegeThemeColor),
-                                                                    ),
-                                                                  ),
-
-                                                                  selectionWidthStyle: BoxWidthStyle.tight,
-                                                                  keyboardType: TextInputType.number,
-                                                                  style: TextStyle(color: blendedData.loyaltyColor, fontSize: 30),
-
-
-                                                                )
-
-                                                            ),
-                                                          ],
-                                                        ),
-
-                                                        Padding(
-                                                          padding: const EdgeInsets.all(15.0),
-                                                          child: Column(
-                                                            children: [
-                                                              Opacity(
-
-                                                                  opacity: blendedData.loyaltyWarningOpacity,
-                                                                  child: Text("Amount Greater than available loyalty points or Bill", style: const TextStyle(color: Colors.red),)),
-                                                              SizedBox(height: 10,) ,
-                                                              Text('Your total bill will be ${formatter.format(Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee - int.parse(blendedData.loyaltyValueInitial))} Ugx', style: const TextStyle(color: Colors.white),),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        paymentButtons(lineIconFirstButton: LineIcons.backspace, lineIconSecondButton: LineIcons.thumbsUp, continueFunction: (){Navigator.pop(context); }, continueBuyingText: "Cancel", checkOutText: "Apply", buyFunction: (){
-                                                          if (blendedData.loyaltyApplyButton != Colors.grey ){
-                                                            Get.defaultDialog(
-                                                              title: 'Apply Loyalty Points?',
-                                                              middleText: "You are reducing your current bill to ${formatter.format(Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee - int.parse(blendedData.loyaltyValueInitial))} Ugx."
-                                                                  " By clicking OK, your loyalty points will be applied to this purchase and cannot be redeemed should you decide not to purchase now.",
-                                                              onConfirm: (){
-                                                                decreasePoints(-(int.parse(blendedData.loyaltyValueInitial)));
-                                                                Navigator.pop(context);
-                                                                Navigator.pop(context);
-
-                                                              },
-                                                              onCancel: (){
-                                                                Navigator.pop(context);
-                                                              },
-                                                              cancelTextColor: Colors.red,
-                                                              confirmTextColor: Colors.white,
-
-                                                            );
-
-
-                                                          }
-                                                        },secondButtonColor: blendedData.loyaltyApplyButton,)
-                                                      ],
+                                                  child:
+                                                  Container(
+                                                    decoration: const BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment.topCenter,
+                                                            end: Alignment.bottomCenter,
+                                                            colors: [kBlueDarkColor, Colors.black] ),
+                                                        borderRadius: BorderRadius.only(topRight: Radius.circular(20),  topLeft: Radius.circular(20)),
+                                                        color: Colors.green
                                                     ),
 
+                                                    child: Padding(padding: EdgeInsets.all(20),
+                                                      child: Column(
+                                                        children: [
+                                                          Text('YOU HAVE ${loyaltyPoints.toString()} LOYALTY POINTS ',
+                                                            style:
+                                                            const TextStyle(fontWeight: FontWeight.bold, color: kPinkBlenderColor, fontSize: 18),),
+                                                          const SizedBox(height: 10,),
+                                                          Text('${loyaltyPoints.toString()} points = ${formatter.format(loyaltyPoints)} Ugx',
+                                                            //'${loyaltyPoints.toString()} Points',
+                                                            style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                                                          ),
+
+
+                                                          const SizedBox(height: 10,),
+                                                          Row(
+
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              TextButton(
+                                                                onPressed: (){
+
+
+                                                                },
+                                                                child: const Text('Apply', style: TextStyle(color: Colors.white, fontSize: 15),),),
+                                                              // Icon(LineIcons.moneyBill, color: Colors.white,size: 15,),
+
+                                                              const SizedBox(width: 10,),
+                                                              Expanded(
+                                                                  child: TextField(
+                                                                    onChanged: (value){
+
+                                                                      // blendedDataSet.setLoyaltyInitialValue(value);
+                                                                      var trueValue = int.parse(value); // This
+                                                                      // var trueLoyalty = loyaltyPoints; // The Loyalty Points
+                                                                      if (trueValue <= loyaltyPoints! && trueValue <= (blendedData.totalPrice + blendedData.deliveryFee)) { // The entered value
+
+
+                                                                        blendedData.setLoyaltyInitialValue(value, kGreenThemeColor, 0.0, kGreenThemeColor, 1.0);
+                                                                        loyaltyValue = int.parse(value);
+                                                                        print(blendedData.loyaltyValueInitial);
+
+
+                                                                      } else {
+                                                                        blendedData.setLoyaltyInitialValue("0", Colors.red, 1.0, Colors.grey, 1.0);
+
+
+                                                                      }
+
+                                                                    },
+                                                                    // controller: amountController,
+                                                                    textAlign: TextAlign.center,
+                                                                    decoration: const InputDecoration(
+                                                                      suffixIcon: Icon(LineIcons.moneyBill, size: 15,color: kBiegeThemeColor,),
+                                                                      labelText: 'amount',
+                                                                      labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+                                                                      hintText: '0.00',
+                                                                      hintStyle: TextStyle(color: Colors.white),
+                                                                      enabledBorder: UnderlineInputBorder(
+                                                                        borderSide: BorderSide(color: kBiegeThemeColor),
+                                                                      ),
+                                                                      focusedBorder: UnderlineInputBorder(
+                                                                        borderSide: BorderSide(color:  kBiegeThemeColor),
+                                                                      ),
+                                                                      border: UnderlineInputBorder(
+                                                                        borderSide: BorderSide(color:  kBiegeThemeColor),
+                                                                      ),
+                                                                    ),
+
+                                                                    selectionWidthStyle: BoxWidthStyle.tight,
+                                                                    keyboardType: TextInputType.number,
+                                                                    style: TextStyle(color: blendedData.loyaltyColor, fontSize: 30),
+
+
+                                                                  )
+
+                                                              ),
+                                                            ],
+                                                          ),
+
+                                                          Padding(
+                                                            padding: const EdgeInsets.all(15.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Opacity(
+
+                                                                    opacity: blendedData.loyaltyWarningOpacity,
+                                                                    child: Text("Amount Greater than available loyalty points or Bill", style: const TextStyle(color: Colors.red),)),
+                                                                SizedBox(height: 10,) ,
+                                                                Text('Your total bill will be ${formatter.format(Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee - int.parse(blendedData.loyaltyValueInitial))} Ugx', style: const TextStyle(color: Colors.white),),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          paymentButtons(lineIconFirstButton: LineIcons.backspace, lineIconSecondButton: LineIcons.thumbsUp, continueFunction: (){Navigator.pop(context); }, continueBuyingText: "Cancel", checkOutText: "Apply", buyFunction: (){
+                                                            if (blendedData.loyaltyApplyButton != Colors.grey ){
+                                                              Get.defaultDialog(
+                                                                title: 'Apply Loyalty Points?',
+                                                                middleText: "You are reducing your current bill to ${formatter.format(Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee - int.parse(blendedData.loyaltyValueInitial))} Ugx."
+                                                                    " By clicking OK, your loyalty points will be applied to this purchase and cannot be redeemed should you decide not to purchase now.",
+                                                                onConfirm: (){
+                                                                  decreasePoints(-(int.parse(blendedData.loyaltyValueInitial)));
+                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(context);
+
+                                                                },
+                                                                onCancel: (){
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                cancelTextColor: Colors.red,
+                                                                confirmTextColor: Colors.white,
+
+                                                              );
+
+
+                                                            }
+                                                          },secondButtonColor: blendedData.loyaltyApplyButton,)
+                                                        ],
+                                                      ),
+
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                          });
-                                    }
-                                  },
-                                  child:
-                                  Opacity(
-                                      opacity: blendedData.loyaltyAccessButton,
-                                      child: Lottie.asset('images/loyalty.json', width: 25)),
-                                  //const CircleAvatar(child: Icon(LineIcons.addressCard, color: Colors.white)
-                                )
+                                                );
+                                            });
+                                      }
+                                    },
+                                    child:
+                                    Opacity(
+                                        opacity: blendedData.loyaltyAccessButton,
+                                        child: Lottie.asset('images/loyalty.json', width: 25)),
+                                    //const CircleAvatar(child: Icon(LineIcons.addressCard, color: Colors.white)
+                                  )
 
-                            ],
-                          ),
-                          const Text('_________________',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
-                          const SizedBox(height: 7,),
-
-                          Row(
-                            children: [
-
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-
-                                  Text('+256', style:TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 17)),
-                                  SizedBox(height: 20,)
                                 ],
                               ),
-                              SizedBox(width: 10,),
-                              Expanded(
-                                child:
-                                TextField(
+                              const Text('_________________',textAlign: TextAlign.start, style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),),
+                              const SizedBox(height: 7,),
 
-                                  onTap: (){
-                                    showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return PhoneDetailsPage();
-                                        });
+                              Row(
+                                children: [
 
-                                  },
-                                  cursorHeight: 10,
-                                  maxLength: 9,
-                                  controller: myController,
-                                  mouseCursor: MouseCursor.defer,
-                                  keyboardType: TextInputType.none,
-                                  // focusNode: numberFocusNode,
-                                  decoration: const InputDecoration(filled: true,
-                                  fillColor: Colors.grey,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: const [
 
-                                  //labelText: 'Mobile Number',
-                                  border:OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10),),),),),
-                              ),],
-                          ),
-                          Row(
+                                      Text('+256', style:TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 17)),
+                                      SizedBox(height: 20,)
+                                    ],
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Expanded(
+                                    child:
+                                    TextField(
 
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ingredientButtons(firstButtonFunction: ()async{
-                                final prefs =  await SharedPreferences.getInstance();
-                                var amountToPay = Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee ;
-                                upLoadOrder(blendedData.deliveryTime, blendedData.chefInstructions, blendedData.deliveryInstructions, blendedData.location, phoneNumber, blendedData.loyaltyApplied);
-                                prefs.setBool(kIsPhoneNumberSaved, true);
-                                prefs.setString(kBillValue, amountToPay.toString());
-                                prefs.setString(kOrderId, orderId);
-                                transactionStream();
-                                }, firstButtonText: 'Place Order', lineIconFirstButton: LineIcons.book,),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                      Positioned(
-                          bottom: 8,
-                          right : 4,
-                          child:
-                      GestureDetector(
-                        onDoubleTap: (){
-                          CoolAlert.show(
-                              lottieAsset: 'images/swipe.json',
-                              context: context,
-                              type: CoolAlertType.success,
-                              widget: Container(
+                                      onTap: (){
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return PhoneDetailsPage();
+                                            });
 
-                                child: TextField(
-                                  onChanged: (customerName){
-                                    instructions = customerName;
-                                    setState(() {
-                                    });
-                                  },
-                                ),
+                                      },
+                                      cursorHeight: 10,
+                                      maxLength: 9,
+                                      controller: myController,
+                                      mouseCursor: MouseCursor.defer,
+                                      keyboardType: TextInputType.none,
+                                      // focusNode: numberFocusNode,
+                                      decoration: const InputDecoration(filled: true,
+                                        fillColor: Colors.grey,
+
+                                        //labelText: 'Mobile Number',
+                                        border:OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10),),),),),
+                                  ),],
                               ),
-                              text: 'Change the Customer Name below',
-                              title: 'Customer Name',
-                              confirmBtnText: 'Ok',
-                              confirmBtnColor: Colors.green,
-                              backgroundColor: kBlueDarkColor,
-                              onConfirmBtnTap: (){
-                                Provider.of<BlenditData>(context, listen:false).setCustomerName(instructions);
-                                Navigator.pop(context);
-                              }
-                          );
-                        },
-                        child: const CircleAvatar(
-                          backgroundColor: kBlueDarkColor,
-                          radius: 13,
-                          child: Icon(CupertinoIcons.repeat, size: 13,)
+                              Row(
+
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ingredientButtons(firstButtonFunction: ()async{
+                                    final prefs =  await SharedPreferences.getInstance();
+                                    var amountToPay = Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee ;
+                                    upLoadOrder(blendedData.deliveryTime, blendedData.chefInstructions, blendedData.deliveryInstructions, blendedData.location, phoneNumber, blendedData.loyaltyApplied);
+                                    prefs.setBool(kIsPhoneNumberSaved, true);
+                                    prefs.setString(kBillValue, amountToPay.toString());
+                                    prefs.setString(kOrderId, orderId);
+                                    transactionStream();
+                                  }, firstButtonText: 'Place Order', lineIconFirstButton: LineIcons.book,),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ))
-                  ]
-                  ),
-                )
-              ],
+                        Positioned(
+                            bottom: 8,
+                            right : 4,
+                            child:
+                            GestureDetector(
+                              onDoubleTap: (){
+                                CoolAlert.show(
+                                    lottieAsset: 'images/swipe.json',
+                                    context: context,
+                                    type: CoolAlertType.success,
+                                    widget: Container(
+
+                                      child: TextField(
+                                        onChanged: (customerName){
+                                          instructions = customerName;
+                                          setState(() {
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    text: 'Change the Customer Name below',
+                                    title: 'Customer Name',
+                                    confirmBtnText: 'Ok',
+                                    confirmBtnColor: Colors.green,
+                                    backgroundColor: kBlueDarkColor,
+                                    onConfirmBtnTap: (){
+                                      Provider.of<BlenditData>(context, listen:false).setCustomerName(instructions);
+                                      Navigator.pop(context);
+                                    }
+                                );
+                              },
+                              child: const CircleAvatar(
+                                  backgroundColor: kBlueDarkColor,
+                                  radius: 13,
+                                  child: Icon(CupertinoIcons.repeat, size: 13,)
+                              ),
+                            ))
+                      ]
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      ]
+        ]
 
     );
   }
