@@ -25,6 +25,7 @@ class _SaladsPageState extends State<SaladsPage> {
     final Salads = await FirebaseFirestore.instance
         .collection('items')
         .where('category', isEqualTo: 'salads')
+        .where('available', isEqualTo: true)
         //.where('quantity', isGreaterThan: 0)
         .get()
         .then((QuerySnapshot querySnapshot) {

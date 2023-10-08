@@ -13,6 +13,8 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 
+import '../models/responsive/dimensions.dart';
+
 
 
 class RegisterPage extends StatefulWidget {
@@ -49,170 +51,166 @@ class _RegisterPageState extends State<RegisterPage> {
         elevation: 0,
         title: Text('Create Account', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
         backgroundColor: kGreenThemeColor,),
-      body: Padding(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 0),
-
-        child: SingleChildScrollView(
-          child: Container(
+      body: SingleChildScrollView(
+        child: Center(
+          child: SizedBox(
             height: 450,
+            // If the screen size is greater than the mobile width, constrain the width of the details to 400
+            width: MediaQuery.of(context).size.width >mobileWidth? 400 : MediaQuery.of(context).size.width,
 
             child:
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 100,
-                  child:
-                      Center(child: Lottie.asset('images/vip.json',)),
-                  ),
-
-                //Text('SIGN UP', style: TextStyle(color: Colors.black54, fontSize: 30),),
-                SizedBox(height: 10.0,),
-                Opacity(
-                    opacity: changeInvalidMessageOpacity,
-                    child: Text(invalidMessageDisplay, style: TextStyle(color:Colors.red , fontSize: 12),)),
-                InputFieldWidget(labelText:' Full Names' ,hintText: 'James Okoth', keyboardType: TextInputType.text, onTypingFunction: (value){
-                  fullName = value;
-                  firstName = fullName.split(" ")[0]; // Gets the first name in the 0 positiion from the full names
-                },),
-                Row(
-                  children: [
-                    CountryCodePicker(
-                      onChanged: (value){
-                        countryCode = value.name!;
-                        print(countryCode);
-                      },
-                      // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                      initialSelection: 'UG',
-                      favorite: ['+256','UG'],
-                      // optional. Shows only country name and flag
-                      showCountryOnly: false,
-                      // optional. Shows only country name and flag when popup is closed.
-                      showOnlyCountryWhenClosed: false,
-                      // optional. aligns the flag and the Text left
-                      alignLeft: false,
-                    ),
-                    InputFieldWidget(labelText: ' Mobile Number', hintText: '77100100', keyboardType: TextInputType.number,  onTypingFunction: (value){
-                      setState(() {
-                        if (value.split('')[0] == '7'){
-                          invalidMessageDisplay = 'Incomplete Number';
-                          if (value.length == 9 && value.split('')[0] == '7'){
-                            phoneNumber = value;
-                            phoneNumber.split('0');
-                            print(value.split('')[0]);
-                            print(phoneNumber.split(''));
-                            changeInvalidMessageOpacity = 0.0;
-                          } else if(value.length !=9 || value.split('')[0] != '7'){
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(child: Lottie.asset('images/vip.json',height:100 )),
+                  kLargeHeightSpacing,
+                  Opacity(
+                      opacity: changeInvalidMessageOpacity,
+                      child: Text(invalidMessageDisplay, style: TextStyle(color:Colors.red , fontSize: 12),)),
+                  InputFieldWidget(labelText:' Full Names' ,hintText: 'James Okoth', keyboardType: TextInputType.text, onTypingFunction: (value){
+                    fullName = value;
+                    firstName = fullName.split(" ")[0]; // Gets the first name in the 0 positiion from the full names
+                  },),
+                  Row(
+                    children: [
+                      CountryCodePicker(
+                        onChanged: (value){
+                          countryCode = value.name!;
+                          print(countryCode);
+                        },
+                        // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                        initialSelection: 'UG',
+                        favorite: ['+256','UG'],
+                        // optional. Shows only country name and flag
+                        showCountryOnly: false,
+                        // optional. Shows only country name and flag when popup is closed.
+                        showOnlyCountryWhenClosed: false,
+                        // optional. aligns the flag and the Text left
+                        alignLeft: false,
+                      ),
+                      InputFieldWidget(labelText: ' Mobile Number', hintText: '77100100', keyboardType: TextInputType.number,  onTypingFunction: (value){
+                        setState(() {
+                          if (value.split('')[0] == '7'){
+                            invalidMessageDisplay = 'Incomplete Number';
+                            if (value.length == 9 && value.split('')[0] == '7'){
+                              phoneNumber = value;
+                              phoneNumber.split('0');
+                              print(value.split('')[0]);
+                              print(phoneNumber.split(''));
+                              changeInvalidMessageOpacity = 0.0;
+                            } else if(value.length !=9 || value.split('')[0] != '7'){
+                              changeInvalidMessageOpacity = 1.0;
+                            }
+                          }else {
+                            invalidMessageDisplay = 'Number should start with 7';
                             changeInvalidMessageOpacity = 1.0;
                           }
-                        }else {
-                          invalidMessageDisplay = 'Number should start with 7';
-                          changeInvalidMessageOpacity = 1.0;
-                        }
-                      });
+                        });
 
-                      phoneNumber = value;
-                    }),
-                  ],
-                ),
-                SizedBox(height: 10.0,),
-                InputFieldWidget(labelText: ' Email', hintText: 'abc@gmail.com', keyboardType: TextInputType.emailAddress, onTypingFunction: (value){
-                  email = value;
-                }),
-                // SizedBox(height: 8.0,),
-                InputFieldWidget(labelText: ' Password',hintText:'Password', keyboardType: TextInputType.visiblePassword,passwordType: true, onTypingFunction: (value){
-                  password = value;
-                }),
-                //SizedBox(height: 8.0,),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child:
-                      RoundedLoadingButton(
-                        color: Colors.green,
-                        child: Text('Register', style: TextStyle(color: Colors.white)),
-                        controller: _btnController,
-                        onPressed: () async {
-                          if (email ==''|| phoneNumber == '' || email =='' || password == '' || fullName == ''){
-                            _btnController.error();
-                            showDialog(context: context, builder: (BuildContext context){
-
-                              return CupertinoAlertDialog(
-                                title: Text('Oops Something is Missing'),
-                                content: Text('Make sure you have filled in all the fields'),
-                                actions: [CupertinoDialogAction(isDestructiveAction: true,
-                                    onPressed: (){
-                                      _btnController.reset();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Cancel'))],
-                              );
-                            });
-                          }else {
-                            print('Else activated');
-                            setState(() {
-                              //showSpinner = true;
-                            });
-                            try{
-                              final newUser = await _auth.createUserWithEmailAndPassword(email: email,
-                                  password: password);
-                              if (newUser != null){
-
-
-                                final prefs = await SharedPreferences.getInstance();
-                                prefs.setString(kFullNameConstant, fullName);
-                                prefs.setString(kFirstNameConstant, firstName);
-                                prefs.setString(kEmailConstant, email);
-                                prefs.setString(kPhoneNumberConstant, phoneNumber);
-                                prefs.setBool(kIsLoggedInConstant, true);
-                                prefs.setBool(kIsFirstTimeUser, true);
-                                prefs.setBool(kIsTutorial2Done, false);
-                                prefs.setBool(kIsFirstBlending, true);
-
-                                //Navigator.pushNamed(context, ControlPage.id);
-                                // Navigator.pushNamed(context, BlenderOnboardingPage.id);
-
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context)=> WelcomeToNutri())
-                                );
-                                // SAVE THE VALUES TO THE USER DEFAULTS AND DATABASE
-                              }else{
-                                setState(() {
-                                  errorMessageOpacity = 1.0;
-                                });
-                              }
-
-                            }catch(e){
+                        phoneNumber = value;
+                      }),
+                    ],
+                  ),
+                  SizedBox(height: 10.0,),
+                  InputFieldWidget(labelText: ' Email', hintText: 'abc@gmail.com', keyboardType: TextInputType.emailAddress, onTypingFunction: (value){
+                    email = value;
+                  }),
+                  // SizedBox(height: 8.0,),
+                  InputFieldWidget(labelText: ' Password',hintText:'Password', keyboardType: TextInputType.visiblePassword,passwordType: true, onTypingFunction: (value){
+                    password = value;
+                  }),
+                  //SizedBox(height: 8.0,),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child:
+                        RoundedLoadingButton(
+                          color: Colors.green,
+                          child: Text('Register', style: TextStyle(color: Colors.white)),
+                          controller: _btnController,
+                          onPressed: () async {
+                            if (email ==''|| phoneNumber == '' || email =='' || password == '' || fullName == ''){
                               _btnController.error();
                               showDialog(context: context, builder: (BuildContext context){
+
                                 return CupertinoAlertDialog(
-                                  title: Text('Oops Register Error'),
-                                  content: Text('${e}'),
+                                  title: Text('Oops Something is Missing'),
+                                  content: Text('Make sure you have filled in all the fields'),
                                   actions: [CupertinoDialogAction(isDestructiveAction: true,
                                       onPressed: (){
-                                    _btnController.reset();
+                                        _btnController.reset();
                                         Navigator.pop(context);
                                       },
                                       child: Text('Cancel'))],
                                 );
                               });
-                              //print('error message is: $e');
-                            }
-                            //Implement registration functionality.
-                          }
+                            }else {
+                              print('Else activated');
+                              setState(() {
+                                //showSpinner = true;
+                              });
+                              try{
+                                final newUser = await _auth.createUserWithEmailAndPassword(email: email,
+                                    password: password);
+                                if (newUser != null){
 
-                        },
+
+                                  final prefs = await SharedPreferences.getInstance();
+                                  prefs.setString(kFullNameConstant, fullName);
+                                  prefs.setString(kFirstNameConstant, firstName);
+                                  prefs.setString(kEmailConstant, email);
+                                  prefs.setString(kPhoneNumberConstant, phoneNumber);
+                                  prefs.setBool(kIsLoggedInConstant, true);
+                                  prefs.setBool(kIsFirstTimeUser, true);
+                                  prefs.setBool(kIsTutorial2Done, false);
+                                  prefs.setBool(kIsFirstBlending, true);
+
+                                  //Navigator.pushNamed(context, ControlPage.id);
+                                  // Navigator.pushNamed(context, BlenderOnboardingPage.id);
+
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context)=> WelcomeToNutri())
+                                  );
+                                  // SAVE THE VALUES TO THE USER DEFAULTS AND DATABASE
+                                }else{
+                                  setState(() {
+                                    errorMessageOpacity = 1.0;
+                                  });
+                                }
+
+                              }catch(e){
+                                _btnController.error();
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return CupertinoAlertDialog(
+                                    title: Text('Oops Register Error'),
+                                    content: Text('${e}'),
+                                    actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                        onPressed: (){
+                                      _btnController.reset();
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Cancel'))],
+                                  );
+                                });
+                                //print('error message is: $e');
+                              }
+                              //Implement registration functionality.
+                            }
+
+                          },
+                        ),
                       ),
-                    ),
-                    Opacity(
-                        opacity: errorMessageOpacity,
-                        child: Text(errorMessage, style: TextStyle(color: Colors.red),))
-                  ],
-                ),
-              ],
+                      Opacity(
+                          opacity: errorMessageOpacity,
+                          child: Text(errorMessage, style: TextStyle(color: Colors.red),))
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -2,6 +2,8 @@
 import 'dart:io';
 
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -192,8 +194,9 @@ class _LoginPageState extends State<LoginPage> {
                             prefs.setString(kToken, token);
                             uploadUserToken(); // This ensures that the phone currently logged in is the one that gets the phone notifications
 
-                            Navigator.pushNamed(context, ControlPage.id);
-                            //showSpinner = false;
+                            // Navigator.pushNamed(context, ControlPage.id);
+                            Navigator.pushNamed(context, ResponsiveLayout.id);
+
                           }catch(e) {
                             _btnController.error();
                             showDialog(context: context, builder: (BuildContext context){

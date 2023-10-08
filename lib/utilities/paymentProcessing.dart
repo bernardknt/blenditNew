@@ -1,10 +1,12 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_util.dart';
 
+import '../models/responsive/responsive_layout.dart';
 import 'constants.dart';
 
 class PaymentProcessing extends StatefulWidget {
@@ -33,7 +35,8 @@ class _PaymentProcessingState extends State<PaymentProcessing> {
 
 
             },onComplete: (){
-              Navigator.pushNamed(context, ControlPage.id);
+              // Navigator.pushNamed(context, ControlPage.id);
+              Navigator.pushNamed(context, ResponsiveLayout.id);
             },
           ),
           kLargeHeightSpacing,

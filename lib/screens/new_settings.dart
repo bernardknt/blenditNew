@@ -7,7 +7,7 @@ import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paywall_pages/paywall_international.dart';
 import 'package:blendit_2022/screens/paywall_pages/paywall_uganda.dart';
 import 'package:blendit_2022/screens/purchase_restored_page.dart';
-import 'package:blendit_2022/screens/welcome_page_new.dart';
+import 'package:blendit_2022/screens/Welcome_Pages/welcome_page_mobile.dart';
 import 'package:blendit_2022/widgets/designed_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -179,8 +179,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
       //   title: Text('Settings Page', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
       //   centerTitle: true,
       // ),
-      // floatingActionButton:
-      // FloatingActionButton(
+      // floatingActionButton: FloatingActionButton(
       //   backgroundColor: kGreenThemeColor,
       //   onPressed: () async {
       //
@@ -197,12 +196,6 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
       //       CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
       //
       //     }
-      //
-      //
-      //
-      //
-      //
-      //
       //   },
       //   child: Icon(Icons.support_agent),
       // ),
@@ -520,7 +513,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                                 prefs.setBool(kIsFirstTimeUser, true);
                                 await auth.signOut().then((value) {
                                   unsubscribeFromTopic(prefs.getString(kPhoneNumberConstant));
-                                  Navigator.pushNamed(context, WelcomePageNew.id);
+                                  Navigator.pushNamed(context, WelcomePageMobile.id);
                                   CommonFunctions().cancelNotification(prefs.getString(kUniqueIdentifier));
                                   
                                 } );
@@ -565,7 +558,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
 
                             await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).delete().then((value) async =>
                             await auth.signOut().then((value){
-                              Navigator.pushNamed(context, WelcomePageNew.id);
+                              Navigator.pushNamed(context, WelcomePageMobile.id);
                               CommonFunctions().cancelNotification(prefs.getString(kUniqueIdentifier));
                               prefs.setStringList(kPointsList,[]);//cancel all notifications
 

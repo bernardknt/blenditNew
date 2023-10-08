@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/execution_pages/goal_calendar_page.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/home_controller.dart';
 import '../../models/CommonFunctions.dart';
+import '../../models/responsive/responsive_layout.dart';
 import '../../utilities/font_constants.dart';
 import '../../widgets/InputFieldWidget2.dart';
 import '../../widgets/gliding_text.dart';
@@ -213,7 +215,8 @@ class _GetANumberPageState extends State<GetANumberPage> {
                                 // Navigator.pop(context);
                                 double goalNumber = double.parse(goalSet);
                                 prefs.setDouble(kGoalProgress,goalNumber);
-                                Navigator.pushNamed(context, ControlPage.id);
+                                // Navigator.pushNamed(context, ControlPage.id);
+                                Navigator.pushNamed(context, ResponsiveLayout.id);
                                 // Navigator.pushNamed(context, QuizPage1.id);
                               }
 

@@ -1,5 +1,6 @@
 
 
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page0.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,23 +12,24 @@ import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../controllers/home_controller.dart';
-import '../models/CommonFunctions.dart';
-import '../utilities/constants.dart';
-import '../utilities/font_constants.dart';
-import '../utilities/icons_constants.dart';
-import '../utilities/roundedButtons.dart';
-import 'browse_store.dart';
-import 'new_logins/sign_in_options.dart';
+import '../../controllers/home_controller.dart';
+import '../../models/CommonFunctions.dart';
+import '../../models/responsive/responsive_layout.dart';
+import '../../utilities/constants.dart';
+import '../../utilities/font_constants.dart';
+import '../../utilities/icons_constants.dart';
+import '../../utilities/roundedButtons.dart';
+import '../browse_store.dart';
+import '../new_logins/sign_in_options.dart';
 
 
 
-class WelcomePageNew extends StatefulWidget {
+class WelcomePageMobile extends StatefulWidget {
   static String id = 'welcome_page_new';
   @override
-  _WelcomePageNewState createState() => _WelcomePageNewState();
+  _WelcomePageMobileState createState() => _WelcomePageMobileState();
 }
-class _WelcomePageNewState extends State<WelcomePageNew> {
+class _WelcomePageMobileState extends State<WelcomePageMobile> {
 
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
@@ -39,7 +41,11 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
     setState(() {
       userLoggedIn = isLoggedIn ;
       if(userLoggedIn == true){
-        Navigator.pushNamed(context, ControlPage.id);
+        Navigator.pushNamed(context, ResponsiveLayout.id);
+        // Navigator.push(context,
+        //
+        //     MaterialPageRoute(builder: (context)=> ResponsiveLayout(mobileBody: ControlPage(), desktopBody: HomePageWeb()))
+        // );
       } else {
         prefs.setString(kPhoneNumberConstant, '');
         prefs.setString(kFullNameConstant, '');
@@ -52,12 +58,12 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
   }
   bool userLoggedIn = false;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  var urlImages = ["images/9.jpg", "images/7.png","images/consistency.jpg"];// MHM17 trends];
+  var urlImages = ["images/9.jpg","images/funky.png", "images/7.png"];// MHM17 trends];
   var heights = double.maxFinite;
   var token = "";
 
   int newDots = 0;
-  var heading = ['A Special Blender that Works Like Magic', 'Take Photos Worth a Thousand Nutrients', 'Goodbye Frustration, Hello Consistency'];
+  var heading = ['A Special Blender that Works Like Magic', 'AI Powered Nutrition: For You', 'Take Photos Worth a Thousand Nutrients'];
 
   @override
   void initState() {
@@ -73,16 +79,6 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
       body:
       Container(color: kBlueDarkColor,
 
-
-        // decoration: const BoxDecoration(
-        // image:
-        // DecorationImage(
-        //   colorFilter: ColorFilter.mode(kBlueDarkColorOld, BlendMode.lighten),
-        // image: AssetImage("images/braids.jpg"), // MHM17 trends
-        //
-        //   fit: BoxFit.cover,
-        // ),
-        // ),
         child: Stack(
             children: [
 
@@ -175,6 +171,7 @@ class _WelcomePageNewState extends State<WelcomePageNew> {
                 ),
               ),
             ]),
+
       ),
     );
   }

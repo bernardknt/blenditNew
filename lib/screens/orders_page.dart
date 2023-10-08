@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../models/responsive/dimensions.dart';
 import 'checkout_page.dart';
 
 
@@ -65,7 +66,7 @@ class _OrdersPageState extends State<OrdersPage> {
         orderStatusList.add(doc['status']);
         dateList.add(doc['order_time'].toDate());
 
-         if (doc['paymentStatus'] != 'Complete'){
+         if (doc['paymentStatus'] != 'paid'){
            paidStatusList.add('Unpaid');
            paidStatusListColor.add(Colors.red);
            opacityList.add(0.0);
@@ -163,89 +164,95 @@ class _OrdersPageState extends State<OrdersPage> {
     floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     //backgroundColor: Colors.black87,
     body:
-    ListView.builder(
-        itemCount: productList.length,
-        itemBuilder: (context, index){
+    Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
 
-          return GestureDetector(
-            onTap: (){
+        child: ListView.builder(
+            itemCount: productList.length,
+            itemBuilder: (context, index){
 
-              showTransactionFunc(context, orderStatusList[index], descList[index], priceList[index].toString(), transIdList[index], productList[index], "note", dateList[index], paidStatusList[index]);
+              return GestureDetector(
+                onTap: (){
 
-            },
-            child: Card(
-              margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-              shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
-              shadowColor: kGreenThemeColor,
-              elevation: 1.0,
-              child: Column(
-                children: [
+                  showTransactionFunc(context, orderStatusList[index], descList[index], priceList[index].toString(), transIdList[index], productList[index], "note", dateList[index], paidStatusList[index]);
 
-                  ListTile(
-                    leading: const Icon(LineIcons.shippingFast, color: kGreenThemeColor,size: 25,),
-                    title:Text( "${productList[index][0]['description']}...", style: TextStyle(fontFamily: fontFamilyMont,fontSize: textSize)),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(right: 10, top: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(priceList[index], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
-                          const Text('Ugx', style: TextStyle(color: kGreenThemeColor, fontSize: 12),)
-                        ],
-                      ),
-                    ),
-                    // horizontalTitleGap: 0,Ugx
-
-
-                    // minVerticalPadding: 0,
-                  ),
-                  Stack(
+                },
+                child: Card(
+                  margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+                  shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+                  shadowColor: kGreenThemeColor,
+                  elevation: 1.0,
+                  child: Column(
                     children: [
+
                       ListTile(
+                        leading: const Icon(LineIcons.shippingFast, color: kGreenThemeColor,size: 25,),
+                        title:Text( "${productList[index][0]['description']}...", style: TextStyle(fontFamily: fontFamilyMont,fontSize: textSize)),
+                        trailing: Padding(
+                          padding: const EdgeInsets.only(right: 10, top: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(priceList[index], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
+                              const Text('Ugx', style: TextStyle(color: kGreenThemeColor, fontSize: 10),)
+                            ],
+                          ),
+                        ),
+                        // horizontalTitleGap: 0,Ugx
 
 
-
-                      title:Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${ DateFormat('EE, dd, MMM').format(dateList[index])}', style: TextStyle(color: Colors.grey[500], fontSize: 12),),
-                          Text('Order Status:  ${orderStatusList[index]}', style: const TextStyle(color: Colors.green, fontSize: 13),),
-                          Text("Payment: ${paidStatusList[index]}", style: TextStyle( color: paidStatusListColor[index], fontSize: 12),),
-                        ],
+                        // minVerticalPadding: 0,
                       ),
-                      trailing: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      Stack(
                         children: [
-                          Text("id: ${transIdList[index]}", style: TextStyle( color: Colors.grey[500], fontSize: 12),),
+                          ListTile(
 
-                        ],
-                      ),
-                    ),
-                      Positioned(
-                          right: 4,
-                          bottom: 4,
-                          child: Opacity(
-                            opacity: opacityList[index],
-                            child: Container(
-                              width: 100,
-                              height: 20,
-                              child: const Center(child: Text('Paid', style: const TextStyle(color: Colors.white, fontSize: 12),)),
-                              decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius: const BorderRadius.all(Radius.circular(20))
-                              ),
-                            ),
-                          ))
 
-        ]),
 
-                  //_buildDivider(),
-                ],
-              ),
-            ),
-          );
+                          title:Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('${ DateFormat('EE, dd, MMM').format(dateList[index])}', style: TextStyle(color: Colors.grey[500], fontSize: 12),),
+                              Text('Order Status:  ${orderStatusList[index]}', style: const TextStyle(color: Colors.green, fontSize: 13),),
+                              paidStatusList[index] == 'paid'?Icon(Icons.check_circle_outlined, color: kGreenThemeColor,):Text("Payment: ${paidStatusList[index]}", style: TextStyle( color: paidStatusListColor[index], fontSize: 12),),
+                            ],
+                          ),
+                          trailing: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text("id: ${transIdList[index]}", style: TextStyle( color: Colors.grey[500], fontSize: 12),),
 
-        }),
+                            ],
+                          ),
+                        ),
+                          Positioned(
+                              right: 4,
+                              bottom: 4,
+                              child: Opacity(
+                                opacity: opacityList[index],
+                                child: Container(
+                                  width: 100,
+                                  height: 20,
+                                  child: const Center(child: Text('Paid', style: const TextStyle(color: Colors.white, fontSize: 12),)),
+                                  decoration: const BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: const BorderRadius.all(Radius.circular(20))
+                                  ),
+                                ),
+                              ))
+
+            ]),
+
+                      //_buildDivider(),
+                    ],
+                  ),
+                ),
+              );
+
+            }),
+      ),
+    ),
   );
   }
 }

@@ -43,7 +43,7 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
     final prefs = await SharedPreferences.getInstance();
     // final player = AudioCache();
     // player.play("transition.wav");
-    _timer = Timer(const Duration(milliseconds: 10000), () {
+    _timer = Timer(const Duration(milliseconds: 5000), () {
       prefs.setBool(kChallengeActivated, true);
 
 
@@ -60,7 +60,7 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
     // var points = Provider.of<BlenditData>(context, listen: false).rewardPoints ;
 
     return Scaffold(
-      backgroundColor: kBlueDarkColorOld,
+      backgroundColor: Colors.transparent,
       body: Container(
 
         padding: EdgeInsets.all(20),
@@ -69,9 +69,9 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
 
           children: [
            // Lottie.asset('images/challengeLoad.json', height: 200, width: 200, fit: BoxFit.contain ),
-            Lottie.asset('images/searching.json', height: 200, width: 200, fit: BoxFit.contain ),
+            Lottie.asset('images/freeChat.json', height: 200, width: 200, fit: BoxFit.contain ),
             kSmallHeightSpacing,
-            Center(child: Text('Connecting to a Coach...' ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 18, color: kPureWhiteColor),)),
+            Center(child: Text('... Whipping up something else' ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 18, color: kPureWhiteColor),)),
             // kSmallHeightSpacing,
             // Lottie.asset('images/challenge.json', height: 50, width: 150,),
 

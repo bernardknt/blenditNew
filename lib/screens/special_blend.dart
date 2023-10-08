@@ -21,6 +21,7 @@ import '../../models/CommonFunctions.dart';
 import '../../utilities/font_constants.dart';
 import '../../widgets/InputFieldWidget2.dart';
 import '../../widgets/gliding_text.dart';
+import '../models/responsive/dimensions.dart';
 import 'loading_goals_page.dart';
 
 
@@ -123,216 +124,219 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
       ),
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Container(
+          child: Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
 
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
 
-              children: [
-                Hero(
-                  tag: "message",
-                  child: Card(
-                    color: kCustomColor,
-                    shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
-                    // shadowColor: kGreenThemeColor,
-                    // color: kBeigeColor,
-                    elevation: 1.0,
+                children: [
+                  Hero(
+                    tag: "message",
+                    child: Card(
+                      color: kCustomColor,
+                      shape: RoundedRectangleBorder(borderRadius:BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(20))),
+                      // shadowColor: kGreenThemeColor,
+                      // color: kBeigeColor,
+                      elevation: 1.0,
 
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          width: 260,
-                          child:
-                          Center(child:
-                         // Text(inspiration,  style: kNormalTextStyle2.copyWith(fontSize: 16, color: kBlack, fontWeight: FontWeight.w400),)
-                          GlidingText(
-                            text: inspiration,
-                            delay: const Duration(seconds: 1),
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                            width: 260,
+                            child:
+                            Center(child:
+                           // Text(inspiration,  style: kNormalTextStyle2.copyWith(fontSize: 16, color: kBlack, fontWeight: FontWeight.w400),)
+                            GlidingText(
+                              text: inspiration,
+                              delay: const Duration(seconds: 1),
+                            ),
 
-                          )
+                            )
+                        ),
                       ),
                     ),
                   ),
-                ),
-                kLargeHeightSpacing,
-                Hero(
+                  kLargeHeightSpacing,
+                  Hero(
 
-                    tag: "tag",
-                    child: Lottie.asset('images/white.json', height: 300, width: 300, fit: BoxFit.contain )),
-                kSmallHeightSpacing,
+                      tag: "tag",
+                      child: Lottie.asset('images/white.json', height: 300, width: 300, fit: BoxFit.contain )),
+                  kSmallHeightSpacing,
 
-                Opacity(
-                  opacity: opacityValue,
-                  child:
-                  Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children :
-                      [
-                        titleName.isEmpty?Container():Text("Suggestions"),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child:
-                          StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance.collection('suggestions')
-                              .where('active', isEqualTo: true).orderBy('time', descending: true)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Container(
-                                    color: Colors.teal,
-                                  );
-                                } else {
-                                  titleName=[];
-                                  promoList = [];
-                                  var data = snapshot.data!.docs;
-                                  for (var item in data) {
-                                    // promoList.add(challenge.get('promo'));
-                                    titleName.add(item.get('title'));
+                  Opacity(
+                    opacity: opacityValue,
+                    child:
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children :
+                        [
+                          titleName.isEmpty?Container():Text("Suggestions"),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                            StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance.collection('suggestions')
+                                .where('active', isEqualTo: true).orderBy('time', descending: true)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Container(
+                                      color: Colors.teal,
+                                    );
+                                  } else {
+                                    titleName=[];
+                                    promoList = [];
+                                    var data = snapshot.data!.docs;
+                                    for (var item in data) {
+                                      // promoList.add(challenge.get('promo'));
+                                      titleName.add(item.get('title'));
+                                    }
                                   }
-                                }
-                                return StaggeredGridView.countBuilder(
-                                    crossAxisCount: 2,
-                                    itemCount: titleName.length,
-                                    crossAxisSpacing: 10,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          _controller = TextEditingController()..text = titleName[index];
-                                          customJuice = titleName[index];
+                                  return StaggeredGridView.countBuilder(
+                                      crossAxisCount: 2,
+                                      itemCount: titleName.length,
+                                      crossAxisSpacing: 10,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            _controller = TextEditingController()..text = titleName[index];
+                                            customJuice = titleName[index];
 
-                                          setState(() {
+                                            setState(() {
 
-                                          });
-                                        },
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 3,
-                                              right: 0,
-                                              left: 0,
-                                              bottom: 3),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(color: kFontGreyColor, width: 1),
-                                            borderRadius: BorderRadius.circular(10),
-                                            // color: kBiegeThemeColor,
-                                          ),
-                                          child:
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              titleName[index],
-                                              style: kNormalTextStyle.copyWith(color: kFontGreyColor),
+                                            });
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.only(top: 3,
+                                                right: 0,
+                                                left: 0,
+                                                bottom: 3),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: kFontGreyColor, width: 1),
+                                              borderRadius: BorderRadius.circular(10),
+                                              // color: kBiegeThemeColor,
+                                            ),
+                                            child:
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                titleName[index],
+                                                style: kNormalTextStyle.copyWith(color: kFontGreyColor),
+                                              ),
                                             ),
                                           ),
-                                        ),
 
-                                      );
-                                    },
-                                    staggeredTileBuilder: (index) =>
-                                    const StaggeredTile.fit(1));
-                              }),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child:
+                                        );
+                                      },
+                                      staggeredTileBuilder: (index) =>
+                                      const StaggeredTile.fit(1));
+                                }),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
 
-                          TextField(
-                            controller: _controller,
-                            onChanged: (enteredQuestion){
-                              customJuice = enteredQuestion;
-                            },
-                            maxLines: null,
-                            decoration: InputDecoration(
-                                border:
-                                //InputBorder.none,
-                                OutlineInputBorder(
+                            TextField(
+                              controller: _controller,
+                              onChanged: (enteredQuestion){
+                                customJuice = enteredQuestion;
+                              },
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                  border:
+                                  //InputBorder.none,
+                                  OutlineInputBorder(
 
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.green, width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(color: Colors.green, width: 2),
 
-                                ),
-                                focusColor: kRedThemeColor,
-                                labelText: 'Write what you want here',
+                                  ),
+                                  focusColor: kRedThemeColor,
+                                  labelText: 'Write what you want here',
 
-                                labelStyle: kNormalTextStyleExtraSmall.copyWith(fontSize: 14),
-                                // hintText: 'I want something for my flu and cough',
-                                hintStyle: kNormalTextStyle,
+                                  labelStyle: kNormalTextStyleExtraSmall.copyWith(fontSize: 14),
+                                  // hintText: 'I want something for my flu and cough',
+                                  hintStyle: kNormalTextStyle,
+                              ),
+
                             ),
 
                           ),
 
-                        ),
+                          ElevatedButton(
+                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(customJuice== ""?kFontGreyColor:kGreenThemeColor)),
+                              onPressed: () async{
+                                final prefs = await SharedPreferences.getInstance();
+                                if (customJuice == ''){
+                                  showDialog(context: context, builder: (BuildContext context){
+                                    return CupertinoAlertDialog(
+                                      title: const Text('Empty Choice'),
+                                      content: Text('No entered. Please enter your choice', style: kNormalTextStyle.copyWith(color: kBlack),),
+                                      actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                          onPressed: (){
+                                            // _btnController.reset();
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Cancel'))],
+                                    );
+                                  });
 
-                        ElevatedButton(
-                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(customJuice== ""?kFontGreyColor:kGreenThemeColor)),
-                            onPressed: () async{
-                              final prefs = await SharedPreferences.getInstance();
-                              if (customJuice == ''){
-                                showDialog(context: context, builder: (BuildContext context){
-                                  return CupertinoAlertDialog(
-                                    title: const Text('Empty Choice'),
-                                    content: Text('No entered. Please enter your choice', style: kNormalTextStyle.copyWith(color: kBlack),),
-                                    actions: [CupertinoDialogAction(isDestructiveAction: true,
-                                        onPressed: (){
-                                          // _btnController.reset();
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Cancel'))],
+                                } else {
+                                  Provider.of<AiProvider>(context, listen: false).setGoalValue(customJuice);
+                                  // Navigator.pop(context);
+                                  // Navigator.push(context,
+                                  //     MaterialPageRoute(builder: (context)=> GoalCalendarPage())
+                                  // );
+                                  // Navigator.pop(context);
+                                  showDialog(context: context, builder:
+                                      ( context) {
+                                    return Material(
+                                      color: Colors.transparent,
+                                      child: Center(child: Container(
+                                        height: 200,
+                                        child: Column(
+                                          children: [
+                                            CircularProgressIndicator(
+                                              // semanticsLabel: "Creating Goal Profile...",
+                                            ),
+                                            kLargeHeightSpacing,
+                                            Text("Getting the right ingredients ready", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                            Lottie.asset("images/bilungo.json", height: 80)
+                                          ],
+                                        ),
+                                      )),
+                                    );
+                                  });
+                                  dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
+                                    'juice': customJuice,
+                                    'userId':auth.currentUser!.uid,
+
+                                    // orderId
+                                  }).catchError((error){
+                                    print('Request failed with status code ${error.response.statusCode}');
+                                    print('Response body: ${error.response.data}');
+                                  });
+                                  Navigator.pop(context);
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
                                   );
-                                });
-
-                              } else {
-                                Provider.of<AiProvider>(context, listen: false).setGoalValue(customJuice);
-                                // Navigator.pop(context);
-                                // Navigator.push(context,
-                                //     MaterialPageRoute(builder: (context)=> GoalCalendarPage())
-                                // );
-                                // Navigator.pop(context);
-                                showDialog(context: context, builder:
-                                    ( context) {
-                                  return Material(
-                                    color: Colors.transparent,
-                                    child: Center(child: Container(
-                                      height: 200,
-                                      child: Column(
-                                        children: [
-                                          CircularProgressIndicator(
-                                            // semanticsLabel: "Creating Goal Profile...",
-                                          ),
-                                          kLargeHeightSpacing,
-                                          Text("Getting the right ingredients ready", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),), 
-                                          Lottie.asset("images/bilungo.json", height: 80)
-                                        ],
-                                      ),
-                                    )),
-                                  );
-                                });
-                                dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
-                                  'juice': customJuice,
-                                  'userId':auth.currentUser!.uid,
-
-                                  // orderId
-                                }).catchError((error){
-                                  print('Request failed with status code ${error.response.statusCode}');
-                                  print('Response body: ${error.response.data}');
-                                });
-                                Navigator.pop(context);
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context)=> LoadingGoalsPage())
-                                );
 
 
-                              }
+                                }
 
 
-                            }, child: Text("Continue", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
-                      ]
-                  ),
+                              }, child: Text("Continue", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
+                        ]
+                    ),
 
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

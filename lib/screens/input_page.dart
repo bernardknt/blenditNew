@@ -1,4 +1,6 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/widgets/InputFieldWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -219,7 +221,8 @@ class _InputPageState extends State<InputPage> {
                             // addItem();
                           // addItem();
                           // addItem();
-                            Navigator.pushNamed(context, ControlPage.id);
+                          //   Navigator.pushNamed(context, ControlPage.id);
+                            Navigator.pushNamed(context, ResponsiveLayout.id);
                             //Implement registration functionality.
                           }
 

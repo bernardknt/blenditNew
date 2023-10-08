@@ -2,6 +2,8 @@
 import 'dart:io';
 
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/login_page.dart';
 import 'package:blendit_2022/screens/new_logins/sign_in_phone.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +28,7 @@ import 'package:the_apple_sign_in/the_apple_sign_in.dart';
 
 import '../../controllers/home_controller.dart';
 import '../../models/CommonFunctions.dart';
+import '../../models/responsive/dimensions.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/font_constants.dart';
 import '../register_page.dart';
@@ -145,7 +148,9 @@ class _SignInOptionsState extends State<SignInOptions> {
             CommonFunctions().uploadUserToken(token);
             //  MaterialPageRoute(builder: (context)=> QuizPageName());
 
-            Navigator.pushNamed(context, ControlPage.id);Get.snackbar('Welcome Back ${names[0]}', '🙂',
+            // Navigator.pushNamed(context, ControlPage.id);
+            Navigator.pushNamed(context, ResponsiveLayout.id);
+            Get.snackbar('Welcome Back ${names[0]}', '🙂',
                 snackPosition: SnackPosition.TOP,
                 backgroundColor: kCustomColor,
                 colorText: kBlack,
@@ -273,7 +278,8 @@ class _SignInOptionsState extends State<SignInOptions> {
                 CommonFunctions().uploadUserToken(token);
                 //  MaterialPageRoute(builder: (context)=> QuizPageName());
 
-                Navigator.pushNamed(context, ControlPage.id);
+               // Navigator.pushNamed(context, ControlPage.id);
+                Navigator.pushNamed(context, ResponsiveLayout.id);
 
               }
 
@@ -372,96 +378,133 @@ class _SignInOptionsState extends State<SignInOptions> {
             // color: Colors.red,
 
             child: SingleChildScrollView(
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    left: 0,
-                    child:     Opacity(
-                      opacity: 0.2,
-                      child: Container(
-                        // padding: EdgeInsets.all(40),
-                        // color: kGreenThemeColor,
-                        child: Column(
-                          children: [
-                            // Spacer(),
-                            Image.asset('images/nutri.png', fit: BoxFit.fitWidth, height: 400,),
-                          ],
+              child:
+              Container(
+                width:
+                    // If the screen size is greater than the mobile width, constrain the width of the details to 400
+                MediaQuery.of(context).size.width >mobileWidth? 400 : MediaQuery.of(context).size.width,
+                // constraints.maxWidth< mobileWidth ?double.maxFinite:400,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child:     Opacity(
+                        opacity: 0.2,
+                        child: Container(
+                          // padding: EdgeInsets.all(40),
+                          // color: kGreenThemeColor,
+                          child: Column(
+                            children: [
+                              // Spacer(),
+                              Image.asset('images/nutri.png', fit: BoxFit.fitWidth, height: 400,),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Lottie.asset(
-                      //   'images/morning.json',
-                      //   width: 250,
-                      //   height: 200,
-                      // ),
-                      Text(Provider.of<AiProvider>(context, listen: false).tagline,textAlign: TextAlign.center,
-                          // style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 17)
-                        style: GoogleFonts.sourceSansPro(fontSize: 22, fontWeight: FontWeight.bold, color: kPureWhiteColor,
-                            shadows: [
-                              Shadow(
-                                  color: kBlack,
-                                  offset: Offset.fromDirection(1.0),
-                                  blurRadius: 1
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Lottie.asset(
+                        //   'images/morning.json',
+                        //   width: 250,
+                        //   height: 200,
+                        // ),
+                        Text(Provider.of<AiProvider>(context, listen: false).tagline,textAlign: TextAlign.center,
+                            // style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 17)
+                          style: GoogleFonts.sourceSansPro(fontSize: 22, fontWeight: FontWeight.bold, color: kPureWhiteColor,
+                              shadows: [
+                                Shadow(
+                                    color: kBlack,
+                                    offset: Offset.fromDirection(1.0),
+                                    blurRadius: 1
 
 
-                              )
-                            ]
+                                )
+                              ]
+                          ),
+
+
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("BLENDIT",
+
+                              // style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 40)
+                              style: GoogleFonts.sourceSansPro(fontSize: 40, fontWeight: FontWeight.bold, color: kPureWhiteColor,
+                                  shadows: [
+                                    Shadow(
+                                        color: kBlack,
+                                        offset: Offset.fromDirection(1.0),
+                                        blurRadius: 1
+
+
+                                    )
+                                  ]
+                              ),
+
+                            ),
+                            Lottie.asset(
+                              'images/refresher.json',
+                              // width: 90,
+                              height: 90,
+                            ),
+                          ],
                         ),
 
+                        kLargeHeightSpacing,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0, left: 20),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 43,
+                            child:
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: kPureWhiteColor,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10))),
+                                onPressed: () async{
+                                  // GoogleAuthService().signInWithGoogle();
+                                  handleGoogleSignIn();
 
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("BLENDIT",
-
-                            // style: kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 40)
-                            style: GoogleFonts.sourceSansPro(fontSize: 40, fontWeight: FontWeight.bold, color: kPureWhiteColor,
-                                shadows: [
-                                  Shadow(
-                                      color: kBlack,
-                                      offset: Offset.fromDirection(1.0),
-                                      blurRadius: 1
+                                },
 
 
-                                  )
-                                ]
-                            ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Sign In with Google", style: kNormalTextStyle.copyWith(color: kBlack),),
+                                    kSmallWidthSpacing,
+                                    Icon(Iconsax.chrome, color: kBlack,),
+                                  ],
+                                )),
 
                           ),
-                          Lottie.asset(
-                            'images/refresher.json',
-                            // width: 90,
-                            height: 90,
-                          ),
-                        ],
-                      ),
+                        ),
 
-                      kLargeHeightSpacing,
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20.0, left: 20),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 43,
-                          child:
-                          ElevatedButton(
+                        kLargeHeightSpacing,
+
+                        ownerLogin!= false?Container(): Padding(
+                          padding: const EdgeInsets.only(right: 20.0, left: 20),
+                          child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: kPureWhiteColor,
+                                  backgroundColor: kBlueDarkColor,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10))),
                               onPressed: () async{
-                                // GoogleAuthService().signInWithGoogle();
-                                handleGoogleSignIn();
+                                //  Navigator.pushNamed(context, SignInPhone.id);
+                                //   Navigator.pushNamed(context, LoginPage.id);
+                                setState(() {
+                                  ownerLogin = !ownerLogin;
+                                });
 
                               },
 
@@ -469,213 +512,202 @@ class _SignInOptionsState extends State<SignInOptions> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Sign In with Google", style: kNormalTextStyle.copyWith(color: kBlack),),
+
+                                  // Text("Continue with Mobile", style: kNormalTextStyle.copyWith(color: kBlack),),
+                                  Text("Continue with Email", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+
                                   kSmallWidthSpacing,
-                                  Icon(Iconsax.chrome, color: kBlack,),
+                                  Icon(Icons.mail_outline    , color:  kPureWhiteColor,),
+                                  // Icon(Iconsax.mobile, color: kBlack,),
                                 ],
                               )),
-
                         ),
-                      ),
-
-                      kLargeHeightSpacing,
-
-                      ownerLogin!= false?Container(): Padding(
-                        padding: const EdgeInsets.only(right: 20.0, left: 20),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: kBlueDarkColor,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                            onPressed: () async{
-                              //  Navigator.pushNamed(context, SignInPhone.id);
-                              //   Navigator.pushNamed(context, LoginPage.id);
-                              setState(() {
-                                ownerLogin = !ownerLogin;
-                              });
-
-                            },
-
-
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                        kLargeHeightSpacing,
+                        ownerLogin== false?Container():Container(
+                          height: 340,
+                          decoration: BoxDecoration(color: kPureWhiteColor,borderRadius: BorderRadius.all(Radius.circular(10))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
                               children: [
+                                TextButton(onPressed: (){
 
-                                // Text("Continue with Mobile", style: kNormalTextStyle.copyWith(color: kBlack),),
-                                Text("Continue with Email", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                  Navigator.pushNamed(context, RegisterPage.id);
+                                }, child: Text("CREATE NEW ACCOUNT", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontWeight: FontWeight.bold, fontSize: 18),)),
+                                Text("Or Login Below", style: kNormalTextStyle.copyWith(color: kBlack),),
+                                kSmallHeightSpacing,
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: kBlueDarkColorOld,
+                                          blurRadius: 3,
+                                          offset: Offset(0,2),
+                                        )
+                                      ]
+                                  ),
+                                  child: Column(
+                                    children: [
 
-                                kSmallWidthSpacing,
-                                Icon(Icons.mail_outline    , color:  kPureWhiteColor,),
-                                // Icon(Iconsax.mobile, color: kBlack,),
-                              ],
-                            )),
-                      ),
-                      kLargeHeightSpacing,
-                      ownerLogin== false?Container():Container(
-                        height: 340,
-                        decoration: BoxDecoration(color: kPureWhiteColor,borderRadius: BorderRadius.all(Radius.circular(10))),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              TextButton(onPressed: (){
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            border: Border(bottom: BorderSide(
+                                                color: kBlueDarkColorOld
+                                            ))
+                                        ),
+                                        child: TextField(
 
-                                Navigator.pushNamed(context, RegisterPage.id);
-                              }, child: Text("CREATE NEW ACCOUNT", style: kNormalTextStyle.copyWith(color: kGreenThemeColor, fontWeight: FontWeight.bold, fontSize: 18),)),
-                              Text("Or Login Below", style: kNormalTextStyle.copyWith(color: kBlack),),
-                              kSmallHeightSpacing,
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: kBlueDarkColorOld,
-                                        blurRadius: 3,
-                                        offset: Offset(0,2),
-                                      )
-                                    ]
-                                ),
-                                child: Column(
-                                  children: [
+                                          onChanged: (value){
+                                            email = value;
+                                          },
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText:  'Email Address',
+                                              hintStyle: TextStyle(color: Colors.grey)
+                                          ) ,
+                                        )
+                                        ,),
+                                      // SizedBox(height: 10),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
 
-                                    Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          border: Border(bottom: BorderSide(
-                                              color: kBlueDarkColorOld
-                                          ))
-                                      ),
-                                      child: TextField(
-
-                                        onChanged: (value){
-                                          email = value;
-                                        },
-                                        decoration: InputDecoration(
+                                        child: TextField(
+                                          obscureText: true,
+                                          onChanged: (value){
+                                            password = value;
+                                          },
+                                          decoration: InputDecoration(
                                             border: InputBorder.none,
-                                            hintText:  'Email Address',
-                                            hintStyle: TextStyle(color: Colors.grey)
-                                        ) ,
-                                      )
-                                      ,),
-                                    // SizedBox(height: 10),
-                                    Container(
-                                      padding: EdgeInsets.all(10),
+                                            hintText:  'Password',
+                                            hintStyle: TextStyle(color: Colors.grey),
+                                          ) ,
+                                        )
+                                        ,),
+                                    ],
+                                  ) ,
+                                ),
+                                TextButton(onPressed: (){
+                                  if(email != ''){
+                                    auth.sendPasswordResetEmail(email: email);
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return CupertinoAlertDialog(
+                                        title: Text('Reset Email Sent'),
+                                        content: Text('Check email $email for the reset link'),
+                                        actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                            onPressed: (){
+                                              _btnController.reset();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Cancel'))],
+                                      );
+                                    });
+                                  }else{
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return CupertinoAlertDialog(
+                                        title: Text('Type Email'),
+                                        content: Text('Please type your email Address and Click on the forgot password!'),
+                                        actions: [CupertinoDialogAction(isDestructiveAction: true,
+                                            onPressed: (){
+                                              //_btnController.reset();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Cancel'))],
+                                      );
+                                    });
+                                  }
 
-                                      child: TextField(
-                                        obscureText: true,
-                                        onChanged: (value){
-                                          password = value;
-                                        },
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText:  'Password',
-                                          hintStyle: TextStyle(color: Colors.grey),
-                                        ) ,
-                                      )
-                                      ,),
-                                  ],
-                                ) ,
-                              ),
-                              TextButton(onPressed: (){
-                                if(email != ''){
-                                  auth.sendPasswordResetEmail(email: email);
-                                  showDialog(context: context, builder: (BuildContext context){
-                                    return CupertinoAlertDialog(
-                                      title: Text('Reset Email Sent'),
-                                      content: Text('Check email $email for the reset link'),
-                                      actions: [CupertinoDialogAction(isDestructiveAction: true,
-                                          onPressed: (){
-                                            _btnController.reset();
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text('Cancel'))],
-                                    );
-                                  });
-                                }else{
-                                  showDialog(context: context, builder: (BuildContext context){
-                                    return CupertinoAlertDialog(
-                                      title: Text('Type Email'),
-                                      content: Text('Please type your email Address and Click on the forgot password!'),
-                                      actions: [CupertinoDialogAction(isDestructiveAction: true,
-                                          onPressed: (){
-                                            //_btnController.reset();
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text('Cancel'))],
-                                    );
-                                  });
-                                }
+                                }, child: Text('Forgot Password', style: kHeading2TextStyle.copyWith(color: Colors.blue),)),
+                                RoundedLoadingButton(
+                                  color: kAppPinkColor,
+                                  child: Text('Login', style: TextStyle(color: Colors.white)),
+                                  controller: _btnController,
+                                  onPressed: () async {
+                                    final prefs = await SharedPreferences.getInstance();
+                                    try{
+                                      await auth.signInWithEmailAndPassword(email: email, password: password);
+                                      final users = await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).get();
+                                      if(users.exists){
+                                        prefs.setBool(kNutriAi, true);
+                                        prefs.setString(kUserPersonalPreferences, users['preferences'].join(", "));
+                                        prefs.setString(kFullNameConstant, users['lastName']);
+                                        prefs.setString(kFirstNameConstant, users['firstName']);
+                                        prefs.setString(kUniqueUserPhoneId, users['email']);
+                                        prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
+                                        prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
+                                        prefs.setString(kUserCountryName, users['country']);
+                                        prefs.setBool(kIsLoggedInConstant, true);
+                                        prefs.setString(kUserSex, users['sex']);
+                                        prefs.setString(kEmailConstant, users['email']);
+                                        prefs.setString(kUserVision, users['vision']);
+                                        prefs.setString(kGoalConstant, users['goal']);
+                                        prefs.setDouble(kUserWeight, users['weight']/1.0);
+                                        prefs.setInt(kUserHeight, users['height']);
+                                        prefs.setBool(kIsGoalSet,users['goalSet'] );
+                                        prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
+                                        prefs.setStringList(kPointsList,users['chatPoints'].cast<String>());
+                                        // prefs.setString(kToken, token);
 
-                              }, child: Text('Forgot Password', style: kHeading2TextStyle.copyWith(color: Colors.blue),)),
-                              RoundedLoadingButton(
-                                color: kAppPinkColor,
-                                child: Text('Login', style: TextStyle(color: Colors.white)),
-                                controller: _btnController,
-                                onPressed: () async {
-                                  final prefs = await SharedPreferences.getInstance();
-                                  try{
-                                    await auth.signInWithEmailAndPassword(email: email, password: password);
-                                    final users = await FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid).get();
-                                    if(users.exists){
-                                      prefs.setBool(kNutriAi, true);
-                                      prefs.setString(kUserPersonalPreferences, users['preferences'].join(", "));
-                                      prefs.setString(kFullNameConstant, users['lastName']);
-                                      prefs.setString(kFirstNameConstant, users['firstName']);
-                                      prefs.setString(kUniqueUserPhoneId, users['email']);
-                                      prefs.setString(kPhoneNumberConstant, users['phoneNumber']);
-                                      prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
-                                      prefs.setString(kUserCountryName, users['country']);
-                                      prefs.setBool(kIsLoggedInConstant, true);
-                                      prefs.setString(kUserSex, users['sex']);
-                                      prefs.setString(kEmailConstant, users['email']);
-                                      prefs.setString(kUserVision, users['vision']);
-                                      prefs.setString(kGoalConstant, users['goal']);
-                                      prefs.setDouble(kUserWeight, users['weight']/1.0);
-                                      prefs.setInt(kUserHeight, users['height']);
-                                      prefs.setBool(kIsGoalSet,users['goalSet'] );
-                                      prefs.setString(kUserBirthday, DateFormat('dd/MMM/yyyy ').format(users['dateOfBirth'].toDate()) );
-                                      prefs.setStringList(kPointsList,users['chatPoints'].cast<String>());
-                                      // prefs.setString(kToken, token);
+                                        // This Function uploads the user token to the server.
+                                        CommonFunctions().uploadUserToken(token);
+                                        //  MaterialPageRoute(builder: (context)=> QuizPageName());
 
-                                      // This Function uploads the user token to the server.
-                                      CommonFunctions().uploadUserToken(token);
-                                      //  MaterialPageRoute(builder: (context)=> QuizPageName());
+                                        // Navigator.pushNamed(context, ControlPage.id);
+                                        Navigator.pushNamed(context, ResponsiveLayout.id);
 
-                                      Navigator.pushNamed(context, ControlPage.id);Get.snackbar('Welcome Back ${users['firstName']}', '🙂',
-                                          snackPosition: SnackPosition.TOP,
-                                          backgroundColor: kCustomColor,
-                                          colorText: kBlack,
-                                          icon: Icon(Iconsax.smileys, color: kGreenThemeColor,));
-                                    } else if (!users.exists){
-                                      showDialog(context: context, builder: (BuildContext context){
-                                        return CupertinoAlertDialog(
-                                          title: Text('Looks like this is a new Account!'),
-                                          content: Text('Would you like to create a new Account'),
-                                          actions: [
-                                            CupertinoDialogAction(isDestructiveAction: true,
+                                        Get.snackbar('Welcome Back ${users['firstName']}', '🙂',
+                                            snackPosition: SnackPosition.TOP,
+                                            backgroundColor: kCustomColor,
+                                            colorText: kBlack,
+                                            icon: Icon(Iconsax.smileys, color: kGreenThemeColor,));
+                                      } else if (!users.exists){
+                                        showDialog(context: context, builder: (BuildContext context){
+                                          return CupertinoAlertDialog(
+                                            title: Text('Looks like this is a new Account!'),
+                                            content: Text('Would you like to create a new Account'),
+                                            actions: [
+                                              CupertinoDialogAction(isDestructiveAction: true,
+                                                  onPressed: (){
+                                                    _btnController.reset();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Cancel')),
+                                              CupertinoDialogAction(isDefaultAction: true,
+                                                  onPressed: (){
+                                                    _btnController.reset();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Create')),
+
+                                            ],
+                                          );
+                                        });
+
+
+                                      }else{
+                                        showDialog(context: context, builder: (BuildContext context){
+                                          return CupertinoAlertDialog(
+                                            title: Text('This account is not Registered for Beautician'),
+                                            content: Text('The credentials you have entered are incorrect'),
+                                            actions: [CupertinoDialogAction(isDestructiveAction: true,
                                                 onPressed: (){
                                                   _btnController.reset();
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text('Cancel')),
-                                            CupertinoDialogAction(isDefaultAction: true,
-                                                onPressed: (){
-                                                  _btnController.reset();
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Create')),
+                                                child: Text('Cancel'))],
+                                          );
+                                        });
+                                      }
 
-                                          ],
-                                        );
-                                      });
-
-
-                                    }else{
+                                      //showSpinner = false;
+                                    }catch(e) {
+                                      _btnController.error();
                                       showDialog(context: context, builder: (BuildContext context){
                                         return CupertinoAlertDialog(
-                                          title: Text('This account is not Registered for Beautician'),
-                                          content: Text('The credentials you have entered are incorrect'),
+                                          title: Text('Oops Login Failed'),
+                                          content: Text("$e"),
                                           actions: [CupertinoDialogAction(isDestructiveAction: true,
                                               onPressed: (){
                                                 _btnController.reset();
@@ -685,94 +717,80 @@ class _SignInOptionsState extends State<SignInOptions> {
                                         );
                                       });
                                     }
-
-                                    //showSpinner = false;
-                                  }catch(e) {
-                                    _btnController.error();
-                                    showDialog(context: context, builder: (BuildContext context){
-                                      return CupertinoAlertDialog(
-                                        title: Text('Oops Login Failed'),
-                                        content: Text("$e"),
-                                        actions: [CupertinoDialogAction(isDestructiveAction: true,
-                                            onPressed: (){
-                                              _btnController.reset();
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text('Cancel'))],
-                                      );
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      kLargeHeightSpacing,
-                      Platform.isIOS ?Text("Or Continue with", style: kNormalTextStyle.copyWith(color: kBlack),):Container(),
-                      kLargeHeightSpacing,
+                        kLargeHeightSpacing,
+                       // Platform.isIOS ?Text("Or Continue with", style: kNormalTextStyle.copyWith(color: kBlack, fontWeight: FontWeight.bold),):Container(),
+                        TargetPlatform.iOS == true ?Text("Or Continue with", style: kNormalTextStyle.copyWith(color: kBlack, fontWeight: FontWeight.bold),):Container(),
+                        kLargeHeightSpacing,
 
-                      Platform.isIOS ?
-                      SizedBox(
-                        width: double.infinity,
-                        height: 43,
-                        child:
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0, left: 20),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: kBlack,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10))),
-                              onPressed: () async {
+                        TargetPlatform.iOS == true ?
+                      //  Platform.isIOS ?
+                        SizedBox(
+                          width: double.infinity,
+                          height: 43,
+                          child:
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20.0, left: 20),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: kBlack,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10))),
+                                onPressed: () async {
 
-                                handleAppleSignIn();
-
-
-                              },
+                                  handleAppleSignIn();
 
 
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-
-                                  Text("Continue with Apple", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
-                                  kSmallWidthSpacing,
-                                  Icon(Icons.apple),
-                                ],
-                              )),
-                        ),
-
-                      ): Container(),
-                      // SignInWithAppleButton(
-                      //   onPressed: () async {
-                      //     final credential = await SignInWithApple.getAppleIDCredential(
-                      //       scopes: [
-                      //         AppleIDAuthorizationScopes.email,
-                      //         AppleIDAuthorizationScopes.fullName,
-                      //       ],
-                      //     );
-                      //
-                      //     print(credential);
-                      //
-                      //     // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
-                      //     // after they have been validated with Apple (see `Integration` section for more information on how to do this)
-                      //   },
-                      // )
-                      //         TextButton.icon(
-                      //             onPressed: (){
-                      //               Navigator.pushNamed(context, LoginPage.id);
-                      //
-                      //             },
-                      //             label:Text("Login with Email", style: kNormalTextStyleWhiteButtons.copyWith(color: kBlack),
-                      //             ), icon: kIconScissorWhite
-                      //
-                      //         )
-                    ],
-                  ),
+                                },
 
 
-                ],
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+
+                                    Text("Continue with Apple", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
+                                    kSmallWidthSpacing,
+                                    Icon(Icons.apple),
+                                  ],
+                                )),
+                          ),
+
+                        ): Container(),
+                        // SignInWithAppleButton(
+                        //   onPressed: () async {
+                        //     final credential = await SignInWithApple.getAppleIDCredential(
+                        //       scopes: [
+                        //         AppleIDAuthorizationScopes.email,
+                        //         AppleIDAuthorizationScopes.fullName,
+                        //       ],
+                        //     );
+                        //
+                        //     print(credential);
+                        //
+                        //     // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
+                        //     // after they have been validated with Apple (see `Integration` section for more information on how to do this)
+                        //   },
+                        // )
+                        //         TextButton.icon(
+                        //             onPressed: (){
+                        //               Navigator.pushNamed(context, LoginPage.id);
+                        //
+                        //             },
+                        //             label:Text("Login with Email", style: kNormalTextStyleWhiteButtons.copyWith(color: kBlack),
+                        //             ), icon: kIconScissorWhite
+                        //
+                        //         )
+                      ],
+                    ),
+
+
+                  ],
+                ),
               ),
             ),
           ),

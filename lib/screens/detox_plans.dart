@@ -26,7 +26,8 @@ class _DetoxPlansPageState extends State<DetoxPlansPage> {
     final detoxJuices = await FirebaseFirestore.instance
         .collection('items')
         .where('category', isEqualTo: 'plans')
-        .where('quantity', isGreaterThan: 0)
+        .where('available', isEqualTo: true)
+        // .where('quantity', isGreaterThan: 0)
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {

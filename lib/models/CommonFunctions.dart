@@ -962,7 +962,7 @@ class CommonFunctions {
     }
   }
   // STREAMING DATA FROM THE USERS PROFILE
-  Future userStream(context) async {
+  Future userSubscription(context) async {
     var userData = await users.doc(auth.currentUser!.uid).get();
     Provider.of<AiProvider>(context,listen: false).setCommonVariables(
       userData['loyalty'],

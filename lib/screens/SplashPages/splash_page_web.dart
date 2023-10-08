@@ -3,27 +3,31 @@ import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/models/firebase_functions.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/screens/Welcome_Pages/welcome_page_web.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/widgets/looping_video.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:blendit_2022/screens/welcome_page_new.dart';
+import 'package:blendit_2022/screens/Welcome_Pages/welcome_page_mobile.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 
-class SplashPage extends StatefulWidget {
+class SplashPageWeb extends StatefulWidget {
   static String id = 'splash_page';
 
   @override
-  _SplashPageState createState() => _SplashPageState();
+  _SplashPageWebState createState() => _SplashPageWebState();
 }
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageWebState extends State<SplashPageWeb> {
   late Timer _timer;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -51,7 +55,8 @@ class _SplashPageState extends State<SplashPage> {
           Navigator.pop(context);
           FirebaseServerFunctions().lastLoggedIn(auth.currentUser?.uid);
           Navigator.pop(context);
-          Navigator.pushNamed(context, ControlPage.id);
+          // Navigator.pushNamed(context, ControlPage.id);
+          Navigator.pushNamed(context, ResponsiveLayout.id);
 
 
         });
@@ -61,7 +66,12 @@ class _SplashPageState extends State<SplashPage> {
       else{
         _timer = Timer(const Duration(milliseconds: 2000), () {
           Navigator.pop(context);
-          Navigator.pushNamed(context, WelcomePageNew.id);
+          // Navigator.pushNamed(context, WelcomePageMobile.id);
+          // Navigator.push,
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context)=> ResponsiveLayout(mobileBody: WelcomePageMobile(), desktopBody: WelcomePageWeb()))
+          );
+        //  ResponsiveLayout(mobileBody: WelcomePageMobile(), desktopBody: WelcomePageWeb());
 
         });
 
@@ -71,7 +81,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future deliveryStream()async{
-
+    CommonFunctions().userSubscription(context);
     var start = FirebaseFirestore.instance.collection('variables').snapshots().listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((users) async {
         setState(() {
@@ -118,6 +128,7 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kPureWhiteColor,
+
       body:
         SafeArea(
           child: Column(
@@ -129,7 +140,8 @@ class _SplashPageState extends State<SplashPage> {
               child:
                 Container(
                     height: 100,
-                    child: LoopingVideoContainer(videoPath: 'images/logo.webm',))
+                    child: Lottie.asset("images/bilungo.json")),
+                    //LoopingVideoContainer(videoPath: 'images/logo.webm',))
               // Container(
               //               height: 100,
               //               color: kBlack,
@@ -138,8 +150,12 @@ class _SplashPageState extends State<SplashPage> {
             ),
 
               // Text("Achieve your Goals", style: kNormalTextStyle,),
-              Spacer(), 
-              Image.asset('images/nutri.png', fit: BoxFit.fitWidth,),
+              // Spacer(),
+              Image.asset(kSplashImage, fit: BoxFit.contain,
+              height: 400,
+
+
+              ),
             ],
           ),
         )

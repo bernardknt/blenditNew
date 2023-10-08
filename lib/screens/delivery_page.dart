@@ -14,6 +14,7 @@ import 'package:blendit_2022/utilities/ingredientButtons.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,6 +37,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 import '../models/keyboard_overlay.dart';
+import '../models/responsive/dimensions.dart';
 import '../utilities/paymentButtons.dart';
 
 var uuid = Uuid();
@@ -97,41 +99,6 @@ class _MapState extends State<Map> {
   String location = '';
   String instructions = '';
 
-  // final _dialog = RatingDialog(
-  //   initialRating: 3.0,
-  //   // your app's name?
-  //   title: const Text(
-  //     'Rate Your Order',
-  //     textAlign: TextAlign.center,
-  //     style: TextStyle(
-  //       fontSize: 25,
-  //       fontWeight: FontWeight.bold,
-  //     ),
-  //   ),
-  //   // encourage your user to leave a high rating?
-  //   message: const Text(
-  //     'Tap a star to set your rating.',
-  //     textAlign: TextAlign.center,
-  //     style: TextStyle(fontSize: 15),
-  //   ),
-  //   // your app's logo?
-  //   image: Image.asset('images/black_logo.png',width: 150, height: 150, ),
-  //   submitButtonText: 'Submit',
-  //   commentHint: 'You can Add an extra Comment',
-  //   onCancelled: () => print('cancelled'),
-  //   onSubmitted: (response) async{
-  //     var prefs = await SharedPreferences.getInstance();
-  //     await FirebaseFirestore.instance
-  //         .collection('orders').doc(prefs.getString(kOrderId))
-  //         .update({
-  //       'rating': response.rating,
-  //       'rating_comment': response.comment,
-  //       'hasRated': true
-  //     }
-  //     );
-  //     return 0;
-  //   },
-  // );
 
   AndroidNotificationChannel channel = const AndroidNotificationChannel(
       'high_importance_channel',
@@ -195,16 +162,17 @@ class _MapState extends State<Map> {
         String body;
         String heading;
         Color backgroundColor;
-        if (status == 'submitted'){
-          imageString = 'images/success.json';
-          body ="Your Order has been Received!";
-          heading ="Order Submitted!";
-          backgroundColor = kBlueDarkColor;
-          print('ORDER SUBMITTED');
-          showDialogue(imageString, body, heading, backgroundColor);
-
-
-        }else if (status == 'preparing'){
+        // if (status == 'submitted'){
+        //   imageString = 'images/success.json';
+        //   body ="Your Order has been Received!";
+        //   heading ="Order Submitted!";
+        //   backgroundColor = kBlueDarkColor;
+        //   print('ORDER SUBMITTED');
+        //   showDialogue(imageString, body, heading, backgroundColor);
+        //
+        //
+        // }else
+          if (status == 'preparing'){
           imageString = 'images/cook.json';
           body ="Your is being Prepared!";
           heading ="Preparing Your Order";
@@ -320,7 +288,7 @@ class _MapState extends State<Map> {
       Navigator.pushNamed(context, SuccessPage.id);
       updatePoints();
       Provider.of<BlenditData>(context, listen: false).setLoyaltyApplied(false, 1.0);
-      showNotification('Order Received', '${prefs.getString(kFirstNameConstant)} we have received your order! We shall have it ready for Delivery');
+     // showNotification('Order Received', '${prefs.getString(kFirstNameConstant)} we have received your order! We shall have it ready for Delivery');
     } )
         .catchError((error) => Get.snackbar("Error Placing Order", "Ooops something seems to have gone wrong. Check your internet"));
   }
@@ -346,6 +314,7 @@ class _MapState extends State<Map> {
   late String phoneNumber;
   late String name;
   TextField searchBar() {
+
     var textToUse;
     if (Provider.of<BlenditData>(context).location == ''){
       textToUse = 'Workers House';
@@ -496,13 +465,19 @@ class _MapState extends State<Map> {
     var loyaltyValue = 0;
     return Stack(
         children: [
-          GoogleMap(initialCameraPosition: const CameraPosition(target: _initialPosition,zoom: 10),
-            onMapCreated: onCreated,
-            myLocationEnabled: true,
-            mapType: MapType.normal,
-            compassEnabled: true,
-            onCameraMove: onCameraMove,
+          kIsWeb ? Container(color: kCustomColor,) :
+          Container(
+            width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
 
+            child: GoogleMap(initialCameraPosition: const CameraPosition(target: _initialPosition,zoom: 10),
+
+              onMapCreated: onCreated,
+              myLocationEnabled: true,
+              mapType: MapType.normal,
+              compassEnabled: true,
+              onCameraMove: onCameraMove,
+
+            ),
           ),
           Positioned(
             top: 20,
@@ -513,7 +488,10 @@ class _MapState extends State<Map> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  searchBar(),
+                  Container(
+                      width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
+
+                      child: searchBar()),
                   SizedBox(height: 20,),
 
                   blendedData.locationOpacity == 0?

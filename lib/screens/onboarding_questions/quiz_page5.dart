@@ -1,6 +1,8 @@
 
 import 'dart:async';
 
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/paywall_pages/paywall_first_international.dart';
 import 'package:blendit_2022/screens/paywall_pages/paywall_first_uganda.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -105,7 +107,8 @@ class _QuizPage5State extends State<QuizPage5> {
                 );
               }
             } else {
-              Navigator.pushNamed(context, ControlPage.id);
+              // Navigator.pushNamed(context, ControlPage.id);
+              Navigator.pushNamed(context, ResponsiveLayout.id);
             }
 
             prefs.setString(kUserPersonalPreferences, aiData.preferencesSelected.join(", "));

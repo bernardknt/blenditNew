@@ -262,7 +262,7 @@ class _QualityBotState extends State<QualityBot> {
     circularValue = Provider.of<AiProvider>(context, listen: false).dailyProgressPoint;
 
 
-    CommonFunctions().userStream(context);
+    CommonFunctions().userSubscription(context);
     setState(() {
       updateMe =  Provider.of<BlenditData>(context, listen: false).updateApp;
     });

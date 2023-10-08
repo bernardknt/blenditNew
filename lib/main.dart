@@ -4,6 +4,7 @@ import 'package:blendit_2022/controllers/gym_tabs_controller.dart';
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
 import 'package:blendit_2022/screens/about_challenge_page.dart';
 import 'package:blendit_2022/screens/about_us.dart';
 import 'package:blendit_2022/screens/allProducts_page.dart';
@@ -23,7 +24,7 @@ import 'package:blendit_2022/screens/delivery_page.dart';
 import 'package:blendit_2022/screens/detox_juice.dart';
 import 'package:blendit_2022/screens/detox_plans.dart';
 import 'package:blendit_2022/screens/home_page.dart';
-import 'package:blendit_2022/screens/home_page_origina.dart';
+import 'package:blendit_2022/screens/home_page_original.dart';
 import 'package:blendit_2022/screens/input_page.dart';
 import 'package:blendit_2022/screens/loading_ingredients_page.dart';
 import 'package:blendit_2022/screens/login_page.dart';
@@ -48,20 +49,21 @@ import 'package:blendit_2022/screens/rating_page.dart';
 import 'package:blendit_2022/screens/register_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/screens/settings_page.dart';
-import 'package:blendit_2022/screens/splash_page.dart';
+import 'package:blendit_2022/screens/SplashPages/splash_page.dart';
 import 'package:blendit_2022/screens/success_appointment_create.dart';
 import 'package:blendit_2022/screens/success_challenge_done.dart';
 import 'package:blendit_2022/screens/success_page.dart';
 import 'package:blendit_2022/screens/tropical_page.dart';
 import 'package:blendit_2022/screens/upload_photo.dart';
 import 'package:blendit_2022/screens/welcome_page.dart';
-import 'package:blendit_2022/screens/welcome_page_new.dart';
+import 'package:blendit_2022/screens/Welcome_Pages/welcome_page_mobile.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/widgets/memories_page.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 // import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -74,29 +76,51 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 
 
+import 'controllers/controller_page_web.dart';
 import 'controllers/push_notification_service.dart';
 import 'controllers/settings_tab_controller.dart';
 import 'models/blendit_data.dart';
 
 
 
+// final _configuration = PurchasesConfiguration(kIsWeb?"ThisIsARandomString": Platform.isIOS ? kRevenueCatPurchasesKeyIOS : kRevenueCatPurchasesKeyAndroid);
 final _configuration = PurchasesConfiguration(Platform.isIOS ? kRevenueCatPurchasesKeyIOS : kRevenueCatPurchasesKeyAndroid);
+// final String _configuration = _calculateConfiguration();
+
+
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
 
+
 Future <void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
   // This configures the in-app purchases
-  await Purchases.configure(_configuration);
-  // await Firebase.initializeApp();
-  await Firebase.initializeApp(
+  if(kIsWeb) {
+
+  }else{
+    await Purchases.configure(_configuration);
+  }
+  if (kIsWeb){
+     await Firebase.initializeApp(
+       options: FirebaseOptions(
+         apiKey: "AIzaSyDQV0-v1IfqWDYqZzrKR2Kt1_9G2gjrhiQ",
+         appId: "1:1036391886488:web:305af76a997a5610f46aed",
+         messagingSenderId: "1036391886488",
+         projectId: "blend-it-8a622",
+         storageBucket: "gs://blend-it-8a622.appspot.com",
+       ),
+     );
+  }else {
+    await Firebase.initializeApp();
+  }
 
 
-  );
+
+
   // Get an instance of FirebaseAppCheck
   // FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.instance;
   // Disable App Check temporarily
@@ -139,12 +163,16 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
 
           initialRoute: SplashPage.id,
+        // initialRoute: ResponsiveLayout(mobileBody: SplashPage(), desktopBody: SplashPage()),
+         //  initialRoute: ControlPage.id,
 
           routes: {
             // '/': (context) => WelcomePage(),
             // HomePage.id: (context) => HomePage(),
             HomePage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false,child: HomePage())),),
             ControlPage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),)),
+            ControlPageWeb.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPageWeb()),)),
+
             // ControlPage.id: (context) => FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),
             DetoxJuicePage.id: (context)=> DetoxJuicePage(),
             DetoxPlansPage.id: (context)=> DetoxPlansPage(),
@@ -155,7 +183,7 @@ class MyApp extends StatelessWidget {
             LoadingIngredientsPage.id: (context)=> LoadingIngredientsPage(),
             DeliveryPage.id: (context)=> DeliveryPage(),
             WelcomePage.id: (context)=> WelcomePage(),
-            WelcomePageNew.id: (context)=> WelcomePageNew(),
+            WelcomePageMobile.id: (context)=> WelcomePageMobile(),
             RegisterPage.id: (context)=> RegisterPage(),
             // BlenderOnboardingPage.id: (context)=>BlenderOnboardingPage(),
             NewBlenderPage.id: (context)=>  NewBlenderPage(),
@@ -202,6 +230,8 @@ class MyApp extends StatelessWidget {
             RestorePurchasePage.id: (context)=> RestorePurchasePage(),
             QualityBot.id: (context)=> QualityBot(),
             MemoriesPage.id: (context)=> MemoriesPage(),
+            ResponsiveLayout.id: (context)=> ResponsiveLayout(mobileBody: FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()), desktopBody: FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPageWeb())),
+            
 
 
 

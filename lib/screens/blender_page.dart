@@ -6,6 +6,7 @@ import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
 import 'package:blendit_2022/screens/goals.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/special_blend.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -27,6 +28,8 @@ import 'package:rating_dialog/rating_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
+import '../models/responsive/dimensions.dart';
+import '../models/responsive/responsive_layout.dart';
 import '../utilities/font_constants.dart';
 import 'checkout_page.dart';
 import 'choose_juice_page.dart';
@@ -49,11 +52,14 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
     String newName = prefs.getString(kFirstNameConstant) ?? 'Hi';
+    String newEmail = prefs.getString(kEmailConstant) ?? 'Hi';
+
     String newFullName = prefs.getString(kFullNameConstant) ?? 'Hi';
     bool isFirstTime = prefs.getBool(kIsFirstTimeUser) ?? false;
     bool isFirstTimeBlending = prefs.getBool(kIsFirstBlending)?? true;
     setState(() {
       firstName = newName;
+      email = newEmail;
       Provider.of<BlenditData>(context, listen: false).setCustomerName(newFullName);
       updateMe =  Provider.of<BlenditData>(context, listen: false).updateApp;
       firstBlend = isFirstTimeBlending;
@@ -134,6 +140,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         var saladExtrasPrice = doc['saladExtrasPrice'];
         var saladMeatPrice = doc['saladMeatPrice'];
         var shareUrl = doc['shareUrl'];
+        var discount = doc['discount'];
 
         setState(() {
           Provider.of<BlenditData>(context, listen: false).setBlenderDefaultPrice(blender, saladPrice, saladMeatPrice, saladExtrasPrice);
@@ -150,6 +157,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
           prefs.setString(kAboutBody, body);
           prefs.setString(kWhatsappNumber, whatsNumber);
           prefs.setInt(kBlenderBaseValue, blender);
+          prefs.setDouble(kDiscountPercentage, discount);
 
 
         });
@@ -241,6 +249,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   bool activeOrder = false;
   bool tutorialDone = true;
   String firstName = 'Blender';
+  String email = 'Blender';
   String initialId = 'feature';
   var dateList = [];
   var statusList = [];
@@ -279,15 +288,18 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
       if (message.data['type'] == 'promotion') {
         Provider.of<BlenditData>(context, listen: false).setTabIndex(1);
-        Navigator.pushNamed(context, ControlPage.id);
+        // Navigator.pushNamed(context, ControlPage.id);
+        Navigator.pushNamed(context, ResponsiveLayout.id);
 
 
       } else if (message.data['type'] == 'blog') {
         Provider.of<BlenditData>(context, listen: false).setTabIndex(3);
-        Navigator.pushNamed(context, ControlPage.id);
+        // Navigator.pushNamed(context, ControlPage.id);
+        Navigator.pushNamed(context, ResponsiveLayout.id);
       }else if(message.data['type'] == 'accounts'){
         Provider.of<BlenditData>(context, listen: false).setTabIndex(2);
-        Navigator.pushNamed(context, ControlPage.id);
+        // Navigator.pushNamed(context, ControlPage.id);
+        Navigator.pushNamed(context, ResponsiveLayout.id);
       }else {
 
       }
@@ -356,8 +368,12 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       body:
       SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
+              // width: 200,
+              //MediaQuery.of(context).size.width >mobileWidth? 200 : MediaQuery.of(context).size.width,
 
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -400,6 +416,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                     child: Material(
                                       color: Colors.transparent,
                                       child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Center(child: Row(
@@ -446,6 +463,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                                       bottomSheetAddIngredients(context, vegProvider, fruitProvider, extraProvider, blendedData);
                                                       if (firstBlend == true){
                                                         firstBlendDone();
+
                                                         AlertPopUpDialogue(context, imagePath: 'images/longpress.json', text: 'To know the Health benefits of an ingredient long press on it', title: 'Tip 2: Long Press for Benefits');
                                                         AlertPopUpDialogue(context, imagePath: 'images/swipe.json', text: 'To view all ingredients Swipe left and Right on each Category', title: 'Tip 1: Swipe to View');
                                                       }
@@ -644,50 +662,23 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                           targetColor: Colors.black,
                           featureId: 'feature3',
                           tapTarget: const Icon(LineIcons.fruitApple, color: Colors.white,),
-                          child: Stack(
-                            children: [
-                              Container(height: 200,),
-                              Positioned(
-                                  bottom: 30,
-                                  right: 5,
-                                  left: 5,
-                                  child: Lottie.asset('images/newform.json', height: 300)),
-                              Image.asset(blendedData.blenderImage),
-                            ],
+                          child: Center(
+                            child: Container(
+                              width: 500,
+                              child: Stack(
+                                children: [
+                                  Container(height: 200,),
+                                  Positioned(
+                                      bottom: 30,
+                                      right: 5,
+                                      left: 5,
+                                      child: Lottie.asset('images/newform.json', height: 300)),
+                                  Image.asset(blendedData.blenderImage),
+                                ],
+                              ),
+                            ),
                           ))),
                 ),
-                // Positioned(
-                //   right: 30,
-                //   top: 15,
-                //   child: GestureDetector(
-                //     child:
-                //     Row(
-                //         children:[
-                //
-                //           CircleAvatar(
-                //               radius: 13,
-                //               backgroundColor: Colors.orange,
-                //               child: Text('${blendedData.ingredientsNumber}',style: TextStyle(color: Colors.white, fontSize: 15),)),
-                //           //SizedBox(width: 5,),
-                //           Icon(LineIcons.blender, color: Colors.black,size: 25,),
-                //
-                //         ] ),
-                //     onTap: (){
-                //       if(Provider.of<BlenditData>(context, listen: false).ingredientsNumber == 0) {
-                //          AlertPopUpDialogue(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your blender');
-                //
-                //       }
-                //       else {
-                //         showModalBottomSheet(
-                //             context: context,
-                //             builder: (context) {
-                //               return SelectedJuiceIngredientsListView();
-                //             });
-                //       }
-                //     },
-                //
-                //   ),
-                // ),
                 Positioned(
                   top: 10,
                   left: 0,
@@ -771,7 +762,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
                                 StreamBuilder<QuerySnapshot>(
                                     stream: FirebaseFirestore.instance.collection('orders')
-                                        .where('sender_id', isEqualTo: "kangavebnt@gmail.com")
+                                        .where('sender_id', isEqualTo: email)
                                         .orderBy('deliveryTime', descending: false)
                                         .snapshots(),
                                     builder: (context, snapshot) {
@@ -800,7 +791,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                         }
                                       }
                                       return
-                                        activeOrder!=true?Container():GestureDetector(
+                                        activeOrder!=true ? Container():GestureDetector(
                                           onTap: (){
                                             Navigator.pushNamed(context, OrdersPage.id);
                                           },
@@ -808,7 +799,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                             children:[
                                               statusList[0]=="submitted"?Lottie.asset("images/freeChat.json", height: 20):
-                                              statusList[0]=="delivering"?Lottie.asset("images/deliver.json", height: 80):
+                                              statusList[0]=="Ready for Delivery"?Lottie.asset("images/package.json", height: 80):
+                                              statusList[0]=="delivering"?Lottie.asset("images/deliver.json", height: 50):
                                               Lottie.asset("images/bilungo.json", height: 80),
                                               Text('${dateList.length} Active Order\n${ DateFormat('EE, dd MMM\nkk:mm').format(dateList[0])}', style: kNormalTextStyle.copyWith(color: kBlack),),
                                               Text('${statusList[0]}', style: kNormalTextStyle.copyWith(color: kGreenThemeColor),),
@@ -844,6 +836,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
     return showModalBottomSheet(context: context, builder: (context) {
                           return Container(
+                            width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
+
                             color: const Color(0xFF6e7069),
                             child:
                             Container(
@@ -891,6 +885,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
       {required String imagePath, required String text, required String title}) {
 
     return CoolAlert.show(
+      width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
+
               lottieAsset: imagePath,
               context: context,
               type: CoolAlertType.success,

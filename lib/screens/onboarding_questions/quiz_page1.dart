@@ -132,17 +132,7 @@ class _QuizPage1State extends State<QuizPage1> {
                       }),
 
                 ),
-                // Positioned(
-                //   bottom: 10,
-                //   right: 10,
-                //   left: 10,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //     Lottie.asset('images/workout4.json', height: 170),
-                //     Lottie.asset('images/workout6.json', height: 120)
-                //   ],),
-                // )
+
 
               ]
           ),

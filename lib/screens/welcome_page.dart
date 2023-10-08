@@ -1,5 +1,7 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
 import 'package:blendit_2022/screens/browse_store.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/new_logins/sign_in_options.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/roundedButtons.dart';
@@ -23,7 +25,8 @@ class _WelcomePageState extends State<WelcomePage> {
     setState(() {
       userLoggedIn = isLoggedIn;
       if (userLoggedIn == true) {
-        Navigator.pushNamed(context, ControlPage.id);
+        // Navigator.pushNamed(context, ControlPage.id);
+        Navigator.pushNamed(context, ResponsiveLayout.id);
       } else {
         prefs.setBool(kIsLoggedInConstant, false);
       }

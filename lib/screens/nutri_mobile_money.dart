@@ -3,6 +3,8 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -86,7 +88,8 @@ class _NutriMobileMoneyPageState extends State<NutriMobileMoneyPage> {
               onConfirmBtnTap: (){
                 Navigator.pop(context); 
                 Navigator.pop(context); 
-                Navigator.pushNamed(context, ControlPage.id);
+                // Navigator.pushNamed(context, ControlPage.id);
+                Navigator.pushNamed(context, ResponsiveLayout.id);
                 
                 setState(() {
 

@@ -4,12 +4,14 @@ import 'package:blendit_2022/controllers/gym_tabs_controller.dart';
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/settings_tab_controller.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
 import 'package:blendit_2022/screens/chat_designed_page.dart';
 import 'package:blendit_2022/screens/chat_third_design.dart';
 import 'package:blendit_2022/screens/goals.dart';
 import 'package:blendit_2022/screens/home_page.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,7 +28,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../screens/chat_page.dart';
 import '../screens/execution_pages/execution_page.dart';
 import '../screens/home_page_achieved.dart';
-import '../screens/home_page_origina.dart';
+import '../screens/home_page_original.dart';
 import '../screens/new_settings.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
@@ -52,33 +54,13 @@ class _ControlPageState extends State<ControlPage> {
   // int selectPage;
   int selectedPage = 0;
   double buttonHeight = 40.0;
+  String _selectedItem = 'Blender';
   int amount = 0;
   final tabs = [
-    // ChatDesignedPage(),
-    // ExecutionPage(),
-    Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: kGreenThemeColor,
-        //   automaticallyImplyLeading: false,
-        //   elevation: 0,
-        //
-        // ),
-        body: BlendingController()),
-    // CustomizeController(),
-    ChatThirdDesignedPage(),
-    // MemoriesPage(),
+    BlendingController(),
+    // ChatThirdDesignedPage(),
+
     HomePageOriginal(),
-    // HomePageAchieved(),
-    // HomePage(),
-    // CustomizeController(),
-
-    // Container(color: Colors.amber,),
-    // AiCameraPage(),
-    // ChallengePage(),
-    // AppointmentsTabController()
-
-    // OrdersPage(),
-    // BlogPage()
     SettingsTabController()
   ];
   void defaultInitialization(){
@@ -143,17 +125,17 @@ class _ControlPageState extends State<ControlPage> {
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   gap: 4,
                 ),
-                  GButton(
-                    icon: CupertinoIcons.chat_bubble_text,
-                    text: 'Nutri',
-                    iconColor: kGreenThemeColor,
-                    iconActiveColor: kBlack,
-                    textColor: kBlack,
-                    backgroundColor: kCustomColor,
-                    iconSize: 24,
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    gap: 4,
-                  ),
+                  // GButton(
+                  //   icon: CupertinoIcons.chat_bubble_text,
+                  //   text: 'Nutri',
+                  //   iconColor: kGreenThemeColor,
+                  //   iconActiveColor: kBlack,
+                  //   textColor: kBlack,
+                  //   backgroundColor: kCustomColor,
+                  //   iconSize: 24,
+                  //   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  //   gap: 4,
+                  // ),
                   GButton(
                     icon: Iconsax.shop ,
                     // text: 'Active Workouts',

@@ -1,4 +1,6 @@
 
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
@@ -52,7 +54,12 @@ class _MakePaymentPageState extends State<MakePaymentPage> {
               kLargeHeightSpacing,
               kLargeHeightSpacing,
               kLargeHeightSpacing,
-              MobileMoneyPaymentButton(buttonColor: kGreenThemeColor, firstButtonFunction: (){Navigator.pushNamed(context, ControlPage.id); }, firstButtonText: 'Go Home',buttonTextColor: kPureWhiteColor, lineIconFirstButton: Icons.check_circle_outline,)
+              MobileMoneyPaymentButton(buttonColor: kGreenThemeColor, firstButtonFunction: (){
+
+                // Navigator.pushNamed(context, ControlPage.id);
+                Navigator.pushNamed(context, ResponsiveLayout.id);
+
+                }, firstButtonText: 'Go Home',buttonTextColor: kPureWhiteColor, lineIconFirstButton: Icons.check_circle_outline,)
 
               // SizedBox(height: 10,),
               // Center(child: Text('You have Earned',textAlign: TextAlign.center, style: GoogleFonts.lato( fontSize: 30),)),

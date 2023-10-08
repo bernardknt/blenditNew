@@ -52,6 +52,25 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
     });
   }
 
+  void updateFirestoreCollection() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference collection = firestore.collection('orders'); // Replace 'your_collection' with your actual collection name
+
+    // Get documents from the collection
+    QuerySnapshot querySnapshot = await collection.get();
+
+    // Loop through the documents and update the 'available' field to true
+    querySnapshot.docs.forEach((doc) async {
+      // Update the document with the 'available' field set to true
+      await collection.doc(doc.id).update({
+        'paymentStatus': "paid",
+        'status': 'delivered'
+      });
+    });
+  }
+
+
+
 
   @override
   void initState() {
@@ -105,6 +124,12 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
             ),
           ),
         ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: (){
+        //     updateFirestoreCollection();
+        //   },
+        //
+        // ),
         body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: SafeArea(

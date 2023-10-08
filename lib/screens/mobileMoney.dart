@@ -94,11 +94,9 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
               backgroundColor: kBlueDarkColor, 
               onConfirmBtnTap: (){
                 Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context)=> LoadingChallengePage())
-                );
-
-
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context)=> LoadingChallengePage())
+                // );
               }
           );
 

@@ -1,6 +1,8 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
+import 'package:blendit_2022/models/responsive/responsive_layout.dart';
+import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/screens/loading_free_trial.dart';
 import 'package:blendit_2022/screens/nutri_mobile_money.dart';
@@ -107,7 +109,8 @@ class PaywallFirstInternationalPage extends StatelessWidget {
           final prefs = await SharedPreferences.getInstance();
           CommonFunctions().startTrialSubscription(context, Provider.of<AiProvider>(context, listen: false).trialTime);
           CommonFunctions().showNotification("Subscription Activated", "Nice, Time to get to work on achieving your goals");
-          Navigator.pushNamed(context, ControlPage.id);
+          // Navigator.pushNamed(context, ControlPage.id);
+          Navigator.pushNamed(context, ResponsiveLayout.id);
 
 
           Navigator.push(context,

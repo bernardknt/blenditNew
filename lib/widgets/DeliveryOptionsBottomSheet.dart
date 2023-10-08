@@ -11,6 +11,8 @@ import 'package:flutter/widgets.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
+import '../models/responsive/dimensions.dart';
+
 // import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 
@@ -54,45 +56,72 @@ class DeliveryOptionsDialog extends StatelessWidget {
                 children: [
                   TextButton.icon(onPressed: (){
                   //DatePicker.showDateTimePicker(context);
-                    var after = DateTime(now.year, now.month, now.day, now.hour +1, now.minute );
-                    print('Entered time is $now, expected delivery time is $after');
-                    Provider.of<BlenditData>(context, listen: false).setDeliveryDateTime(after);
-                    CoolAlert.show(
-                        lottieAsset: 'images/purple.json',
-                        context: context,
-                        type: CoolAlertType.success,
-                        widget: Container(
 
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Please add Avocado in my salad',
+                    DateTime after = DateTime(now.year, now.month, now.day, now.hour +1, now.minute );
+
+                    print(after.hour);
+                    if (after.hour >= 8 && after.hour < 19){
+                      print('Entered time is $now, expected delivery time is $after');
+                      Provider.of<BlenditData>(context, listen: false).setDeliveryDateTime(after);
+                      CoolAlert.show(
+                          width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
+
+                          lottieAsset: 'images/purple.json',
+                          context: context,
+                          type: CoolAlertType.success,
+                          widget: Container(
+
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Please add Avocado in my salad',
+                              ),
+                              onChanged: (description){
+                                chefInstructions = description;
+                              },
                             ),
-                            onChanged: (description){
-                              chefInstructions = description;
-                            },
                           ),
-                        ),
-                        text: 'Do you have any additional information about your order?..Tell us',
-                        title: 'Note to the Chef',
-                        confirmBtnText: 'Yes',
-                        cancelBtnText: 'No',
-                        showCancelBtn: true,
-                        confirmBtnColor: Colors.green,
-                        backgroundColor: Colors.white,
-                        onCancelBtnTap: (){
-                          Provider.of<BlenditData>(context, listen: false).setChefInstructions('');
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, DeliveryPage.id);
-                        },
-                        onConfirmBtnTap: (){
-                          Provider.of<BlenditData>(context, listen: false).setChefInstructions(chefInstructions);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, DeliveryPage.id);
-                        }
+                          text: 'Do you have any additional information about your order?..Tell us',
+                          title: 'Note to the Chef',
+                          confirmBtnText: 'Yes',
+                          cancelBtnText: 'No',
+                          showCancelBtn: true,
+                          confirmBtnColor: Colors.green,
+                          backgroundColor: Colors.white,
+                          onCancelBtnTap: (){
+                            Provider.of<BlenditData>(context, listen: false).setChefInstructions('');
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, DeliveryPage.id);
+                          },
+                          onConfirmBtnTap: (){
+                            Provider.of<BlenditData>(context, listen: false).setChefInstructions(chefInstructions);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, DeliveryPage.id);
+                          }
 
-                    );
+                      );
+                    }
+                    else {
+
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Ooops! We cant deliver at that Time',textAlign: TextAlign.center, style: kHeading2TextStyleBold,),
+                          content: Text('Delivery time must be between 8 am and 6 pm.',textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(fontSize: 18)),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        );
+                      },);
+                    }
+
 
                 },
                   style: TextButton.styleFrom(

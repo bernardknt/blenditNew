@@ -12,6 +12,7 @@ const kPinkBlenderColor = Color(0xFFe8d3d3);
 const kSeedColor = Color(0xFFFF89A8);
 const kProjectColor = Color(0xFFFF557C);
 const kBlueDarkColor = Color(0xff17183c);
+const kChatGPTBlack = Color(0xff18191a);
 
 const kCustomColor = Color(0xffBEEFEE);
 const kRoundedContainerColor = Color(0xFF6e6e6e);
@@ -22,14 +23,9 @@ const kBackgroundCurveReveller = Color(0xFF5d5d5d);
 const kRedThemeColor = Color(0xFFda0041);
 const kNewGreenThemeColor = Color(0xFF0AB11B);
 const kBrightGreenThemeColor = Color(0xFF53EF00);
-
 const kBeigeThemeColor = Color(0xFFF2efe4);
-
 const kBabyPinkThemeColor = Color(0xFFFFF0F0);
-
 const kAirPink = Color(0xFFda0041);
-
-
 const kBlueDarkColorOld = Color(0xFF17183c);
 const kBrownDarkColor = Color(0xFFae3137);
 const kBackgroundGreyColor = Color(0xFFF4F4F4);
@@ -77,6 +73,7 @@ String kLongKmDistance= 'longKilometers';
 String kRewardsRatio= 'rewardsRatio';
 String kSupportNumber= 'supportNumber';
 String kBlenderBaseValue= 'blenderBaseValue';
+String kDiscountPercentage= 'kDiscountPercentage';
 String kLoyaltyPoints= 'loyaltyPoints';
 String kAboutHeading= 'heading';
 String kAboutBody= 'body';
@@ -127,5 +124,8 @@ String kPaymentAttempt = 'paymentAttempt';
 String kEmailServerName = 'sendEmail';
 String kRevenueCatPurchasesKeyIOS = "appl_BypoTqpmaTnGvWTNZktkSUcOmBZ";
 String kRevenueCatPurchasesKeyAndroid = "goog_EtSxZopAXzvZbJnxIMvOqQYifpz";
+
+// Image constants
+String kSplashImage = "images/nutri2.png";
 
 

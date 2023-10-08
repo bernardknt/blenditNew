@@ -460,7 +460,7 @@ class BlenditData extends ChangeNotifier{
       ingredientsButtonColour = Colors.green;
     }
     else{
-      blendButtonColourJuice = Colors.green;
+      blendButtonColourJuice = kAppPinkColor;
       ingredientsButtonColour = Colors.grey.shade400;
     }
     notifyListeners();

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/execution_pages/get_a_number_page.dart';
+import 'package:blendit_2022/screens/loading_challenge.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,6 +51,8 @@ class _AiJuiceState extends State<AiJuice> {
   var userId = "";
   var modifiedValues = [];
   var juiceData = {};
+  int selectedIndex = 0;
+
 
 
   List<String> addPrefixToElements(List inputArray) {
@@ -158,6 +161,7 @@ class _AiJuiceState extends State<AiJuice> {
   }
 
   Widget build(BuildContext context) {
+
     var aiData = Provider.of<AiProvider>(context, listen: false);
     var aiDataDisplay = Provider.of<AiProvider>(context);
     var blendedData = Provider.of<BlenditData>(context, listen: false);
@@ -165,20 +169,15 @@ class _AiJuiceState extends State<AiJuice> {
 
     return Scaffold(
       backgroundColor: kPureWhiteColor,
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: (){
-          final orderText = StringBuffer();
-          juiceData['instructions'].length == 1 ? orderText.writeln('Here is the ${juiceData['instructions'].length} step Process'):orderText.writeln('*Here is the ${juiceData['instructions'].length} step procedure*');
-          for (var i = 0; i < juiceData['instructions'].length; i++) {
-
-            final item = juiceData['instructions'][i];
-            orderText.writeln('${i + 1}. ${juiceData['instructions'][i]}');
-          }
-          Share.share('My ${juiceData['type']} for ${juiceData['purpose']}(${juiceData['summary']})\n $orderText\nhttps://bit.ly/3I8sa4M', subject: 'Check my ${juiceData['type']} for ${juiceData['summary']} from Blendit');
-        },
-        backgroundColor: kCustomColor,
-        child: Icon(Iconsax.share, color: kBlack,),
-      ),
+      // floatingActionButton: FloatingActionButton.small(
+      //   onPressed: (){
+      //
+      //   },
+      //
+      //   backgroundColor: kCustomColor,
+      //   child: Icon(Iconsax.share, color: kBlack,),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
 
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
@@ -248,128 +247,178 @@ class _AiJuiceState extends State<AiJuice> {
                                 )))
                       ],
                     ),
-                   Text("${visionData['type']} for: \n${visionData['summary']}",textAlign: TextAlign.center, style: kHeading2TextStyleBold,),
+                    Text("${visionData['type']} for: \n${visionData['summary']}",textAlign: TextAlign.center, style: kHeading2TextStyleBold,),
                     kLargeHeightSpacing
 
                   ],
                 ),
-                Container(
-                  height: 290,
-                  // width: 200,
-                  child:
-                  ListView.builder(
-                    itemCount: visionData['ingredients'].length,
-                    itemBuilder: (
-                        BuildContext context, int index)
-                    {
-                      return GestureDetector(
-                        onTap: (){
-                          // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
-                          // print(visionData['ingredients'][index]);
-                          showDialog(context: context, builder: (BuildContext context){
+                Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        height: 290,
+                        // width: 200,
+                        child:
+                        ListView.builder(
+                          itemCount: visionData['ingredients'][selectedIndex].length,
+                          itemBuilder: (
+                              BuildContext context, int index)
+                          {
                             return GestureDetector(
-                                onTap: (){
-                                  Navigator.pop(context);
-                                },
-                                child: Material(
-                                    color: Colors.transparent,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
+                              onTap: (){
+                                // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
+                                // print(visionData['ingredients'][index]);
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return GestureDetector(
+                                      onTap: (){
+                                        Navigator.pop(context);
+                                      },
+                                      child: Material(
+                                          color: Colors.transparent,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
 
-                                        Text("RECIPE", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold, fontSize: 30),),
-                                        kLargeHeightSpacing,
-                                        kLargeHeightSpacing,
-                                        Text("${visionData['type']} Instructions for ${visionData['purpose']}", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold),),
-                                        Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Container(
+                                              Text("RECIPE", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold, fontSize: 30),),
+                                              kLargeHeightSpacing,
+                                              kLargeHeightSpacing,
+                                              Text("${visionData['type']} Instructions for ${visionData['purpose']}", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontWeight: FontWeight.bold),),
+                                              Padding(
+                                                padding: const EdgeInsets.all(15.0),
+                                                child: Container(
 
-                                              height: visionData['instructions'].length < 6? 270:380,
-                                              decoration: BoxDecoration(
-                                                  color:  kBiegeThemeColor,
-                                                  borderRadius: BorderRadius.all(Radius.circular(10))
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child:
-                                                ListView.builder(
-                                                  itemCount: visionData['instructions'].length,
-                                                  itemBuilder: (
-                                                      BuildContext context, int index)
-                                                  {
-                                                    return GestureDetector(
-                                                      onTap: (){
-                                                        // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
-                                                        // print(visionData['ingredients'][index]);
-                                                      },
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: 20.0, right: 20),
-                                                        child: Text(
-                                                          "${index+1}. ${visionData['instructions'][index]}",
-                                                          style: TextStyle( fontSize: visionData['instructions'].length < 6? 20 : 16,
-                                                            color: kBlueDarkColor,
-                                                          ),
-                                                        ),
+                                                    height: visionData['instructions'].length < 6? 270:380,
+                                                    decoration: BoxDecoration(
+                                                        color:  kBiegeThemeColor,
+                                                        borderRadius: BorderRadius.all(Radius.circular(10))
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child:
+                                                      ListView.builder(
+                                                        itemCount: visionData['instructions'][selectedIndex].length,
+                                                        itemBuilder: (
+                                                            BuildContext context, int index)
+                                                        {
+                                                          return GestureDetector(
+                                                            onTap: (){
+                                                              // aiDataDisplay.setPreferencesBoxColor(index, aiData.preferencesColorOfBoxes[index], visionData['action'][index], visionData['action'][index]);
+                                                              // print(visionData['ingredients'][index]);
+                                                            },
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                                              child: Text(
+                                                                "${index+1}. ${visionData['instructions'][selectedIndex][index]}",
+                                                                style: TextStyle( fontSize: visionData['instructions'][selectedIndex].length < 6? 20 : 16,
+                                                                  color: kBlueDarkColor,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
                                                       ),
-                                                    );
-                                                  },
-                                                ),
 
-                                                //Text('${taskList[index]}',textAlign: TextAlign.center, style: kNormalTextStyleDark.copyWith(color: kBlack, fontSize: 20),),
-                                              )),
-                                        ),
-                                        kLargeHeightSpacing,
-                                        kLargeHeightSpacing,
-                                        kLargeHeightSpacing,
+                                                      //Text('${taskList[index]}',textAlign: TextAlign.center, style: kNormalTextStyleDark.copyWith(color: kBlack, fontSize: 20),),
+                                                    )),
+                                              ),
+                                              kLargeHeightSpacing,
+                                              kLargeHeightSpacing,
+                                              kLargeHeightSpacing,
 
 
-                                      ],
-                                    )));
-                          });
+                                            ],
+                                          )));
+                                });
 
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: kBeigeThemeColor,
-                              // Provider.of<AiProvider>(context, listen: false).preferencesColorOfBoxes[index],
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            padding: EdgeInsets.all(10.0),
-                            margin: EdgeInsets.only(bottom: 10.0),
-                            child: Text(
-                             "${index+1}. ${visionData['ingredients'][index]}",
-                              style: TextStyle(
-                                color: kBlueDarkColor,
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: kBeigeThemeColor,
+                                    // Provider.of<AiProvider>(context, listen: false).preferencesColorOfBoxes[index],
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  padding: EdgeInsets.all(10.0),
+                                  margin: EdgeInsets.only(bottom: 10.0),
+                                  child: Text(
+                                    "${index+1}. ${visionData['ingredients'][selectedIndex][index]}",
+                                    style: TextStyle(
+                                      color: kBlueDarkColor,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                    Positioned(
+                        right: 0,
+                        top: 0,
+                        child: GestureDetector(
+                          onTap: (){
+                            // Navigator.push(context,
+                            //
+                            //     MaterialPageRoute(builder: (context)=> LoadingChallengePage())
+                            // );
+                            showDialog(context: context,
+
+                                builder: (context) {
+                                  return GestureDetector(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Material(
+                                          color: Colors.transparent,
+                                          child: LoadingChallengePage())
+                                  );
+                                }
+                            );
+                            _timer = Timer(const Duration(milliseconds: 3000), () {
+
+                              setState(() {
+                                if (selectedIndex == 2){
+                                  selectedIndex = 0;
+
+                                }else {
+                                  selectedIndex +=1;
+
+                                }
+                              });
+                            });
+                            },
+                          child: CircleAvatar(
+                            child: Icon(Icons.change_circle_outlined),
+                          ),
+                        )
+                    )
+                  ],
                 ),
                 kLargeHeightSpacing,
-                // Linkify(
-                //     onOpen: (link) {
-                //       CommonFunctions().goToLink(link.url);
-                //     },
-                //     style: kNormalTextStyle2.copyWith(color:kBlueDarkColor,
-                //         fontSize: 15, fontWeight: FontWeight.w400),
-                //     linkStyle: TextStyle(color: Colors.blue),
-                //     text: visionData['youtube']),
-                // kSmallHeightSpacing,
-                // Text("Recipe", style: kNormalTextStyle.copyWith(color: kBlack),),
-                // Text(visionData['instructions'].toString()),
+
 
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, right: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      ElevatedButton(
+                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kBlueDarkColor)),
+                          onPressed: (){
+                            final orderText = StringBuffer();
+                            juiceData['instructions'][selectedIndex].length == 1 ? orderText.writeln('Here is the ${juiceData['instructions'][selectedIndex].length} step Process'):orderText.writeln('*Here is the ${juiceData['instructions'].length} step procedure*');
+                            for (var i = 0; i < juiceData['instructions'].length; i++) {
 
+                              final item = juiceData['instructions'][selectedIndex][i];
+                              orderText.writeln('${i + 1}. ${juiceData['instructions'][selectedIndex][i]}');
+                            }
+                            Share.share('My ${juiceData['type']} for ${juiceData['purpose']}(${juiceData['summary']})\n $orderText\nhttps://bit.ly/3I8sa4M', subject: 'Check my ${juiceData['type']} for ${juiceData['summary']} from Blendit');
+                          }, child: Icon(FontAwesomeIcons.shareNodes, color: kPureWhiteColor,)),
+                      kSmallWidthSpacing,
+                      kSmallWidthSpacing,
                       ElevatedButton(
                           style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                           onPressed: (){
@@ -447,7 +496,7 @@ class _AiJuiceState extends State<AiJuice> {
                           style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kGreenThemeColor)),
                           onPressed: (){
                             // for(int i = 0; i < visionData['ingredients']; i++ ){
-                              Provider.of<BlenditData>(context, listen: false).setSelectedJuiceIngredients(visionData['ingredients']);
+                            Provider.of<BlenditData>(context, listen: false).setSelectedJuiceIngredients(visionData['ingredients']);
 
                             // }
 
@@ -459,11 +508,11 @@ class _AiJuiceState extends State<AiJuice> {
                             //
                             //     });
                             //   Vibrate.vibrateWithPauses(pauses);
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, LoadingIngredientsPage.id);
-                              Provider.of<BlenditData>(context, listen: false)
-                                  .addToBasket(BasketItem(amount: blendedData.refJuicePrice, quantity: blendedData.litres, name: 'Custom Juice', details: blendedData.selectedJuiceIngredients.join(", "))); //
-                              Provider.of<BlenditData>(context, listen: false).clearListJuice();
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, LoadingIngredientsPage.id);
+                            Provider.of<BlenditData>(context, listen: false)
+                                .addToBasket(BasketItem(amount: blendedData.refJuicePrice, quantity: blendedData.litres, name: 'Custom Juice', details: blendedData.selectedJuiceIngredients.join(", "))); //
+                            Provider.of<BlenditData>(context, listen: false).clearListJuice();
 
                           }, child: Text("Order This Recipe", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
 

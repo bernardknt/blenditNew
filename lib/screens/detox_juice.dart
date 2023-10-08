@@ -25,7 +25,7 @@ class _DetoxJuicePageState extends State<DetoxJuicePage> {
     final detoxJuices = await FirebaseFirestore.instance
         .collection('items')
         .where('category', isEqualTo: 'detox-juice')
-        //.where('quantity', isGreaterThan: 0)
+        .where('available', isEqualTo: true)
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
@@ -74,7 +74,7 @@ class _DetoxJuicePageState extends State<DetoxJuicePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detox Juice'),
+        title: Text('Juice and Smoothies'),
         backgroundColor: kBlueDarkColor,
       ),
       body:
