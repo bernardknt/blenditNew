@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:blendit_2022/controllers/orders_controller_page.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
@@ -179,27 +180,27 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
       //   title: Text('Settings Page', style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
       //   centerTitle: true,
       // ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: kGreenThemeColor,
-      //   onPressed: () async {
-      //
-      //     var prefs = await SharedPreferences.getInstance();
-      //
-      //      // launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
-      //      //
-      //     // Navigator.pushNamed(context, CustomerCareChatMessaging.id);
-      //
-      //
-      //     if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
-      //        CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-      //     }else {
-      //       CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
-      //
-      //     }
-      //   },
-      //   child: Icon(Icons.support_agent),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: kGreenThemeColor,
+        onPressed: () async {
+
+          var prefs = await SharedPreferences.getInstance();
+
+           // launchUrl(Uri.parse('https://bit.ly/3p1N2nH'));
+           //
+          // Navigator.pushNamed(context, CustomerCareChatMessaging.id);
+
+
+          if (Provider.of<AiProvider>(context, listen: false).customerCareNumber[0] != "+"){
+             CommonFunctions().goToLink(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+          }else {
+            CommonFunctions().callPhoneNumber(Provider.of<AiProvider>(context, listen: false).customerCareNumber);
+
+          }
+        },
+        child: Icon(Icons.support_agent),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
 
       backgroundColor: kBackgroundGreyColor,
@@ -472,7 +473,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
               GestureDetector(
                 onTap: (){
 
-                  Navigator.pushNamed(context, OrdersPage.id);
+                  Navigator.pushNamed(context, OrdersTabController.id);
 
 
                 },

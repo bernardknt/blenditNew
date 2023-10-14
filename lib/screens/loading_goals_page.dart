@@ -90,12 +90,13 @@ class _LoadingGoalsPageState extends State<LoadingGoalsPage> {
                   String id = prefs.getString(kUniqueIdentifier)!;
                   Provider.of<AiProvider>(context, listen: false).resetQuestionButtonColors();
                   Provider.of<AiProvider>(context, listen: false).setUserId(id);
-                  Navigator.pop(context);
 
-                    Navigator.push(context,
-                       // MaterialPageRoute(builder: (context)=> TargetsPage())
-                        MaterialPageRoute(builder: (context)=> AiJuice())
-                    );
+                  Navigator.pushNamed(context, AiJuice.id);
+
+                    // Navigator.push(context,
+                    //    // MaterialPageRoute(builder: (context)=> TargetsPage())
+                    //     MaterialPageRoute(builder: (context)=> AiJuice())
+                    // );
                   // Additional code here...
                 },
                 child: Text("Continue", style: kNormalTextStyle.copyWith(color: kPureWhiteColor)),

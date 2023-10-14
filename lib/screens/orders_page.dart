@@ -1,6 +1,8 @@
 
+import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/utilities/font_constants.dart';
 import 'package:blendit_2022/widgets/showTransactionDetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,75 +28,27 @@ class OrdersPage extends StatefulWidget {
 
 class _OrdersPageState extends State<OrdersPage> {
   // final dateNow = new DateTime.now();
-  late int price = 0;
-  late int quantity = 1;
+int price = 0;
+ int quantity = 1;
+ String emailConstant = "";
 
 
 
-  Future<dynamic> getTransaction() async {
-    var test = {price: 200, quantity: 7};
+
+
+
+  Future<dynamic> defaultInitialization() async {
     final prefs =  await SharedPreferences.getInstance();
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User? user = auth.currentUser;
-
-    String? email = user?.email ?? 'no email';
-    String? otherEmail = prefs.getString(kEmailConstant);
-    productList = [];
-    priceList = [];
-    descList = [];
-    transIdList = [];
-    dateList = [];
-    orderStatusList = [];
-    paidStatusList = [];
-    paidStatusListColor = [];
-
-
-
-    final transactions = await FirebaseFirestore.instance
-        .collection('orders')
-        // .where('payment_status', isEqualTo: true)
-        .where('sender_id', isEqualTo: otherEmail).orderBy('deliveryTime', descending: false)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        //String formatter = DateFormat('yMd').format(doc['date']);
-
-        productList.add(doc['items']);
-        priceList.add(doc['total_price'].toString());
-        descList.add(doc['instructions']);
-        transIdList.add(doc['orderNumber']);
-        orderStatusList.add(doc['status']);
-        dateList.add(doc['order_time'].toDate());
-
-         if (doc['paymentStatus'] != 'paid'){
-           paidStatusList.add('Unpaid');
-           paidStatusListColor.add(Colors.red);
-           opacityList.add(0.0);
-         }else{
-           paidStatusList.add('paid');
-           paidStatusListColor.add(Colors.grey);
-           opacityList.add(1.0);
-         }
-      });
-      setState(() {
-        productList = productList.reversed.toList();
-        priceList = priceList.reversed.toList();
-        descList = descList.reversed.toList();
-        transIdList = transIdList.reversed.toList();
-        dateList = dateList.reversed.toList();
-        orderStatusList = orderStatusList.reversed.toList();
-        paidStatusList = paidStatusList.reversed.toList();
-        paidStatusListColor = paidStatusListColor.reversed.toList();
-      });
+    emailConstant = prefs.getString(kEmailConstant)!;
+    setState(() {
     });
-    return transactions;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getTransaction();
+    defaultInitialization();
   }
 
   var productList = [];
@@ -114,40 +68,7 @@ class _OrdersPageState extends State<OrdersPage> {
   var blendedData = Provider.of<BlenditData>(context);
 
   return Scaffold(
-    appBar:
-    AppBar(
-      // automaticallyImplyLeading: false,
 
-      backgroundColor: kBlueDarkColor
-      ,
-      // foregroundColor: Colors.blue,
-
-      // brightness: Brightness.light,
-      elevation:8 ,
-      actions: [
-        Stack(children: [
-          Positioned(
-            top: 4,
-            right: 2,
-            child: CircleAvatar(radius: 10,
-                child: Text(
-                  '${blendedData.basketNumber}', style: const TextStyle(fontSize: 10),)),
-          ) ,
-          IconButton
-            (onPressed: (){
-            if (blendedData.basketNumber == 0) {
-
-            }else {
-              Navigator.pushNamed(context, CheckoutPage.id);
-            }
-          },
-            icon: const Icon(LineIcons.shoppingBasket),),
-        ]
-        )
-      ],
-      title: const Text("Your Orders", style: TextStyle(fontSize: 15),),
-      centerTitle: true,
-    ),
     floatingActionButton:
     FloatingActionButton(
       onPressed: () async {
@@ -168,89 +89,191 @@ class _OrdersPageState extends State<OrdersPage> {
       child: Container(
         width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
 
-        child: ListView.builder(
-            itemCount: productList.length,
-            itemBuilder: (context, index){
+        child: StreamBuilder<QuerySnapshot>(
+            stream:
+            FirebaseFirestore.instance
+                .collection('orders')
+                .where('sender_id', isEqualTo: emailConstant).where('type', isEqualTo: "Order")
+                .orderBy('deliveryTime', descending: false).orderBy('order_time', descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container(
 
-              return GestureDetector(
-                onTap: (){
+                );
+              } else {
+                var docs = snapshot.data!.docs;
 
-                  showTransactionFunc(context, orderStatusList[index], descList[index], priceList[index].toString(), transIdList[index], productList[index], "note", dateList[index], paidStatusList[index]);
+                productList = [];
+                priceList = [];
+                descList = [];
+                transIdList = [];
+                paidStatusListColor = [];
+                orderStatusList = [];
+                opacityList = [];
+                dateList = [];
+                paidStatusList = [];
+                for (var doc in docs) {
+                  productList.add(doc.get('items'));
+                  priceList.add(doc.get('total_price'));
+                  descList.add(doc.get('instructions'));
+                  transIdList.add(doc.get('orderNumber'));
+                  orderStatusList.add(doc.get('status'));
+                  dateList.add(doc.get('order_time').toDate());
 
-                },
-                child: Card(
-                  margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-                  shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
-                  shadowColor: kGreenThemeColor,
-                  elevation: 1.0,
-                  child: Column(
-                    children: [
+                  if (doc.get('paymentStatus') == 'paid') {
+                    paidStatusList.add('Paid');
+                    paidStatusListColor.add(kGreenThemeColor);
+                    opacityList.add(1.0);
+                  } else if (doc.get('paymentStatus') == 'cancelled') {
+                    paidStatusList.add('CANCELLED');
+                    paidStatusListColor.add(Colors.red);
+                    opacityList.add(0.0);
+                  } else {
+                    paidStatusList.add('UnPaid');
+                    paidStatusListColor.add(Colors.grey);
+                    opacityList.add(0.0);
+                  }
+                }
+                return productList.length == 0?Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
 
-                      ListTile(
-                        leading: const Icon(LineIcons.shippingFast, color: kGreenThemeColor,size: 25,),
-                        title:Text( "${productList[index][0]['description']}...", style: TextStyle(fontFamily: fontFamilyMont,fontSize: textSize)),
-                        trailing: Padding(
-                          padding: const EdgeInsets.only(right: 10, top: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(priceList[index], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
-                              const Text('Ugx', style: TextStyle(color: kGreenThemeColor, fontSize: 10),)
-                            ],
-                          ),
-                        ),
-                        // horizontalTitleGap: 0,Ugx
+                    Lottie.asset("images/pourJuice.json", height: 100),
+                    Text("No orders Yet", style: kNormalTextStyle.copyWith(color: kBlack),),
+                  ],
+                ): ListView.builder(
+                      itemCount: productList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            showTransactionFunc(
+                                context,
+                                orderStatusList[index],
+                                descList[index],
+                                priceList[index].toString(),
+                                transIdList[index],
+                                productList[index],
+                                "note",
+                                dateList[index],
+                                paidStatusList[index]);
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.fromLTRB(
+                                25.0, 8.0, 25.0, 8.0),
+                            color: orderStatusList[index] != "CANCELLED"? kPureWhiteColor:kBlack,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            shadowColor: kBlack,
+                            elevation: 1.0,
+                            child: Column(
+                              children: [
 
-
-                        // minVerticalPadding: 0,
-                      ),
-                      Stack(
-                        children: [
-                          ListTile(
-
-
-
-                          title:Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('${ DateFormat('EE, dd, MMM').format(dateList[index])}', style: TextStyle(color: Colors.grey[500], fontSize: 12),),
-                              Text('Order Status:  ${orderStatusList[index]}', style: const TextStyle(color: Colors.green, fontSize: 13),),
-                              paidStatusList[index] == 'paid'?Icon(Icons.check_circle_outlined, color: kGreenThemeColor,):Text("Payment: ${paidStatusList[index]}", style: TextStyle( color: paidStatusListColor[index], fontSize: 12),),
-                            ],
-                          ),
-                          trailing: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text("id: ${transIdList[index]}", style: TextStyle( color: Colors.grey[500], fontSize: 12),),
-
-                            ],
-                          ),
-                        ),
-                          Positioned(
-                              right: 4,
-                              bottom: 4,
-                              child: Opacity(
-                                opacity: opacityList[index],
-                                child: Container(
-                                  width: 100,
-                                  height: 20,
-                                  child: const Center(child: Text('Paid', style: const TextStyle(color: Colors.white, fontSize: 12),)),
-                                  decoration: const BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: const BorderRadius.all(Radius.circular(20))
+                                ListTile(
+                                  leading: const Icon(LineIcons.shippingFast,
+                                    color: kGreenThemeColor, size: 25,),
+                                  title: Text(
+                                      "${productList[index][0]['description']}...",
+                                      style: TextStyle(
+                                          fontFamily: fontFamilyMont,
+                                          fontSize: textSize)),
+                                  trailing: Padding(
+                                    padding: const EdgeInsets.only(
+                                        right: 10, top: 20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .end,
+                                      children: [
+                                        Text(CommonFunctions().formatter.format(priceList[index]),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14),),
+                                        const Text('Ugx', style: TextStyle(
+                                            color: kGreenThemeColor,
+                                            fontSize: 10),)
+                                      ],
+                                    ),
                                   ),
+                                  // horizontalTitleGap: 0,Ugx
+
+
+                                  // minVerticalPadding: 0,
                                 ),
-                              ))
+                                Stack(
+                                    children: [
+                                      ListTile(
 
-            ]),
 
-                      //_buildDivider(),
-                    ],
-                  ),
-                ),
-              );
+                                        title: Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Text('${ DateFormat('EE, dd, MMM')
+                                                .format(dateList[index])}',
+                                              style: TextStyle(
+                                                  color: Colors.grey[500],
+                                                  fontSize: 12),),
+                                            Text(
+                                              'Order Status:  ${orderStatusList[index]}',
+                                              style: const TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 13),),
+                                            paidStatusList[index] == 'Paid'
+                                                ? Icon(
+                                              Icons.check_circle_outlined,
+                                              color: kGreenThemeColor,)
+                                                : Text(
+                                              "Payment: ${paidStatusList[index]}",
+                                              style: TextStyle(
+                                                  color: paidStatusListColor[index],
+                                                  fontSize: 12),),
+                                          ],
+                                        ),
+                                        trailing: Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .end,
+                                          children: [
+                                            Text("id: ${transIdList[index]}",
+                                              style: TextStyle(
+                                                  color: Colors.grey[500],
+                                                  fontSize: 12),),
 
+                                          ],
+                                        ),
+                                      ),
+                                      Positioned(
+                                          right: 4,
+                                          bottom: 4,
+                                          child: Opacity(
+                                            opacity: opacityList[index],
+                                            child: Container(
+                                              width: 100,
+                                              height: 20,
+                                              child: const Center(child: Text(
+                                                'Paid', style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12),)),
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.green,
+                                                  borderRadius: const BorderRadius
+                                                      .all(Radius.circular(20))
+                                              ),
+                                            ),
+                                          ))
+
+                                    ]),
+
+                                //_buildDivider(),
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+              }
             }),
+
+
+
       ),
     ),
   );

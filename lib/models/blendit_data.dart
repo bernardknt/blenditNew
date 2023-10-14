@@ -1,6 +1,7 @@
 
 import 'package:blendit_2022/models/location_model.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'basketItem.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,11 @@ class BlenditData extends ChangeNotifier{
 
   List<BasketItem> basketItems = [];
   String location = '';
+  String providerId = "";
+  String providerImage= "";
+  String providerName= "";
+  GeoPoint providerCoordinate  = GeoPoint(0, 0);
+  String providerPhoneNumber = "";
   String deliveryInstructions = '';
   String chefInstructions = '';
   double locationOpacity = 0;
@@ -171,6 +177,17 @@ class BlenditData extends ChangeNotifier{
   void setLocation(String newlocation ){
     location = newlocation;
     locationOpacity = 1;
+    notifyListeners();
+  }
+
+  void setServiceProviderDetails(String phoneNumber, GeoPoint coordinates,id, image, name ){
+
+    providerId = id;
+    providerImage = image;
+    providerName = name;
+    providerPhoneNumber = phoneNumber;
+    providerCoordinate = coordinates;
+
     notifyListeners();
   }
   void setCustomerName(String newCustomerName){

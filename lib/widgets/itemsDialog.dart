@@ -135,3 +135,4 @@ showDialogFunc(context, img, title, desc, amount){
 
   });
 }
+

@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:blendit_2022/controllers/gym_tabs_controller.dart';
 import 'package:blendit_2022/controllers/customize_controller.dart';
 import 'package:blendit_2022/controllers/home_controller.dart';
+import 'package:blendit_2022/controllers/orders_controller_page.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/models/responsive/responsive_layout.dart';
 import 'package:blendit_2022/screens/about_challenge_page.dart';
 import 'package:blendit_2022/screens/about_us.dart';
+import 'package:blendit_2022/screens/ai_juice.dart';
 import 'package:blendit_2022/screens/allProducts_page.dart';
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
@@ -43,6 +45,7 @@ import 'package:blendit_2022/screens/onboarding_questions/quiz_page_name.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/paymentMode_page.dart';
 import 'package:blendit_2022/screens/phone_details_page.dart';
+import 'package:blendit_2022/screens/products_page.dart';
 import 'package:blendit_2022/screens/purchase_restored_page.dart';
 import 'package:blendit_2022/screens/qualityBot.dart';
 import 'package:blendit_2022/screens/rating_page.dart';
@@ -172,6 +175,7 @@ class MyApp extends StatelessWidget {
             HomePage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false,child: HomePage())),),
             ControlPage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),)),
             ControlPageWeb.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPageWeb()),)),
+            AiJuice.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> AiJuice(),)),
 
             // ControlPage.id: (context) => FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()),
             DetoxJuicePage.id: (context)=> DetoxJuicePage(),
@@ -186,7 +190,8 @@ class MyApp extends StatelessWidget {
             WelcomePageMobile.id: (context)=> WelcomePageMobile(),
             RegisterPage.id: (context)=> RegisterPage(),
             // BlenderOnboardingPage.id: (context)=>BlenderOnboardingPage(),
-            NewBlenderPage.id: (context)=>  NewBlenderPage(),
+            NewBlenderPage.id: (context) => ShowCaseWidget(builder: Builder(builder:(_)=> NewBlenderPage(),)),
+            // NewBlenderPage.id: (context)=>  NewBlenderPage(),
             InputPage.id: (context)=>InputPage(),
             SuccessPage.id: (context)=>SuccessPage(),
             SplashPage.id: (context)=>SplashPage(),
@@ -230,6 +235,8 @@ class MyApp extends StatelessWidget {
             RestorePurchasePage.id: (context)=> RestorePurchasePage(),
             QualityBot.id: (context)=> QualityBot(),
             MemoriesPage.id: (context)=> MemoriesPage(),
+            ProductsPage.id: (context)=> ProductsPage(),
+            OrdersTabController.id: (context)=> OrdersTabController(),
             ResponsiveLayout.id: (context)=> ResponsiveLayout(mobileBody: FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()), desktopBody: FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPageWeb())),
             
 

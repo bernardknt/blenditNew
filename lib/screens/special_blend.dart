@@ -4,6 +4,7 @@ import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/screens/execution_pages/goal_calendar_page.dart';
 import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -67,6 +68,8 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
   }
 
+
+
   @override
 
   void initState() {
@@ -81,7 +84,7 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
 
   void _startTyping() {
-    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 5), (timer) {
       if(!mounted){
         timer.cancel();
         return;
@@ -95,7 +98,7 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
   animationTimer() async{
     final prefs = await SharedPreferences.getInstance();
-    _timer = Timer(const Duration(milliseconds: 3000), () {
+    _timer = Timer(const Duration(milliseconds: 1000), () {
       prefs.setBool(kChallengeActivated, true);
       // Navigator.pop(context);
       opacityValue = 1.0;
@@ -288,11 +291,7 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
                                 } else {
                                   Provider.of<AiProvider>(context, listen: false).setGoalValue(customJuice);
-                                  // Navigator.pop(context);
-                                  // Navigator.push(context,
-                                  //     MaterialPageRoute(builder: (context)=> GoalCalendarPage())
-                                  // );
-                                  // Navigator.pop(context);
+
                                   showDialog(context: context, builder:
                                       ( context) {
                                     return Material(
@@ -301,8 +300,20 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                         height: 200,
                                         child: Column(
                                           children: [
-                                            CircularProgressIndicator(
-                                              // semanticsLabel: "Creating Goal Profile...",
+                                            // CircularProgressIndicator(),
+                                            // kLargeHeightSpacing,
+                                            CircularCountDownTimer(isReverse: true, width: 50, height: 50, duration: 50,
+                                              fillColor: kGreenThemeColor,
+                                              fillGradient: LinearGradient(colors: [Colors.yellow,kAppPinkColor,kGreenThemeColor]),
+                                              ringColor: kPureWhiteColor,onStart:(){
+
+
+                                              },
+
+                                              onComplete: (){
+                                                // Navigator.pushNamed(context, ControlPage.id);
+                                                Navigator.pop(context);
+                                              },
                                             ),
                                             kLargeHeightSpacing,
                                             Text("Getting the right ingredients ready", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),),
@@ -312,6 +323,9 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                       )),
                                     );
                                   });
+                                  print(customJuice);
+
+
                                   dynamic serverCallableVariable = await callableGoalUpdate.call(<String, dynamic>{
                                     'juice': customJuice,
                                     'userId':auth.currentUser!.uid,
@@ -327,13 +341,13 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                   );
 
 
+
                                 }
 
 
                               }, child: Text("Continue", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)),
                         ]
                     ),
-
                   )
                 ],
               ),

@@ -162,17 +162,16 @@ class _MapState extends State<Map> {
         String body;
         String heading;
         Color backgroundColor;
-        // if (status == 'submitted'){
-        //   imageString = 'images/success.json';
-        //   body ="Your Order has been Received!";
-        //   heading ="Order Submitted!";
-        //   backgroundColor = kBlueDarkColor;
-        //   print('ORDER SUBMITTED');
-        //   showDialogue(imageString, body, heading, backgroundColor);
-        //
-        //
-        // }else
-          if (status == 'preparing'){
+        if (status == 'submitted'){
+          imageString = 'images/success.json';
+          body ="Your Order has been Received!";
+          heading ="Order Submitted!";
+          backgroundColor = kBlueDarkColor;
+          print('ORDER SUBMITTED');
+          showDialogue(imageString, body, heading, backgroundColor);
+
+
+        }else if (status == 'preparing'){
           imageString = 'images/cook.json';
           body ="Your is being Prepared!";
           heading ="Preparing Your Order";
@@ -264,6 +263,7 @@ class _MapState extends State<Map> {
       'paymentMethod': 'cash',
       'paymentStatus': 'pending',
       'rating':0,
+      'type':"Order",
       'rating_comment': '',
       'hasRated': false,
       'distance': Provider.of<BlenditData>(context, listen: false).distance,

@@ -1,7 +1,5 @@
 import 'package:blendit_2022/screens/blender_page.dart';
 import 'package:blendit_2022/screens/blender_page_salad.dart';
-import 'package:blendit_2022/screens/loyalty_page.dart';
-import 'package:blendit_2022/screens/settings_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

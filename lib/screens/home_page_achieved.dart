@@ -123,7 +123,7 @@ class _HomePageAchievedState extends State<HomePageAchieved> {
                 children: [
                   Row(
                     children: [
-                      Text('$name, commit \nand Challenge Yourself', textAlign:TextAlign.start , style: kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 20),),
+                      Text('$name, Pick a Gym \nand Challenge Yourself', textAlign:TextAlign.start , style: kHeading2TextStyleBold.copyWith(color: kBlack, fontSize: 20),),
                       Lottie.asset('images/workout3.json', height: 70, width: 100, fit: BoxFit.cover,),
                     ],
                   ),

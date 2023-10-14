@@ -4,6 +4,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:blendit_2022/models/service_providers_model.dart';
 import 'package:blendit_2022/screens/calendar_page.dart';
 import 'package:blendit_2022/screens/challenge_page.dart';
 import 'package:blendit_2022/screens/photo_onboarding.dart';
@@ -31,11 +32,13 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 import '../screens/ios_onboarding.dart';
 import '../screens/make_payment_page.dart';
+import '../screens/success_appointment_create.dart';
 import '../screens/success_challenge_done.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../widgets/InputFieldWidget.dart';
 import 'ai_data.dart';
+import 'blendit_data.dart';
 import 'firebase_functions.dart';
 
 
@@ -971,6 +974,88 @@ class CommonFunctions {
     );
 
   }
+
+  Future<void> cancelOrderStatus(String documentId) async {
+    try {
+      // Get the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Reference to the specific document in the 'orders' collection
+      DocumentReference orderRef = firestore.collection('orders').doc(documentId);
+
+      // Update the 'paymentStatus' field to 'Cancelled'
+      await orderRef.update({
+        // 'paymentStatus': 'Cancelled',
+        'status':"CANCELLED"
+
+      });
+
+
+      print('Payment status updated to Cancelled for document ID: $documentId');
+    } catch (e) {
+      print('Error updating payment status: $e');
+    }
+  }
+  CollectionReference userOrder = FirebaseFirestore.instance.collection('orders');
+  Future<void> uploadAppointment (context,DateTime deliverTime,String chef_note, String deliverInstructions, String newLocation, String phoneNumber, bool loyaltyApplied, double totalPrice, String type, String customerName, String orderId,List<ServiceProviderItem> products, String providerId, String providerNumber, GeoPoint providerCoordinates, String providerImage, String providerName  )
+  async {
+
+    final prefs =  await SharedPreferences.getInstance();
+    // var products = Provider.of<BlenditData>(context, listen: false).basketItems;
+    var dateNow = DateTime.now();
+
+
+    return userOrder.doc(orderId)
+        .set({
+      'client': customerName,
+      //prefs.getString(kFullNameConstant),
+      'client_phoneNumber': phoneNumber, // John Doe
+      'chef_note': chef_note, // Stokes and Sons
+      'instructions': deliverInstructions,
+      'sender_id': prefs.getString(kEmailConstant),
+      'location': newLocation,
+      'deliveryTime': deliverTime,
+      'orderNumber': orderId,
+      'paymentMethod': 'cash',
+      'paymentStatus': 'pending',
+      'rating':0,
+      'rating_comment': '',
+      'hasRated': false,
+      'distance': 0,
+      'providerName':providerName,
+      'status': 'submitted',
+      'total_price': totalPrice,
+      'image': providerImage,
+      //Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee,
+      'order_time': dateNow,
+      'prepareStartTime':dateNow,
+      'prepareEndTime':dateNow,
+      'chef': 'none',
+      'loyaltyApplied': loyaltyApplied,
+      'serviceProvider': providerId,
+      'serviceNumber': providerNumber,
+      'cord': providerCoordinates,
+
+      'token': prefs.getString(kToken),
+      'type': "Appointment",
+      'phoneNumber': prefs.getString(kPhoneNumberConstant),
+      'items': [for(var i = 0; i < products.length; i ++){
+        'product': products[i].product,
+        'quantity': products[i].quantity,
+        'totalPrice': products[i].amount,
+      }
+      ]
+    }).whenComplete(() => Navigator.pushNamed(context, SuccessPageNew.id))
+
+
+
+
+        .catchError((error) {
+      Get.snackbar("Error Placing Order", "Ooops something seems to have gone wrong. Check your internet");
+      print(error);
+    } );
+  }
+
 
   makeRevenueCatPayment(context, customerID,productStoreId, price, title, duration, transactionId) async{
 

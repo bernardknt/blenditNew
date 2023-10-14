@@ -66,7 +66,7 @@ class _SuccessPageNewState extends State<SuccessPageNew> {
           children: [
             Lottie.asset('images/challenges.json', height: 150, width: 150, fit: BoxFit.cover ),
             kSmallHeightSpacing,
-            Center(child: Text('Creating Your Challenge',textAlign: TextAlign.center, style: kNormalTextStyle)),
+            Center(child: Text('Creating Your Appointment',textAlign: TextAlign.center, style: kNormalTextStyle)),
             // kSmallHeightSpacing,
             // Lottie.asset('images/challenge.json', height: 50, width: 150,),
 

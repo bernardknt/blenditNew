@@ -1,22 +1,20 @@
 
-
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/widgets/itemCards.dart';
 import 'package:blendit_2022/widgets/itemsDialog.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:line_icons/line_icons.dart';
 
-class AllProductsPage extends StatefulWidget {
-  static String id = 'allProdcucts_page';
+class ProductsPage extends StatefulWidget {
+  static String id = 'product_page';
 
   @override
-  _AllProductsPageState createState() => _AllProductsPageState();
+  _ProductsPageState createState() => _ProductsPageState();
 }
 
 
-class _AllProductsPageState extends State<AllProductsPage> {
+class _ProductsPageState extends State<ProductsPage> {
 
 
   Future<dynamic> getDetoxJuices() async {
@@ -26,7 +24,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
     priceList = [];
     final detoxJuices = await FirebaseFirestore.instance
         .collection('items')
-        .where('quantity', isGreaterThan: 0)
+        .where('category', isEqualTo: 'products')
         .where('available', isEqualTo: true)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -57,6 +55,8 @@ class _AllProductsPageState extends State<AllProductsPage> {
     // TODO: implement initState
     super.initState();
     getDetoxJuices();
+
+
   }
 
   // Variables
@@ -74,60 +74,26 @@ class _AllProductsPageState extends State<AllProductsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Products'),
+        title: Text('Juice and Smoothies'),
         backgroundColor: kBlueDarkColor,
       ),
       body:
-      SafeArea(
-        child: Column(
-          children: [
-            
-            Container(
-              padding: EdgeInsets.all(10),
-                child: searchBar()), 
-            SizedBox(height: 20,),
-            Expanded(
-              child: ListView.builder(
 
-                  itemCount: imgList.length,
-                  itemBuilder: (context, index){
-                    return GestureDetector(
-                      onTap: (){
-                        showDialogFunc(context, imgList[index], titleList[index], descList[index], priceList[index]);
+      ListView.builder(
 
-                      },
-                      child: ItemCard(imgList: imgList, titleList: titleList, width: width, descList: descList, index: index, priceList: priceList,),
+          itemCount: imgList.length,
+          itemBuilder: (context, index){
+            return
+              GestureDetector(
+                onTap: (){
+                  showDialogFunc(context, imgList[index], titleList[index], descList[index], priceList[index]);
 
-                    );
-                  }),
-            ),
-          ],
-        ),
-      ),
+                },
+                child: ItemCard(imgList: imgList, titleList: titleList, width: width, descList: descList, index: index, priceList: priceList,),
+
+              );
+          }),
     );
-  }
-  TextField searchBar() {
-    return TextField(
-      onChanged: searchProducts,
-      decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          fillColor: Colors.white,
-          filled: true,
-          contentPadding:EdgeInsets.symmetric(horizontal: 20),
-          prefixIcon: Icon(LineIcons.search),
-          hintText: 'Chicken Salad'
-
-      ),
-    );
-  }
-
-  void searchProducts(String query) {
-    final product = descList.where((element) {
-      return false;
-    });
   }
 }
-
 

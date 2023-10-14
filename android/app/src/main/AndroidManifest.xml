@@ -7,7 +7,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
    <application
-        android:label="Nutri"
+        android:label="Blendit"
         android:icon="@mipmap/ic_launcher">
 
        <meta-data android:name="com.google.android.geo.API_KEY"

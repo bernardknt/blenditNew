@@ -27,6 +27,7 @@ import 'package:provider/provider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import '../controllers/orders_controller_page.dart';
 import '../main.dart';
 import '../models/responsive/dimensions.dart';
 import '../models/responsive/responsive_layout.dart';
@@ -105,7 +106,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   void tutorialShow ()async{
     final prefs = await SharedPreferences.getInstance();
     tutorialDone = prefs.getBool(kIsTutorial2Done) ?? false;
-    if (tutorialDone == false){
+    if (tutorialDone== false){
       initialId = 'feature1';
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         FeatureDiscovery.discoverFeatures(context,
@@ -332,8 +333,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
         enablePulsingAnimation: true,
         barrierDismissible: false,
         pulseDuration: const Duration(seconds: 1),
-        title: const Text('Step 3: Start Blending'),
-        description: const Text('When you are SATISFIED with your recipe. Tap the Start Blending Button to save your selection, ready to be made'),
+        title: const Text('Use Recipe Or Place an Order'),
+        description: const Text('Follow the Recipe but If you cant make it yourself, we shall make it and deliver to you.', style: TextStyle(fontSize: 16),),
         contentLocation: ContentLocation.above,
         backgroundColor: Colors.teal,
         targetColor: Colors.yellow,
@@ -389,11 +390,11 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                     openDuration: Duration(seconds: 1),
                     overflowMode: OverflowMode.extendBackground,
                     enablePulsingAnimation: true,
-                    barrierDismissible: false,
+                    barrierDismissible: true,
                     pulseDuration: Duration(seconds: 1),
-                    title: Text('Step 1: Add Ingredients'),
-                    description: Text('Tap the Add Ingredients Button and Select the ingredients you want to add to your Blender'),
-                    contentLocation: ContentLocation.above,
+                    title: Text('Personalized Natural Remedies'),
+                    description: Text('Blendit allows you to get the perfect recipe to help you sort whatever you need. Simply Tap on the blender.', style: TextStyle(fontSize: 16),),
+                    contentLocation: ContentLocation.below,
                     backgroundColor: Colors.black,
                     targetColor: Colors.green,
                     featureId: 'feature2',
@@ -527,8 +528,9 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                   enablePulsingAnimation: true,
                   barrierDismissible: false,
                   pulseDuration: Duration(seconds: 1),
-                  title: Text('Quick Tour'),
-                  description: Text('Welcome $firstName 🥳. Your new Health Journey starts here. Let us show you how Blendit Works '),
+                  title: Text('Welcome $firstName 🥳'),
+                  description: Text('Have you felt unwell with flu or cold, or wanted to get a healthy option for that weight, or Skin?', style: TextStyle(fontSize: 16),),
+                 // description: Text(' Your new Health Journey starts here. Let us show you how Blendit Works '),
                   contentLocation: ContentLocation.above,
                   backgroundColor: kBlueDarkColor,
                   targetColor: kBiegeThemeColor,
@@ -655,8 +657,8 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                           enablePulsingAnimation: true,
                           barrierDismissible: false,
                           pulseDuration: Duration(seconds: 1),
-                          title: Text('Step 2: See Health Benefits '),
-                          description: Text('Long Press on any ingredient to see its Health Benefits as you add it to your blender'),
+                          title: Text('Describe What You Want'),
+                          description: Text('Flu? Fatigue? Weight loss? High Blood Pressure?..Blendit will generate a personalized recipe instantly!', style: TextStyle(fontSize: 16),),
                           contentLocation: ContentLocation.above,
                           backgroundColor: Colors.pink,
                           targetColor: Colors.black,
@@ -710,30 +712,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                           Text('Price', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('Ugx ${formatter.format(blendedData.juicePrice)}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
                           const SizedBox(height: 100,),
-                          // DescribedFeatureOverlay(
-                          //   openDuration: const Duration(seconds: 1),
-                          //   overflowMode: OverflowMode.extendBackground,
-                          //   enablePulsingAnimation: true,
-                          //   barrierDismissible: false,
-                          //   pulseDuration: const Duration(seconds: 1),
-                          //   title: const Text('And Finally'),
-                          //   description: Text('$firstName If you want something specialized. Click the SURPRISE ME button to see our Categories of unique juices for different things.\n'),
-                          //   contentLocation: ContentLocation.trivial,
-                          //   backgroundColor: kBlueDarkColor,
-                          //   targetColor: kBiegeThemeColor,
-                          //   featureId: 'feature5',
-                          //   tapTarget: Lottie.asset('images/juiceBlender.json', width: 50),
-                          //   child: GestureDetector
-                          //     (onTap: (){
-                          //     // Navigator.pushNamed(context, QuizQuestions.id);
-                          //     // Navigator.pushNamed(context, ChooseJuicePage.id);
-                          //     // Navigator.pushNamed(context, GoalsPage.id);
-                          //     Navigator.push(context,
-                          //         MaterialPageRoute(builder: (context)=> SpecialBlendAi())
-                          //     );
-                          //   },
-                          //     child:
-                              //Lottie.asset('images/juiceBlender.json', width: 50),
+
                               blendedData.basketNumber == 0? Container():
                               Stack(children: [
                                   Positioned(
@@ -779,31 +758,40 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                           var status = item.get('status');
                                           DateTime deliveryDateTime = deliveryTimestamp.toDate();
                                           // Check if deliveryDateTime is today
-                                          if (isSameDay(deliveryDateTime, DateTime.now())&& status!= 'delivered') {
-                                            print(status);
-                                            activeOrder = true;
-                                            dateList.add(item.get('deliveryTime').toDate());
-                                            statusList.add(item.get('status'));
-                                          }else{
+                                          if (status!= 'CANCELLED'){
+                                            if (status!= 'delivered') {
+                                              print(status);
+                                              activeOrder = true;
+                                              dateList.add(item.get('deliveryTime').toDate());
+                                              statusList.add(item.get('status'));
+                                              print(statusList);
+                                            }else{
+                                              activeOrder = false;
+
+                                            }
+                                          } else{
                                             activeOrder = false;
                                           }
+
                                           // You can add other logic related to processing data here
                                         }
                                       }
                                       return
-                                        activeOrder!=true ? Container():GestureDetector(
+                                        activeOrder==false ? Container():
+                                        GestureDetector(
                                           onTap: (){
-                                            Navigator.pushNamed(context, OrdersPage.id);
+                                            Navigator.pushNamed(context, OrdersTabController.id);
                                           },
                                           child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                             children:[
                                               statusList[0]=="submitted"?Lottie.asset("images/freeChat.json", height: 20):
+                                              statusList[0]=="preparing"?Lottie.asset("images/cook.json", height: 80):
                                               statusList[0]=="Ready for Delivery"?Lottie.asset("images/package.json", height: 80):
                                               statusList[0]=="delivering"?Lottie.asset("images/deliver.json", height: 50):
-                                              Lottie.asset("images/bilungo.json", height: 80),
-                                              Text('${dateList.length} Active Order\n${ DateFormat('EE, dd MMM\nkk:mm').format(dateList[0])}', style: kNormalTextStyle.copyWith(color: kBlack),),
-                                              Text('${statusList[0]}', style: kNormalTextStyle.copyWith(color: kGreenThemeColor),),
+                                              Container(),
+                                              statusList[0]=="CANCELLED"?Container():Text('${dateList.length} Active Order\n${ DateFormat('EE, dd MMM\nkk:mm').format(dateList[0])}', style: kNormalTextStyle.copyWith(color: kBlack),),
+                                              statusList[0]=="CANCELLED"?Container():Text('${statusList[0]}', style: kNormalTextStyle.copyWith(color: kGreenThemeColor),),
                                             ]
                                       ),
                                         );

@@ -135,7 +135,7 @@ class _QuizPage5State extends State<QuizPage5> {
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.only(top:50.0, right: 10, left: 10),
-                      child: Text('Which of these goals would you want Nutri to help you achieve?',
+                      child: Text('Which of these goals would you want to help you achieve?',
                           textAlign: TextAlign.center, style:kHeading2TextStyleBold.copyWith(color: kPureWhiteColor, fontSize: 16)),
                     ),),
                   height: 150,

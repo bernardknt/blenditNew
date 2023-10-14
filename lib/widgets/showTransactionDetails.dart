@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/screens/mobileMoney.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/paymentButtons.dart';
@@ -11,48 +12,55 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../utilities/font_constants.dart';
 import 'orderedContentsWidget.dart';
 
 
-showTransactionFunc(context, orderStatus, description, price, transactionList, product, note, time, paidStatus){
+showTransactionFunc(context, orderStatus, description, price, transactionId, product, note, time, paidStatus){
   String formattedDate = DateFormat('EE, dd, MM– kk:mm aaa').format(time);
 
 
-  CollectionReference customerOrderStatus = FirebaseFirestore.instance.collection('orders');
-  Future<void> changeOrderStatus() {
-    // Call the user's CollectionReference to add a new user
-    return customerOrderStatus.doc(transactionList).update({
-      "status": "preparing",
-      "prepareStartTime": DateTime.now(),
-      "chef":"Salim"
-
-    })
-        .then((value) => print("Status Changed"))
-        .catchError((error) => print("Failed to change status: $error"));
-  }
 
   Timer _timer;
   return showDialog(context: context,barrierLabel: 'Items', builder: (context){
     return
       Stack(
-          children: [ListView.builder(
+          children: [
+
+            ListView.builder(
               shrinkWrap: true,
               itemCount: product.length,
               itemBuilder: (context, index){
                 return OrderedContentsWidget(productDescription: product[index]['description'], productName: product[index]['product'],quantity: product[index]['quantity'], orderIndex: index + 1, note: note,);
               }),
-            Positioned(
+            orderStatus == "submitted"||orderStatus == "preparing"?Positioned(
+                left: 30,
+                right: 20,
+                bottom: 100,
+
+                child: TextButton(onPressed: () {
+                  CommonFunctions().cancelOrderStatus(transactionId);
+                  Navigator.pop(context) ;
+                  Navigator.pop(context) ;
+
+
+
+                },child: Text("Cancel Order", style: kNormalTextStyle.copyWith(color: kBeigeColor,
+                    fontWeight: FontWeight.bold, fontSize: 14),),)):Container(),
+
+            paidStatus == "Paid" ? Container():Positioned(
               left: 30,
               right: 20,
               bottom: 20,
               child:
                 paymentButtons(lineIconFirstButton: CupertinoIcons.bubble_right, lineIconSecondButton: LineIcons.alternateWavyMoneyBill, continueFunction: ()async{
                   var prefs = await SharedPreferences.getInstance();
-                  
-                  
+
+
                   launch('tel://+256${prefs.getString(kSupportNumber)}');
 
-                }, continueBuyingText: 'Support', checkOutText: "Pay for Order", buyFunction: ()async{
+                },
+                    continueBuyingText: 'Support', checkOutText: "Pay for Order", buyFunction: ()async{
                   print(paidStatus);
                   if (paidStatus == 'paid'){
                     Navigator.pop(context);
@@ -70,7 +78,8 @@ showTransactionFunc(context, orderStatus, description, price, transactionList, p
                   }else{
                   var prefs = await SharedPreferences.getInstance();
                   prefs.setString(kBillValue, price);
-                  prefs.setString(kOrderId, transactionList);
+                  prefs.setString(kOrderId, transactionId);
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, MobileMoneyPage.id);
                   }
 

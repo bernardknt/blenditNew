@@ -1,5 +1,6 @@
 
 
+import 'package:blendit_2022/models/service_providers_model.dart';
 import 'package:blendit_2022/utilities/icons_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -15,7 +16,10 @@ class AiProvider extends ChangeNotifier{
   String userSex = '';
   String userId = '';
   List<Color> preferencesColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
+  List<Color> gymItemSelectedColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
   List preferencesSelected = [];
+  List <ServiceProviderItem> gymItemSelected = [];
+  double gymItemPrices = 0.0;
   List <String>preferencesIdSelected = [];
   DateTime userBirthday = DateTime.now();
   DateTime appointmentDate = DateTime.now();
@@ -64,6 +68,18 @@ class AiProvider extends ChangeNotifier{
   List dailyTarget = [];
 
 
+// Appointments Made
+  DateTime appointmentMadeDate = DateTime.now();
+  DateTime appointmentMadeTime = DateTime.now();
+  String appointmentMadeBeautician = "";
+  String appointmentMadeAppointmentId = "";
+  String appointmentMadeBeauticianId = "";
+  String appointmentMadeLocation = "";
+  String appointmentMadeBeauticianPhoneNumber = "";
+  double appointmentMadeBeauticianLatitude = 0;
+  double appointmentMadeBeauticianLongitude = 0;
+  List appointmentMadeBeauticianItems = [];
+  double appointmentMadeTotalFee = 0;
 
 
 
@@ -269,7 +285,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     notifyListeners();
   }
 
-  void setPreferencesBoxColor(index, color, name, id){
+  void setPreferencesBoxColor(index, Color color, name, id){
     print(name);
 
     if (color!= kGreenThemeColor){
@@ -296,6 +312,55 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
 
 
     }
+
+    notifyListeners();
+  }
+
+  void clearServiceProviderInfo(){
+    gymItemSelectedColorOfBoxes =  [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
+    gymItemSelected.clear();
+    gymItemPrices = 0.0;
+    notifyListeners();
+  }
+
+  void addTotalFeeForServiceProvider(ServiceProviderItem item){
+    gymItemPrices += (item.amount * item.quantity);
+    notifyListeners();
+  }
+  void subtractTotalFeeForServiceProvider(ServiceProviderItem item){
+    gymItemPrices -= (item.amount * item.quantity);
+    notifyListeners();
+  }
+
+  void setGymServiceBoxColor(index,Color color, ServiceProviderItem name){
+
+
+    if (color!= kGreenThemeColor){
+      gymItemSelected.add(name);
+      gymItemSelectedColorOfBoxes[index] = kGreenThemeColor;
+      addTotalFeeForServiceProvider(name);
+    }else {
+      gymItemSelectedColorOfBoxes[index] =kButtonGreyColor;
+      gymItemSelected.removeWhere((item) => item.product == name.product);
+      subtractTotalFeeForServiceProvider(name);
+     // selectedStocks.removeWhere((stock) => stock.id == item.id);
+
+    }
+    // if (preferencesIdSelected.isNotEmpty){
+    //   preferencesContinueColor = kGreenThemeColor;
+    //   if(preferencesIdSelected.length == 2){
+    //     targetsContinueColor = kGreenThemeColor;
+    //   } else {
+    //     targetsContinueColor = kFaintGrey;
+    //   }
+    //
+    // }else{
+    //   preferencesContinueColor = kCustomColor;
+    //
+    //   targetsContinueColor = kFaintGrey;
+    //
+    //
+    // }
 
     notifyListeners();
   }
@@ -359,6 +424,23 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
   }
   setCoach(name){
     coach = name;
+    notifyListeners();
+  }
+
+  void setAppointmentMade(date, time, location, beautician, phone, latitude, longitude, items, id, beauticianId, amountTotal){
+    appointmentMadeDate = date;
+    appointmentMadeTime = time;
+    appointmentMadeBeautician = beautician;
+    appointmentMadeAppointmentId = id;
+    appointmentMadeBeauticianId = beauticianId;
+    appointmentMadeLocation = location;
+    appointmentMadeBeauticianPhoneNumber = phone;
+    appointmentMadeBeauticianLatitude = latitude;
+    appointmentMadeBeauticianLongitude = longitude;
+    appointmentMadeBeauticianItems = items;
+    appointmentMadeTotalFee = amountTotal;
+
+
     notifyListeners();
   }
 }
