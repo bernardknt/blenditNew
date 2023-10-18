@@ -986,7 +986,8 @@ class CommonFunctions {
       // Update the 'paymentStatus' field to 'Cancelled'
       await orderRef.update({
         // 'paymentStatus': 'Cancelled',
-        'status':"CANCELLED"
+        'status':"CANCELLED",
+        'cancelled': true,
 
       });
 
@@ -1035,9 +1036,10 @@ class CommonFunctions {
       'serviceProvider': providerId,
       'serviceNumber': providerNumber,
       'cord': providerCoordinates,
-
+      'cancelled': false,
       'token': prefs.getString(kToken),
       'type': "Appointment",
+      'complete': false,
       'phoneNumber': prefs.getString(kPhoneNumberConstant),
       'items': [for(var i = 0; i < products.length; i ++){
         'product': products[i].product,

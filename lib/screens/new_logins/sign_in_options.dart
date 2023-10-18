@@ -87,7 +87,6 @@ class _SignInOptionsState extends State<SignInOptions> {
       // If the user doesnt exist
       if (userCredential.additionalUserInfo ?.isNewUser ?? false) {
 
-        // prefs.setString(user.displayName!,kFullNameConstant);
         prefs.setString(kFirstNameConstant,names[0]);
         prefs.setString(kFullNameConstant, names.join(" "));
         // This sets the unique identifier which we use when sending messages and emails

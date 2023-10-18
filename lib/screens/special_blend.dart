@@ -1,18 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:blendit_2022/models/ai_data.dart';
-import 'package:blendit_2022/screens/execution_pages/goal_calendar_page.dart';
-import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
+
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -220,9 +217,9 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                                 left: 0,
                                                 bottom: 3),
                                             decoration: BoxDecoration(
-                                              border: Border.all(color: kFontGreyColor, width: 1),
+                                              border: Border.all(color: kBackgroundGreyColor, width: 1),
                                               borderRadius: BorderRadius.circular(10),
-                                              // color: kBiegeThemeColor,
+                                              color: kBackgroundGreyColor,
                                             ),
                                             child:
                                             Padding(

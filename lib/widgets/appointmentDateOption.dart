@@ -178,47 +178,6 @@ class AppointmentOptionsDialog extends StatelessWidget {
                       ),
                     ),
 
-                    // TextButton.icon(onPressed: ()async{
-                    //   final selectedDate = await showDatePicker(
-                    //     context: context,
-                    //     initialDate: DateTime.now(),
-                    //     firstDate: DateTime(2023),
-                    //     lastDate: DateTime(2024),
-                    //   );
-                    //
-                    //   if (selectedDate == null) return;
-                    //
-                    //   final selectedTime = await showTimePicker(
-                    //     context: context,
-                    //     initialTime: TimeOfDay.now(),
-                    //   );
-                    //
-                    //   if (selectedTime == null) return;
-                    //     // deliveryTime = selectedTime;
-                    //     deliveryTime = DateTime(
-                    //       selectedDate.year,
-                    //       selectedDate.month,
-                    //       selectedDate.day,
-                    //       selectedTime.hour,
-                    //       selectedTime.minute,
-                    //     );
-                    //     Provider.of<BlenditData>(context, listen: false).setDeliveryDateTime(deliveryTime);
-                    //     print(deliveryTime);
-                    //   Navigator.pop(context);
-                    //   Navigator.pop(context);
-                    //   Navigator.pushNamed(context, DeliveryPage.id);
-                    //
-                    //
-                    // },
-                    //   style: TextButton.styleFrom(
-                    //     //elevation: ,
-                    //       shadowColor: kBlueDarkColor,
-                    //       shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(18)
-                    //       ),
-                    //       backgroundColor: kBlueDarkColor),icon: Icon(LineIcons.userClock, color: Colors.white,),
-                    //   label: Text('Choose Custom Time', style: TextStyle(fontWeight: FontWeight.bold,
-                    //       color: Colors.white), ), ),
                   ]
               ),
               // Color(0xFFF2efe4)

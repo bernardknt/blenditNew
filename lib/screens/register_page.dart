@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 
 import '../models/responsive/dimensions.dart';
+import 'onboarding_questions/quiz_page5.dart';
 
 
 
@@ -169,12 +170,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                   prefs.setBool(kIsTutorial2Done, false);
                                   prefs.setBool(kIsFirstBlending, true);
 
-                                  //Navigator.pushNamed(context, ControlPage.id);
-                                  // Navigator.pushNamed(context, BlenderOnboardingPage.id);
-
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context)=> WelcomeToNutri())
+                                      MaterialPageRoute(builder: (context)=> QuizPage5())
                                   );
+                                  // Navigator.push(context,
+                                  //     MaterialPageRoute(builder: (context)=> WelcomeToNutri())
+                                  // );
                                   // SAVE THE VALUES TO THE USER DEFAULTS AND DATABASE
                                 }else{
                                   setState(() {

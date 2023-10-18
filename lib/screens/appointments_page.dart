@@ -13,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../models/firebase_functions.dart';
+import '../models/responsive/dimensions.dart';
 import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../utilities/icons_constants.dart';
@@ -63,6 +65,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
   var productsList = [];
   var providerNumberList = [];
   var appointmentId = [];
+  var appointmentComplete = [];
   var note = [];
   var opacityList = [];
   var tokenList = [];
@@ -77,10 +80,11 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
   @override
 
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.6;
+    // double width = MediaQuery.of(context).size.width * 0.6;
+
 
     return Scaffold(
-        backgroundColor: kGreyLightThemeColor,
+        backgroundColor: kPureWhiteColor,
         floatingActionButton:
         FloatingActionButton(
           onPressed: () async {
@@ -96,13 +100,15 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
-        body: Container(
+        body: SizedBox(
+          width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
           child:
           StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('orders')
-                  .where('sender_id', isEqualTo: userId).where('type', isEqualTo: "Appointment").
-              orderBy('deliveryTime', descending: false).orderBy('order_time', descending: true)
+                  .where('sender_id', isEqualTo: userId).where('type', isEqualTo: "Appointment")
+                  .where('cancelled', isEqualTo: false)
+                  .orderBy('deliveryTime', descending: true).orderBy('order_time', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -142,6 +148,11 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                         providerIdList.add(appointment.get('serviceProvider'));
                         date.add(appointment.get('deliveryTime').toDate());
                         time.add(appointment.get('deliveryTime').toDate());
+                        if (appointment.get('complete') == false){
+                          appointmentComplete.add(false);
+                        }else{
+                          appointmentComplete.add(true);
+                        }
                         if (appointment.get('paymentStatus') == 'pending'){
                           opacityList.add(0.0);
                           pendingList.add(1.0);
@@ -275,16 +286,6 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                                   quantity: productsList[index][i]['quantity'],
                                                   productName: productsList[index][i]['product'],
                                                   price: productsList[index][i]['totalPrice']);
-
-                                                //Container();
-                                                // OrderedContentsWidget(
-                                                //   defaultFontSize: 12.0,
-                                                //
-                                                //   orderIndex: i + 1,
-                                                //   quantity: productsList[index][i]['quantity'],
-                                                //   productDescription: productsList[index][i]['description'],
-                                                //   productName: productsList[index][i]['product'],
-                                                //   price: productsList[index][i]['totalPrice']);
                                             }),
                                         TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
 
@@ -441,7 +442,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                               showCancelBtn: true,
                                               backgroundColor: kBlack,
                                               onConfirmBtnTap: (){
-                                                //FirebaseServerFunctions().removeAppointment(appointmentId[index]);
+                                                FirebaseServerFunctions().removeAppointment(appointmentId[index],'orders','cancelled', true);
                                                 Navigator.pop(context);
                                               }
                                           );
@@ -485,13 +486,15 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                     child: Container(
 
 
-                                      decoration: const BoxDecoration(
-                                          color: kAppPinkColor,
+                                      decoration: BoxDecoration(
+                                          color: appointmentComplete[index]== false?kAppPinkColor:kGreenThemeColor,
                                           borderRadius: BorderRadius.all(Radius.circular(6))
                                       ),
-                                      child: const Padding(
+                                      child: Padding(
                                         padding: EdgeInsets.all(3.0),
-                                        child: Text('BOOKED', style: kNormalTextStyleWhitePendingLabel,),
+                                        child: appointmentComplete[index]== false?
+                                        Text('BOOKED', style: kNormalTextStyleWhitePendingLabel,):
+                                        Text('Completed', style: kNormalTextStyleWhitePendingLabel,),
                                       ),
                                     ),
                                   ),

@@ -86,7 +86,7 @@ int price = 0;
     //backgroundColor: Colors.black87,
     body:
     Center(
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width >mobileWidth? screenDisplayWidth : MediaQuery.of(context).size.width,
 
         child: StreamBuilder<QuerySnapshot>(
@@ -94,7 +94,7 @@ int price = 0;
             FirebaseFirestore.instance
                 .collection('orders')
                 .where('sender_id', isEqualTo: emailConstant).where('type', isEqualTo: "Order")
-                .orderBy('deliveryTime', descending: false).orderBy('order_time', descending: true)
+                .orderBy('deliveryTime', descending: true).orderBy('order_time', descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {

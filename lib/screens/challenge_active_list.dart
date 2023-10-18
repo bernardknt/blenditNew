@@ -289,7 +289,7 @@ class _ChallengeActivePageState extends State<ChallengeActivePage> {
                                               showCancelBtn: true,
                                               backgroundColor: kBlueDarkColor,
                                               onConfirmBtnTap: (){
-                                               FirebaseServerFunctions().removeAppointment(challengeId[index]);
+                                               FirebaseServerFunctions().removeAppointment(challengeId[index], 'challenges', 'active', false);
                                                 Navigator.pop(context);
                                               }
                                           );

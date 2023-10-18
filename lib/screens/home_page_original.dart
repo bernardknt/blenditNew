@@ -4,6 +4,7 @@ import 'package:blendit_2022/screens/gyms_pages/categories.dart';
 import 'package:blendit_2022/screens/products_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
+import 'package:blendit_2022/widgets/gyms_and_store_onboarding.dart';
 import 'package:blendit_2022/widgets/itemsDialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -78,10 +79,16 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
   void defaultsInitiation () async{
     final prefs = await SharedPreferences.getInstance();
     String newName = prefs.getString(kFirstNameConstant) ?? 'Hi';
-
+    bool isFirstStoreVisit = prefs.getBool(kIsFirstStoreVisit) ?? true;
+    if(isFirstStoreVisit == true) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context)=> GymsAndServiceProviderOnboarding())
+      );
+    }
     setState(() {
       name = newName;
     });
+
   }
 
   void updateFirestoreCollection() async {
@@ -125,71 +132,67 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
           GestureDetector(
             onTap: ()
             async{
-              final prefs = await SharedPreferences.getInstance();
-
-              //var blendedDataModify = Provider.of<BlenditData>(context, listen: false);
-              Prediction? p = await PlacesAutocomplete.show(context: context,
-                  apiKey: kGoogleMapsApiKey,
-                  types: [],
-                  strictbounds: true,
-                  mode: Mode.overlay,
-                  location: Location(lat: 0.3173, lng: 32.5927), // 0.3172959363980288, 32.59267831534121
-                  radius: 30,
-                  //prefs.getInt(kCoverageDistance),
-                  language: 'en', components: [Component(Component.country, 'UG')]);
-              if (p != null){
-                // print(p.description);
-                location = p.description!;
-                // Provider.of<BlenditData>(context, listen: false).setLocation(p.description!);
-                GoogleMapsPlaces _places = GoogleMapsPlaces(
-                  apiKey: kGoogleMapsApiKey,
-                  //apiHeaders: await GoogleApiHeaders().getHeaders(),
-                );
-                PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId!);
-                final lat = detail.result.geometry!.location.lat;
-                final lng = detail.result.geometry!.location.lng;
-                final prefs = await SharedPreferences.getInstance();
-                // prefs.setString(kLocationName, p.description!);
-                // prefs.setDouble(kLocationLongitude, lng);
-                // prefs.setDouble(kLocationLatitude, lat);
-
-                return CoolAlert.show(
-                    context: context,
-                    type: CoolAlertType.success,
-                    widget: Column(
-                      children: [
-                       Text('Show results around $location', textAlign: TextAlign.center, style: kNormalTextStyle,),
-
-                      ],
-                    ),
-                    title: 'Update Location',
-
-                    confirmBtnColor: kAppPinkColor,
-                    confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
-                    lottieAsset: 'images/places.json', showCancelBtn: true, backgroundColor: kBlack,
-
-
-                    onConfirmBtnTap: (){
-                      setState((){
-                        // CommonFunctions().uploadUserLocation(lat, lng, p.description!);
-                        // Navigator.pop(context);
-                        // Navigator.pop(context);
-                        // Navigator.pushNamed(context, SpecialistListPage.id);
-
-
-                      });
-                    }
-
-
-                );
-
-              }
+              // final prefs = await SharedPreferences.getInstance();
+              //
+              // //var blendedDataModify = Provider.of<BlenditData>(context, listen: false);
+              // Prediction? p = await PlacesAutocomplete.show(context: context,
+              //     apiKey: kGoogleMapsApiKey,
+              //     types: [],
+              //     strictbounds: true,
+              //     mode: Mode.overlay,
+              //     location: Location(lat: 0.3173, lng: 32.5927), // 0.3172959363980288, 32.59267831534121
+              //     radius: 30,
+              //     //prefs.getInt(kCoverageDistance),
+              //     language: 'en', components: [Component(Component.country, 'UG')]);
+              // if (p != null){
+              //   // print(p.description);
+              //   location = p.description!;
+              //   // Provider.of<BlenditData>(context, listen: false).setLocation(p.description!);
+              //   GoogleMapsPlaces _places = GoogleMapsPlaces(
+              //     apiKey: kGoogleMapsApiKey,
+              //     //apiHeaders: await GoogleApiHeaders().getHeaders(),
+              //   );
+              //   PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId!);
+              //   final lat = detail.result.geometry!.location.lat;
+              //   final lng = detail.result.geometry!.location.lng;
+              //   final prefs = await SharedPreferences.getInstance();
+              //   // prefs.setString(kLocationName, p.description!);
+              //   // prefs.setDouble(kLocationLongitude, lng);
+              //   // prefs.setDouble(kLocationLatitude, lat);
+              //
+              //   return CoolAlert.show(
+              //       context: context,
+              //       type: CoolAlertType.success,
+              //       widget: Column(
+              //         children: [
+              //          Text('Show results around $location', textAlign: TextAlign.center, style: kNormalTextStyle,),
+              //
+              //         ],
+              //       ),
+              //       title: 'Update Location',
+              //
+              //       confirmBtnColor: kAppPinkColor,
+              //       confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
+              //       lottieAsset: 'images/places.json', showCancelBtn: true, backgroundColor: kBlack,
+              //
+              //
+              //       onConfirmBtnTap: (){
+              //         setState((){
+              //
+              //
+              //         });
+              //       }
+              //
+              //
+              //   );
+              //
+              // }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-                Lottie.asset('images/bilungo.json',
+                Lottie.asset('images/workout6.json',
                   height: 30,
                 ),
                 Flexible(

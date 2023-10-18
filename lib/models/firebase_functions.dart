@@ -16,13 +16,13 @@ class FirebaseServerFunctions {
   // Removing Appointment from the server
   final HttpsCallable callableRevenueCatPayment = FirebaseFunctions.instance.httpsCallable(kRevenueCatPayment);
 
-  Future <dynamic> removeAppointment(docId ){
+  Future <dynamic> removeAppointment(docId, collection, field, value ){
 
     return FirebaseFirestore.instance
-        .collection('challenges')
+        .collection(collection)
         .doc(docId)
         .update({
-      'active':  false
+      field:  value
     })
         .then((value) => print("Done"));
   }

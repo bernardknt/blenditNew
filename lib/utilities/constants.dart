@@ -48,6 +48,7 @@ String kExtrasButtonCategory = 'extras';
 // USER CONSTANTS
 String kFullNameConstant = 'name';
 String kFirstNameConstant = 'firstName';
+String kIsFirstStoreVisit = 'storeVisit';
 String kUserWeight = 'myWeight';
 String kUserHeight = 'myHeight';
 String kEmailConstant = 'email';

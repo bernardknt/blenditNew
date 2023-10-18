@@ -273,6 +273,7 @@ class _MapState extends State<Map> {
       'prepareStartTime':dateNow,
       'prepareEndTime':dateNow,
       'chef': 'none',
+      'cancelled': false,
       'loyaltyApplied': loyaltyApplied,
       'token': prefs.getString(kToken),
       'phoneNumber': prefs.getString(kPhoneNumberConstant),

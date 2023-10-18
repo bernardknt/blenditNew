@@ -11,6 +11,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/CommonFunctions.dart';
 import '../utilities/font_constants.dart';
+import '../widgets/InputFieldWidget.dart';
 import '../widgets/gliding_text.dart';
 import 'onboarding_questions/quiz_page1.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,13 @@ class WelcomeToNutri extends StatefulWidget {
 
 class _WelcomeToNutriState extends State<WelcomeToNutri> {
 
-
+  String email= '';
+  double changeInvalidMessageOpacity = 0.0;
+  String invalidMessageDisplay = 'Invalid Number';
+  String password = '';
+  String fullName = '';
+  String firstName = '';
+  String phoneNumber = '';
 
   late Timer _timer;
   var countryName = '';
@@ -44,7 +51,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
     initialCountry = Provider.of<AiProvider>(context,listen: false).favouriteCountry;
     name = prefs.getString(kFirstNameConstant) ?? "";
     Provider.of<AiProvider>(context, listen: false).setUseName(name);
-    inspiration = "Welcome to Blendit $name, My name is Lisa. Let me set you up. Start by selecting your country";
+    inspiration = "Welcome to Blendit $name, My name is Lisa. Let me set you up. Start by adding your Number";
     CommonFunctions().uploadUserTokenWithName(prefs.getString(kToken)!,prefs.getString(kFirstNameConstant), prefs.getString(kFullNameConstant) );
 
 
@@ -96,6 +103,7 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
 
     return Scaffold(
       backgroundColor: kPureWhiteColor,
+      // appBar: AppBar(),
       body: Container(
 
         padding: EdgeInsets.all(20),
@@ -174,28 +182,75 @@ class _WelcomeToNutriState extends State<WelcomeToNutri> {
                         alignLeft: false,
                       ),
                   kMediumWidthSpacing,
-                  ElevatedButton(
-                    // radius: 25,
-                    // backgroundColor: kCustomColor,
-                    onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      print(countryName);
-                      prefs.setInt(kNutriCount, 0);
-                      prefs.setBool(kIsTutorial1Done, false);
-                      prefs.setBool(kIsTutorial2Done, false);
-                      prefs.setString(kUserCountryName, countryName);
-                      prefs.setString(kUserCountryFlag, countryFlag);
+                  InputFieldWidget(labelText: ' Mobile Number', hintText: '77100100', keyboardType: TextInputType.number,
+                      onTypingFunction: (value){
+                    setState(() {
+                      if (value.split('')[0] == '7'){
+                        invalidMessageDisplay = 'Incomplete Number';
+                        if (value.length == 9 && value.split('')[0] == '7'){
+                          phoneNumber = value;
+                          phoneNumber.split('0');
+                          print(value.split('')[0]);
+                          print(phoneNumber.split(''));
+                          changeInvalidMessageOpacity = 0.0;
+                        } else if(value.length !=9 || value.split('')[0] != '7'){
+                          changeInvalidMessageOpacity = 1.0;
+                        }
+                      }else {
+                        invalidMessageDisplay = 'Number should start with 7';
+                        changeInvalidMessageOpacity = 1.0;
+                      }
+                    });
 
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=> QuizPage5())
-                      );
-                    },
-                    child:
-                    Text("CONTINUE", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)
+                    phoneNumber = value;
+                  }
+                  ),
 
-                  )
                 ],
               ),
+
+            ),
+            ElevatedButton(
+              // radius: 25,
+              // backgroundColor: kCustomColor,
+                onPressed: () async {
+                  if (phoneNumber != ""){
+                    final prefs = await SharedPreferences.getInstance();
+                    print(countryName);
+                    prefs.setInt(kNutriCount, 0);
+                    prefs.setString(kPhoneNumberConstant, phoneNumber);
+                    prefs.setBool(kIsTutorial1Done, false);
+                    prefs.setBool(kIsTutorial2Done, false);
+                    prefs.setString(kUserCountryName, countryName);
+                    prefs.setString(kUserCountryFlag, countryFlag);
+
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context)=> QuizPage5())
+                    );
+                    print("PErfecto");
+                  }else {
+                    print("No phone Number entered");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Ooops! Enter your phone Number',textAlign: TextAlign.center, style: kHeading2TextStyleBold,),
+                        content: Text('Enter your phone number to continue',textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(fontSize: 18)),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },);
+                  }
+
+                },
+                child:
+                Text("CONTINUE", style: kNormalTextStyle.copyWith(color: kPureWhiteColor),)
 
             )
           ],

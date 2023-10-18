@@ -49,21 +49,18 @@ class _WelcomePageMobileState extends State<WelcomePageMobile> {
       } else {
         prefs.setString(kPhoneNumberConstant, '');
         prefs.setString(kFullNameConstant, '');
-
       }
-
-
 
     });
   }
   bool userLoggedIn = false;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  var urlImages = ["images/child.jpg","images/funky.png", "images/7.png"];// MHM17 trends];
+  var urlImages = ["images/child.jpg","images/funky.png", "images/gym.png"];// MHM17 trends];
   var heights = double.maxFinite;
   var token = "";
 
   int newDots = 0;
-  var heading = ['A Special Blender that Works Like Magic', 'AI Powered Nutrition: For You', 'Take Photos Worth a Thousand Nutrients'];
+  var heading = ['A Special Blender that Works Like Magic', 'AI Powered Nutrition: For You', 'Get your Fitness & Wellness Pros in one place'];
 
   @override
   void initState() {
