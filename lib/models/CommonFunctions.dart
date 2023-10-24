@@ -998,7 +998,7 @@ class CommonFunctions {
     }
   }
   CollectionReference userOrder = FirebaseFirestore.instance.collection('orders');
-  Future<void> uploadAppointment (context,DateTime deliverTime,String chef_note, String deliverInstructions, String newLocation, String phoneNumber, bool loyaltyApplied, double totalPrice, String type, String customerName, String orderId,List<ServiceProviderItem> products, String providerId, String providerNumber, GeoPoint providerCoordinates, String providerImage, String providerName  )
+  Future<void> uploadAppointment (context,DateTime deliverTime,String chef_note, String deliverInstructions, String newLocation, String phoneNumber, bool loyaltyApplied, double totalPrice, String type, String customerName, String orderId,List<ServiceProviderItem> products, String providerId, String providerNumber, GeoPoint providerCoordinates, String providerImage, String providerName, List duration  )
   async {
 
     final prefs =  await SharedPreferences.getInstance();
@@ -1027,6 +1027,7 @@ class CommonFunctions {
       'status': 'submitted',
       'total_price': totalPrice,
       'image': providerImage,
+      'duration':duration,
       //Provider.of<BlenditData>(context, listen: false).totalPrice + Provider.of<BlenditData>(context, listen: false).deliveryFee,
       'order_time': dateNow,
       'prepareStartTime':dateNow,

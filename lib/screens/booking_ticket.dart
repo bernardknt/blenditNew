@@ -2,6 +2,7 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/widgets/gym_ordered_content_details.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -160,12 +161,20 @@ class _BookingTicketState extends State<BookingTicket> {
                     Text('Provider Details', style: kHeading2TextStyleBold,),
 
                     // phone button for beautician
-                    RoundIconButtonsWidget(onPressed: (){
-                     CommonFunctions().callPhoneNumber(aiData.appointmentMadeBeauticianPhoneNumber);
-                    }, iconImage: Icon(Icons.phone, size: 18,), title: 'Call ${aiData.appointmentMadeBeautician}', mainColor: kAppPinkColor,),
-                    RoundIconButtonsWidget(onPressed: (){
-                     CommonFunctions().openMap(aiData.appointmentMadeBeauticianLatitude,aiData.appointmentMadeBeauticianLongitude);
-                    }, iconImage: Icon(Icons.map_outlined, size: 18,), title: 'Get Directions', mainColor: kBlack,),
+                    // RoundIconButtonsWidget(onPressed: (){
+                    //  CommonFunctions().callPhoneNumber(aiData.appointmentMadeBeauticianPhoneNumber);
+                    // }, iconImage: Icon(Icons.phone, size: 18,), title: 'Call ${aiData.appointmentMadeBeautician}', mainColor: kAppPinkColor,),
+                    // RoundIconButtonsWidget(onPressed: (){
+                    //  CommonFunctions().openMap(aiData.appointmentMadeBeauticianLatitude,aiData.appointmentMadeBeauticianLongitude);
+                    // }, iconImage: Icon(Icons.map_outlined, size: 18,), title: 'Get Directions', mainColor: kBlack,),
+                    aiData.appointmentComplete == true?Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("This Appointment was Completed", style: kNormalTextStyle.copyWith(color: kGreenThemeColor),),
+                    ):RoundIconButtonsWidget(onPressed: (){
+                      CommonFunctions().goToLink(aiData.appointmentMadeBeauticianPhoneNumber);
+                    }, iconImage: Icon(FontAwesomeIcons.dumbbell, size: 14,color: kPureWhiteColor,), title: 'Attend Session', mainColor: kAppPinkColor,),
+
+
                     // RoundIconButtonsWidget(onPressed: (){
                     //
                     //   showModalBottomSheet(
@@ -265,7 +274,7 @@ class _BookingTicketState extends State<BookingTicket> {
                 child: Column(
                   children: [
 
-                    MaterialButton(
+                    aiData.appointmentComplete == true?Container(): MaterialButton(
                       minWidth: double.minPositive,
                       color: kFontGreyColor,
                       child: Text("Cancel Booking", style: kNormalTextStyleWhiteButtons.copyWith(fontSize: 12),),
@@ -284,7 +293,7 @@ class _BookingTicketState extends State<BookingTicket> {
                         }
                       },
                     ),
-                    TextButton(onPressed: (){
+                    aiData.appointmentComplete == true?Icon(Icons.check_circle, color: kGreenThemeColor,size: 80,):TextButton(onPressed: (){
                       showDialog(
                         context: context,
                         builder: (_) => AlertDialog(

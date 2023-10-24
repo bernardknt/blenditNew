@@ -1,7 +1,7 @@
 
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/utilities/constants.dart';
-import 'package:blendit_2022/widgets/showGymProvider.dart';
+import 'package:blendit_2022/screens/gyms_pages/showGymProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +27,15 @@ class SpecialistCategories extends StatelessWidget {
         required this.categoriesAbout,
         required this.categoriesPhoneNumber,
         required this.categoriesCoordinates,
-        required this.categoriesLocationImages
+        required this.categoriesLocationImages,
+        required this.categoriesSessionTime
 
       });
 
   final int categoriesNumber;
+
   final List categories;
+  final List categoriesSessionTime;
   final List categoryId;
   final List categoriesMainImage;
   final List<Map> categoriesProducts;
@@ -55,16 +58,18 @@ class SpecialistCategories extends StatelessWidget {
           return GestureDetector(
             onTap: ()async {
               Provider.of<AiProvider>(context, listen: false).clearServiceProviderInfo();
+              Provider.of<AiProvider>(context, listen: false).resetSelectedTimeValues();
               showGymProvider(context,
                   categoriesMainImage[index],
                   categories[index],
                   categoriesLocations[index],
                   categoriesProducts[index],
                   categoriesAbout[index],
-                categoriesPhoneNumber[index],
+                  categoriesPhoneNumber[index],
                   categoriesCoordinates[index],
                   categoriesLocationImages[index],
-                categoryId[index],
+                  categoryId[index],
+                categoriesSessionTime[index]
               );
 
             },
@@ -76,14 +81,7 @@ class SpecialistCategories extends StatelessWidget {
               margin: EdgeInsets.all(5),
               alignment: Alignment.bottomCenter,
               decoration: BoxDecoration(
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.white.withOpacity(0.4),
-                  //     spreadRadius: 1,
-                  //     blurRadius: 1,
-                  //     offset: Offset(0, 1), // changes position of shadow
-                  //   ),
-                  // ],
+
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.white,
                   image: DecorationImage(

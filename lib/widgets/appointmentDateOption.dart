@@ -71,7 +71,7 @@ class AppointmentOptionsDialog extends StatelessWidget {
                         Provider.of<BlenditData>(context, listen: false).setDeliveryDateTime(after);
                         // Navigator.pop(context);
                         // Navigator.pop(context);
-                        CommonFunctions().uploadAppointment(context, after,prefs.getString(kOrderReason)! , "", blendedData.location, prefs.getString(kPhoneNumberConstant)!, true, providersDataListen.gymItemPrices, "Appointment", prefs.getString(kFullNameConstant)!, prefs.getString(kOrderId)!, providersDataListen.gymItemSelected, blendedData.providerId, blendedData.providerPhoneNumber, blendedData.providerCoordinate, blendedData.providerImage, blendedData.providerName);
+                        CommonFunctions().uploadAppointment(context, after,prefs.getString(kOrderReason)! , "", blendedData.location, prefs.getString(kPhoneNumberConstant)!, true, providersDataListen.gymItemPrices, "Appointment", prefs.getString(kFullNameConstant)!, prefs.getString(kOrderId)!, providersDataListen.gymItemSelected, blendedData.providerId, blendedData.providerPhoneNumber, blendedData.providerCoordinate, blendedData.providerImage, blendedData.providerName, []);
                         // Navigator.pushNamed(context, SuccessPageNew.id);
                       }
                       else {
@@ -137,7 +137,7 @@ class AppointmentOptionsDialog extends StatelessWidget {
                           print(deliveryTime);
                           // Navigator.pop(context);
                           // Navigator.pop(context);
-                          CommonFunctions().uploadAppointment(context, deliveryTime,prefs.getString(kOrderReason)! , "", blendedData.location, prefs.getString(kPhoneNumberConstant)!, true, providersDataListen.gymItemPrices, "Appointment", prefs.getString(kFullNameConstant)!, prefs.getString(kOrderId)!, providersDataListen.gymItemSelected, blendedData.providerId, blendedData.providerPhoneNumber, blendedData.providerCoordinate, blendedData.providerImage, blendedData.providerName);
+                          CommonFunctions().uploadAppointment(context, deliveryTime,prefs.getString(kOrderReason)! , "", blendedData.location, prefs.getString(kPhoneNumberConstant)!, true, providersDataListen.gymItemPrices, "Appointment", prefs.getString(kFullNameConstant)!, prefs.getString(kOrderId)!, providersDataListen.gymItemSelected, blendedData.providerId, blendedData.providerPhoneNumber, blendedData.providerCoordinate, blendedData.providerImage, blendedData.providerName, []);
 
                           // Navigator.pushNamed(context, SuccessPageNew.id);
                         } else {

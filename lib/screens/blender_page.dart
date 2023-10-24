@@ -254,6 +254,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
   String initialId = 'feature';
   var dateList = [];
   var statusList = [];
+  var typeList = [];
   bool updateMe = true;
   String updateInfo = "There is a new update..";
   var formatter = NumberFormat('#,###,000');
@@ -752,13 +753,16 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                       } else {
                                         dateList = [];
                                         statusList = [];
+                                        typeList = [];
                                         var data = snapshot.data!.docs;
                                         for (var item in data) {
                                           Timestamp deliveryTimestamp = item.get('deliveryTime');
                                           var status = item.get('status');
                                           DateTime deliveryDateTime = deliveryTimestamp.toDate();
                                           // Check if deliveryDateTime is today
+                                          typeList.add(item.get('type'));
                                           if (status!= 'CANCELLED'){
+
                                             if (status!= 'delivered') {
                                               print(status);
                                               activeOrder = true;
@@ -780,12 +784,32 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                         activeOrder==false ? Container():
                                         GestureDetector(
                                           onTap: (){
-                                            Navigator.pushNamed(context, OrdersTabController.id);
+                                            showModalBottomSheet(
+                                                isScrollControlled: true, // Set this property to true
+                                                context: context,
+                                                builder: (context) {
+                                                  return Scaffold(
+                                                    appBar: AppBar(
+                                                      backgroundColor: kBackgroundGreyColor,
+                                                      elevation: 0,
+                                                      automaticallyImplyLeading: false,
+                                                    ),
+                                                    body: Scaffold(
+                                                        appBar: AppBar(
+                                                          foregroundColor: kBlack,
+                                                          backgroundColor:kBackgroundGreyColor,
+                                                          elevation: 0,
+                                                          automaticallyImplyLeading: true,
+                                                        ),
+                                                        body: OrdersTabController()),
+                                                  );
+                                                });
+                                            // Navigator.pushNamed(context, OrdersTabController.id);
                                           },
                                           child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                             children:[
-                                              statusList[0]=="submitted"?Lottie.asset("images/freeChat.json", height: 20):
+                                              typeList[0]=="Appointment"?Lottie.asset("images/workout5.json", height: 80):statusList[0]=="submitted"?Lottie.asset("images/freeChat.json", height: 20):
                                               statusList[0]=="preparing"?Lottie.asset("images/cook.json", height: 80):
                                               statusList[0]=="Ready for Delivery"?Lottie.asset("images/package.json", height: 80):
                                               statusList[0]=="delivering"?Lottie.asset("images/deliver.json", height: 50):

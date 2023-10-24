@@ -497,38 +497,7 @@ class _HomePageState extends State<HomePage> {
                                                   Column(
 
                                                     children: [
-                                                      // Padding(
-                                                      //   padding: const EdgeInsets.all(8.0),
-                                                      //   child: Row(
-                                                      //     children: [
-                                                      //      numberList[index] < 100? Row(
-                                                      //         children: [
-                                                      //           const Icon(Iconsax.people, color: kGreenThemeColor, size: 13,),
-                                                      //           Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
-                                                      //         ],
-                                                      //       ): Row(
-                                                      //        children: [
-                                                      //          Lottie.asset('images/flame.json', height: 20, fit: BoxFit.cover,),
-                                                      //          Text(" ${numberList[index]}", style: kNormalTextStyle.copyWith( fontSize: 13),),
-                                                      //        ],
-                                                      //      ),
-                                                      //
-                                                      //       kMediumWidthSpacing,
-                                                      //       challengeEndTimeList[index].day - DateTime.now().day <= 10 ? Row(
-                                                      //         children: [
-                                                      //           const Icon(Iconsax.ticket_expired, color: kAppPinkColor, size: 13,),
-                                                      //           Text(' ${challengeEndTimeList[index].day - DateTime.now().day} Days left', style: kNormalTextStyle.copyWith( fontSize: 13),),
-                                                      //         ],
-                                                      //       ):
-                                                      //           Row(
-                                                      //             children: [
-                                                      //               const Icon(Iconsax.drop3, color: kGreenThemeColor, size: 13,),
-                                                      //               Text("Live Now", style: kNormalTextStyle.copyWith( fontSize: 13, color: kGreenThemeColor),),
-                                                      //             ],
-                                                      //           ),
-                                                      //     ],
-                                                      //   ),
-                                                      // ),
+
                                                       Stack(
                                                         children: [
                                                           Container(

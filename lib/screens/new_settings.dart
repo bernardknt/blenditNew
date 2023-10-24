@@ -431,7 +431,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                       title:Text(name, style: kNormalTextStyle),
                       // trailing: Icon(Icons.keyboard_arrow_right),
                     ),
-
+                    _buildDivider(),
                     ListTile(
                       leading: Icon(Icons.phone, color: kGreenDarkColorOld,),
                       title:Text( phone, style: kNormalTextStyle),
@@ -460,7 +460,7 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                   ],
                 ),
               ),
-        Card(
+              Card(
           margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
           shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
           color: kAppPinkColor,
@@ -473,7 +473,27 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
               GestureDetector(
                 onTap: (){
 
-                  Navigator.pushNamed(context, OrdersTabController.id);
+                  // Navigator.pushNamed(context, OrdersTabController.id);
+                  showModalBottomSheet(
+                      isScrollControlled: true, // Set this property to true
+                      context: context,
+                      builder: (context) {
+                        return Scaffold(
+                          appBar: AppBar(
+                            backgroundColor: kBackgroundGreyColor,
+                            elevation: 0,
+                            automaticallyImplyLeading: false,
+                          ),
+                          body: Scaffold(
+                              appBar: AppBar(
+                                foregroundColor: kBlack,
+                                backgroundColor:kBackgroundGreyColor,
+                                elevation: 0,
+                                automaticallyImplyLeading: true,
+                              ),
+                              body: OrdersTabController()),
+                        );
+                      });
 
 
                 },

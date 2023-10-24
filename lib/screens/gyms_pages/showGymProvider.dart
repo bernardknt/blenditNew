@@ -23,24 +23,22 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slider_button/slider_button.dart';
 
-import 'appointmentDateOption.dart';
-import 'carousel_for_photo_widget.dart';
+import '../../widgets/appointmentDateOption.dart';
+import '../../widgets/carousel_for_photo_widget.dart';
 
 
 
-showGymProvider(context,
-    img, providerName, location, Map products, about, phoneNumber, coordinates, locationImages, id
+showGymProvider(context, img, providerName, location, Map products, about, phoneNumber, coordinates, locationImages, id, sessionTime
     ){
   var formatter = NumberFormat('#,###,000');
 
-  bool planActive = false;
+
 
   CollectionReference userOrder = FirebaseFirestore.instance.collection('challenges');
   CollectionReference planUpload = FirebaseFirestore.instance.collection('plans');
   String orderId = 'ch${uuid.v1().split("-")[0]}${DateTime.now().month}${DateTime.now().day}';
   String challengeCreateId = 'plan${uuid.v1().split("-")[0]}${DateTime.now().month}${DateTime.now().day}';
-
-
+  List boxElevation = [0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,];
   Timer _timer;
 
   Future<void> upLoadActualChallenges ( )async {
@@ -154,7 +152,7 @@ showGymProvider(context,
                           child: Column(
                             children: [
                               Text('Total Fee:', style: kNormalTextStyle.copyWith(color:kPureWhiteColor, fontSize: 12),),
-                              Text('${formatter.format(providersDataListen.gymItemPrices)} Ugx', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white),
+                              Text('${formatter.format(providersDataListen.gymItemPrices * providersDataListen.onlineAppointmentTimeArray.length)} Ugx', style: GoogleFonts.lato(fontWeight: FontWeight.bold, color: Colors.white),
                               ),
                             ],
                           ),
@@ -186,145 +184,13 @@ showGymProvider(context,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    TicketDots(mainColor: kBlueDarkColor, circleColor: kPureWhiteColor,backgroundColor: kPureWhiteColor,),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          flex:3,
-                          child:
-                          GestureDetector(
-                            onTap: (){
-                              showDialog(context: context,
-
-                                  builder: (context) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Card(
-                                                  color: kBiegeThemeColor,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Column(
-                                                      children: [
-                                                        Text(providerName,textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 25),),
-                                                        Text(about,textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 22),),
-                                                      ],
-                                                    ),
-                                                  )),
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              Text("Cancel",
-                                                style: kNormalTextStyle.copyWith(
-                                                    color: kPureWhiteColor),)
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                              );
-                              // Get.snackbar('This is a Days Challenge', about,
-                              //     snackPosition: SnackPosition.TOP,
-                              //     backgroundColor: kCustomColor,
-                              //     colorText: kBlack,
-                              //     icon: Icon(Icons.check_circle, color: kGreenThemeColor,));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Iconsax.clock, color: kPureWhiteColor,),
-                                kSmallWidthSpacing,
-                                Text('About', textAlign: TextAlign.center,style: kNormalTextStyle.copyWith(color:kBlack, ),
-
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex:1,
-                          child:
-                          GestureDetector(
-                            onTap: (){
-                              var available = "";
-                              // Navigator.pop(context);
-                              // CommonFunctions().openMap(prefs.getDouble(kBeauticianLocationLatitude)!, prefs.getDouble(kBeauticianLocationLongitude)!);
-
-
-
-                              Get.snackbar('Location of $providerName', location,
-                                  snackPosition: SnackPosition.TOP,
-                                  backgroundColor: kCustomColor,
-                                  colorText: kBlack,
-                                  icon: Icon(Icons.check_circle, color: kBlack,));
-                            },
-                            child: Icon(Iconsax.location, color: kBlack,),
-                          ),
-                        ),
-                        Expanded(
-                          flex:3,
-                          child:
-                          GestureDetector(
-                              onTap: (){
-                                showDialog(context: context,
-
-                                    builder: (context) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Material(
-                                          color: kBlack,
-                                          child:
-
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              CarouselPhotosWidget(urlImages: locationImages, height: 300,),
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              kLargeHeightSpacing,
-                                              Text("Cancel",
-                                                style: kNormalTextStyle.copyWith(
-                                                    color: kPureWhiteColor),)
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                );
-                              //  CarouselPhotosWidget(urlImages: styleDataDisplay.beauticianClients);
-                              },
-
-                              child: Icon(Iconsax.gallery, color: kBlack,)),
-                        ),
-
-                      ],
-                    ),
-                    TicketDots(mainColor: kBlueDarkColor, circleColor: kPureWhiteColor,backgroundColor: kPureWhiteColor,),
+                    Text(about,textAlign: TextAlign.justify, style: kNormalTextStyle.copyWith(color: kBlack),),
+                    providersDataListen.gymItemSelected.isEmpty?Container():kSmallHeightSpacing,
+                    providersDataListen.gymItemSelected.isEmpty?Container():Text("Select Time", textAlign: TextAlign.justify, style: kNormalTextStyle.copyWith(color:kGreenThemeColor, fontWeight: FontWeight.bold),),
+                    providersDataListen.gymItemSelected.isEmpty?Container():DateSelectionWidget(selectedTime: sessionTime,),
                     kLargeHeightSpacing,
-                    Text("Select Service", textAlign: TextAlign.justify,
-                      style: kNormalTextStyle.copyWith(color:kBlack),
-                    ),
+                    Text("Select Service", textAlign: TextAlign.justify, style: kNormalTextStyle.copyWith(color:kGreenThemeColor,fontSize: 18,  fontWeight: FontWeight.w400),),
+
                     SizedBox(
                       height: (60 * products.length/1.0) +20,
                       child: ListView.builder(
@@ -427,7 +293,7 @@ showGymProvider(context,
 
                     kLargeHeightSpacing,
                     kLargeHeightSpacing,
-                    providersDataListen.gymItemSelected.isEmpty?Container():
+                    providersDataListen.onlineAppointmentTimeArray.isEmpty?Container():
                     Center(
                       child: MobileMoneyPaymentButton(firstButtonFunction: ()async{
                         var itemsBought = [];
@@ -437,60 +303,24 @@ showGymProvider(context,
                         blendedData.setLocation(location);
                         blendedData.setServiceProviderDetails(phoneNumber, coordinates, id, img, providerName);
                             final prefs = await SharedPreferences.getInstance();
-                            prefs.setString(kBillValue, providersDataListen.gymItemPrices.toInt().toString() );
+                            prefs.setString(kBillValue,(providersDataListen.gymItemPrices * providersDataListen.onlineAppointmentTimeArray.length).toInt().toString() );
                             prefs.setString(kOrderReason, "${providerName}:\n${itemsBought.join(", ")}" );
                             prefs.setString(kOrderId, orderId );
                             print(providersDataListen.gymItemPrices.toString());
 
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return AppointmentOptionsDialog();
-                            });
-                      }, firstButtonText: "Book Service",
+                        CommonFunctions().uploadAppointment(context, providersDataListen.onlineAppointmentTime,prefs.getString(kOrderReason)! , "", blendedData.location, prefs.getString(kPhoneNumberConstant)!, true, providersDataListen.gymItemPrices * providersDataListen.onlineAppointmentTimeArray.length, "Appointment", prefs.getString(kFullNameConstant)!, prefs.getString(kOrderId)!, providersDataListen.gymItemSelected, blendedData.providerId, phoneNumber, blendedData.providerCoordinate, blendedData.providerImage, blendedData.providerName, providersDataListen.onlineAppointmentTimeArray);
+
+                        // showModalBottomSheet(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return AppointmentOptionsDialog();
+                        //     });
+                      }, firstButtonText: "Buy Ticket",
                       buttonTextColor: kPureWhiteColor,
                           lineIconFirstButton: Iconsax.maximize
                       ),
                     ),
-                    // SliderButton(
-                    //
-                    //
-                    //
-                    //   action: () async{
-                    //
-                    //     showModalBottomSheet(
-                    //         context: context,
-                    //         builder: (context) {
-                    //           return AppointmentOptionsDialog();
-                    //         });
-                    //     // final prefs = await SharedPreferences.getInstance();
-                    //     // prefs.setString(kBillValue, providersDataListen.gymItemPrices.toInt().toString() );
-                    //     // prefs.setString(kOrderReason, providerName );
-                    //     // prefs.setString(kOrderId, orderId );
-                    //     // print(providersDataListen.gymItemPrices.toString());
-                    //     // Navigator.pop(context);
-                    //     // Navigator.pushNamed(context, SuccessPageNew.id);
-                    //   },
-                    //   ///Put label over here
-                    //   label: Text(
-                    //     "Slide to Book Service",
-                    //     style: kHeading2TextStyleBold.copyWith(color: Colors.white),),
-                    //   icon: Lottie.asset('images/workout5.json', width: 70, height: 70, fit: BoxFit.cover),
-                    //
-                    //   //Put BoxShadow here
-                    //   boxShadow: BoxShadow(
-                    //     color: Colors.black,
-                    //     blurRadius: 2,
-                    //   ),
-                    //
-                    //
-                    //   width: double.maxFinite,
-                    //   radius: 50,
-                    //   buttonColor: kPureWhiteColor ,
-                    //   backgroundColor: kBlack,
-                    //   highlightedColor: Colors.black,
-                    //   baseColor: kGreenThemeColor,
-                    // ),
+
                   ],
                 ),
               ),
@@ -506,3 +336,104 @@ showGymProvider(context,
   });
 }
 
+class DateSelectionWidget extends StatelessWidget {
+
+  DateSelectionWidget({required this.selectedTime});
+  final DateTime selectedTime;
+  @override
+
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 180,
+        // width: 150,
+        child: ListView.builder(
+          itemCount: 10,
+          scrollDirection: Axis.horizontal,// You can change this number based on how many cards you want.
+          itemBuilder: (BuildContext context, int index) {
+
+            // Generate a unique date for each card (you can modify this logic as needed).
+            int currentMonth = DateTime.now().month;
+
+           //DateTime currentDate = selectedTime.add(Duration(days: index));
+            DateTime currentDate = DateTime( DateTime.now().year, currentMonth ,DateTime.now().day, selectedTime.hour, selectedTime.minute  );
+            print(DateFormat('dd/MMM/yyy kk:mm ').format(currentDate));
+            print(DateTime.now().month);
+            // Get current hour and minute values
+            int currentHour = DateTime.now().hour;
+            int currentMinute = DateTime.now().minute;
+
+            // Get selected hour and minute values
+            int selectedHour = selectedTime.hour;
+            int selectedMinute = selectedTime.minute;
+
+            // Check if current hour is less than selected hour
+            // or if current hour is equal to selected hour but current minute is less than selected minute
+            if (currentHour < selectedHour || (currentHour == selectedHour && currentMinute < selectedMinute)) {
+              print("THIS IS TRUE $currentHour < $selectedHour");
+              currentDate = currentDate.add(Duration(days: index));
+            } else {
+              print("THIS RUN");
+              currentDate = currentDate.add(Duration(days: index + 1));
+            }
+
+            return GestureDetector(
+
+              onTap: (){
+                Provider.of<AiProvider>(context, listen: false).setSelectedTimeValues(index, Provider.of<AiProvider>(context, listen: false).boxElevation[index], currentDate);
+
+              },
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Provider.of<AiProvider>(context).boxElevationSelectedColorOfBoxes[index], width: 2.0),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+
+                shadowColor: kGreenThemeColor,
+                elevation: Provider.of<AiProvider>(context).boxElevation[index],
+                //boxElevation[index],
+
+                margin: EdgeInsets.all(8.0),
+                child:
+
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('${ DateFormat('EEEE').format(currentDate)}', style: kNormalTextStyle.copyWith(fontSize: 20, color: Colors.blueAccent),),
+                        kSmallHeightSpacing,
+                        SizedBox(
+                           width: 90,
+
+                            child: _buildDivider()),
+                        Text('${ DateFormat('MMMM').format(currentDate)}', style: kNormalTextStyle,),
+                        kSmallHeightSpacing,
+
+                        CircleAvatar(
+                            backgroundColor: kBlack,
+                            child: Text('${currentDate.day}', style: TextStyle(fontSize: 18.0, color: kGreenThemeColor, fontWeight: FontWeight.bold),)),
+                        kSmallHeightSpacing,
+                        Text('${ DateFormat('kk:mm a').format(currentDate)}', style: kNormalTextStyle,),
+                      ],
+                    ),
+                  )
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Container _buildDivider(){
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0, ),
+      width: double.infinity,
+      height: 1.0,
+      color: kFontGreyColor,
+
+    );
+  }
+}

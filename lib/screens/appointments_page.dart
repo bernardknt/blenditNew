@@ -74,6 +74,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
   var pendingList = [];
   var isProductList = [];
   var totalList = [];
+  var numberOfDaysList = [];
   var token;
 
   var containerToDisplay = Padding(padding: EdgeInsets.all(10), child: Center(child: Text('You have no Appointments Scheduled', style: kHeadingTextStyle,),),);
@@ -129,6 +130,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                   opacityList = [];
                   providerNumberList = [];
                   totalList = [];
+                  numberOfDaysList = [];
 
                   var appointments = snapshot.data!.docs;
                   for (var appointment in appointments) {
@@ -140,12 +142,13 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                         imgList.add(appointment.get('image'));
                         productsList.add(appointment.get('items'));
                         note.add(appointment.get('chef_note'));
-                        providerNumberList.add(appointment.get('phoneNumber'));
+                        providerNumberList.add(appointment.get('serviceNumber'));
                         cordList.add(appointment.get('cord'));
                         appointmentId.add(appointment.get('orderNumber'));
                         bookingFeeList.add(appointment.get('total_price'));
                         providerNameList.add(appointment.get('providerName'));
                         providerIdList.add(appointment.get('serviceProvider'));
+                        numberOfDaysList.add(appointment.get('duration'));
                         date.add(appointment.get('deliveryTime').toDate());
                         time.add(appointment.get('deliveryTime').toDate());
                         if (appointment.get('complete') == false){
@@ -189,80 +192,14 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                           onTap: ()async{
                             final prefs = await SharedPreferences.getInstance();
 
-                            // prefs.setDouble(kBeauticianLocationLatitude, cordList[index].latitude);
-                            // prefs.setDouble(kBeauticianLocationLongitude, cordList[index].longitude);
-                            //
-                            // Provider.of<BeauticianData>(context, listen: false).clearBasket();
+
                             print(bookingFeeList);
                             print(productsList[index][0]['quantity']);
 
                             if (pendingList[index] == 1.0){
-                              print(isProductList);
-
-                              isProductList[index] == true ?
-                              CoolAlert.show(
 
 
-                                  context: context,
-                                  type:
-                                  CoolAlertType.success,
-                                  widget: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        Text('Complete this Product Purchase with ${providerNameList[index]} by paying ${formatter.format(totalList[index])}', style: kNormalTextStyle.copyWith(fontSize: 14
-                                        ), textAlign: TextAlign.center,),
-                                        TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
-                                        Text('Appointment Details', style: kNormalTextStyleSmallGrey,),
-
-                                        ListView.builder(
-
-
-                                            shrinkWrap: true,
-                                            itemCount: productsList[index].length,
-                                            itemBuilder: (context, i){
-                                              return Container();
-                                                // OrderedContentsWidget(
-                                                //   defaultFontSize: 12.0,
-                                                //
-                                                //   orderIndex: i + 1,
-                                                //   quantity: productsList[index][i]['quantity'],
-                                                //   productDescription:productsList[index][i]['product'] ,
-                                                //   productName: productsList[index][i]['description'],
-                                                //   price: productsList[index][i]['totalPrice']);
-                                            }),
-                                        TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
-
-                                        // Text('${productsList[index][0]['product']} - ${productsList[index][0]['description']}', style: kNormalTextStyleSmallGrey,)
-                                      ],
-                                    ),
-                                  ),
-                                  title: 'Buy Products',
-                                  confirmBtnText: 'Pay',
-
-                                  confirmBtnColor: kAppPinkColor,
-                                  confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
-                                  lottieAsset: 'images/products.json', showCancelBtn: true, backgroundColor: kPureWhiteColor,
-
-
-                                  onConfirmBtnTap: () async{
-                                    // Provider.of<StyleProvider>(context, listen:false).setBookingPrice(totalList[index], true);
-                                    // final prefs = await SharedPreferences.getInstance();
-                                    //
-                                    // setState((){
-                                    //
-                                    //   prefs.setString(kOrderId, appointmentId[index]);
-                                    //
-                                    //
-                                    //   Navigator.pop(context);
-                                    //   Navigator.pushNamed(context, MobileMoneyPage.id);
-                                    //
-                                    // });
-                                  }
-
-
-                              ) :
-
-                              CoolAlert.show(
+                               CoolAlert.show(
 
 
                                   context: context,
@@ -270,7 +207,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                   widget: SingleChildScrollView(
                                     child: Column(
                                       children: [
-                                        Text('Complete this appointment with ${providerNameList[index]} by paying Ugx ${formatter.format(totalList[index])}', style: kNormalTextStyle.copyWith(fontSize: 14
+                                        Text('Complete this appointment with ${providerNameList[index]} by paying Ugx ${formatter.format(totalList[index])} (${numberOfDaysList[index].length} days)', style: kNormalTextStyle.copyWith(fontSize: 14
                                         ), textAlign: TextAlign.center,),
                                         TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
                                         Text('Appointment Details', style: kNormalTextStyleSmallGrey,),
@@ -323,7 +260,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
 
                               Provider.of<AiProvider>(context, listen: false).setAppointmentMade(date[index], time[index], locationList[index], providerNameList[index], providerNumberList[index], cordList[index].latitude, cordList[index].longitude,
                                   productsList[index],
-                                  appointmentId[index], providerIdList[index], totalList[index]);
+                                  appointmentId[index], providerIdList[index], totalList[index], appointmentComplete[index]);
 
 
                               showModalBottomSheet(

@@ -31,7 +31,7 @@ class _OrdersTabControllerState extends State<OrdersTabController> {
 
           appBar:
           AppBar(
-            automaticallyImplyLeading: true,
+            automaticallyImplyLeading: false,
             // toolbarHeight: 30,
             foregroundColor: kBlueDarkColor,
             backgroundColor: kBackgroundGreyColor,

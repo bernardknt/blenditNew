@@ -34,6 +34,7 @@ import '../utilities/constants.dart';
 import '../utilities/font_constants.dart';
 import '../widgets/memories_page.dart';
 import 'customizationNewController.dart';
+import 'orders_controller_page.dart';
 
 
 class ControlPage extends StatefulWidget {
@@ -62,7 +63,9 @@ class _ControlPageState extends State<ControlPage> {
     // HomePageAchieved(),
 
 
+
     HomePageOriginal(),
+    OrdersTabController(),
     SettingsTabController()
   ];
   void defaultInitialization(){
@@ -124,17 +127,7 @@ class _ControlPageState extends State<ControlPage> {
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 gap: 4,
               ),
-                // GButton(
-                //   icon: CupertinoIcons.chat_bubble_text,
-                //   text: 'Nutri',
-                //   iconColor: kGreenThemeColor,
-                //   iconActiveColor: kBlack,
-                //   textColor: kBlack,
-                //   backgroundColor: kCustomColor,
-                //   iconSize: 24,
-                //   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                //   gap: 4,
-                // ),
+
                 GButton(
                   icon: Iconsax.shop ,
                   // text: 'Active Workouts',
@@ -143,6 +136,17 @@ class _ControlPageState extends State<ControlPage> {
                   iconActiveColor: Colors.white,
                   textColor: Colors.white,
                   backgroundColor: kBlueDarkColorOld,
+                  iconSize: 24,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  gap: 4,
+                ),
+                GButton(
+                  icon: Iconsax.ticket,
+                  text: 'Orders',
+                  iconColor: kGreenThemeColor,
+                  iconActiveColor: kBlack,
+                  textColor: kBlack,
+                  backgroundColor: kCustomColor,
                   iconSize: 24,
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   gap: 4,

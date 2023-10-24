@@ -60,7 +60,7 @@ showTransactionFunc(context, orderStatus, description, price, transactionId, pro
                   launch('tel://+256${prefs.getString(kSupportNumber)}');
 
                 },
-                    continueBuyingText: 'Support', checkOutText: "Pay for Order", buyFunction: ()async{
+                    continueBuyingText: 'Support', checkOutText: "Pay Order", buyFunction: ()async{
                   print(paidStatus);
                   if (paidStatus == 'paid'){
                     Navigator.pop(context);

@@ -17,7 +17,11 @@ class AiProvider extends ChangeNotifier{
   String userId = '';
   List<Color> preferencesColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
   List<Color> gymItemSelectedColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
+  List<Color> boxElevationSelectedColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor, ];
+  DateTime onlineAppointmentTime = DateTime.now();
+  List<DateTime> onlineAppointmentTimeArray = [];
   List preferencesSelected = [];
+  List boxElevation = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,];
   List <ServiceProviderItem> gymItemSelected = [];
   double gymItemPrices = 0.0;
   List <String>preferencesIdSelected = [];
@@ -80,6 +84,7 @@ class AiProvider extends ChangeNotifier{
   double appointmentMadeBeauticianLongitude = 0;
   List appointmentMadeBeauticianItems = [];
   double appointmentMadeTotalFee = 0;
+  bool appointmentComplete = false;
 
 
 
@@ -316,6 +321,28 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     notifyListeners();
   }
 
+  void setSelectedTimeValues(index,double elevatedButton,DateTime time){
+    if (elevatedButton== 0.0){
+      onlineAppointmentTime = time;
+      boxElevation[index] = 10.0;
+      boxElevationSelectedColorOfBoxes[index] = kGreenThemeColor;
+      onlineAppointmentTimeArray.add(time);
+    }else {
+      boxElevation[index] = 0.0;
+      onlineAppointmentTime = DateTime.now();
+      onlineAppointmentTimeArray.remove(time);
+      boxElevationSelectedColorOfBoxes[index] = kButtonGreyColor;
+    }
+    notifyListeners();
+  }
+  void resetSelectedTimeValues(){
+    boxElevation = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,];
+    onlineAppointmentTimeArray.clear();
+    boxElevationSelectedColorOfBoxes = [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor, ];
+    print("THIS CLEARING HAPPENED IN AI PROVIDER");
+    notifyListeners();
+  }
+
   void clearServiceProviderInfo(){
     gymItemSelectedColorOfBoxes =  [kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor,kButtonGreyColor];
     gymItemSelected.clear();
@@ -333,8 +360,6 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
   }
 
   void setGymServiceBoxColor(index,Color color, ServiceProviderItem name){
-
-
     if (color!= kGreenThemeColor){
       gymItemSelected.add(name);
       gymItemSelectedColorOfBoxes[index] = kGreenThemeColor;
@@ -343,25 +368,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
       gymItemSelectedColorOfBoxes[index] =kButtonGreyColor;
       gymItemSelected.removeWhere((item) => item.product == name.product);
       subtractTotalFeeForServiceProvider(name);
-     // selectedStocks.removeWhere((stock) => stock.id == item.id);
-
     }
-    // if (preferencesIdSelected.isNotEmpty){
-    //   preferencesContinueColor = kGreenThemeColor;
-    //   if(preferencesIdSelected.length == 2){
-    //     targetsContinueColor = kGreenThemeColor;
-    //   } else {
-    //     targetsContinueColor = kFaintGrey;
-    //   }
-    //
-    // }else{
-    //   preferencesContinueColor = kCustomColor;
-    //
-    //   targetsContinueColor = kFaintGrey;
-    //
-    //
-    // }
-
     notifyListeners();
   }
 
@@ -427,7 +434,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     notifyListeners();
   }
 
-  void setAppointmentMade(date, time, location, beautician, phone, latitude, longitude, items, id, beauticianId, amountTotal){
+  void setAppointmentMade(date, time, location, beautician, phone, latitude, longitude, items, id, beauticianId, amountTotal, complete){
     appointmentMadeDate = date;
     appointmentMadeTime = time;
     appointmentMadeBeautician = beautician;
@@ -439,6 +446,7 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     appointmentMadeBeauticianLongitude = longitude;
     appointmentMadeBeauticianItems = items;
     appointmentMadeTotalFee = amountTotal;
+    appointmentComplete = complete;
 
 
     notifyListeners();

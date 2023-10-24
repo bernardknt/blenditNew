@@ -58,6 +58,7 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
   var providerImagesGym = [];
   List<GeoPoint> coordinatesGym = [];
   var phoneNumberGym = [];
+  var sessionTime = [];
   var about = [];
   var backgroundColor = Color(0xFF202020);
   var backgroundVariantColor = Color(0xFF2e3032);
@@ -263,12 +264,13 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
-                            Text('Challenge Yourself (Gyms & Pros)', textAlign:TextAlign.start , style: kHeading2TextStyleBold.copyWith(color:kPureWhiteColor,fontWeight: FontWeight.bold),),
+                            Text('Challenge Yourself ( Workouts )', textAlign:TextAlign.start , style: kHeading2TextStyleBold.copyWith(color:kPureWhiteColor,fontWeight: FontWeight.bold),),
                             kSmallHeightSpacing,
                             Container(
                               height: 140,
                               width: double.maxFinite,
-                              child: StreamBuilder<QuerySnapshot>(
+                              child:
+                              StreamBuilder<QuerySnapshot>(
                                   stream: FirebaseFirestore.instance.collection('providers')
                                       .where('promote', isEqualTo: true)
                                       .snapshots(),
@@ -302,9 +304,10 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
                                         phoneNumberGym.add(event.get('phone'));
                                         providerImagesGym.add(event.get('placeImages'));
                                         coordinatesGym.add(event.get('cord'));
+                                        sessionTime.add(event.get('sessionTime').toDate());
                                       }
                                     }
-                                    return SpecialistCategories(categoriesNumber: itemsGym.length, categories: itemsGym, categoryId: providerId, categoriesMainImage: imagesGym, categoriesProducts: productsGym, categoriesLocations: locations, categoriesAbout: aboutGym, categoriesPhoneNumber: phoneNumberGym, categoriesCoordinates: coordinatesGym, categoriesLocationImages: providerImagesGym,);
+                                    return SpecialistCategories(categoriesNumber: itemsGym.length, categories: itemsGym, categoryId: providerId, categoriesMainImage: imagesGym, categoriesProducts: productsGym, categoriesLocations: locations, categoriesAbout: aboutGym, categoriesPhoneNumber: phoneNumberGym, categoriesCoordinates: coordinatesGym, categoriesLocationImages: providerImagesGym, categoriesSessionTime: sessionTime,);
                                   }),
                             ),
                             TextButton(child: Text("See more..", style: kHeading2TextStyleBold.copyWith(color: Colors.blue, )), onPressed: () {
