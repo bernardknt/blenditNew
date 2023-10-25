@@ -41,7 +41,7 @@ showTransactionFunc(context, orderStatus, description, price, transactionId, pro
                 child: TextButton(onPressed: () {
                   CommonFunctions().cancelOrderStatus(transactionId);
                   Navigator.pop(context) ;
-                  Navigator.pop(context) ;
+                  // Navigator.pop(context) ;
 
 
 

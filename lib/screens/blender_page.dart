@@ -743,6 +743,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                 StreamBuilder<QuerySnapshot>(
                                     stream: FirebaseFirestore.instance.collection('orders')
                                         .where('sender_id', isEqualTo: email)
+                                        // .where('cancelled', isEqualTo: false)
                                         .orderBy('deliveryTime', descending: false)
                                         .snapshots(),
                                     builder: (context, snapshot) {
@@ -756,15 +757,17 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                         typeList = [];
                                         var data = snapshot.data!.docs;
                                         for (var item in data) {
+
                                           Timestamp deliveryTimestamp = item.get('deliveryTime');
                                           var status = item.get('status');
-                                          DateTime deliveryDateTime = deliveryTimestamp.toDate();
-                                          // Check if deliveryDateTime is today
-                                          typeList.add(item.get('type'));
-                                          if (status!= 'CANCELLED'){
+                                          var cancelled = item.get('cancelled');
+
+
+                                          if (status!= 'CANCELLED'&& cancelled == false){
 
                                             if (status!= 'delivered') {
                                               print(status);
+                                              typeList.add(item.get('type'));
                                               activeOrder = true;
                                               dateList.add(item.get('deliveryTime').toDate());
                                               statusList.add(item.get('status'));
@@ -780,6 +783,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                                           // You can add other logic related to processing data here
                                         }
                                       }
+                                      print(typeList);
                                       return
                                         activeOrder==false ? Container():
                                         GestureDetector(
