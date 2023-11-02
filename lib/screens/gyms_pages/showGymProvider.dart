@@ -26,11 +26,26 @@ import 'package:slider_button/slider_button.dart';
 import '../../widgets/appointmentDateOption.dart';
 import '../../widgets/carousel_for_photo_widget.dart';
 
+Map<String, dynamic> splitString(String input) {
+  RegExp regex = RegExp(r'(\d+)\$(\d+)');
+  Match match = regex.firstMatch(input) as Match;
+  if (match != null) {
+    String? number = match.group(1);
+    String? day = match.group(2);
+    return {'number': int.parse(number!), 'day': int.parse(day!)};
+  } else {
+    return {};
+  }
+}
+
 
 
 showGymProvider(context, img, providerName, location, Map products, about, phoneNumber, coordinates, locationImages, id, sessionTime
     ){
   var formatter = NumberFormat('#,###,000');
+
+
+
 
 
 
@@ -198,52 +213,66 @@ showGymProvider(context, img, providerName, location, Map products, about, phone
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index){
                             var key = products.keys.elementAt(index);
-                            var value = products[key];
+                            var value = splitString(products[key]);
 
 
                             return GestureDetector(
                               onTap: (){
                                 double inputQuantity = 1;
-                                if (providersData.gymItemSelectedColorOfBoxes[index]==kButtonGreyColor){
+                                if (providersData.gymItemSelectedColorOfBoxes[index]==kCustomColor){
+
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text(providerName, textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 22),),
-                                        content:Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              height: 50,
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(key, textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kBlack),),
-                                                  Text("(${CommonFunctions().formatter.format(value)} Ugx)", textAlign: TextAlign.center, style: kNormalTextStyle.copyWith(color: kBlack),),
-                                                ],
-                                              ),
-                                            ),
-                                            kMediumWidthSpacing,
-                                            SizedBox(
-
-                                              width: 60,
-                                              child: TextField(
-                                                controller:  TextEditingController()..text = "1",
-                                                keyboardType: TextInputType.numberWithOptions(decimal: true),
-
-                                                onChanged: (value) {
-                                                  inputQuantity = double.parse(value);
-                                                },
-                                                decoration: InputDecoration(
-                                                  labelText: 'Quantity',
-
+                                        title: Text(
+                                          providerName,
+                                          textAlign: TextAlign.center,
+                                          style: kNormalTextStyle.copyWith(color: kBlack, fontSize: 22),
+                                        ),
+                                        content: SingleChildScrollView(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Expanded(
+                                                child: SizedBox(
+                                                  height: 100,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        key,
+                                                        textAlign: TextAlign.center,
+                                                        style: kNormalTextStyle.copyWith(color: kBlack),
+                                                      ),
+                                                      Text(
+                                                        "(${CommonFunctions().formatter.format(value['number'])} Ugx)",
+                                                        textAlign: TextAlign.center,
+                                                        style: kNormalTextStyle.copyWith(color: kBlack),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              kMediumWidthSpacing,
+                                              SizedBox(
+                                                width: 60,
+                                                child: TextField(
+                                                  controller: TextEditingController()..text = "1",
+                                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                                  onChanged: (value) {
+                                                    inputQuantity = double.parse(value);
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    labelText: 'Quantity',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         actions: [
                                           TextButton(
@@ -254,7 +283,16 @@ showGymProvider(context, img, providerName, location, Map products, about, phone
                                           ),
                                           TextButton(
                                             onPressed: () {
-                                              providersData.setGymServiceBoxColor(index,providersData.gymItemSelectedColorOfBoxes[index], ServiceProviderItem(amount: value.toDouble(), product: key, quantity: inputQuantity!) );
+                                              providersData.setGymServiceBoxColor(
+                                                index,
+                                                providersData.gymItemSelectedColorOfBoxes[index],
+                                                ServiceProviderItem(
+                                                  amount: value['number'].toDouble(),
+                                                  product: key,
+                                                  quantity: inputQuantity!,
+                                                  days: value['day'].toInt(),
+                                                ),
+                                              );
                                               Navigator.pop(context);
                                             },
                                             child: Text('OK'),
@@ -263,8 +301,12 @@ showGymProvider(context, img, providerName, location, Map products, about, phone
                                       );
                                     },
                                   );
+
+
+
+
                                 }else {
-                                  providersData.setGymServiceBoxColor(index,providersData.gymItemSelectedColorOfBoxes[index], ServiceProviderItem(amount: value.toDouble(), product: key, quantity: inputQuantity!) );
+                                  providersData.setGymServiceBoxColor(index,providersData.gymItemSelectedColorOfBoxes[index], ServiceProviderItem(amount: value['number'].toDouble(), product: key, quantity: inputQuantity!, days: value['number'].toInt()), );
                                 }
 
                                 //
@@ -272,18 +314,20 @@ showGymProvider(context, img, providerName, location, Map products, about, phone
                               child: Stack(
                                 children: [
                                   Card(
-                                    color: providersDataListen.gymItemSelectedColorOfBoxes[index],
+                                    color:
+
+                                    providersDataListen.gymItemSelectedColorOfBoxes[index],
                                     child: ListTile(
                                       // title: Text("x2"),
                                       leading: Text(key),
 
-                                      trailing: Text(CommonFunctions().formatter.format(value)),
+                                      trailing: Text(CommonFunctions().formatter.format(value['number'])),
                                     ),
                                   ),
                                   Positioned(
                                       right: 0,
                                       top: 0,
-                                      child: providersData.gymItemSelectedColorOfBoxes[index] == kButtonGreyColor? Container():CircleAvatar(radius: 10, backgroundColor: Colors.orange , child: Text("x${providersDataListen.gymItemSelected[providersDataListen.gymItemSelected.indexWhere((element) => element.product == key)].quantity.toInt()}", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),)))
+                                      child: providersData.gymItemSelectedColorOfBoxes[index] == kCustomColor? Container():CircleAvatar(radius: 10, backgroundColor: Colors.orange , child: Text("x${providersDataListen.gymItemSelected[providersDataListen.gymItemSelected.indexWhere((element) => element.product == key)].quantity.toInt()}", style: kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 12),)))
                                 ],
                               ),
                             );

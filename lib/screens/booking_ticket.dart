@@ -2,12 +2,16 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:blendit_2022/models/ai_data.dart';
 import 'package:blendit_2022/widgets/gym_ordered_content_details.dart';
+import 'package:blendit_2022/widgets/mm_payment_button_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/CommonFunctions.dart';
 import '../utilities/constants.dart';
@@ -23,10 +27,199 @@ class BookingTicket extends StatefulWidget {
   @override
   State<BookingTicket> createState() => _BookingTicketState();
 }
-var backgroundColour = kGreenThemeColor;
+
+
+
+
 
 class _BookingTicketState extends State<BookingTicket> {
+
+  var backgroundColour = kGreenThemeColor;
+  var availableDatesString = "";
+  List<DateTime> availableDates = [];
+
+  int findMaxDays(List data) {
+    int maxDays = 0;
+
+    for (Map<String, dynamic> item in data) {
+      int days = item['days'] as int;
+      if (days > maxDays) {
+        maxDays = days;
+      }
+    }
+    print("$maxDays days");
+
+    return maxDays;
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  Future<void> openLiveSessionLink(String documentId) async {
+    try {
+      DocumentSnapshot document = await FirebaseFirestore.instance
+          .collection('providers')
+          .doc(documentId)
+          .get();
+
+      if (document.exists) {
+        // String phoneNumber = document.data()[''];
+        String phoneNumber = document.get('phone');
+
+        if (phoneNumber != null) {
+          CommonFunctions().goToLink(phoneNumber);
+
+        } else {
+          throw 'Link not found in the document.';
+        }
+      } else {
+        throw 'Document not found with ID: $documentId';
+      }
+    } catch (e) {
+      print('Error: $e');
+      // Handle errors here, such as showing an error message to the user.
+    }
+  }
+  void getAvailableDates (){
+    var aiData = Provider.of<AiProvider>(context, listen: false);
+    var dates = [];
+    List<DateTime> datesArray = [];
+    print(aiData.appointmentDaysArray);
+    for (var i = 0; i< aiData.appointmentDaysArray.length;i++){
+      dates.add(DateFormat('d/MMM/yy').format(aiData.appointmentDaysArray[i].toDate()));
+      datesArray.add(aiData.appointmentDaysArray[i].toDate());
+    }
+    availableDates = datesArray;
+    availableDatesString = dates.join(" & ");
+  }
+
+  bool isCurrentDateWithinRange(List<DateTime> dateList, int validityPeriod) {
+    DateTime currentDate = DateTime.now();
+
+    print("$dateList for $validityPeriod");
+    // DateTime futureDate = currentDate.add(Duration(days: validityPeriod));
+
+    for (DateTime date in dateList) {
+      DateTime futureDate = date.add(Duration(days: validityPeriod)); // 1 October
+      // date.add(Duration(days: validityPeriod)
+     // if (date.isAtSameMomentAs(currentDate) || ((date.add(Duration(days: validityPeriod)).isAfter(currentDate)||date.add(Duration(days: validityPeriod)).isAtSameMomentAs(currentDate)) && date.isBefore(futureDate))) {
+      if (
+     // date.isAtSameMomentAs(currentDate) ||
+      isSameDay(date, currentDate)
+          ||
+          (currentDate.isAfter(date) && currentDate.isBefore(futureDate)
+      )
+      ) {
+        print("TRUE $date || $currentDate");
+        //print(date.add(Duration(days: validityPeriod)).isAfter(currentDate)||date.add(Duration(days: validityPeriod)).isAtSameMomentAs(currentDate));
+
+        // Current date falls within the range of 7 days ahead of the given date
+        return true;
+      }else if (currentDate.isBefore(date)){
+
+        CoolAlert.show(
+
+
+            context: context,
+            type: CoolAlertType.success,
+
+            title: 'This Session is not Yet',
+            // confirmBtnText: 'Ok',
+
+            // confirmBtnColor: kGreenThemeColor,
+            // confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
+            lottieAsset: 'images/waiting.json',
+            // showCancelBtn: true,
+            backgroundColor: kPureWhiteColor,
+
+
+            onConfirmBtnTap: () async{
+              Navigator.pop(context);
+            }
+
+
+        );
+        return false;
+
+      }else {
+        CoolAlert.show(
+
+
+            context: context,
+            type: CoolAlertType.success,
+
+            title: 'This Session Ended',
+            // confirmBtnText: 'Ok',
+
+            // confirmBtnColor: kGreenThemeColor,
+            // confirmBtnTextStyle: kNormalTextStyleWhiteButtons,
+            lottieAsset: 'images/waiting.json',
+            // showCancelBtn: true,
+            backgroundColor: kPureWhiteColor,
+
+
+            onConfirmBtnTap: () async{
+              Navigator.pop(context);
+            }
+
+
+        );
+        return false;
+      }
+    }
+
+    // Current date does not fall within any of the dates in the array
+    return false;
+  }
+
+  void checkTime(DateTime time, List<DateTime>dateRange, int validityPeriod) {
+    print("COME ON COME ON: ${isCurrentDateWithinRange(dateRange, validityPeriod)}");
+    var status = isCurrentDateWithinRange(dateRange, validityPeriod);
+    List<DateTime> listDates = [DateTime.now()];
+
+    DateTime currentTime = DateTime.now();
+    DateTime fifteenMinutesBefore = currentTime.subtract(Duration(minutes: 15));
+    DateTime oneHourAfter = currentTime.add(Duration(hours: 1));
+
+    if(isCurrentDateWithinRange(dateRange, validityPeriod)){
+      if (time.isBefore(oneHourAfter) && time.isAfter(fifteenMinutesBefore)) {
+
+        openLiveSessionLink(Provider.of<AiProvider>(context, listen: false).appointmentMadeBeauticianId);
+      } else {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Session Starts at ${DateFormat('kk:mm aa').format(Provider.of<AiProvider>(context).appointmentMadeDate)}', textAlign:TextAlign.center,style: kHeadingTextStyle,),
+            content:
+            Container(
+              height: 100,
+              child: Column(
+                children: const [
+                  Text('This session will be open 15 minutes before the scheduled time', style: kNormalTextStyleDark,textAlign: TextAlign.justify,),
+                  CloseButton(
+                    color: kAppPinkColor,
+                  )
+                ],
+              ),
+            ),
+
+          ),
+        );
+      }
+    }else {
+      print("ELSE");
+    }
+
+  }
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAvailableDates();
+  }
   @override
 
   Widget build(BuildContext context) {
@@ -113,8 +306,11 @@ class _BookingTicketState extends State<BookingTicket> {
 
                           Column(
                             children: [
-                              Text('${DateFormat('dd MMM yy').format(aiData.appointmentMadeDate)}',textAlign: TextAlign.start, style: kNormalTextStyleExtraSmall.copyWith(color: Colors.green, fontSize: 14, fontWeight: FontWeight.w500),),
-                              Text('${DateFormat('kk:mm aa').format(aiData.appointmentMadeDate)}',textAlign: TextAlign.start, style: kNormalTextStyleExtraSmall.copyWith(color: Colors.green, fontSize: 14, fontWeight: FontWeight.w500),),
+                             // Text('${DateFormat('dd MMM yy').format(aiData.appointmentMadeDate)}',textAlign: TextAlign.start, style: kNormalTextStyleExtraSmall.copyWith(color: Colors.green, fontSize: 14, fontWeight: FontWeight.w500),),
+                              Text('$availableDatesString',textAlign: TextAlign.start, style: kNormalTextStyleExtraSmall.copyWith(color: Colors.green, fontSize: 14, fontWeight: FontWeight.w500),),
+
+                              // Text('${aiData.appointmentDaysArray}',textAlign: TextAlign.start, style: kNormalTextStyleExtraSmall.copyWith(color: Colors.green, fontSize: 14, fontWeight: FontWeight.w500),),
+                              Text('${DateFormat('kk:mm aa').format(aiData.appointmentMadeDate)}',textAlign: TextAlign.start, style: kNormalTextStyleExtraSmall.copyWith(color: Colors.blue, fontSize: 14, fontWeight: FontWeight.w500),),
                               //Text('10:30',textAlign: TextAlign.start, style: kNormalTextStyleExtraSmall.copyWith(color: Colors.green, fontSize: 14, fontWeight: FontWeight.w500),),
                             ],
                           ),
@@ -160,31 +356,16 @@ class _BookingTicketState extends State<BookingTicket> {
                   children: [
                     Text('Provider Details', style: kHeading2TextStyleBold,),
 
-                    // phone button for beautician
-                    // RoundIconButtonsWidget(onPressed: (){
-                    //  CommonFunctions().callPhoneNumber(aiData.appointmentMadeBeauticianPhoneNumber);
-                    // }, iconImage: Icon(Icons.phone, size: 18,), title: 'Call ${aiData.appointmentMadeBeautician}', mainColor: kAppPinkColor,),
-                    // RoundIconButtonsWidget(onPressed: (){
-                    //  CommonFunctions().openMap(aiData.appointmentMadeBeauticianLatitude,aiData.appointmentMadeBeauticianLongitude);
-                    // }, iconImage: Icon(Icons.map_outlined, size: 18,), title: 'Get Directions', mainColor: kBlack,),
+
                     aiData.appointmentComplete == true?Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text("This Appointment was Completed", style: kNormalTextStyle.copyWith(color: kGreenThemeColor),),
-                    ):RoundIconButtonsWidget(onPressed: (){
-                      CommonFunctions().goToLink(aiData.appointmentMadeBeauticianPhoneNumber);
-                    }, iconImage: Icon(FontAwesomeIcons.dumbbell, size: 14,color: kPureWhiteColor,), title: 'Attend Session', mainColor: kAppPinkColor,),
+                    ):
 
-
-                    // RoundIconButtonsWidget(onPressed: (){
-                    //
-                    //   showModalBottomSheet(
-                    //       context: context,
-                    //       builder: (context) {
-                    //         return Container(color: kBackgroundGreyColor,
-                    //           // child: BeauticianStore(),
-                    //         );
-                    //       });
-                    // }, iconImage: Icon(Icons.shopping_bag_rounded, size: 18,color: kBlack,), title: 'Shop store', mainColor: kYellowThemeColor,),
+                    MobileMoneyPaymentButton(firstButtonFunction: (){
+                      checkTime(aiData.appointmentMadeTime, availableDates, findMaxDays(aiData.appointmentMadeBeauticianItems));
+                      print(aiData.appointmentMadeBeauticianId);
+                    }, firstButtonText: "Attend Session", buttonTextColor: kPureWhiteColor,lineIconFirstButton:FontAwesomeIcons.dumbbell ,),
 
 
                     TicketDots(mainColor: kGreenThemeColor, circleColor: kGreenThemeColor,),
@@ -212,7 +393,12 @@ class _BookingTicketState extends State<BookingTicket> {
                         itemBuilder: (context, index){
                           return
                             //Container();
-                          GymOrderedContentsWidget(orderIndex: index+1, quantity: aiData.appointmentMadeBeauticianItems[index]['quantity'], productName: aiData.appointmentMadeBeauticianItems[index]['product'], price: aiData.appointmentMadeBeauticianItems[index]['totalPrice']);
+                          GymOrderedContentsWidget(orderIndex: index+1,
+                            quantity: aiData.appointmentMadeBeauticianItems[index]['quantity'],
+                            productName: aiData.appointmentMadeBeauticianItems[index]['product'],
+                            price: aiData.appointmentMadeBeauticianItems[index]['totalPrice'],
+                            days: aiData.appointmentMadeBeauticianItems[index]['days'].toInt(),
+                          );
 
                           // OrderedContentsWidget(productDescription: Provider.of<StyleProvider>(context).appointmentMadeBeauticianItems[index]['description'], productName: Provider.of<StyleProvider>(context).appointmentMadeBeauticianItems[index]['product'],quantity: Provider.of<StyleProvider>(context).appointmentMadeBeauticianItems[index]['quantity'], orderIndex: index + 1, price: Provider.of<StyleProvider>(context).appointmentMadeBeauticianItems[index]['totalPrice'],);
                         }),
@@ -303,7 +489,7 @@ class _BookingTicketState extends State<BookingTicket> {
                             height: 280,
                             child: Column(
                               children: const [
-                                Text('In case you want to cancel your booking, your booking shall be fully refunded to you under the booking terms. However you can only cancel within 24 hours of an appointment and this is taken on a case by case basis. Some providers like for functions and mikolo do not warrant a cancelation refund.', style: kNormalTextStyleDark,textAlign: TextAlign.justify,),
+                                Text('Incase you want to cancel your booking, your booking shall be fully refunded to you under the booking terms. However you can only cancel within 24 hours of an appointment and this is taken on a case by case basis. Some providers like for functions and mikolo do not warrant a cancelation refund.', style: kNormalTextStyleDark,textAlign: TextAlign.justify,),
                                 CloseButton(
                                   color: kAppPinkColor,
                                 )

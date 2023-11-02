@@ -65,6 +65,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
   var productsList = [];
   var providerNumberList = [];
   var appointmentId = [];
+  var providerId = [];
   var appointmentComplete = [];
   var note = [];
   var opacityList = [];
@@ -135,7 +136,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                   var appointments = snapshot.data!.docs;
                   for (var appointment in appointments) {
                     DateTime appointmentDateTime = appointment.get('deliveryTime').toDate();
-                    if(appointmentDateTime.year >= DateTime.now().year && appointmentDateTime.month >= DateTime.now().month && appointmentDateTime.day >= DateTime.now().day){
+                   // if(appointmentDateTime.year >= DateTime.now().year && appointmentDateTime.month >= DateTime.now().month && appointmentDateTime.day >= DateTime.now().day){
                       if(appointment.get('paymentStatus')!= 'complete'){
                         locationList.add(appointment.get('location'));
                         totalList.add(appointment.get('total_price'));
@@ -169,7 +170,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                           pendingList.add(0.0);
                         }
                       }
-                    }
+                  //  }
                   }
 
                 }
@@ -222,7 +223,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                                   orderIndex: i + 1,
                                                   quantity: productsList[index][i]['quantity'],
                                                   productName: productsList[index][i]['product'],
-                                                  price: productsList[index][i]['totalPrice']);
+                                                  price: productsList[index][i]['totalPrice'], days: productsList[index][i]['days'],);
                                             }),
                                         TicketDots(mainColor: kFontGreyColor, circleColor: kPureWhiteColor,),
 
@@ -260,7 +261,9 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
 
                               Provider.of<AiProvider>(context, listen: false).setAppointmentMade(date[index], time[index], locationList[index], providerNameList[index], providerNumberList[index], cordList[index].latitude, cordList[index].longitude,
                                   productsList[index],
-                                  appointmentId[index], providerIdList[index], totalList[index], appointmentComplete[index]);
+                                  appointmentId[index], providerIdList[index], totalList[index], appointmentComplete[index],
+                                  numberOfDaysList[index]
+                              );
 
 
                               showModalBottomSheet(

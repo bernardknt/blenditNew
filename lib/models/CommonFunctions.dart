@@ -1046,6 +1046,7 @@ class CommonFunctions {
         'product': products[i].product,
         'quantity': products[i].quantity,
         'totalPrice': products[i].amount,
+        'days': products[i].days
       }
       ]
     }).whenComplete(() => Navigator.pushNamed(context, SuccessPageNew.id))

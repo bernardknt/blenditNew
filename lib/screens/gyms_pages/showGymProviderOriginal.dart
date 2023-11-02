@@ -389,7 +389,7 @@ showGymProvider(context,
                                           ),
                                           TextButton(
                                             onPressed: () {
-                                              providersData.setGymServiceBoxColor(index,providersData.gymItemSelectedColorOfBoxes[index], ServiceProviderItem(amount: value.toDouble(), product: key, quantity: inputQuantity!) );
+                                              providersData.setGymServiceBoxColor(index,providersData.gymItemSelectedColorOfBoxes[index], ServiceProviderItem(amount: value.toDouble(), product: key, quantity: inputQuantity!, days: 1) );
                                               Navigator.pop(context);
                                             },
                                             child: Text('OK'),
@@ -399,7 +399,7 @@ showGymProvider(context,
                                     },
                                   );
                                 }else {
-                                  providersData.setGymServiceBoxColor(index,providersData.gymItemSelectedColorOfBoxes[index], ServiceProviderItem(amount: value.toDouble(), product: key, quantity: inputQuantity!) );
+                                  providersData.setGymServiceBoxColor(index,providersData.gymItemSelectedColorOfBoxes[index], ServiceProviderItem(amount: value.toDouble(), product: key, quantity: inputQuantity!, days: 1) );
                                 }
 
                                 //
