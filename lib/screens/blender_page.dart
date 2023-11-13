@@ -2,6 +2,7 @@
 import 'package:blendit_2022/controllers/home_controller.dart';
 import 'package:blendit_2022/models/CommonFunctions.dart';
 import 'package:blendit_2022/models/blendit_data.dart';
+import 'package:blendit_2022/models/firebase_functions.dart';
 import 'package:blendit_2022/models/ingredientsList.dart';
 import 'package:blendit_2022/models/quatityButton.dart';
 import 'package:blendit_2022/screens/customized_juice_page.dart';
@@ -9,6 +10,7 @@ import 'package:blendit_2022/screens/goals.dart';
 import 'package:blendit_2022/controllers/controller_page_web.dart';
 import 'package:blendit_2022/screens/orders_page.dart';
 import 'package:blendit_2022/screens/special_blend.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:blendit_2022/utilities/constants.dart';
 import 'package:blendit_2022/utilities/ingredientButtons.dart';
@@ -101,6 +103,79 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 
+  Future<void> updateUsersWithFreeSession() async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    QuerySnapshot querySnapshot = await users.get();
+    for (final QueryDocumentSnapshot document in querySnapshot.docs) {
+      // Update the "photoTwo" field to false
+      await document.reference.update({
+        'freeSession': true,
+
+      });
+
+    }
+
+  }
+
+  Future incomingReportsStream()async{
+    final prefs = await SharedPreferences.getInstance();
+    var heading = "";
+    var subHeading = "";
+    var button = "";
+    var anime = "";
+    var functionToExecute = ()async{};
+
+    var start = FirebaseFirestore.instance.collection('users').where('id', isEqualTo: prefs.getString(kUniqueIdentifier))
+        .where('liveSession', isEqualTo: true)
+        .snapshots().listen((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) async {
+
+          heading = "Your Session Started";
+          subHeading = "Lets go";
+          button = "Start";
+          functionToExecute = ()async{
+            // Navigator.push(
+            //     context, MaterialPageRoute(builder: (context) => ReStockPage()));
+          };
+
+
+        setState(() {
+          CoolAlert.show(
+              lottieAsset: "images/workout.json",
+              context: context,
+              type: CoolAlertType.success,
+              text: subHeading,
+              title: heading,
+              confirmBtnText: button,
+              confirmBtnTextStyle: kNormalTextStyle.copyWith(color: kPureWhiteColor),
+              showCancelBtn: true,
+              cancelBtnText: "Cancel",
+              cancelBtnTextStyle: kNormalTextStyle,
+              onCancelBtnTap: (){
+                Navigator.pop(context);
+                FirebaseServerFunctions().updateDialogueAlert(doc.id);
+              },
+              confirmBtnColor: kAppPinkColor,
+              backgroundColor: kBlack, onConfirmBtnTap: ()async{
+            FirebaseServerFunctions().updateDialogueAlert(doc.id);
+
+            Navigator.pop(context);
+            functionToExecute();
+
+
+          }
+
+          );
+
+        });
+
+      });
+    });
+
+
+    return start;
+  }
 
 // THIS IS FOR THE INITIAL TUTORIAL WALK THROUGH AND SHOW
   void tutorialShow ()async{
@@ -351,6 +426,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
               AlertPopUpDialogueMain(context, imagePath: 'images/addItems.json', title: 'No ingredients Added', text: 'Add some ingredients into your Blender', fruitProvider: fruitProvider, extraProvider: extraProvider, blendedData: blendedData, vegProvider: vegProvider);
             }
             else {
+
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
@@ -695,6 +771,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                       Row(
                         children: [
                           QuantityBtn(onTapFunction: (){
+
                             Provider.of<BlenditData>(context, listen: false).decreaseJuiceLitres();
 
                           }, text: '-', size: 28,),

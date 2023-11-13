@@ -1,6 +1,7 @@
 
 import 'package:blendit_2022/models/blendit_data.dart';
 import 'package:blendit_2022/screens/gyms_pages/categories.dart';
+import 'package:blendit_2022/screens/onboarding_questions/quiz_page5.dart';
 import 'package:blendit_2022/screens/products_page.dart';
 import 'package:blendit_2022/screens/salads_page.dart';
 import 'package:blendit_2022/utilities/constants.dart';
@@ -81,11 +82,11 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
     final prefs = await SharedPreferences.getInstance();
     String newName = prefs.getString(kFirstNameConstant) ?? 'Hi';
     bool isFirstStoreVisit = prefs.getBool(kIsFirstStoreVisit) ?? true;
-    if(isFirstStoreVisit == true) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context)=> GymsAndServiceProviderOnboarding())
-      );
-    }
+    // if(isFirstStoreVisit == true) {
+    //   Navigator.push(context,
+    //       MaterialPageRoute(builder: (context)=> GymsAndServiceProviderOnboarding())
+    //   );
+    // }
     setState(() {
       name = newName;
     });
@@ -276,9 +277,7 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
                                       .snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) {
-                                      return Container(
-                                        // color: Colors.black,
-                                      );
+                                      return Container();
                                     } else {
                                       itemsGym=[];
                                       descListGym = [];
@@ -289,14 +288,11 @@ class _HomePageOriginalState extends State<HomePageOriginal> {
                                       coordinatesGym = [];
                                       phoneNumberGym = [];
 
-
-
                                       var events = snapshot.data!.docs;
                                       for (var event in events) {
                                         descListGym.add(event.get('description'));
                                         itemsGym.add(event.get('name'));
                                         imagesGym.add(event.get('image'));
-                                        // prices.add(event.get('price'));
                                         productsGym.add(event.get('products'));
                                         aboutGym.add(event.get('about'));
                                         locations.add(event.get('location'));

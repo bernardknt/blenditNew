@@ -27,6 +27,16 @@ class FirebaseServerFunctions {
         .then((value) => print("Done"));
   }
 
+  Future<void> updateDialogueAlert(docId) {
+
+    return FirebaseFirestore.instance.collection('users').doc(docId)
+        .update({
+      'liveSession': false,
+    })
+        .then((value) => print("Call Ended"))
+        .catchError((error) => print("Failed to send Communication: $error"));
+  }
+
   Future <dynamic> lastLoggedIn(docId ){
 
     return FirebaseFirestore.instance

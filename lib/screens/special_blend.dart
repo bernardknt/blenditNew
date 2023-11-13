@@ -37,6 +37,7 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
 
   late Timer _timer;
   var titleName=[];
+  var suggestionList=[];
   var promoList = [];
   var customJuice= "";
   var countryName = '';
@@ -194,14 +195,19 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                       // promoList.add(challenge.get('promo'));
                                       titleName.add(item.get('title'));
                                     }
+
+
                                   }
+                                  // suggestionList = titleName.toSet().toList();
+
                                   return StaggeredGridView.countBuilder(
                                       crossAxisCount: 2,
-                                      itemCount: titleName.length,
+                                      itemCount: 2,
                                       crossAxisSpacing: 10,
                                       physics: const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemBuilder: (context, index) {
+
                                         return GestureDetector(
                                           onTap: () {
                                             _controller = TextEditingController()..text = titleName[index];
@@ -328,7 +334,11 @@ class _SpecialBlendAiState extends State<SpecialBlendAi> {
                                     'userId':auth.currentUser!.uid,
 
                                     // orderId
-                                  }).catchError((error){
+                                  }).whenComplete((){
+
+
+                                  })
+                                    .catchError((error){
                                     print('Request failed with status code ${error.response.statusCode}');
                                     print('Response body: ${error.response.data}');
                                   });

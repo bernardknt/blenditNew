@@ -127,6 +127,6 @@ String kRevenueCatPurchasesKeyIOS = "appl_BypoTqpmaTnGvWTNZktkSUcOmBZ";
 String kRevenueCatPurchasesKeyAndroid = "goog_EtSxZopAXzvZbJnxIMvOqQYifpz";
 
 // Image constants
-String kSplashImage = "images/nutri2.png";
+String kSplashImage = "images/nutri3.png";
 
 

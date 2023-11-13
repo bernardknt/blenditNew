@@ -47,6 +47,7 @@ class _QuizPage5State extends State<QuizPage5> {
   Future<void> uploadUserData() async {
     final auth = FirebaseAuth.instance;
     final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kUniqueIdentifier, auth.currentUser!.uid);
 
     await FirebaseFirestore.instance
         .collection('users').doc(auth.currentUser!.uid)
@@ -112,6 +113,7 @@ class _QuizPage5State extends State<QuizPage5> {
             }
 
             prefs.setString(kUserPersonalPreferences, aiData.preferencesSelected.join(", "));
+            Provider.of<AiProvider>(context, listen: false).setFreeSessionToTrue();
 
             CommonFunctions().uploadUserPreferences(aiDataDisplay.preferencesSelected, aiDataDisplay.userSex, aiDataDisplay.userBirthday, aiDataDisplay.preferencesIdSelected);
 

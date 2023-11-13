@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utilities/font_constants.dart';
+import '../../widgets/gyms_and_store_onboarding.dart';
 import '../../widgets/show_summary_dialog.dart';
 
 
@@ -57,8 +58,11 @@ class SpecialistCategories extends StatelessWidget {
         itemBuilder: (context, index){
           return GestureDetector(
             onTap: ()async {
+              final prefs = await SharedPreferences.getInstance();
+              bool isFirstStoreVisit = prefs.getBool(kIsFirstStoreVisit) ?? true;
               Provider.of<AiProvider>(context, listen: false).clearServiceProviderInfo();
               Provider.of<AiProvider>(context, listen: false).resetSelectedTimeValues();
+
               showGymProvider(context,
                   categoriesMainImage[index],
                   categories[index],
@@ -71,6 +75,11 @@ class SpecialistCategories extends StatelessWidget {
                   categoryId[index],
                 categoriesSessionTime[index]
               );
+              if(isFirstStoreVisit == true) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> GymsAndServiceProviderOnboarding())
+                );
+              }
 
             },
             child:

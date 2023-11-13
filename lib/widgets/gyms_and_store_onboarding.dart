@@ -4,6 +4,7 @@ import 'package:blendit_2022/widgets/designed_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -44,14 +45,16 @@ class _GymsAndServiceProviderOnboardingState extends State<GymsAndServiceProvide
             children: [
               Padding(
                 padding: const EdgeInsets.only(top:8.0),
-                child: Center(child: Text("Take you Wellness To\nThe next Level 💪", style: kHeading2TextStyleBold.copyWith(fontSize: 24),)),
+                child: Center(child: Text("Take your Goals to\nthe next Level 💪",textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 24),)),
               ),
               // const SizedBox(height: 6.0),
               Container(
                 height: 250,
                 width: double.infinity,
                 color: kPureWhiteColor,
-                child: Image.asset("images/video.gif"),
+                child:
+                // Image.asset("images/video.gif"),
+                Image.asset("images/online.gif"),
               ),
               kLargeHeightSpacing,
 
@@ -59,14 +62,14 @@ class _GymsAndServiceProviderOnboardingState extends State<GymsAndServiceProvide
               const SizedBox(height: 8.0),
               _buildFeatureList(
                 Icons.sports_gymnastics,
-                'Find Gyms, Trainers and Instructors for every need',
+                'Take sessions with Instructors for every need',
               ),
               _buildFeatureList(
-                Icons.shopping_bag_outlined,
-                'Get the most nutritious items and products in one place',
+                Iconsax.alarm,
+                'Become accountable and stay on track',
               ),
               _buildFeatureList(
-                Icons.camera_alt,
+                Icons.access_alarm,
                 'Everything you need to achieve your goal',
               ),
 

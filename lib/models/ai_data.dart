@@ -137,6 +137,7 @@ class AiProvider extends ChangeNotifier{
   int progressPoints = 0;
   DateTime subscriptionDate = DateTime.now();
   String subscriptionType = "Trial";
+  bool freeSession = false;
 
 
 
@@ -149,6 +150,12 @@ class AiProvider extends ChangeNotifier{
 
   setGoalValue(goalValue){
     goal = goalValue;
+    notifyListeners();
+  }
+
+  setFreeSessionToTrue(){
+    freeSession = true;
+    print("Free Seesion set to True");
     notifyListeners();
   }
   setRevenueCatValue( customerID,productStoreId, revenuecatPrice, title, duration, rcTransactionId){
@@ -405,10 +412,11 @@ dayGoalColors = [Colors.orange ,Colors.orange ,Colors.orange ,Colors.orange ,Col
     notifyListeners();
   }
 
-  void setCommonVariables (points, date, subscription ){
+  void setCommonVariables (points, date, subscription, free ){
     subscriptionDate = date;
     progressPoints = points;
     subscriptionType = subscription;
+    freeSession = free;
 
   }
   void setSubscriptionVariables(ugMonth, ugYear, intMonth, intYear, ugTrialAmount, intTrialAmount, customerCare, tipsList, notify, welcomeTagline, subscription, time, ios, blackCountries, countryPrompt, control, favCountry, videos, goal, onlineCoach){

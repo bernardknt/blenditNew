@@ -55,24 +55,24 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
     String newCountry = prefs.getString(kUserCountryName) ?? '16-May-1989';
     String? newPhone = prefs.getString(kPhoneNumberConstant);
     String? newEmail = prefs.getString(kEmailConstant) ??"No email";
-    String newSubscribedChurch = 'Haircuts, Massage, Makeup';
+
     double newWeight = prefs.getDouble(kUserWeight) ?? 80;
     String? newPreferences = prefs.getString(kUserPersonalPreferences);
     int newHeight = prefs.getInt(kUserHeight)?? 180;
 
 
-    Map<String, dynamic> jsonMap = json.decode(prefs.getString(kUserVision)!);
-    difficulty = jsonMap['difficulty'];
-    // difficulty = jsonMap['question'];
-    category = jsonMap['category'];
-
-    unit = jsonMap['unit'];
+    // Map<String, dynamic> jsonMap = json.decode(prefs.getString(kUserVision)!);
+    // difficulty = jsonMap['difficulty'];
+    // // difficulty = jsonMap['question'];
     // category = jsonMap['category'];
-    target = jsonMap['target'];
-    currentLevel = prefs.getDouble(kGoalProgress)?? 0.0;
-
-
-    goal = jsonMap['goal'];
+    //
+    // unit = jsonMap['unit'];
+    // // category = jsonMap['category'];
+    // target = jsonMap['target'];
+    // currentLevel = prefs.getDouble(kGoalProgress)?? 0.0;
+    //
+    //
+    // goal = jsonMap['goal'];
 
 
     setState(() {
@@ -502,7 +502,9 @@ class _NewSettingsPageState extends State<NewSettingsPage> {
                   title:Text("View Transaction History", style:kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 18)),
                   // trailing: Icon(Icons.keyboard_arrow_right),
                 ),
-              ),]),),
+              )
+
+              ,]),),
 
 
               const SizedBox(height: 10,),

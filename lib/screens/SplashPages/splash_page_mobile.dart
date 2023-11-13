@@ -97,7 +97,7 @@ class _SplashPageMobileState extends State<SplashPageMobile> {
 
       // Show bottom sheet for update
       showModalBottomSheet(
-        // isScrollControlled: true,
+        isScrollControlled: true,
         context: context,
 
         builder: (context) => BottomSheet(
@@ -184,6 +184,7 @@ class _SplashPageMobileState extends State<SplashPageMobile> {
         });
       });
     });
+
     CommonFunctions().userSubscription(context);
 
     return start;
@@ -219,7 +220,7 @@ class _SplashPageMobileState extends State<SplashPageMobile> {
 
             ),
 
-              // Text("Achieve your Goals", style: kNormalTextStyle,),
+              Text("Nutrition| Fitness | Wellness", style: kNormalTextStyle,),
               Spacer(), 
               Image.asset(kSplashImage, fit: BoxFit.fitWidth,),
             ],

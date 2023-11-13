@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:math';
-// import 'package:audioplayers/audioplayers.dart';
-import 'package:blendit_2022/utilities/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/route_manager.dart';
-import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:blendit_2022/utilities/constants.dart';
+
+import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/responsive/responsive_layout.dart';
 import '../utilities/font_constants.dart';
 import 'mobileMoney.dart';
 
@@ -48,6 +46,7 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
 
 
       Navigator.pop(context);
+      // Navigator.pushNamed(context, ResponsiveLayout.id);
       setState(() {
 
       });
@@ -71,7 +70,7 @@ class _LoadingChallengePageState extends State<LoadingChallengePage> {
            // Lottie.asset('images/challengeLoad.json', height: 200, width: 200, fit: BoxFit.contain ),
             Lottie.asset('images/freeChat.json', height: 200, width: 200, fit: BoxFit.contain ),
             kSmallHeightSpacing,
-            Center(child: Text('... Whipping up something else' ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 18, color: kPureWhiteColor),)),
+            Center(child: Text('...Free Session Activated' ,textAlign: TextAlign.center, style: kHeading2TextStyleBold.copyWith(fontSize: 18, color: kPureWhiteColor),)),
             // kSmallHeightSpacing,
             // Lottie.asset('images/challenge.json', height: 50, width: 150,),
 

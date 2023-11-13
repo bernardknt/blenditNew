@@ -555,7 +555,7 @@ class CommonFunctions {
 
 
     for(var i = 0; i < preferenceId.length; i++){
-      subscribeToTopic(preferences[i]);
+     // subscribeToTopic(preferences[i]);
     }
 
     await FirebaseFirestore.instance
@@ -921,7 +921,7 @@ class CommonFunctions {
     final futureDate = now.add(Duration(days: time));
     final formattedDate = Timestamp.fromDate(futureDate);
 
-    Provider.of<AiProvider>(context, listen: false).setCommonVariables(1500, DateTime.now().add(Duration(days: 3)),"Trial");
+    Provider.of<AiProvider>(context, listen: false).setCommonVariables(1500, DateTime.now().add(Duration(days: 3)),"Trial", true);
 
     users.doc(auth.currentUser!.uid).update({
       // "aiActive": false,
@@ -970,8 +970,10 @@ class CommonFunctions {
     Provider.of<AiProvider>(context,listen: false).setCommonVariables(
       userData['loyalty'],
       userData['subscriptionEndDate'].toDate(),
-      userData['trial']
+      userData['trial'],
+      userData['freeSession'],
     );
+    print("Subscription Status is at: ${userData['freeSession']}");
 
   }
 
@@ -997,6 +999,31 @@ class CommonFunctions {
       print('Error updating payment status: $e');
     }
   }
+
+
+  Future<void> updateFreeSession() async {
+    try {
+      // Get the current user's UID
+      final prefs = await SharedPreferences.getInstance();
+      String? uid = prefs.getString(kUniqueIdentifier);
+          // FirebaseAuth.instance.currentUser?.uid;
+
+
+      // Reference to the users collection and document
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      DocumentReference userDocument = users.doc(uid);
+
+      // Update the freeSession field
+      await userDocument.update({
+        'freeSession': false,
+      });
+
+      print('Free session updated successfully.');
+    } catch (e) {
+      print('Error updating free session: $e');
+    }
+  }
+
   CollectionReference userOrder = FirebaseFirestore.instance.collection('orders');
   Future<void> uploadAppointment (context,DateTime deliverTime,String chef_note, String deliverInstructions, String newLocation, String phoneNumber, bool loyaltyApplied, double totalPrice, String type, String customerName, String orderId,List<ServiceProviderItem> products, String providerId, String providerNumber, GeoPoint providerCoordinates, String providerImage, String providerName, List duration  )
   async {
@@ -1004,6 +1031,11 @@ class CommonFunctions {
     final prefs =  await SharedPreferences.getInstance();
     // var products = Provider.of<BlenditData>(context, listen: false).basketItems;
     var dateNow = DateTime.now();
+    String paymentStatus = 'pending';
+    if (int.parse(prefs.getString(kBillValue)!) == 0) {
+      paymentStatus = 'paid';
+      updateFreeSession();
+    }
 
 
     return userOrder.doc(orderId)
@@ -1018,7 +1050,7 @@ class CommonFunctions {
       'deliveryTime': deliverTime,
       'orderNumber': orderId,
       'paymentMethod': 'cash',
-      'paymentStatus': 'pending',
+      'paymentStatus': paymentStatus,
       'rating':0,
       'rating_comment': '',
       'hasRated': false,

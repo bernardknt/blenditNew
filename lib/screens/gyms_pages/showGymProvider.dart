@@ -18,6 +18,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +26,7 @@ import 'package:slider_button/slider_button.dart';
 
 import '../../widgets/appointmentDateOption.dart';
 import '../../widgets/carousel_for_photo_widget.dart';
+import '../../widgets/dateSelectionWidget.dart';
 
 Map<String, dynamic> splitString(String input) {
   RegExp regex = RegExp(r'(\d+)\$(\d+)');
@@ -118,7 +120,7 @@ showGymProvider(context, img, providerName, location, Map products, about, phone
       });
     }
     var providersData = Provider.of<AiProvider>(context, listen: false);
-    var providersDataListen = Provider.of<AiProvider>(context);
+    var providersDataListen = Provider.of<AiProvider>(context, listen: true);
     var blendedData = Provider.of<BlenditData>(context);
     return
       Scaffold(
@@ -336,6 +338,101 @@ showGymProvider(context, img, providerName, location, Map products, about, phone
                     ),
 
                     kLargeHeightSpacing,
+                    providersDataListen.freeSession == false ?Container():GestureDetector(
+                      onTap: (){
+                        providersData.setGymServiceBoxColor(
+                          10,
+                          kCustomColor,
+                          ServiceProviderItem(
+                            amount: 0.0,
+                            product: "Free Session",
+                            quantity: 1,
+                            days: 1,
+                          ),
+                        );
+                        showDialog(context: context,
+
+                            builder: (context) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Material(
+                                  color: kBlueDarkColor,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Select a Time for the Session",
+                                        style: kNormalTextStyle.copyWith(
+                                            color: kPureWhiteColor,fontWeight: FontWeight.bold, fontSize: 20),),
+                                      kLargeHeightSpacing,
+                                      DateSelectionWidget(selectedTime: sessionTime),
+                                      kLargeHeightSpacing,
+                                      kLargeHeightSpacing,
+                                      kLargeHeightSpacing,
+                                      // providersDataListen.onlineAppointmentTimeArray.isEmpty?Container():
+                                      Center(
+
+                                        child: MobileMoneyPaymentButton(firstButtonFunction: ()async{
+
+                                          if (providersDataListen.onlineAppointmentTimeArray.isNotEmpty){
+                                            var itemsBought = [];
+                                            for(var i =0; i<providersData.gymItemSelected.length; i++){
+                                              itemsBought.add(providersData.gymItemSelected[i].product);
+                                            }
+                                            blendedData.setLocation(location);
+                                            blendedData.setServiceProviderDetails(phoneNumber, coordinates, id, img, providerName);
+                                            final prefs = await SharedPreferences.getInstance();
+                                            prefs.setString(kBillValue,(providersDataListen.gymItemPrices * providersDataListen.onlineAppointmentTimeArray.length).toInt().toString() );
+                                            prefs.setString(kOrderReason, "${providerName}:\n${itemsBought.join(", ")}" );
+                                            prefs.setString(kOrderId, orderId );
+                                            print(providersDataListen.gymItemPrices.toString());
+
+                                            CommonFunctions().uploadAppointment(context, providersDataListen.onlineAppointmentTime,prefs.getString(kOrderReason)! , "", blendedData.location, prefs.getString(kPhoneNumberConstant)!, true, providersDataListen.gymItemPrices * providersDataListen.onlineAppointmentTimeArray.length, "Appointment", prefs.getString(kFullNameConstant)!, prefs.getString(kOrderId)!, providersDataListen.gymItemSelected, blendedData.providerId, phoneNumber, blendedData.providerCoordinate, blendedData.providerImage, blendedData.providerName, providersDataListen.onlineAppointmentTimeArray);
+
+                                          }else {
+                                            print("object");
+                                            Get.snackbar(
+
+                                                "No Date Selected", "Select a date inorder to proceed", colorText: kPureWhiteColor, backgroundColor: kAppPinkColor);
+                                          }
+
+                                        }, firstButtonText: "Get Free Session",
+                                            buttonTextColor: kPureWhiteColor,
+                                            lineIconFirstButton: Iconsax.maximize
+                                        ),
+                                      ),
+                                      kLargeHeightSpacing,
+                                      kLargeHeightSpacing,
+                                      kLargeHeightSpacing,
+                                      kLargeHeightSpacing,
+                                      Text("Cancel",
+                                        style: kNormalTextStyle.copyWith(
+                                            color: kPureWhiteColor),)
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                        );
+
+
+                      },
+                      child:  Card(
+                        margin: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
+                        shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(10)),
+                        color: kAppPinkColor,
+
+                        shadowColor: kGreenThemeColor,
+                        elevation: 5.0,
+                        child: ListTile(
+                          leading: Icon(LineIcons.dumbbell, color: kPureWhiteColor,),
+                          title:Text("Get First Session Free", style:kNormalTextStyle.copyWith(color: kPureWhiteColor, fontSize: 18)),
+                          // trailing: Icon(Icons.keyboard_arrow_right),
+                        ),
+                      ),
+                    ),
                     kLargeHeightSpacing,
                     providersDataListen.onlineAppointmentTimeArray.isEmpty?Container():
                     Center(
@@ -380,104 +477,3 @@ showGymProvider(context, img, providerName, location, Map products, about, phone
   });
 }
 
-class DateSelectionWidget extends StatelessWidget {
-
-  DateSelectionWidget({required this.selectedTime});
-  final DateTime selectedTime;
-  @override
-
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        height: 180,
-        // width: 150,
-        child: ListView.builder(
-          itemCount: 10,
-          scrollDirection: Axis.horizontal,// You can change this number based on how many cards you want.
-          itemBuilder: (BuildContext context, int index) {
-
-            // Generate a unique date for each card (you can modify this logic as needed).
-            int currentMonth = DateTime.now().month;
-
-           //DateTime currentDate = selectedTime.add(Duration(days: index));
-            DateTime currentDate = DateTime( DateTime.now().year, currentMonth ,DateTime.now().day, selectedTime.hour, selectedTime.minute  );
-            print(DateFormat('dd/MMM/yyy kk:mm ').format(currentDate));
-            print(DateTime.now().month);
-            // Get current hour and minute values
-            int currentHour = DateTime.now().hour;
-            int currentMinute = DateTime.now().minute;
-
-            // Get selected hour and minute values
-            int selectedHour = selectedTime.hour;
-            int selectedMinute = selectedTime.minute;
-
-            // Check if current hour is less than selected hour
-            // or if current hour is equal to selected hour but current minute is less than selected minute
-            if (currentHour < selectedHour || (currentHour == selectedHour && currentMinute < selectedMinute)) {
-              print("THIS IS TRUE $currentHour < $selectedHour");
-              currentDate = currentDate.add(Duration(days: index));
-            } else {
-              print("THIS RUN");
-              currentDate = currentDate.add(Duration(days: index + 1));
-            }
-
-            return GestureDetector(
-
-              onTap: (){
-                Provider.of<AiProvider>(context, listen: false).setSelectedTimeValues(index, Provider.of<AiProvider>(context, listen: false).boxElevation[index], currentDate);
-
-              },
-              child: Card(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Provider.of<AiProvider>(context).boxElevationSelectedColorOfBoxes[index], width: 2.0),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-
-                shadowColor: kGreenThemeColor,
-                elevation: Provider.of<AiProvider>(context).boxElevation[index],
-                //boxElevation[index],
-
-                margin: EdgeInsets.all(8.0),
-                child:
-
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('${ DateFormat('EEEE').format(currentDate)}', style: kNormalTextStyle.copyWith(fontSize: 20, color: Colors.blueAccent),),
-                        kSmallHeightSpacing,
-                        SizedBox(
-                           width: 90,
-
-                            child: _buildDivider()),
-                        Text('${ DateFormat('MMMM').format(currentDate)}', style: kNormalTextStyle,),
-                        kSmallHeightSpacing,
-
-                        CircleAvatar(
-                            backgroundColor: kBlack,
-                            child: Text('${currentDate.day}', style: TextStyle(fontSize: 18.0, color: kGreenThemeColor, fontWeight: FontWeight.bold),)),
-                        kSmallHeightSpacing,
-                        Text('${ DateFormat('kk:mm a').format(currentDate)}', style: kNormalTextStyle,),
-                      ],
-                    ),
-                  )
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Container _buildDivider(){
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, ),
-      width: double.infinity,
-      height: 1.0,
-      color: kFontGreyColor,
-
-    );
-  }
-}

@@ -238,9 +238,6 @@ class MyApp extends StatelessWidget {
             ProductsPage.id: (context)=> ProductsPage(),
             OrdersTabController.id: (context)=> OrdersTabController(),
             ResponsiveLayout.id: (context)=> ResponsiveLayout(mobileBody: FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPage()), desktopBody: FeatureDiscovery(recordStepsInSharedPreferences: false, child: ControlPageWeb())),
-            
-
-
 
           },
         ),
