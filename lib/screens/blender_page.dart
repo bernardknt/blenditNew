@@ -34,6 +34,7 @@ import '../main.dart';
 import '../models/responsive/dimensions.dart';
 import '../models/responsive/responsive_layout.dart';
 import '../utilities/font_constants.dart';
+import 'appointments_page.dart';
 import 'checkout_page.dart';
 import 'choose_juice_page.dart';
 import 'execution_pages/wildly_important_goal.dart';
@@ -118,7 +119,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
 
   }
 
-  Future incomingReportsStream()async{
+  Future incomingSessionStream()async{
     final prefs = await SharedPreferences.getInstance();
     var heading = "";
     var subHeading = "";
@@ -126,7 +127,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     var anime = "";
     var functionToExecute = ()async{};
 
-    var start = FirebaseFirestore.instance.collection('users').where('id', isEqualTo: prefs.getString(kUniqueIdentifier))
+    var start = FirebaseFirestore.instance.collection('users').where('email', isEqualTo: prefs.getString(kEmailConstant))
         .where('liveSession', isEqualTo: true)
         .snapshots().listen((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
@@ -157,13 +158,30 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
                 FirebaseServerFunctions().updateDialogueAlert(doc.id);
               },
               confirmBtnColor: kAppPinkColor,
-              backgroundColor: kBlack, onConfirmBtnTap: ()async{
+              backgroundColor: kBlack,
+              onConfirmBtnTap: ()async{
             FirebaseServerFunctions().updateDialogueAlert(doc.id);
-
             Navigator.pop(context);
-            functionToExecute();
-
-
+            showModalBottomSheet(
+                isScrollControlled: true, // Set this property to true
+                context: context,
+                builder: (context) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: kBackgroundGreyColor,
+                      elevation: 0,
+                      automaticallyImplyLeading: false,
+                    ),
+                    body: Scaffold(
+                        appBar: AppBar(
+                          foregroundColor: kBlack,
+                          backgroundColor:kBackgroundGreyColor,
+                          elevation: 0,
+                          automaticallyImplyLeading: true,
+                        ),
+                        body: AppointmentsPage()),
+                  );
+                });
           }
 
           );
@@ -351,6 +369,7 @@ class _NewBlenderPageState extends State<NewBlenderPage> {
     super.initState();
     deliveryStream();
     defaultsInitiation();
+    incomingSessionStream();
     tutorialShow();
     getIngredients();
     FirebaseMessaging.instance.requestPermission(

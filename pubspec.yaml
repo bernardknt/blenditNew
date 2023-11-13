@@ -63,7 +63,9 @@ dependencies:
   youtube_player_flutter: ^8.1.1
   firebase_core: ^2.4.0
   lottie: ^1.2.1
-  purchases_flutter: ^6.2.0
+#  purchases_flutter: ^6.2.0
+  purchases_flutter: ^4.11.3
+#  purchases_flutter: ^6.2.0
   shared_preferences: ^2.0.11
   firebase_auth: ^4.4.2
   cloud_firestore: ^4.3.0
